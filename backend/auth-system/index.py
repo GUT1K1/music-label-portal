@@ -549,7 +549,8 @@ def verify_code(event: Dict[str, Any]) -> Dict[str, Any]:
     
     cur.execute(
         """
-        SELECT id, username, email, verification_token, verification_token_expires, email_verified
+        SELECT id, username, email, verification_token, verification_token_expires, email_verified,
+               verification_token_expires < NOW() as is_expired
         FROM t_p35759334_music_label_portal.users
         WHERE email = '{}'
         """.format(email.replace("'", "''"))
@@ -583,7 +584,7 @@ def verify_code(event: Dict[str, Any]) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Invalid verification code'})
         }
     
-    if datetime.fromisoformat(user['verification_token_expires']) < datetime.now():
+    if user['is_expired']:
         cur.close()
         conn.close()
         return {
@@ -735,7 +736,8 @@ def reset_password(event: Dict[str, Any]) -> Dict[str, Any]:
     
     cur.execute(
         """
-        SELECT id, verification_token, verification_token_expires
+        SELECT id, verification_token, verification_token_expires,
+               verification_token_expires < NOW() as is_expired
         FROM t_p35759334_music_label_portal.users
         WHERE email = '{}'
         """.format(email.replace("'", "''"))
@@ -760,7 +762,7 @@ def reset_password(event: Dict[str, Any]) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Invalid reset code'})
         }
     
-    if datetime.fromisoformat(user['verification_token_expires']) < datetime.now():
+    if user['is_expired']:
         cur.close()
         conn.close()
         return {
