@@ -120,58 +120,6 @@ export default function LandingPage() {
       {/* Side Menu */}
       <SideMenu />
 
-      {/* Header */}
-      <header 
-        className="sticky top-0 z-50 backdrop-blur-2xl bg-black/50 border-b transition-all duration-500"
-        style={{
-          borderColor: scrollY > 50 ? 'rgba(234, 179, 8, 0.3)' : 'rgba(255, 255, 255, 0.05)',
-          boxShadow: scrollY > 50 ? '0 8px 32px rgba(234, 179, 8, 0.1)' : 'none'
-        }}
-      >
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-75 transition-opacity duration-500" />
-                <img 
-                  src="https://cdn.poehali.dev/files/89837016-5bd9-4196-8bef-fad51c37ba4e.jpg" 
-                  alt="420" 
-                  className="relative w-14 h-14 rounded-2xl border-2 border-yellow-500/30 group-hover:border-yellow-400 transition-all duration-500 group-hover:scale-110"
-                />
-              </div>
-              <div>
-                <div className="text-3xl font-black bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">420</div>
-                <div className="text-xs text-gray-500 font-medium">Музыкальный лейбл</div>
-              </div>
-            </div>
-            
-            <nav className="hidden md:flex items-center gap-8">
-              {['Услуги', 'Площадки', 'Кейсы', 'Контакты'].map((item, i) => (
-                <a 
-                  key={i}
-                  href={`#${item.toLowerCase()}`}
-                  className="relative text-sm font-medium text-gray-400 hover:text-white transition-colors group"
-                >
-                  {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 group-hover:w-full transition-all duration-300" />
-                </a>
-              ))}
-            </nav>
-
-            <Button 
-              onClick={() => navigate('/app')}
-              className="relative overflow-hidden bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-black font-semibold border-0 group"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                <Icon name="LogIn" className="w-4 h-4" />
-                Войти
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </Button>
-          </div>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div 
