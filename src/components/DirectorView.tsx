@@ -9,24 +9,14 @@ import { Task } from '@/components/useTasks';
 
 interface DirectorViewProps {
   user: User;
-  tickets: Ticket[];
   managers: User[];
   allUsers: User[];
   tasks: Task[];
-  statusFilter: string;
-  newTicket: NewTicket;
   newUser: NewUser;
   messagesOpen: boolean;
-  onStatusFilterChange: (filter: string) => void;
-  onNewTicketChange: (ticket: NewTicket) => void;
-  onCreateTicket: () => void;
-  onUpdateStatus: (ticketId: number, status: string) => void;
-  onAssignTicket: (ticketId: number, managerId: number | null, deadline?: string) => void;
-  onLoadTickets: () => void;
   onNewUserChange: (user: NewUser) => void;
   onCreateUser: () => void;
   onLoadAllUsers: () => void;
-  onDeleteTicket: (ticketId: number) => void;
   onUpdateUser: (userId: number, userData: Partial<User>) => void;
   onCreateTask: (task: any) => Promise<boolean>;
   onUpdateTaskStatus: (taskId: number, status: string, completionReport?: string, completionFile?: File) => Promise<boolean>;
@@ -38,24 +28,14 @@ interface DirectorViewProps {
 
 export default function DirectorView({
   user,
-  tickets,
   managers,
   allUsers,
   tasks,
-  statusFilter,
-  newTicket,
   newUser,
   messagesOpen,
-  onStatusFilterChange,
-  onNewTicketChange,
-  onCreateTicket,
-  onUpdateStatus,
-  onAssignTicket,
-  onLoadTickets,
   onNewUserChange,
   onCreateUser,
   onLoadAllUsers,
-  onDeleteTicket,
   onUpdateUser,
   onCreateTask,
   onUpdateTaskStatus,
@@ -100,23 +80,13 @@ export default function DirectorView({
 
         <DirectorTabs
           user={user}
-          tickets={tickets}
           managers={managers}
           allUsers={allUsers}
           tasks={tasks}
-          statusFilter={statusFilter}
-          newTicket={newTicket}
           newUser={newUser}
-          onStatusFilterChange={onStatusFilterChange}
-          onNewTicketChange={onNewTicketChange}
-          onCreateTicket={onCreateTicket}
-          onUpdateStatus={onUpdateStatus}
-          onAssignTicket={onAssignTicket}
-          onLoadTickets={onLoadTickets}
           onNewUserChange={onNewUserChange}
           onCreateUser={onCreateUser}
           onLoadAllUsers={onLoadAllUsers}
-          onDeleteTicket={onDeleteTicket}
           onUpdateUser={onUpdateUser}
           onCreateTask={onCreateTask}
           onUpdateTaskStatus={onUpdateTaskStatus}

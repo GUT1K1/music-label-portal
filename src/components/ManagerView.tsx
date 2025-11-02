@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
-import TicketManagement from '@/components/TicketManagement';
+import SupportChat from '@/components/SupportChat';
 import SubmissionsManager from '@/components/SubmissionsManager';
 import ManagerStats from '@/components/ManagerStats';
 import ManagerTasksView from '@/components/ManagerTasksView';
@@ -10,7 +10,7 @@ import MessagesModal from '@/components/MessagesModal';
 import AppHeader from '@/components/AppHeader';
 import UserProfile from '@/components/UserProfile';
 import NewsView from '@/components/NewsView';
-import { User, Ticket } from '@/types';
+import { User } from '@/types';
 import { Task } from '@/components/useTasks';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -18,16 +18,8 @@ import { useActivityTracking } from '@/hooks/useActivityTracking';
 
 interface ManagerViewProps {
   user: User;
-  tickets: Ticket[];
-  managers: User[];
   tasks: Task[];
-  statusFilter: string;
   messagesOpen: boolean;
-  onStatusFilterChange: (filter: string) => void;
-  onUpdateStatus: (ticketId: number, status: string) => void;
-  onAssignTicket: (ticketId: number, managerId: number | null, deadline?: string) => void;
-  onLoadTickets: () => void;
-  onDeleteTicket: (ticketId: number) => void;
   onUpdateTaskStatus: (taskId: number, status: string, completionReport?: string, completionFile?: File) => Promise<boolean>;
   onMessagesOpenChange: (open: boolean) => void;
   onUpdateUser: (updates: Partial<User>) => void;
@@ -37,16 +29,8 @@ interface ManagerViewProps {
 
 export default function ManagerView({
   user,
-  tickets,
-  managers,
   tasks,
-  statusFilter,
   messagesOpen,
-  onStatusFilterChange,
-  onUpdateStatus,
-  onAssignTicket,
-  onLoadTickets,
-  onDeleteTicket,
   onUpdateTaskStatus,
   onMessagesOpenChange,
   onUpdateUser,
@@ -113,10 +97,9 @@ export default function ManagerView({
                 <span>Задачи</span>
                 {unreadCounts.tasks > 0 && <Badge count={unreadCounts.tasks} />}
               </TabsTrigger>
-              <TabsTrigger value="tickets" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
-                <Icon name="Ticket" className="w-4 h-4 text-yellow-500" />
-                <span>Тикеты</span>
-                {unreadCounts.tickets > 0 && <Badge count={unreadCounts.tickets} />}
+              <TabsTrigger value="support" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+                <Icon name="MessageSquare" className="w-4 h-4 text-blue-500" />
+                <span>Поддержка</span>
               </TabsTrigger>
               <TabsTrigger value="releases" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
                 <Icon name="Music" className="w-4 h-4 text-purple-500" />
@@ -148,18 +131,8 @@ export default function ManagerView({
             <ReleaseModerationPanel userId={user.id} userRole="manager" />
           </TabsContent>
 
-          <TabsContent value="tickets">
-            <TicketManagement
-              user={user}
-              tickets={tickets}
-              managers={managers}
-              statusFilter={statusFilter}
-              onStatusFilterChange={onStatusFilterChange}
-              onUpdateStatus={onUpdateStatus}
-              onAssignTicket={onAssignTicket}
-              onLoadTickets={onLoadTickets}
-              onDeleteTicket={onDeleteTicket}
-            />
+          <TabsContent value="support">
+            <SupportChat userId={user.id} userRole="manager" />
           </TabsContent>
 
           <TabsContent value="submissions">

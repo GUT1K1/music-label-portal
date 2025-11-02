@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import MobileNav from '@/components/MobileNav';
-import CreateTicketForm from '@/components/CreateTicketForm';
-import TicketManagement from '@/components/TicketManagement';
+import SupportChat from '@/components/SupportChat';
 import UserManagement from '@/components/UserManagement';
 import ReminderSetup from '@/components/ReminderSetup';
 import TelegramBotSettings from '@/components/TelegramBotSettings';
@@ -57,26 +56,16 @@ interface Ticket {
 
 interface DirectorTabsProps {
   user: User;
-  tickets: Ticket[];
   managers: User[];
   allUsers: User[];
-  statusFilter: string;
-  newTicket: { title: string; description: string; priority: string };
   newUser: { username: string; full_name: string; role: string };
   tasks: Task[];
   onCreateTask: (task: any) => Promise<boolean>;
   onUpdateTaskStatus: (taskId: number, status: string, completionReport?: string, completionFile?: File) => Promise<boolean>;
   onDeleteTask: (taskId: number) => Promise<boolean>;
-  onStatusFilterChange: (status: string) => void;
-  onNewTicketChange: (ticket: { title: string; description: string; priority: string }) => void;
-  onCreateTicket: () => void;
-  onUpdateStatus: (ticketId: number, status: string) => void;
-  onAssignTicket: (ticketId: number, managerId: number | null, deadline?: string) => void;
-  onLoadTickets: () => void;
   onNewUserChange: (user: { username: string; full_name: string; role: string }) => void;
   onCreateUser: () => void;
   onLoadAllUsers: () => void;
-  onDeleteTicket: (ticketId: number) => void;
   onUpdateUser: (userId: number, userData: Partial<User>) => void;
   activeTab?: string;
   onTabChange?: (value: string) => void;
@@ -84,26 +73,16 @@ interface DirectorTabsProps {
 
 export default function DirectorTabs({
   user,
-  tickets,
   managers,
   allUsers,
-  statusFilter,
-  newTicket,
   newUser,
   tasks,
   onCreateTask,
   onUpdateTaskStatus,
   onDeleteTask,
-  onStatusFilterChange,
-  onNewTicketChange,
-  onCreateTicket,
-  onUpdateStatus,
-  onAssignTicket,
-  onLoadTickets,
   onNewUserChange,
   onCreateUser,
   onLoadAllUsers,
-  onDeleteTicket,
   onUpdateUser,
   activeTab: propActiveTab,
   onTabChange: propOnTabChange
@@ -128,21 +107,7 @@ export default function DirectorTabs({
     );
   };
 
-  // Обёртки для обновления счётчиков после действий
-  const handleUpdateStatus = async (ticketId: number, status: string) => {
-    await onUpdateStatus(ticketId, status);
-    refreshCounts();
-  };
 
-  const handleAssignTicket = async (ticketId: number, managerId: number | null, deadline?: string) => {
-    await onAssignTicket(ticketId, managerId, deadline);
-    refreshCounts();
-  };
-
-  const handleDeleteTicket = async (ticketId: number) => {
-    await onDeleteTicket(ticketId);
-    refreshCounts();
-  };
 
   return (
     <Tabs 
@@ -162,10 +127,9 @@ export default function DirectorTabs({
             <Icon name="BarChart3" className="w-4 h-4 text-primary" />
             <span>Аналитика</span>
           </TabsTrigger>
-          <TabsTrigger value="tickets" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
-            <Icon name="Ticket" className="w-4 h-4 text-yellow-500" />
-            <span>Тикеты</span>
-            {unreadCounts.tickets > 0 && <Badge count={unreadCounts.tickets} />}
+          <TabsTrigger value="support" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="MessageSquare" className="w-4 h-4 text-blue-500" />
+            <span>Поддержка</span>
           </TabsTrigger>
           <TabsTrigger value="tasks" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
             <Icon name="CheckSquare" className="w-4 h-4 text-green-500" />
@@ -196,18 +160,8 @@ export default function DirectorTabs({
         <NewsView userRole="director" userId={user.id} />
       </TabsContent>
 
-      <TabsContent value="tickets" className="space-y-4 animate-fadeIn">
-        <TicketManagement
-          user={user}
-          tickets={tickets}
-          managers={managers}
-          statusFilter={statusFilter}
-          onStatusFilterChange={onStatusFilterChange}
-          onUpdateStatus={handleUpdateStatus}
-          onAssignTicket={handleAssignTicket}
-          onLoadTickets={onLoadTickets}
-          onDeleteTicket={handleDeleteTicket}
-        />
+      <TabsContent value="support" className="space-y-4 animate-fadeIn">
+        <SupportChat userId={user.id} userRole="director" />
       </TabsContent>
 
       <TabsContent value="releases" className="animate-fadeIn">
@@ -219,11 +173,12 @@ export default function DirectorTabs({
       </TabsContent>
 
       <TabsContent value="tasks" className="space-y-4 animate-fadeIn">
-        <TaskAssignment
-          tickets={tickets}
+        <TasksTab
+          tasks={tasks}
           managers={managers}
-          onAssignTicket={onAssignTicket}
-          onLoadTickets={onLoadTickets}
+          onCreateTask={onCreateTask}
+          onUpdateTaskStatus={onUpdateTaskStatus}
+          onDeleteTask={onDeleteTask}
         />
       </TabsContent>
 
