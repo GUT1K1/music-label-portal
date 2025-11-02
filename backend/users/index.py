@@ -164,6 +164,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     dsn = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(dsn)
     
+    cur_temp = conn.cursor()
+    cur_temp.execute("SET search_path TO t_p35759334_music_label_portal, public")
+    cur_temp.close()
+    
     current_user = verify_user(current_user_id, conn)
     if not current_user:
         conn.close()
