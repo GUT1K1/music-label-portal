@@ -239,16 +239,17 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
             
             <TabsContent value="login" className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="login-email">Email</Label>
+                <Label htmlFor="login-email">Логин или Email</Label>
                 <Input
                   id="login-email"
-                  type="email"
-                  placeholder="your@email.com"
+                  type="text"
+                  placeholder="Введите логин или email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
                   disabled={loginLoading}
                 />
+                <p className="text-xs text-gray-400">Можно использовать логин или email для входа</p>
               </div>
               
               <div className="space-y-2">
