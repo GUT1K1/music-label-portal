@@ -31,7 +31,7 @@ export default function LandingPage() {
       title: 'Дистрибуция',
       description: 'Выпускай релизы на всех площадках: Яндекс Музыка, VK Музыка, Apple Music, Spotify',
       features: ['Быстрая модерация 24ч', 'Без комиссий за выпуск', 'Выплаты от 500₽'],
-      gradient: 'from-violet-600 via-purple-600 to-fuchsia-600',
+      gradient: 'from-yellow-500 via-orange-500 to-amber-600',
       glowColor: 'violet'
     },
     {
@@ -39,7 +39,7 @@ export default function LandingPage() {
       title: 'Промо и питчинг',
       description: 'Продвигаем треки в плейлисты и помогаем набрать аудиторию',
       features: ['Редакционные плейлисты', 'Таргетированная реклама', 'SMM продвижение'],
-      gradient: 'from-cyan-500 via-blue-500 to-indigo-600',
+      gradient: 'from-amber-500 via-yellow-500 to-orange-500',
       glowColor: 'cyan'
     },
     {
@@ -62,10 +62,10 @@ export default function LandingPage() {
   ];
 
   const stats = [
-    { value: '10+', label: 'лет опыта', gradient: 'from-violet-500 to-purple-500' },
-    { value: '500+', label: 'релизов', gradient: 'from-cyan-500 to-blue-500' },
-    { value: '50+', label: 'артистов', gradient: 'from-fuchsia-500 to-pink-500' },
-    { value: '24/7', label: 'поддержка', gradient: 'from-amber-500 to-orange-500' }
+    { value: '10+', label: 'лет опыта', gradient: 'from-yellow-500 to-orange-500' },
+    { value: '500+', label: 'релизов', gradient: 'from-amber-500 to-yellow-600' },
+    { value: '50+', label: 'артистов', gradient: 'from-orange-500 to-amber-600' },
+    { value: '24/7', label: 'поддержка', gradient: 'from-yellow-600 to-orange-600' }
   ];
 
   return (
@@ -76,9 +76,9 @@ export default function LandingPage() {
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(147, 51, 234, 0.15), transparent 50%),
-              radial-gradient(circle at ${100 - mousePosition.x / 20}% ${mousePosition.y / 20}%, rgba(6, 182, 212, 0.1), transparent 50%),
-              linear-gradient(to bottom right, rgba(168, 85, 247, 0.05), rgba(236, 72, 153, 0.05))
+              radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(234, 179, 8, 0.15), transparent 50%),
+              radial-gradient(circle at ${100 - mousePosition.x / 20}% ${mousePosition.y / 20}%, rgba(251, 146, 60, 0.1), transparent 50%),
+              linear-gradient(to bottom right, rgba(234, 179, 8, 0.05), rgba(251, 146, 60, 0.05))
             `
           }}
         />
@@ -89,7 +89,7 @@ export default function LandingPage() {
         <div 
           className="absolute w-96 h-96 rounded-full blur-3xl opacity-20 animate-float"
           style={{
-            background: 'linear-gradient(45deg, #8b5cf6, #ec4899)',
+            background: 'linear-gradient(45deg, #eab308, #fb923c)',
             top: '10%',
             left: '5%',
             animationDuration: '20s'
@@ -98,7 +98,7 @@ export default function LandingPage() {
         <div 
           className="absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-20 animate-float"
           style={{
-            background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+            background: 'linear-gradient(135deg, #f59e0b, #ea580c)',
             bottom: '5%',
             right: '10%',
             animationDuration: '25s',
@@ -121,23 +121,23 @@ export default function LandingPage() {
       <header 
         className="sticky top-0 z-50 backdrop-blur-2xl bg-black/50 border-b transition-all duration-500"
         style={{
-          borderColor: scrollY > 50 ? 'rgba(147, 51, 234, 0.3)' : 'rgba(255, 255, 255, 0.05)',
-          boxShadow: scrollY > 50 ? '0 8px 32px rgba(147, 51, 234, 0.1)' : 'none'
+          borderColor: scrollY > 50 ? 'rgba(234, 179, 8, 0.3)' : 'rgba(255, 255, 255, 0.05)',
+          boxShadow: scrollY > 50 ? '0 8px 32px rgba(234, 179, 8, 0.1)' : 'none'
         }}
       >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 group cursor-pointer">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-75 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-2xl blur-xl opacity-0 group-hover:opacity-75 transition-opacity duration-500" />
                 <img 
                   src="https://cdn.poehali.dev/files/89837016-5bd9-4196-8bef-fad51c37ba4e.jpg" 
                   alt="420" 
-                  className="relative w-14 h-14 rounded-2xl border-2 border-violet-500/30 group-hover:border-violet-400 transition-all duration-500 group-hover:scale-110"
+                  className="relative w-14 h-14 rounded-2xl border-2 border-yellow-500/30 group-hover:border-yellow-400 transition-all duration-500 group-hover:scale-110"
                 />
               </div>
               <div>
-                <div className="text-3xl font-black bg-gradient-to-r from-violet-400 via-fuchsia-400 to-violet-400 bg-clip-text text-transparent">420</div>
+                <div className="text-3xl font-black bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">420</div>
                 <div className="text-xs text-gray-500 font-medium">Музыкальный лейбл</div>
               </div>
             </div>
@@ -150,20 +150,20 @@ export default function LandingPage() {
                   className="relative text-sm font-medium text-gray-400 hover:text-white transition-colors group"
                 >
                   {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 group-hover:w-full transition-all duration-300" />
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 group-hover:w-full transition-all duration-300" />
                 </a>
               ))}
             </nav>
 
             <Button 
               onClick={() => navigate('/app')}
-              className="relative overflow-hidden bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-semibold border-0 group"
+              className="relative overflow-hidden bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-black font-semibold border-0 group"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <Icon name="LogIn" className="w-4 h-4" />
                 Войти
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </Button>
           </div>
         </div>
@@ -187,15 +187,15 @@ export default function LandingPage() {
           <div className="max-w-5xl mx-auto text-center">
             <div className="mb-8 overflow-hidden">
               <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-none mb-6 animate-slide-up">
-                <span className="inline-block bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent animate-gradient-x">
+                <span className="inline-block bg-gradient-to-r from-yellow-400 via-orange-400 to-amber-400 bg-clip-text text-transparent animate-gradient-x">
                   Выпускай
                 </span>
                 <br />
-                <span className="inline-block bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent animate-gradient-x" style={{ animationDelay: '0.2s' }}>
+                <span className="inline-block bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 bg-clip-text text-transparent animate-gradient-x" style={{ animationDelay: '0.2s' }}>
                   музыку
                 </span>
                 <br />
-                <span className="inline-block bg-gradient-to-r from-fuchsia-400 via-pink-400 to-rose-400 bg-clip-text text-transparent animate-gradient-x" style={{ animationDelay: '0.4s' }}>
+                <span className="inline-block bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent animate-gradient-x" style={{ animationDelay: '0.4s' }}>
                   на всех площадках
                 </span>
               </h1>
@@ -203,24 +203,24 @@ export default function LandingPage() {
             
             <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.6s' }}>
               Дистрибуция, продвижение и аналитика для артистов. 
-              <span className="text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text font-semibold"> Без скрытых комиссий</span> и сложных договоров.
+              <span className="text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text font-semibold"> Без скрытых комиссий</span> и сложных договоров.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in" style={{ animationDelay: '0.8s' }}>
               <Button 
                 onClick={() => navigate('/app')}
                 size="lg"
-                className="relative overflow-hidden bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 hover:shadow-2xl hover:shadow-violet-500/50 text-white font-bold text-lg px-10 py-7 border-0 group transition-all duration-500"
+                className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-orange-600 to-amber-600 hover:shadow-2xl hover:shadow-yellow-500/50 text-black font-bold text-lg px-10 py-7 border-0 group transition-all duration-500"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Начать бесплатно
                   <Icon name="ArrowRight" className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-fuchsia-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </Button>
               <Button 
                 size="lg"
-                className="relative overflow-hidden bg-white/5 backdrop-blur-xl border border-white/10 hover:border-violet-500/50 text-white font-semibold text-lg px-10 py-7 group transition-all duration-500"
+                className="relative overflow-hidden bg-white/5 backdrop-blur-xl border border-white/10 hover:border-yellow-500/50 text-white font-semibold text-lg px-10 py-7 group transition-all duration-500"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Узнать больше
@@ -253,7 +253,7 @@ export default function LandingPage() {
         </div>
 
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <Icon name="ChevronDown" className="w-8 h-8 text-violet-500 opacity-50" />
+          <Icon name="ChevronDown" className="w-8 h-8 text-yellow-500 opacity-50" />
         </div>
       </section>
 
@@ -262,11 +262,11 @@ export default function LandingPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
             <div className="inline-block mb-4">
-              <span className="text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+              <span className="text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                 Наши услуги
               </span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-white via-violet-200 to-white bg-clip-text text-transparent">
+            <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent">
               Что мы предлагаем
             </h2>
             <p className="text-gray-400 text-xl max-w-2xl mx-auto">
@@ -310,17 +310,17 @@ export default function LandingPage() {
 
       {/* Platforms Section */}
       <section id="площадки" className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-violet-950/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-yellow-950/20 to-transparent" />
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-20">
             <div className="inline-block mb-4">
-              <span className="text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              <span className="text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">
                 Интеграции
               </span>
             </div>
             <h2 className="text-5xl md:text-7xl font-black mb-6">
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
                 Все площадки
               </span>
               <br />
@@ -352,32 +352,32 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="relative py-40 overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 via-fuchsia-600/20 to-pink-600/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-600/20 via-orange-600/20 to-amber-600/20" />
           <div className="absolute inset-0 backdrop-blur-3xl" />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-5xl md:text-8xl font-black mb-8 leading-tight">
-              <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
                 Готов выпустить
               </span>
               <br />
               <span className="text-white">свою музыку?</span>
             </h2>
             <p className="text-2xl text-gray-300 mb-12 leading-relaxed">
-              Присоединяйся к <span className="font-bold text-violet-400">420</span> и выведи свою карьеру на новый уровень
+              Присоединяйся к <span className="font-bold text-yellow-400">420</span> и выведи свою карьеру на новый уровень
             </p>
             <Button 
               onClick={() => navigate('/app')}
               size="lg"
-              className="relative overflow-hidden bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 hover:shadow-2xl hover:shadow-violet-500/50 text-white font-black text-2xl px-16 py-8 border-0 group transition-all duration-500 rounded-2xl"
+              className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-orange-600 to-amber-600 hover:shadow-2xl hover:shadow-yellow-500/50 text-black font-black text-2xl px-16 py-8 border-0 group transition-all duration-500 rounded-2xl"
             >
               <span className="relative z-10 flex items-center gap-3">
                 Начать сейчас
                 <Icon name="Rocket" className="w-7 h-7 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-pink-600 via-fuchsia-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </Button>
           </div>
         </div>
@@ -396,7 +396,7 @@ export default function LandingPage() {
                   alt="420" 
                   className="w-12 h-12 rounded-xl"
                 />
-                <span className="text-2xl font-black bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">420</span>
+                <span className="text-2xl font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">420</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed">
                 Независимый музыкальный лейбл полного цикла
@@ -409,13 +409,13 @@ export default function LandingPage() {
               { title: 'Поддержка', items: ['Помощь', 'FAQ', 'Документация'] }
             ].map((column, i) => (
               <div key={i}>
-                <h4 className="font-bold mb-4 bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                <h4 className="font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                   {column.title}
                 </h4>
                 <ul className="space-y-2">
                   {column.items.map((item, j) => (
                     <li key={j}>
-                      <a href="#" className="text-sm text-gray-500 hover:text-violet-400 transition-colors">
+                      <a href="#" className="text-sm text-gray-500 hover:text-yellow-400 transition-colors">
                         {item}
                       </a>
                     </li>
@@ -434,7 +434,7 @@ export default function LandingPage() {
                 <a 
                   key={i}
                   href="#" 
-                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-gradient-to-r hover:from-violet-600 hover:to-fuchsia-600 border border-white/10 hover:border-transparent flex items-center justify-center transition-all duration-300 group"
+                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-gradient-to-r hover:from-yellow-600 hover:to-orange-600 border border-white/10 hover:border-transparent flex items-center justify-center transition-all duration-300 group"
                 >
                   <Icon name={icon as any} className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
                 </a>
