@@ -6,7 +6,9 @@ from typing import Dict, Any
 from datetime import datetime, timedelta
 import psycopg2
 from psycopg2.extras import RealDictCursor
-import requests
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -49,34 +51,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
 
 def send_email(to: str, subject: str, html_content: str) -> bool:
-    resend_api_key = os.environ.get('RESEND_API_KEY')
-    if not resend_api_key:
-        print('❌ RESEND_API_KEY не найден!')
+    gmail_password = os.environ.get('GMAIL_APP_PASSWORD')
+    if not gmail_password:
+        print('❌ GMAIL_APP_PASSWORD не найден!')
         return False
     
-    url = 'https://api.resend.com/emails'
-    headers = {
-        'Authorization': f'Bearer {resend_api_key}',
-        'Content-Type': 'application/json'
-    }
+    gmail_user = 'luchshevovsom@gmail.com'
     
-    payload = {
-        'from': 'onboarding@resend.dev',
-        'to': [to],
-        'subject': subject,
-        'html': html_content
-    }
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = subject
+    msg['From'] = f'420 Music <{gmail_user}>'
+    msg['To'] = to
     
-    print(f'📧 Отправка письма на {to}...')
-    response = requests.post(url, json=payload, headers=headers)
-    print(f'📡 Resend ответ: status={response.status_code}, body={response.text}')
+    html_part = MIMEText(html_content, 'html', 'utf-8')
+    msg.attach(html_part)
     
-    if response.status_code != 200:
-        print(f'❌ Ошибка отправки: {response.text}')
+    print(f'📧 Отправка письма на {to} через Gmail...')
+    
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login(gmail_user, gmail_password)
+        server.sendmail(gmail_user, to, msg.as_string())
+        server.quit()
+        
+        print('✅ Письмо отправлено успешно!')
+        return True
+    except Exception as e:
+        print(f'❌ Ошибка отправки: {str(e)}')
         return False
-    
-    print('✅ Письмо отправлено успешно!')
-    return True
 
 
 def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
