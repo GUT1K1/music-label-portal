@@ -1,11 +1,15 @@
 export default function AnimatedHero() {
   return (
-    <div className="relative py-24 px-4">
-      <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[1.5] text-center tracking-tight">
+    <div className="relative py-24 px-4" style={{ perspective: '1000px' }}>
+      <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[1.5] text-center tracking-tight" style={{ transformStyle: 'preserve-3d' }}>
         <div className="block mb-2">
           <span 
             className="hero-shimmer inline-block bg-gradient-to-r from-yellow-200 via-amber-300 via-yellow-400 via-orange-400 via-amber-500 via-yellow-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent animate-gradient-x"
-            style={{ paddingBottom: '1.5rem' }}
+            style={{ 
+              paddingBottom: '1.5rem',
+              transform: 'rotateX(5deg) translateZ(20px)',
+              display: 'inline-block'
+            }}
           >
             Выпускай
           </span>
@@ -14,7 +18,12 @@ export default function AnimatedHero() {
         <div className="block mb-2">
           <span 
             className="hero-shimmer inline-block bg-gradient-to-r from-amber-200 via-yellow-300 via-amber-400 via-orange-500 via-yellow-500 via-amber-400 via-yellow-300 to-amber-200 bg-clip-text text-transparent animate-gradient-x" 
-            style={{ animationDelay: '0.4s', paddingBottom: '1.5rem' }}
+            style={{ 
+              animationDelay: '0.4s', 
+              paddingBottom: '1.5rem',
+              transform: 'rotateX(5deg) translateZ(30px)',
+              display: 'inline-block'
+            }}
           >
             музыку
           </span>
@@ -23,7 +32,12 @@ export default function AnimatedHero() {
         <div className="block relative mb-16">
           <span 
             className="hero-shimmer inline-block bg-gradient-to-r from-yellow-300 via-amber-400 via-yellow-500 via-orange-400 via-amber-500 via-yellow-500 via-amber-400 to-yellow-300 bg-clip-text text-transparent animate-gradient-x" 
-            style={{ animationDelay: '0.8s', paddingBottom: '1.5rem' }}
+            style={{ 
+              animationDelay: '0.8s', 
+              paddingBottom: '1.5rem',
+              transform: 'rotateX(5deg) translateZ(25px)',
+              display: 'inline-block'
+            }}
           >
             на всех площадках
           </span>
