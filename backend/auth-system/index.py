@@ -308,7 +308,7 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
         """
         SELECT id, username, email, full_name, role, password_hash, email_verified, two_factor_enabled, is_blocked 
         FROM t_p35759334_music_label_portal.users 
-        WHERE email = '{}' OR username = '{}'
+        WHERE LOWER(email) = '{}' OR LOWER(username) = '{}'
         """.format(login_input.replace("'", "''"), login_input.replace("'", "''"))
     )
     user = cur.fetchone()
