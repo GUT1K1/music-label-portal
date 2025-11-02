@@ -4,7 +4,7 @@ export default function AnimatedHero() {
       <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[1.5] text-center tracking-tight" style={{ transformStyle: 'preserve-3d' }}>
         <div className="block mb-2">
           <span 
-            className="hero-shimmer inline-block bg-gradient-to-r from-yellow-200 via-amber-300 via-yellow-400 via-orange-400 via-amber-500 via-yellow-400 via-amber-300 to-yellow-200 bg-clip-text text-transparent animate-gradient-x"
+            className="inline-block bg-gradient-to-r from-red-600 via-orange-500 via-yellow-400 via-orange-500 to-red-600 bg-clip-text text-transparent animate-magma font-black"
             style={{ 
               paddingBottom: '1.5rem',
               transform: 'rotateX(5deg) translateZ(20px)',
@@ -17,9 +17,9 @@ export default function AnimatedHero() {
         
         <div className="block mb-2">
           <span 
-            className="hero-shimmer inline-block bg-gradient-to-r from-amber-200 via-yellow-300 via-amber-400 via-orange-500 via-yellow-500 via-amber-400 via-yellow-300 to-amber-200 bg-clip-text text-transparent animate-gradient-x" 
+            className="inline-block bg-gradient-to-r from-red-600 via-orange-500 via-yellow-400 via-orange-500 to-red-600 bg-clip-text text-transparent animate-magma font-black" 
             style={{ 
-              animationDelay: '0.4s', 
+              animationDelay: '0.3s', 
               paddingBottom: '1.5rem',
               transform: 'rotateX(5deg) translateZ(30px)',
               display: 'inline-block'
@@ -31,9 +31,9 @@ export default function AnimatedHero() {
         
         <div className="block relative mb-16">
           <span 
-            className="hero-shimmer inline-block bg-gradient-to-r from-yellow-300 via-amber-400 via-yellow-500 via-orange-400 via-amber-500 via-yellow-500 via-amber-400 to-yellow-300 bg-clip-text text-transparent animate-gradient-x" 
+            className="inline-block bg-gradient-to-r from-red-600 via-orange-500 via-yellow-400 via-orange-500 to-red-600 bg-clip-text text-transparent animate-magma font-black" 
             style={{ 
-              animationDelay: '0.8s', 
+              animationDelay: '0.6s', 
               paddingBottom: '1.5rem',
               transform: 'rotateX(5deg) translateZ(25px)',
               display: 'inline-block'
