@@ -106,27 +106,32 @@ export default function MatrixRain({ onComplete, duration = 3500 }: MatrixRainPr
 
     draw();
 
+    let resizeTimeout: number;
     const handleResize = () => {
-      setCanvasSize();
-      columns.length = 0;
-      const newColumnCount = Math.floor(canvas.width / fontSize);
-      for (let i = 0; i < newColumnCount; i++) {
-        columns.push({
-          x: i * fontSize,
-          y: Math.random() * canvas.height - canvas.height,
-          speed: 1 + Math.random() * 2,
-          opacity: 0.2 + Math.random() * 0.4,
-          chars: Array(Math.floor(canvas.height / fontSize) + 1)
-            .fill(0)
-            .map(() => chars[Math.floor(Math.random() * chars.length)])
-        });
-      }
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(() => {
+        setCanvasSize();
+        columns.length = 0;
+        const newColumnCount = Math.floor(canvas.width / fontSize);
+        for (let i = 0; i < newColumnCount; i++) {
+          columns.push({
+            x: i * fontSize,
+            y: Math.random() * canvas.height - canvas.height,
+            speed: 1 + Math.random() * 2,
+            opacity: 0.2 + Math.random() * 0.4,
+            chars: Array(Math.floor(canvas.height / fontSize) + 1)
+              .fill(0)
+              .map(() => chars[Math.floor(Math.random() * chars.length)])
+          });
+        }
+      }, 100);
     };
 
     window.addEventListener('resize', handleResize);
 
     return () => {
       cancelAnimationFrame(animationId);
+      clearTimeout(resizeTimeout);
       window.removeEventListener('resize', handleResize);
     };
   }, [onComplete, duration]);

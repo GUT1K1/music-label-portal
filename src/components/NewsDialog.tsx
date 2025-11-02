@@ -45,9 +45,11 @@ export default function NewsDialog({
 }: NewsDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl bg-gradient-to-br from-purple-900/90 to-pink-900/90 border-white/20">
+      <DialogContent className="max-w-2xl bg-gradient-to-br from-black via-yellow-950/30 to-black border-primary/30 backdrop-blur-xl shadow-2xl shadow-primary/20">
         <DialogHeader>
-          <DialogTitle>{editingNews ? 'Редактировать новость' : 'Создать новость'}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+            {editingNews ? 'Редактировать новость' : 'Создать новость'}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <Input
@@ -63,10 +65,10 @@ export default function NewsDialog({
           />
           <div className="grid grid-cols-2 gap-4">
             <Select value={formData.type} onValueChange={(value: any) => onFormDataChange({ ...formData, type: value })}>
-              <SelectTrigger className="bg-white/5 border-white/10">
+              <SelectTrigger className="bg-black/40 border-primary/20 hover:border-primary/40 transition-colors">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-black border-primary/30">
                 <SelectItem value="update">Обновление</SelectItem>
                 <SelectItem value="faq">FAQ</SelectItem>
               </SelectContent>

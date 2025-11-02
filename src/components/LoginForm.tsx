@@ -32,24 +32,19 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
     // Глобальная функция для обработки авторизации
     (window as any).onTelegramAuth = async (user: any) => {
       try {
-        console.log('Telegram auth data:', user);
-        
         const response = await fetch(API_ENDPOINTS.TELEGRAM_AUTH, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(user)
         });
 
-        console.log('Response status:', response.status);
         const data = await response.json();
-        console.log('Response data:', data);
 
         if (!response.ok) {
           throw new Error(data.error || 'Ошибка авторизации');
         }
         
         if (data.user) {
-          console.log('Calling onLogin with user:', data.user);
           setIsSuccess(true);
           setTimeout(() => {
             setShowMatrixLoader(true);
@@ -82,7 +77,6 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
       script.setAttribute('data-request-access', 'write');
       
       telegramRef.current.appendChild(script);
-      console.log('Telegram widget script loaded');
     };
 
     // Небольшая задержка чтобы DOM был готов

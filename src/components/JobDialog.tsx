@@ -48,9 +48,11 @@ export default function JobDialog({
 }: JobDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl bg-gradient-to-br from-purple-900/90 to-pink-900/90 border-white/20">
+      <DialogContent className="max-w-2xl bg-gradient-to-br from-black via-yellow-950/30 to-black border-primary/30 backdrop-blur-xl shadow-2xl shadow-primary/20">
         <DialogHeader>
-          <DialogTitle>{editingJob ? 'Редактировать вакансию' : 'Создать вакансию'}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+            {editingJob ? 'Редактировать вакансию' : 'Создать вакансию'}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <Input

@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
 import NotFoundCustom from "./pages/NotFoundCustom";
 import AdminFix from "./pages/AdminFix";
 
