@@ -22,10 +22,19 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
   const [loginPassword, setLoginPassword] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
   
+  const [regUsername, setRegUsername] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
-  const [regFullName, setRegFullName] = useState('');
   const [regLoading, setRegLoading] = useState(false);
+  const [showVerifyCode, setShowVerifyCode] = useState(false);
+  const [verifyCode, setVerifyCode] = useState('');
+  const [verifyEmail, setVerifyEmail] = useState('');
+  
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [resetCode, setResetCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   
   const [isSuccess, setIsSuccess] = useState(false);
   const [showMatrixLoader, setShowMatrixLoader] = useState(false);
@@ -96,7 +105,7 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
   };
 
   const handleRegister = async () => {
-    if (!regEmail || !regPassword || !regFullName) {
+    if (!regUsername || !regEmail || !regPassword) {
       toast({
         title: "Ошибка",
         description: "Заполните все поля",
@@ -117,24 +126,19 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
     setRegLoading(true);
     
     try {
-      console.log('🚀 Отправка регистрации:', { email: regEmail, full_name: regFullName });
-      
       const response = await fetch(`${AUTH_API}?action=register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
+          username: regUsername,
           email: regEmail, 
-          password: regPassword,
-          full_name: regFullName
+          password: regPassword
         })
       });
 
-      console.log('📡 Статус ответа:', response.status);
       const data = await response.json();
-      console.log('📦 Данные ответа:', data);
 
       if (!response.ok) {
-        console.error('❌ Ошибка:', data.error);
         toast({
           title: "Ошибка регистрации",
           description: data.error || "Не удалось зарегистрироваться",
@@ -144,23 +148,179 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
         return;
       }
 
-      console.log('✅ Регистрация успешна');
-      toast({
-        title: "Регистрация успешна! 🎉",
-        description: "Проверьте почту для подтверждения аккаунта",
-      });
-      
-      setRegEmail('');
-      setRegPassword('');
-      setRegFullName('');
+      setVerifyEmail(regEmail);
+      setShowVerifyCode(true);
       setRegLoading(false);
-      setActiveTab('login');
+      toast({
+        title: "Код отправлен! 📧",
+        description: "Введите код из письма для подтверждения",
+      });
     } catch (error) {
-      console.error('💥 Критическая ошибка:', error);
       setRegLoading(false);
       toast({
         title: "Ошибка сети",
         description: "Не удалось подключиться к серверу",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    if (!verifyCode || verifyCode.length !== 6) {
+      toast({
+        title: "Ошибка",
+        description: "Введите 6-значный код",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(`${AUTH_API}?action=verify-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: verifyEmail,
+          code: verifyCode
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "Ошибка",
+          description: data.error || "Неверный код",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Email подтверждён! ✅",
+        description: "Теперь вы можете войти",
+      });
+      
+      setShowVerifyCode(false);
+      setVerifyCode('');
+      setRegUsername('');
+      setRegEmail('');
+      setRegPassword('');
+      setActiveTab('login');
+    } catch (error) {
+      toast({
+        title: "Ошибка сети",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!forgotEmail) {
+      toast({
+        title: "Ошибка",
+        description: "Введите email",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setResetLoading(true);
+
+    try {
+      const response = await fetch(`${AUTH_API}?action=forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "Ошибка",
+          description: data.error,
+          variant: "destructive"
+        });
+        setResetLoading(false);
+        return;
+      }
+
+      toast({
+        title: "Код отправлен! 📧",
+        description: "Проверьте почту",
+      });
+      
+      setShowResetForm(true);
+      setResetLoading(false);
+    } catch (error) {
+      setResetLoading(false);
+      toast({
+        title: "Ошибка сети",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetCode || !newPassword) {
+      toast({
+        title: "Ошибка",
+        description: "Заполните все поля",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast({
+        title: "Ошибка",
+        description: "Пароль должен быть не менее 8 символов",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setResetLoading(true);
+
+    try {
+      const response = await fetch(`${AUTH_API}?action=reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: forgotEmail,
+          code: resetCode,
+          new_password: newPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "Ошибка",
+          description: data.error,
+          variant: "destructive"
+        });
+        setResetLoading(false);
+        return;
+      }
+
+      toast({
+        title: "Пароль изменён! ✅",
+        description: "Теперь войдите с новым паролем",
+      });
+      
+      setShowResetForm(false);
+      setForgotEmail('');
+      setResetCode('');
+      setNewPassword('');
+      setResetLoading(false);
+      setActiveTab('login');
+    } catch (error) {
+      setResetLoading(false);
+      toast({
+        title: "Ошибка сети",
         variant: "destructive"
       });
     }
@@ -234,9 +394,10 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
         
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsList className={`grid w-full ${activeTab === 'forgot' ? 'grid-cols-3' : 'grid-cols-2'} mb-6`}>
               <TabsTrigger value="login">Вход</TabsTrigger>
               <TabsTrigger value="register">Регистрация</TabsTrigger>
+              {activeTab === 'forgot' && <TabsTrigger value="forgot">Восстановление</TabsTrigger>}
             </TabsList>
             
             <TabsContent value="login" className="space-y-4">
@@ -284,19 +445,53 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
                   </>
                 )}
               </Button>
+
+              <Button 
+                onClick={() => setActiveTab('forgot')}
+                variant="ghost"
+                className="w-full text-xs text-gray-400"
+              >
+                Забыли пароль?
+              </Button>
             </TabsContent>
             
             <TabsContent value="register" className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="reg-fullname">Имя и Фамилия</Label>
-                <Input
-                  id="reg-fullname"
-                  placeholder="Иван Иванов"
-                  value={regFullName}
-                  onChange={(e) => setRegFullName(e.target.value)}
-                  disabled={regLoading}
-                />
-              </div>
+              {showVerifyCode ? (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="verify-code">Код подтверждения</Label>
+                    <Input
+                      id="verify-code"
+                      type="text"
+                      placeholder="123456"
+                      maxLength={6}
+                      value={verifyCode}
+                      onChange={(e) => setVerifyCode(e.target.value.replace(/\D/g, ''))}
+                      disabled={regLoading}
+                    />
+                    <p className="text-xs text-gray-400">Введите 6-значный код из письма</p>
+                  </div>
+
+                  <Button 
+                    onClick={handleVerifyCode}
+                    className="w-full"
+                  >
+                    <Icon name="CheckCircle2" className="w-4 h-4 mr-2" />
+                    Подтвердить
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="reg-username">Логин</Label>
+                    <Input
+                      id="reg-username"
+                      placeholder="ivan_petrov"
+                      value={regUsername}
+                      onChange={(e) => setRegUsername(e.target.value)}
+                      disabled={regLoading}
+                    />
+                  </div>
               
               <div className="space-y-2">
                 <Label htmlFor="reg-email">Email</Label>
@@ -322,27 +517,127 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
                 />
               </div>
               
-              <Button 
-                onClick={handleRegister}
-                disabled={regLoading}
-                className="w-full"
-              >
-                {regLoading ? (
-                  <>
-                    <Icon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
-                    Регистрация...
-                  </>
-                ) : (
-                  <>
-                    <Icon name="UserPlus" className="w-4 h-4 mr-2" />
-                    Зарегистрироваться
-                  </>
-                )}
-              </Button>
-              
-              <p className="text-xs text-gray-500 text-center">
-                После регистрации проверьте почту для подтверждения аккаунта
-              </p>
+                  <Button 
+                    onClick={handleRegister}
+                    disabled={regLoading}
+                    className="w-full"
+                  >
+                    {regLoading ? (
+                      <>
+                        <Icon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                        Регистрация...
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="UserPlus" className="w-4 h-4 mr-2" />
+                        Зарегистрироваться
+                      </>
+                    )}
+                  </Button>
+                </>
+              )}
+            </TabsContent>
+
+            <TabsContent value="forgot" className="space-y-4">
+              {showResetForm ? (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="reset-code">Код из письма</Label>
+                    <Input
+                      id="reset-code"
+                      type="text"
+                      placeholder="123456"
+                      maxLength={6}
+                      value={resetCode}
+                      onChange={(e) => setResetCode(e.target.value.replace(/\D/g, ''))}
+                      disabled={resetLoading}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">Новый пароль</Label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      placeholder="Минимум 8 символов"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      disabled={resetLoading}
+                    />
+                  </div>
+
+                  <Button 
+                    onClick={handleResetPassword}
+                    disabled={resetLoading}
+                    className="w-full"
+                  >
+                    {resetLoading ? (
+                      <>
+                        <Icon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                        Сброс...
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="Key" className="w-4 h-4 mr-2" />
+                        Сменить пароль
+                      </>
+                    )}
+                  </Button>
+
+                  <Button 
+                    onClick={() => {
+                      setShowResetForm(false);
+                      setForgotEmail('');
+                      setResetCode('');
+                      setNewPassword('');
+                    }}
+                    variant="ghost"
+                    className="w-full text-xs text-gray-400"
+                  >
+                    Назад
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="forgot-email">Email</Label>
+                    <Input
+                      id="forgot-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      disabled={resetLoading}
+                    />
+                  </div>
+
+                  <Button 
+                    onClick={handleForgotPassword}
+                    disabled={resetLoading}
+                    className="w-full"
+                  >
+                    {resetLoading ? (
+                      <>
+                        <Icon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
+                        Отправка...
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="Mail" className="w-4 h-4 mr-2" />
+                        Отправить код
+                      </>
+                    )}
+                  </Button>
+
+                  <Button 
+                    onClick={() => setActiveTab('login')}
+                    variant="ghost"
+                    className="w-full text-xs text-gray-400"
+                  >
+                    Вернуться ко входу
+                  </Button>
+                </>
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>

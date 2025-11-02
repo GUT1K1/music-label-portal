@@ -43,11 +43,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         return verify_2fa(event)
     elif action == 'verify-email':
         return verify_email(event)
+    elif action == 'verify-code':
+        return verify_code(event)
+    elif action == 'forgot-password':
+        return forgot_password(event)
+    elif action == 'reset-password':
+        return reset_password(event)
     else:
         return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Invalid action. Use: register, login, verify-2fa, verify-email'})
+            'body': json.dumps({'error': 'Invalid action'})
         }
 
 
@@ -86,16 +92,16 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     print('🚀 Начало регистрации пользователя')
     body_data = json.loads(event.get('body', '{}'))
     
+    username = body_data.get('username', '').strip()
     email = body_data.get('email', '').strip().lower()
     password = body_data.get('password', '')
-    full_name = body_data.get('full_name', '').strip()
-    print(f'📝 Email: {email}, Name: {full_name}')
+    print(f'📝 Username: {username}, Email: {email}')
     
-    if not email or not password or not full_name:
+    if not username or not email or not password:
         return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Email, password and full name are required'})
+            'body': json.dumps({'error': 'Username, email and password are required'})
         }
     
     if len(password) < 8:
@@ -106,15 +112,15 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
         }
     
     password_hash = hashlib.sha256(password.encode()).hexdigest()
-    verification_token = secrets.token_urlsafe(32)
-    token_expires = datetime.now() + timedelta(hours=24)
+    verification_code = ''.join([str(secrets.randbelow(10)) for _ in range(6)])
+    code_expires = datetime.now() + timedelta(minutes=10)
     
     database_url = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(database_url)
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     cur.execute(
-        "SELECT id FROM t_p35759334_music_label_portal.users WHERE email = '" + email.replace("'", "''") + "'"
+        "SELECT id FROM t_p35759334_music_label_portal.users WHERE email = '" + email.replace("'", "''") + "' OR username = '" + username.replace("'", "''") + "'"
     )
     
     if cur.fetchone():
@@ -123,10 +129,8 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Email already registered'})
+            'body': json.dumps({'error': 'Username or email already registered'})
         }
-    
-    username = email.split('@')[0]
     
     cur.execute(
         """
@@ -137,10 +141,10 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
         """.format(
             email.replace("'", "''"),
             password_hash,
-            verification_token,
-            token_expires.isoformat(),
+            verification_code,
+            code_expires.isoformat(),
             username.replace("'", "''"),
-            full_name.replace("'", "''")
+            username.replace("'", "''")
         )
     )
     
@@ -149,8 +153,6 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     conn.commit()
     cur.close()
     conn.close()
-    
-    verification_url = f"https://420.рф/verify?token={verification_token}"
     
     html_content = f"""
     <!DOCTYPE html>
@@ -165,9 +167,9 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
                      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }}
             h1 {{ color: #ff8c00; text-align: center; }}
             p {{ line-height: 1.6; font-size: 16px; }}
-            .button {{ display: inline-block; background: linear-gradient(to right, #ff8c00, #ffa500); 
-                      color: #000; padding: 15px 40px; text-decoration: none; border-radius: 10px; 
-                      font-weight: bold; margin: 20px 0; }}
+            .code {{ display: inline-block; background: #ff8c00; color: #000; padding: 20px 40px; 
+                    font-size: 32px; font-weight: bold; letter-spacing: 8px; border-radius: 10px; 
+                    margin: 20px 0; font-family: monospace; }}
             .footer {{ text-align: center; color: #888; font-size: 12px; margin-top: 30px; }}
         </style>
     </head>
@@ -175,13 +177,12 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
         <div class="container">
             <div class="logo">420</div>
             <h1>Добро пожаловать в 420 Music!</h1>
-            <p>Спасибо за регистрацию, {full_name}! Для активации аккаунта нажмите на кнопку ниже:</p>
+            <p>Спасибо за регистрацию, {username}! Ваш код подтверждения:</p>
             <p style="text-align: center;">
-                <a href="{verification_url}" class="button">Подтвердить email</a>
+                <span class="code">{verification_code}</span>
             </p>
-            <p>Или скопируйте ссылку в браузер:</p>
-            <p style="word-break: break-all; color: #ff8c00;">{verification_url}</p>
-            <p>Ссылка действительна 24 часа.</p>
+            <p>Введите этот код на сайте для активации аккаунта.</p>
+            <p>Код действителен 10 минут.</p>
             <div class="footer">
                 <p>2025 © 420 Music Label</p>
             </div>
@@ -190,7 +191,7 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     </html>
     """
     
-    email_sent = send_email(email, 'Подтверждение регистрации в 420 Music', html_content)
+    email_sent = send_email(email, 'Код подтверждения 420 Music', html_content)
     
     if email_sent:
         print(f'✅ Регистрация успешна для {email}')
@@ -201,23 +202,9 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
         'body': json.dumps({
-            'message': 'Registration successful. Check your email for verification link.',
+            'message': 'Registration successful. Check your email for verification code.',
             'user_id': user_id,
             'email_sent': email_sent
-        })
-    }
-    
-    return {
-        'statusCode': 200,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        },
-        'isBase64Encoded': False,
-        'body': json.dumps({
-            'success': True,
-            'user_id': user_id,
-            'message': 'Registration successful. Please check your email to verify your account.'
         })
     }
 
@@ -539,5 +526,267 @@ def verify_email(event: Dict[str, Any]) -> Dict[str, Any]:
                 'email': user['email'],
                 'username': user['username']
             }
+        })
+    }
+
+
+def verify_code(event: Dict[str, Any]) -> Dict[str, Any]:
+    body_data = json.loads(event.get('body', '{}'))
+    
+    email = body_data.get('email', '').strip().lower()
+    code = body_data.get('code', '').strip()
+    
+    if not email or not code:
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Email and code are required'})
+        }
+    
+    database_url = os.environ.get('DATABASE_URL')
+    conn = psycopg2.connect(database_url)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    cur.execute(
+        """
+        SELECT id, username, email, verification_token, verification_token_expires, email_verified
+        FROM t_p35759334_music_label_portal.users
+        WHERE email = '{}'
+        """.format(email.replace("'", "''"))
+    )
+    user = cur.fetchone()
+    
+    if not user:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 404,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'User not found'})
+        }
+    
+    if user['email_verified']:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Email already verified'})
+        }
+    
+    if user['verification_token'] != code:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Invalid verification code'})
+        }
+    
+    if datetime.fromisoformat(user['verification_token_expires']) < datetime.now():
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Verification code expired'})
+        }
+    
+    cur.execute(
+        """
+        UPDATE t_p35759334_music_label_portal.users
+        SET email_verified = TRUE, verification_token = NULL, verification_token_expires = NULL
+        WHERE id = {}
+        """.format(user['id'])
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({
+            'success': True,
+            'message': 'Email verified successfully!'
+        })
+    }
+
+
+def forgot_password(event: Dict[str, Any]) -> Dict[str, Any]:
+    body_data = json.loads(event.get('body', '{}'))
+    
+    email = body_data.get('email', '').strip().lower()
+    
+    if not email:
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Email is required'})
+        }
+    
+    database_url = os.environ.get('DATABASE_URL')
+    conn = psycopg2.connect(database_url)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    cur.execute(
+        "SELECT id, username, email FROM t_p35759334_music_label_portal.users WHERE email = '" + email.replace("'", "''") + "'"
+    )
+    user = cur.fetchone()
+    
+    if not user:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 404,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'User with this email not found'})
+        }
+    
+    reset_code = ''.join([str(secrets.randbelow(10)) for _ in range(6)])
+    code_expires = datetime.now() + timedelta(minutes=10)
+    
+    cur.execute(
+        """
+        UPDATE t_p35759334_music_label_portal.users
+        SET verification_token = '{}', verification_token_expires = '{}'
+        WHERE id = {}
+        """.format(reset_code, code_expires.isoformat(), user['id'])
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; background: #000; color: #fff; padding: 20px; }}
+            .container {{ max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%); 
+                         border: 2px solid #ff8c00; border-radius: 20px; padding: 40px; }}
+            .logo {{ text-align: center; font-size: 48px; font-weight: bold; 
+                     background: linear-gradient(to bottom, #ffd700, #ff8c00); 
+                     -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }}
+            h1 {{ color: #ff8c00; text-align: center; }}
+            p {{ line-height: 1.6; font-size: 16px; }}
+            .code {{ display: inline-block; background: #ff8c00; color: #000; padding: 20px 40px; 
+                    font-size: 32px; font-weight: bold; letter-spacing: 8px; border-radius: 10px; 
+                    margin: 20px 0; font-family: monospace; }}
+            .footer {{ text-align: center; color: #888; font-size: 12px; margin-top: 30px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo">420</div>
+            <h1>Восстановление пароля</h1>
+            <p>Здравствуйте, {user['username']}! Ваш код для сброса пароля:</p>
+            <p style="text-align: center;">
+                <span class="code">{reset_code}</span>
+            </p>
+            <p>Введите этот код на сайте для создания нового пароля.</p>
+            <p>Код действителен 10 минут.</p>
+            <p>Если вы не запрашивали сброс пароля, просто проигнорируйте это письмо.</p>
+            <div class="footer">
+                <p>2025 © 420 Music Label</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    email_sent = send_email(email, 'Восстановление пароля - 420 Music', html_content)
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({
+            'success': True,
+            'message': 'Password reset code sent to your email',
+            'email_sent': email_sent
+        })
+    }
+
+
+def reset_password(event: Dict[str, Any]) -> Dict[str, Any]:
+    body_data = json.loads(event.get('body', '{}'))
+    
+    email = body_data.get('email', '').strip().lower()
+    code = body_data.get('code', '').strip()
+    new_password = body_data.get('new_password', '')
+    
+    if not email or not code or not new_password:
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Email, code and new password are required'})
+        }
+    
+    if len(new_password) < 8:
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Password must be at least 8 characters'})
+        }
+    
+    database_url = os.environ.get('DATABASE_URL')
+    conn = psycopg2.connect(database_url)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    
+    cur.execute(
+        """
+        SELECT id, verification_token, verification_token_expires
+        FROM t_p35759334_music_label_portal.users
+        WHERE email = '{}'
+        """.format(email.replace("'", "''"))
+    )
+    user = cur.fetchone()
+    
+    if not user:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 404,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'User not found'})
+        }
+    
+    if user['verification_token'] != code:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Invalid reset code'})
+        }
+    
+    if datetime.fromisoformat(user['verification_token_expires']) < datetime.now():
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 400,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Reset code expired'})
+        }
+    
+    new_password_hash = hashlib.sha256(new_password.encode()).hexdigest()
+    
+    cur.execute(
+        """
+        UPDATE t_p35759334_music_label_portal.users
+        SET password_hash = '{}', verification_token = NULL, verification_token_expires = NULL
+        WHERE id = {}
+        """.format(new_password_hash, user['id'])
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({
+            'success': True,
+            'message': 'Password reset successfully! You can now log in with your new password.'
         })
     }
