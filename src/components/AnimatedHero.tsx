@@ -11,10 +11,10 @@ export default function AnimatedHero() {
           </span>
         </div>
         
-        <div className="block mb-4" style={{ paddingTop: '0.75rem', paddingBottom: '0.75rem' }}>
+        <div className="block mb-4" style={{ paddingTop: '1rem', paddingBottom: '2rem' }}>
           <span 
             className="inline-block bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl" 
-            style={{ animationDelay: '0.3s', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}
+            style={{ animationDelay: '0.3s', paddingTop: '0.5rem', paddingBottom: '1.5rem' }}
           >
             музыку
           </span>
