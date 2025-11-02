@@ -4,7 +4,7 @@ export default function AnimatedHero() {
       <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[1.5] text-center tracking-tight">
         <div className="block mb-2">
           <span 
-            className="inline-block bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl"
+            className="inline-block bg-gradient-to-r from-yellow-300 via-amber-400 via-orange-500 via-yellow-400 to-amber-300 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl"
             style={{ paddingBottom: '1.5rem' }}
           >
             Выпускай
@@ -13,7 +13,7 @@ export default function AnimatedHero() {
         
         <div className="block mb-2">
           <span 
-            className="inline-block bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl" 
+            className="inline-block bg-gradient-to-r from-amber-300 via-yellow-400 via-orange-500 via-amber-400 to-yellow-300 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl" 
             style={{ animationDelay: '0.3s', paddingBottom: '1.5rem' }}
           >
             музыку
@@ -22,7 +22,7 @@ export default function AnimatedHero() {
         
         <div className="block relative mb-16">
           <span 
-            className="inline-block bg-gradient-to-r from-yellow-500 via-orange-400 to-yellow-500 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl" 
+            className="inline-block bg-gradient-to-r from-yellow-400 via-amber-500 via-orange-400 via-yellow-500 to-amber-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl" 
             style={{ animationDelay: '0.6s', paddingBottom: '1.5rem' }}
           >
             на всех площадках
