@@ -150,7 +150,7 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     cur.close()
     conn.close()
     
-    verification_url = f"https://420music.ru/verify?token={verification_token}"
+    verification_url = f"https://420.рф/verify?token={verification_token}"
     
     html_content = f"""
     <!DOCTYPE html>
