@@ -314,20 +314,41 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
 
   return (
     <div className="space-y-6 p-6">
-      <Card className="p-8 bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-white/20">
-        <h2 className="text-2xl font-bold mb-4 text-center">Отчетность</h2>
-        <div className="grid grid-cols-4 gap-4 max-w-2xl mx-auto">
-          {[
-            { label: 'Дней', value: countdown.days },
-            { label: 'Часов', value: countdown.hours },
-            { label: 'Минут', value: countdown.minutes },
-            { label: 'Секунд', value: countdown.seconds }
-          ].map((item) => (
-            <div key={item.label} className="text-center">
-              <div className="text-4xl font-bold text-white mb-2">{item.value}</div>
-              <div className="text-sm text-white/70">{item.label}</div>
+      <Card className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 border-primary/30 backdrop-blur-sm overflow-hidden relative">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="relative px-6 py-4">
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-primary/20 rounded-lg border border-primary/30">
+                <Icon name="Clock" className="text-primary" size={20} />
+              </div>
+              <div>
+                <h2 className="text-sm font-medium text-muted-foreground">До следующего отчета</h2>
+              </div>
             </div>
-          ))}
+            
+            <div className="flex items-center gap-3">
+              <div className="text-center min-w-[60px]">
+                <div className="text-3xl font-bold text-primary leading-none">{countdown.days}</div>
+                <div className="text-xs text-muted-foreground mt-1">дней</div>
+              </div>
+              <div className="text-2xl text-primary/30 font-light">:</div>
+              <div className="text-center min-w-[50px]">
+                <div className="text-3xl font-bold text-primary leading-none">{countdown.hours}</div>
+                <div className="text-xs text-muted-foreground mt-1">часов</div>
+              </div>
+              <div className="text-2xl text-primary/30 font-light">:</div>
+              <div className="text-center min-w-[50px]">
+                <div className="text-3xl font-bold text-primary leading-none">{countdown.minutes}</div>
+                <div className="text-xs text-muted-foreground mt-1">минут</div>
+              </div>
+              <div className="text-2xl text-primary/30 font-light">:</div>
+              <div className="text-center min-w-[50px]">
+                <div className="text-3xl font-bold text-secondary leading-none animate-pulse">{countdown.seconds}</div>
+                <div className="text-xs text-muted-foreground mt-1">секунд</div>
+              </div>
+            </div>
+          </div>
         </div>
       </Card>
 
