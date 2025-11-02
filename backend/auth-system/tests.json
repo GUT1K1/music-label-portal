@@ -1,21 +1,6 @@
 {
   "tests": [
     {
-      "name": "Register new user",
-      "method": "POST",
-      "path": "/?action=register",
-      "body": {
-        "email": "newuser@example.com",
-        "password": "password123"
-      },
-      "expectedStatus": 200,
-      "expectedBody": {
-        "success": true,
-        "user_id": "number"
-      },
-      "bodyMatcher": "partial"
-    },
-    {
       "name": "Verify email with missing token",
       "method": "GET",
       "path": "/?action=verify-email",

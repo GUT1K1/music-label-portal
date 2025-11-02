@@ -6,8 +6,7 @@ from typing import Dict, Any
 from datetime import datetime, timedelta
 import psycopg2
 from psycopg2.extras import RealDictCursor
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Email, To, Content
+import requests
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -51,18 +50,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
 
 def send_email(to: str, subject: str, html_content: str) -> bool:
-    sendgrid_api_key = os.environ.get('SENDGRID_API_KEY')
-    if not sendgrid_api_key:
+    resend_api_key = os.environ.get('RESEND_API_KEY')
+    if not resend_api_key:
         return False
     
-    from_email = Email('noreply@420music.ru', '420 Music Label')
-    to_email_obj = To(to)
-    content = Content('text/html', html_content)
-    mail = Mail(from_email, to_email_obj, subject, content)
+    url = 'https://api.resend.com/emails'
+    headers = {
+        'Authorization': f'Bearer {resend_api_key}',
+        'Content-Type': 'application/json'
+    }
     
-    sg = SendGridAPIClient(sendgrid_api_key)
-    sg.send(mail)
-    return True
+    payload = {
+        'from': 'onboarding@resend.dev',
+        'to': [to],
+        'subject': subject,
+        'html': html_content
+    }
+    
+    response = requests.post(url, json=payload, headers=headers)
+    return response.status_code == 200
 
 
 def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
