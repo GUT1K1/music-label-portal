@@ -51,7 +51,8 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          email: loginEmail, 
+          email: loginEmail,
+          username: loginEmail,
           password: loginPassword 
         })
       });
