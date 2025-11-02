@@ -1,0 +1,15 @@
+{
+  "tests": [
+    {
+      "name": "GET user by ID",
+      "method": "GET",
+      "path": "/?id=3",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "id": "number",
+        "username": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
