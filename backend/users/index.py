@@ -212,11 +212,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             try:
                 requested_user_id = int(user_id_param)
                 if requested_user_id == current_user_id:
-                    query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
+                    query = f'''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                                       telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                                       vk_photo, vk_email, avatar 
-                               FROM t_p35759334_music_label_portal.users WHERE id = %s'''
-                    cur.execute(query, (requested_user_id,))
+                               FROM t_p35759334_music_label_portal.users WHERE id = {requested_user_id}'''
+                    cur.execute(query)
                     user = cur.fetchone()
                     
                     cur.close()
@@ -253,15 +253,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                           telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                           vk_photo, vk_email, avatar 
                    FROM t_p35759334_music_label_portal.users WHERE 1=1'''
-        params = []
         
         if role_filter and role_filter != 'all':
-            query += ' AND role = %s'
-            params.append(role_filter)
+            safe_role = role_filter.replace("'", "''")
+            query += f" AND role = '{safe_role}'"
         
         query += ' ORDER BY created_at DESC'
         
-        cur.execute(query, params)
+        cur.execute(query)
         users = cur.fetchall()
         
         cur.close()
