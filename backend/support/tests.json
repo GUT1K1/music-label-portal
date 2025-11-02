@@ -1,0 +1,38 @@
+{
+  "tests": [
+    {
+      "name": "Get support threads list",
+      "method": "GET",
+      "path": "/",
+      "headers": {
+        "X-User-Id": "1"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "threads": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Create new support thread",
+      "method": "POST",
+      "path": "/",
+      "headers": {
+        "X-User-Id": "1",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "action": "create_thread",
+        "subject": "Test question",
+        "message": "Test message",
+        "priority": "normal"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "thread_id": "number"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

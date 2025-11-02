@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import ReleaseManager from '@/components/ReleaseManager';
-import CreateTicketForm from '@/components/CreateTicketForm';
-import MyTickets from '@/components/MyTickets';
+import SupportChat from '@/components/SupportChat';
 import AppHeader from '@/components/AppHeader';
 import UserProfile from '@/components/UserProfile';
 import NewsView from '@/components/NewsView';
@@ -105,8 +104,7 @@ export default function ArtistView({
               </TabsTrigger>
               <TabsTrigger value="support" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
                 <Icon name="MessageSquare" className="w-3.5 h-3.5 md:w-5 md:h-5 text-blue-500 shrink-0" />
-                <span className="truncate">Заявки</span>
-                <Badge count={unreadCounts.tickets} />
+                <span className="truncate">Поддержка</span>
               </TabsTrigger>
               <TabsTrigger value="reports" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
                 <Icon name="FileText" className="w-3.5 h-3.5 md:w-5 md:h-5 text-orange-500 shrink-0" />
@@ -124,40 +122,7 @@ export default function ArtistView({
           </TabsContent>
 
           <TabsContent value="support" className="mt-2 md:mt-6 px-2 md:px-0">
-            <Tabs defaultValue="create" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-0.5 md:p-1">
-                <TabsTrigger value="create" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 hover:scale-105 gap-1 md:gap-2">
-                  <Icon name="Edit" className="w-3.5 h-3.5 md:w-5 md:h-5 text-green-500 shrink-0" />
-                  <span className="truncate">Создать</span>
-                </TabsTrigger>
-                <TabsTrigger value="my-tickets" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 hover:scale-105 gap-1 md:gap-2">
-                  <Icon name="List" className="w-3.5 h-3.5 md:w-5 md:h-5 text-yellow-500 shrink-0" />
-                  <span className="truncate">Мои тикеты</span>
-                  <Badge count={unreadCounts.tickets} />
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="create" className="mt-3 md:mt-4">
-                <CreateTicketForm
-                  newTicket={newTicket}
-                  onTicketChange={onTicketChange}
-                  onCreateTicket={onCreateTicket}
-                  selectedFile={selectedTicketFile}
-                  onFileChange={onFileChange}
-                  uploading={uploadingTicket}
-                />
-              </TabsContent>
-
-              <TabsContent value="my-tickets" className="mt-3 md:mt-4">
-                <MyTickets
-                  user={user}
-                  tickets={tickets}
-                  statusFilter={statusFilter}
-                  onStatusFilterChange={onStatusFilterChange}
-                  onLoadTickets={onLoadTickets}
-                />
-              </TabsContent>
-            </Tabs>
+            <SupportChat userId={user.id} userRole="artist" />
           </TabsContent>
 
           <TabsContent value="reports" className="mt-2 md:mt-6 px-2 md:px-0">

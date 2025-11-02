@@ -1,9 +1,9 @@
 {
+  "support": "https://functions.poehali.dev/03b127de-537a-446c-af8d-01caba70e2e9",
   "auth-system": "https://functions.poehali.dev/eb22fe48-55fa-4497-9269-caf203d14d12",
   "jobs": "https://functions.poehali.dev/57ba52aa-ffc4-4822-b9ee-d1847947bc41",
   "news": "https://functions.poehali.dev/02b8e089-cfba-4460-9cad-479b3d0c5c80",
   "upload-direct": "https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9",
-  "ticket-comments": "https://functions.poehali.dev/b636dc56-7328-4fb7-933d-5d6d32e9ee96",
   "change-password": "https://functions.poehali.dev/fc19a64b-eb76-4cdf-bf49-f7ed121edba7",
   "migrate-db": "https://functions.poehali.dev/05c06730-31f5-43a6-a240-50721bb848c6",
   "vk-posts": "https://functions.poehali.dev/2a44eeac-eb38-454b-a031-3713ae83a3d2",
@@ -16,12 +16,10 @@
   "unread-counts": "https://functions.poehali.dev/87d13cda-05ed-4e45-9232-344fe2c026d7",
   "tasks": "https://functions.poehali.dev/13e06494-4f4d-4854-b126-bbc191bf0890",
   "messages": "https://functions.poehali.dev/7bcbbe5a-cae2-4cbe-94c1-ca6a0152ce3a",
-  "ticket-analytics": "https://functions.poehali.dev/831a484a-c7b9-4607-b683-19d813dc77e5",
   "submissions": "https://functions.poehali.dev/40a44285-32b8-4e3e-8f8f-b77f16293727",
   "upload-reports": "https://functions.poehali.dev/be12d7b5-90f6-4a13-992e-204cd8f0a264",
   "deadline-reminder": "https://functions.poehali.dev/7b917e9b-349b-4e00-91f6-933aaff43d85",
   "telegram-bot": "https://functions.poehali.dev/ae7c32d8-5b08-4870-9606-e750de3c31a9",
   "users": "https://functions.poehali.dev/cf5d45c1-d64b-4400-af77-a51c7588d942",
-  "tickets": "https://functions.poehali.dev/cdcd7646-5a98-477f-8464-d1aa48319296",
   "auth": "https://functions.poehali.dev/d2601eec-1d55-4956-b655-187431987ed9"
 }
