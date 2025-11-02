@@ -111,21 +111,21 @@ const TicketManagement = React.memo(function TicketManagement({
       />
     <div className="space-y-4 md:space-y-6 p-3 md:p-6">
       <Tabs defaultValue="open" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
-          <TabsTrigger value="open" className="flex items-center justify-center gap-2 text-xs md:text-sm">
+        <TabsList className="grid w-full grid-cols-3 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1 h-12">
+          <TabsTrigger value="open" className="flex !flex-row items-center justify-center gap-2 text-xs md:text-sm h-full">
             <Icon name="Inbox" className="w-4 h-4 text-blue-500 shrink-0" />
-            <span>Открыто</span>
-            <span className="text-xs">({openTickets.length})</span>
+            <span className="whitespace-nowrap">Открыто</span>
+            <span className="text-xs whitespace-nowrap">({openTickets.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="in_progress" className="flex items-center justify-center gap-2 text-xs md:text-sm">
+          <TabsTrigger value="in_progress" className="flex !flex-row items-center justify-center gap-2 text-xs md:text-sm h-full">
             <Icon name="Loader" className="w-4 h-4 text-yellow-500 animate-spin-slow shrink-0" />
-            <span>В работе</span>
-            <span className="text-xs">({inProgressTickets.length})</span>
+            <span className="whitespace-nowrap">В работе</span>
+            <span className="text-xs whitespace-nowrap">({inProgressTickets.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="closed" className="flex items-center justify-center gap-2 text-xs md:text-sm">
+          <TabsTrigger value="closed" className="flex !flex-row items-center justify-center gap-2 text-xs md:text-sm h-full">
             <Icon name="CheckCircle" className="w-4 h-4 text-green-500 shrink-0" />
-            <span>Решённые</span>
-            <span className="text-xs">({closedTickets.length})</span>
+            <span className="whitespace-nowrap">Решённые</span>
+            <span className="text-xs whitespace-nowrap">({closedTickets.length})</span>
           </TabsTrigger>
         </TabsList>
 
