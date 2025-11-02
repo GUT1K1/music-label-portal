@@ -95,8 +95,20 @@ export default function ManagerTasks({ userId }: ManagerTasksProps) {
 
   useEffect(() => {
     loadTasks();
-    const interval = setInterval(loadTasks, 30000);
-    return () => clearInterval(interval);
+    
+    const interval = setInterval(loadTasks, 120000);
+    
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        loadTasks();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [userId]);
 
   const getPriorityColor = (priority: string) => {

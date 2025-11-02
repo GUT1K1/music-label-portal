@@ -56,11 +56,26 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(false);
   const prevCountsRef = useRef<UnreadCounts>(unreadCounts);
   const lastFetchRef = useRef<number>(0);
+  const cacheRef = useRef<{ data: UnreadCounts | null; timestamp: number }>({ data: null, timestamp: 0 });
   const DEBOUNCE_TIME = 5000;
+  const CACHE_TIME = 30000;
+  const POLLING_INTERVAL = 120000;
 
-  const fetchUnreadCounts = useCallback(async () => {
+  const fetchUnreadCounts = useCallback(async (force = false) => {
     const now = Date.now();
-    if (now - lastFetchRef.current < DEBOUNCE_TIME) {
+    
+    if (!force) {
+      if (now - lastFetchRef.current < DEBOUNCE_TIME) {
+        return;
+      }
+      
+      if (cacheRef.current.data && now - cacheRef.current.timestamp < CACHE_TIME) {
+        setUnreadCounts(cacheRef.current.data);
+        return;
+      }
+    }
+    
+    if (document.hidden) {
       return;
     }
     
@@ -117,6 +132,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
         prevCountsRef.current = newCounts;
         setUnreadCounts(newCounts);
+        cacheRef.current = { data: newCounts, timestamp: now };
       }
     } catch (error) {
       // Silently fail
@@ -127,11 +143,21 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     requestNotificationPermission();
-    fetchUnreadCounts();
+    fetchUnreadCounts(true);
     
-    const interval = setInterval(fetchUnreadCounts, 30000);
+    const interval = setInterval(() => fetchUnreadCounts(), POLLING_INTERVAL);
     
-    return () => clearInterval(interval);
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchUnreadCounts();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [fetchUnreadCounts]);
 
   const value: NotificationContextValue = {

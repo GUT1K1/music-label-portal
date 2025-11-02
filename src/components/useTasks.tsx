@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 import { createNotification } from '@/hooks/useNotifications';
+import { API_ENDPOINTS } from '@/config/api';
 
-const API_URL = 'https://functions.poehali.dev';
+const API_URL = API_ENDPOINTS.TASKS;
 
 export interface Task {
   id: number;
@@ -50,8 +51,8 @@ export const useTasks = (user: any, ticketId?: number) => {
     setLoading(true);
     try {
       let url = ticketId 
-        ? `${API_URL}/13e06494-4f4d-4854-b126-bbc191bf0890?ticket_id=${ticketId}`
-        : `${API_URL}/13e06494-4f4d-4854-b126-bbc191bf0890`;
+        ? `${API_URL}?ticket_id=${ticketId}`
+        : API_URL;
       
       if (showDeleted) {
         url += ticketId ? '&show_deleted=true' : '?show_deleted=true';
@@ -91,7 +92,7 @@ export const useTasks = (user: any, ticketId?: number) => {
       
 
 
-      const response = await fetch(`${API_URL}/13e06494-4f4d-4854-b126-bbc191bf0890`, {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -164,7 +165,7 @@ export const useTasks = (user: any, ticketId?: number) => {
           reader.readAsDataURL(completionFile);
         });
 
-        const uploadResponse = await fetch(`${API_URL}/08bf9d4e-6ddc-4b6b-91a0-84187cbd89fa`, {
+        const uploadResponse = await fetch(API_ENDPOINTS.UPLOAD_DIRECT, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -185,7 +186,7 @@ export const useTasks = (user: any, ticketId?: number) => {
         completionAttachmentSize = completionFile.size;
       }
 
-      const response = await fetch(`${API_URL}/13e06494-4f4d-4854-b126-bbc191bf0890`, {
+      const response = await fetch(API_URL, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

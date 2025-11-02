@@ -31,11 +31,10 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
   const { toast } = useToast();
 
   useEffect(() => {
-    loadNotifications();
-    // Увеличил интервал до 60 секунд для снижения нагрузки
-    const interval = setInterval(loadNotifications, 60000);
-    return () => clearInterval(interval);
-  }, [userId]);
+    if (isOpen) {
+      loadNotifications();
+    }
+  }, [userId, isOpen]);
 
   const loadNotifications = async () => {
     try {
