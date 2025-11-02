@@ -11,15 +11,37 @@ export default function LandingPage() {
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    let rafId: number;
+    let lastScrollY = 0;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    
+    const handleScroll = () => {
+      lastScrollY = window.scrollY;
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          setScrollY(lastScrollY);
+          rafId = 0;
+        });
+      }
+    };
+    
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          setMousePosition({ x: lastMouseX, y: lastMouseY });
+          rafId = 0;
+        });
+      }
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handleMouseMove);
     };

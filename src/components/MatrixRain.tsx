@@ -20,18 +20,26 @@ export default function MatrixRain({ onComplete, duration = 3500 }: MatrixRainPr
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d', { alpha: true });
+    const ctx = canvas.getContext('2d', { 
+      alpha: true,
+      desynchronized: true,
+      willReadFrequently: false
+    });
     if (!ctx) return;
 
     const setCanvasSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.scale(dpr, dpr);
     };
     setCanvasSize();
 
     const chars = ['4', '2', '0'];
     const fontSize = 24;
-    const columnCount = Math.floor(canvas.width / fontSize);
+    const columnCount = Math.min(Math.floor(window.innerWidth / fontSize), 100);
     const columns: Column[] = [];
 
     for (let i = 0; i < columnCount; i++) {
@@ -55,14 +63,14 @@ export default function MatrixRain({ onComplete, duration = 3500 }: MatrixRainPr
       const globalAlpha = fadeOut ? Math.max(0, 1 - (elapsed - (duration - 500)) / 500) : 1;
 
       ctx.fillStyle = 'rgba(13, 13, 13, 0.15)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
       columns.forEach((column) => {
         column.chars.forEach((char, index) => {
           const yPos = column.y + index * fontSize;
           
-          if (yPos > -fontSize && yPos < canvas.height) {
-            const distanceFromTop = yPos / canvas.height;
+          if (yPos > -fontSize && yPos < window.innerHeight) {
+            const distanceFromTop = yPos / window.innerHeight;
             const alpha = column.opacity * (1 - distanceFromTop * 0.3) * globalAlpha;
             
             const isFirst = index === Math.floor(column.chars.length * 0.1);
@@ -87,11 +95,11 @@ export default function MatrixRain({ onComplete, duration = 3500 }: MatrixRainPr
 
         column.y += column.speed;
 
-        if (column.y > canvas.height) {
-          column.y = -canvas.height * Math.random();
+        if (column.y > window.innerHeight) {
+          column.y = -window.innerHeight * Math.random();
           column.speed = 1 + Math.random() * 2;
           column.opacity = 0.2 + Math.random() * 0.4;
-          column.chars = Array(Math.floor(canvas.height / fontSize) + 1)
+          column.chars = Array(Math.floor(window.innerHeight / fontSize) + 1)
             .fill(0)
             .map(() => chars[Math.floor(Math.random() * chars.length)]);
         }
@@ -112,19 +120,19 @@ export default function MatrixRain({ onComplete, duration = 3500 }: MatrixRainPr
       resizeTimeout = window.setTimeout(() => {
         setCanvasSize();
         columns.length = 0;
-        const newColumnCount = Math.floor(canvas.width / fontSize);
+        const newColumnCount = Math.min(Math.floor(window.innerWidth / fontSize), 100);
         for (let i = 0; i < newColumnCount; i++) {
           columns.push({
             x: i * fontSize,
-            y: Math.random() * canvas.height - canvas.height,
+            y: Math.random() * window.innerHeight - window.innerHeight,
             speed: 1 + Math.random() * 2,
             opacity: 0.2 + Math.random() * 0.4,
-            chars: Array(Math.floor(canvas.height / fontSize) + 1)
+            chars: Array(Math.floor(window.innerHeight / fontSize) + 1)
               .fill(0)
               .map(() => chars[Math.floor(Math.random() * chars.length)])
           });
         }
-      }, 100);
+      }, 250);
     };
 
     window.addEventListener('resize', handleResize);
