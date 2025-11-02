@@ -126,7 +126,7 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
             title="Вывод доступен от 1000₽"
           >
             <Icon name="Wallet" size={18} className="text-primary" />
-            <span className="font-semibold text-sm">{balance.toFixed(2)} ₽</span>
+            <span className="font-semibold text-sm">{(balance || 0).toFixed(2)} ₽</span>
           </div>
         )}
         <NotificationBell userId={userId} />
@@ -190,7 +190,7 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
             title="Вывод доступен от 1000₽"
           >
             <Icon name="Wallet" size={14} className="text-primary" />
-            <span className="font-semibold text-xs">{balance.toFixed(2)}</span>
+            <span className="font-semibold text-xs">{(balance || 0).toFixed(2)}</span>
           </div>
         )}
         <NotificationBell userId={userId} />
