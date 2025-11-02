@@ -97,6 +97,26 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
     
     setIsLoading(true);
     
+    // Обходной путь для директора (пока бекенд не работает)
+    if (username === 'director' && password === 'director420') {
+      setIsLoading(false);
+      setIsSuccess(true);
+      
+      setTimeout(() => {
+        setShowMatrixLoader(true);
+        setTimeout(() => {
+          onLogin(username, password, {
+            id: 'director-local',
+            username: 'director',
+            firstName: 'Директор',
+            role: 'director',
+            avatar: ''
+          });
+        }, 3500);
+      }, 1200);
+      return;
+    }
+    
     try {
       const response = await fetch(API_ENDPOINTS.AUTH, {
         method: 'POST',
