@@ -116,6 +116,8 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
     setRegLoading(true);
     
     try {
+      console.log('🚀 Отправка регистрации:', { email: regEmail, full_name: regFullName });
+      
       const response = await fetch(`${AUTH_API}?action=register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -126,9 +128,12 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
         })
       });
 
+      console.log('📡 Статус ответа:', response.status);
       const data = await response.json();
+      console.log('📦 Данные ответа:', data);
 
       if (!response.ok) {
+        console.error('❌ Ошибка:', data.error);
         toast({
           title: "Ошибка регистрации",
           description: data.error || "Не удалось зарегистрироваться",
@@ -138,6 +143,7 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
         return;
       }
 
+      console.log('✅ Регистрация успешна');
       toast({
         title: "Регистрация успешна! 🎉",
         description: "Проверьте почту для подтверждения аккаунта",
@@ -149,6 +155,7 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
       setRegLoading(false);
       setActiveTab('login');
     } catch (error) {
+      console.error('💥 Критическая ошибка:', error);
       setRegLoading(false);
       toast({
         title: "Ошибка сети",
