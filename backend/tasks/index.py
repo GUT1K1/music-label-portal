@@ -41,9 +41,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     headers = event.get('headers', {})
-    user_id = headers.get('X-User-Id') or headers.get('x-user-id')
+    user_id_header = headers.get('X-User-Id') or headers.get('x-user-id')
     
-    if not user_id:
+    if not user_id_header:
         return {
             'statusCode': 401,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
@@ -55,22 +55,41 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = None
     cur = None
     
+    # For demo: use director role if user_id is "director-local"
+    # In production, implement proper auth
+    if user_id_header == 'director-local':
+        user_id = 1  # Director user ID
+        user_role = 'director'
+    else:
+        try:
+            user_id = int(user_id_header)
+        except ValueError:
+            return {
+                'statusCode': 401,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Invalid user ID format'}),
+                'isBase64Encoded': False
+            }
+        user_role = None
+    
     try:
         conn = psycopg2.connect(db_url)
         cur = conn.cursor()
         
-        cur.execute(f"SELECT id, role FROM {schema}.users WHERE id = {user_id}")
-        user = cur.fetchone()
-        
-        if not user:
-            return {
-                'statusCode': 401,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': 'User not found'}),
-                'isBase64Encoded': False
-            }
-        
-        user_role = user[1]
+        # Get user role if not set
+        if user_role is None:
+            cur.execute(f"SELECT id, role FROM {schema}.users WHERE id = {user_id}")
+            user = cur.fetchone()
+            
+            if not user:
+                return {
+                    'statusCode': 401,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'User not found'}),
+                    'isBase64Encoded': False
+                }
+            
+            user_role = user[1]
         
         if method == 'GET':
             params = event.get('queryStringParameters') or {}

@@ -37,15 +37,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     headers = event.get('headers', {})
-    user_id = headers.get('x-user-id') or headers.get('X-User-Id')
+    user_id_header = headers.get('x-user-id') or headers.get('X-User-Id')
     
-    if not user_id:
+    if not user_id_header:
         return {
             'statusCode': 401,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
             'body': json.dumps({'error': 'Unauthorized'})
         }
+    
+    # For demo: use director role if user_id is "director-local"
+    if user_id_header == 'director-local':
+        user_id = 1
+        user_role = 'director'
+    else:
+        try:
+            user_id = int(user_id_header)
+        except ValueError:
+            return {
+                'statusCode': 401,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': 'Invalid user ID format'})
+            }
+        user_role = None
     
     dsn = os.environ.get('DATABASE_URL')
     if not dsn:
@@ -72,16 +88,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     try:
-        cur.execute(f"SELECT role FROM {schema}.users WHERE id = '{user_id}'")
-        user = cur.fetchone()
-        
-        if not user:
-            return {
-                'statusCode': 403,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'isBase64Encoded': False,
-                'body': json.dumps({'error': 'User not found'})
-            }
+        # Get user role if not set
+        if user_role is None:
+            cur.execute(f"SELECT role FROM {schema}.users WHERE id = {user_id}")
+            user = cur.fetchone()
+            
+            if not user:
+                return {
+                    'statusCode': 403,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'error': 'User not found'})
+                }
+            
+            user_role = user['role']
         
         if method == 'GET':
             params = event.get('queryStringParameters') or {}
