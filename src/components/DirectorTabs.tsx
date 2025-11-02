@@ -232,93 +232,93 @@ export default function DirectorTabs({
       </TabsContent>
 
       <TabsContent value="reports" className="animate-fadeIn">
-            <Tabs defaultValue="weekly" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
-                <TabsTrigger value="weekly" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                  <Icon name="Calendar" className="w-4 h-4 text-primary" />
-                  Еженедельный отчёт
+        <Tabs defaultValue="weekly" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
+            <TabsTrigger value="weekly" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+              <Icon name="Calendar" className="w-4 h-4 text-primary" />
+              Еженедельный отчёт
+            </TabsTrigger>
+            <TabsTrigger value="upload" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+              <Icon name="Upload" className="w-4 h-4 text-green-500" />
+              Загрузить отчёт
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="weekly" className="animate-fadeIn">
+            <WeeklyReport />
+          </TabsContent>
+          <TabsContent value="upload" className="animate-fadeIn">
+            <ReportsUploader userId={user.id} />
+          </TabsContent>
+        </Tabs>
+      </TabsContent>
+
+      <TabsContent value="settings" className="animate-fadeIn">
+        <Tabs defaultValue="team" className="w-full">
+          <TabsList className="mb-4 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
+            <TabsTrigger value="team" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+              <Icon name="Users" className="w-4 h-4 text-primary" />
+              Команда
+            </TabsTrigger>
+            <TabsTrigger value="reminders" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+              <Icon name="Bell" className="w-4 h-4 text-yellow-500 animate-pulse" />
+              Напоминания
+            </TabsTrigger>
+            <TabsTrigger value="telegram" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+              <Icon name="MessageCircle" className="w-4 h-4 text-blue-500" />
+              Telegram бот
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="team" className="animate-fadeIn">
+            <Tabs defaultValue="users" className="w-full">
+              <TabsList className="mb-4 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
+                <TabsTrigger value="users" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                  <Icon name="UserCircle" className="w-4 h-4 text-green-500" />
+                  Пользователи
                 </TabsTrigger>
-                <TabsTrigger value="upload" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                  <Icon name="Upload" className="w-4 h-4 text-green-500" />
-                  Загрузить отчёт
+                <TabsTrigger value="activity" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                  <Icon name="TrendingUp" className="w-4 h-4 text-blue-500" />
+                  Статистика активности
+                </TabsTrigger>
+                <TabsTrigger value="monitoring" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                  <Icon name="Activity" className="w-4 h-4 text-orange-500 animate-pulse" />
+                  Мониторинг активности
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="weekly" className="animate-fadeIn">
-                <WeeklyReport />
+              
+              <TabsContent value="users" className="animate-fadeIn">
+                <UserManagement
+                  allUsers={allUsers}
+                  newUser={newUser}
+                  onNewUserChange={onNewUserChange}
+                  onCreateUser={onCreateUser}
+                  onUpdateUser={onUpdateUser}
+                  isUserOnline={isUserOnline}
+                  getUserLastSeen={getUserLastSeen}
+                />
               </TabsContent>
-              <TabsContent value="upload" className="animate-fadeIn">
-                <ReportsUploader userId={user.id} />
+              
+              <TabsContent value="activity" className="animate-fadeIn">
+                <UserActivityStats 
+                  users={allUsers}
+                  isUserOnline={isUserOnline}
+                  getUserLastSeen={getUserLastSeen}
+                />
+              </TabsContent>
+              
+              <TabsContent value="monitoring" className="animate-fadeIn">
+                <UserActivityMonitor users={allUsers} />
               </TabsContent>
             </Tabs>
           </TabsContent>
-
-      <TabsContent value="settings" className="animate-fadeIn">
-            <Tabs defaultValue="team" className="w-full">
-              <TabsList className="mb-4 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
-                <TabsTrigger value="team" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                  <Icon name="Users" className="w-4 h-4 text-primary" />
-                  Команда
-                </TabsTrigger>
-                <TabsTrigger value="reminders" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                  <Icon name="Bell" className="w-4 h-4 text-yellow-500 animate-pulse" />
-                  Напоминания
-                </TabsTrigger>
-                <TabsTrigger value="telegram" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                  <Icon name="MessageCircle" className="w-4 h-4 text-blue-500" />
-                  Telegram бот
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="team" className="animate-fadeIn">
-                <Tabs defaultValue="users" className="w-full">
-                  <TabsList className="mb-4 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
-                    <TabsTrigger value="users" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                      <Icon name="UserCircle" className="w-4 h-4 text-green-500" />
-                      Пользователи
-                    </TabsTrigger>
-                    <TabsTrigger value="activity" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                      <Icon name="TrendingUp" className="w-4 h-4 text-blue-500" />
-                      Статистика активности
-                    </TabsTrigger>
-                    <TabsTrigger value="monitoring" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                      <Icon name="Activity" className="w-4 h-4 text-orange-500 animate-pulse" />
-                      Мониторинг активности
-                    </TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="users" className="animate-fadeIn">
-                    <UserManagement
-                      allUsers={allUsers}
-                      newUser={newUser}
-                      onNewUserChange={onNewUserChange}
-                      onCreateUser={onCreateUser}
-                      onUpdateUser={onUpdateUser}
-                      isUserOnline={isUserOnline}
-                      getUserLastSeen={getUserLastSeen}
-                    />
-                  </TabsContent>
-                  
-                  <TabsContent value="activity" className="animate-fadeIn">
-                    <UserActivityStats 
-                      users={allUsers}
-                      isUserOnline={isUserOnline}
-                      getUserLastSeen={getUserLastSeen}
-                    />
-                  </TabsContent>
-                  
-                  <TabsContent value="monitoring" className="animate-fadeIn">
-                    <UserActivityMonitor users={allUsers} />
-                  </TabsContent>
-                </Tabs>
-              </TabsContent>
-              
-              <TabsContent value="reminders" className="animate-fadeIn">
-                <ReminderSetup />
-              </TabsContent>
-              
-              <TabsContent value="telegram" className="animate-fadeIn">
-                <TelegramBotSettings />
-              </TabsContent>
+          
+          <TabsContent value="reminders" className="animate-fadeIn">
+            <ReminderSetup />
+          </TabsContent>
+          
+          <TabsContent value="telegram" className="animate-fadeIn">
+            <TelegramBotSettings />
+          </TabsContent>
         </Tabs>
       </TabsContent>
     </Tabs>

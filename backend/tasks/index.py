@@ -51,6 +51,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'isBase64Encoded': False
         }
     
+    schema = 't_p35759334_music_label_portal'
     conn = None
     cur = None
     
@@ -58,7 +59,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn = psycopg2.connect(db_url)
         cur = conn.cursor()
         
-        cur.execute(f"SELECT id, role FROM users WHERE id = {user_id}")
+        cur.execute(f"SELECT id, role FROM {schema}.users WHERE id = {user_id}")
         user = cur.fetchone()
         
         if not user:
@@ -76,7 +77,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             # Analytics endpoint
             if params.get('analytics') == 'true':
-                query = """
+                query = f"""
                     SELECT 
                         COUNT(*) as total,
                         COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
@@ -85,7 +86,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         COUNT(CASE WHEN priority = 'high' THEN 1 END) as high_priority,
                         COUNT(CASE WHEN priority = 'medium' THEN 1 END) as medium_priority,
                         COUNT(CASE WHEN priority = 'low' THEN 1 END) as low_priority
-                    FROM tasks
+                    FROM {schema}.tasks
                 """
                 cur.execute(query)
                 stats = cur.fetchone()
@@ -124,10 +125,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                            tk.title as ticket_title,
                            t.completion_report, t.completion_attachment_url,
                            t.completion_attachment_name, t.completion_attachment_size
-                    FROM tasks t
-                    LEFT JOIN users u1 ON t.created_by = u1.id
-                    LEFT JOIN users u2 ON t.assigned_to = u2.id
-                    LEFT JOIN tickets tk ON t.ticket_id = tk.id
+                    FROM {schema}.tasks t
+                    LEFT JOIN {schema}.users u1 ON t.created_by = u1.id
+                    LEFT JOIN {schema}.users u2 ON t.assigned_to = u2.id
+                    LEFT JOIN {schema}.tickets tk ON t.ticket_id = tk.id
                     WHERE t.ticket_id = {ticket_id} AND t.archived_at IS NULL
                     ORDER BY t.created_at DESC
                 """
@@ -142,10 +143,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                            tk.title as ticket_title,
                            t.completion_report, t.completion_attachment_url,
                            t.completion_attachment_name, t.completion_attachment_size
-                    FROM tasks t
-                    LEFT JOIN users u1 ON t.created_by = u1.id
-                    LEFT JOIN users u2 ON t.assigned_to = u2.id
-                    LEFT JOIN tickets tk ON t.ticket_id = tk.id
+                    FROM {schema}.tasks t
+                    LEFT JOIN {schema}.users u1 ON t.created_by = u1.id
+                    LEFT JOIN {schema}.users u2 ON t.assigned_to = u2.id
+                    LEFT JOIN {schema}.tickets tk ON t.ticket_id = tk.id
                     WHERE t.assigned_to = {user_id} AND t.archived_at IS NULL
                     ORDER BY 
                         CASE WHEN t.status = 'completed' THEN 2 ELSE 1 END,
@@ -162,10 +163,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                            tk.title as ticket_title,
                            t.completion_report, t.completion_attachment_url,
                            t.completion_attachment_name, t.completion_attachment_size
-                    FROM tasks t
-                    LEFT JOIN users u1 ON t.created_by = u1.id
-                    LEFT JOIN users u2 ON t.assigned_to = u2.id
-                    LEFT JOIN tickets tk ON t.ticket_id = tk.id
+                    FROM {schema}.tasks t
+                    LEFT JOIN {schema}.users u1 ON t.created_by = u1.id
+                    LEFT JOIN {schema}.users u2 ON t.assigned_to = u2.id
+                    LEFT JOIN {schema}.tickets tk ON t.ticket_id = tk.id
                     ORDER BY t.created_at DESC
                     LIMIT 100
                 """
@@ -277,7 +278,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             priority_escaped = escape_sql(priority)
             
             query = f"""
-                INSERT INTO tasks (title, description, priority, status, created_by, assigned_to, deadline, ticket_id, created_at)
+                INSERT INTO {schema}.tasks (title, description, priority, status, created_by, assigned_to, deadline, ticket_id, created_at)
                 VALUES ('{title_escaped}', '{desc_escaped}', '{priority_escaped}', '{status_escaped}', {user_id}, {assigned_to}, '{deadline}', {ticket_id_val}, NOW())
                 RETURNING id
             """
@@ -285,7 +286,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             task_id = cur.fetchone()[0]
             
             if ticket_id:
-                cur.execute(f"UPDATE tickets SET status = 'in_progress' WHERE id = {ticket_id} AND status = 'open'")
+                cur.execute(f"UPDATE {schema}.tickets SET status = 'in_progress' WHERE id = {ticket_id} AND status = 'open'")
             
             conn.commit()
             
@@ -328,7 +329,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 update_parts.append(f"completion_attachment_size = {completion_attachment_size if completion_attachment_size else 'NULL'}")
             
             query = f"""
-                UPDATE tasks 
+                UPDATE {schema}.tasks 
                 SET {', '.join(update_parts)}
                 WHERE id = {task_id}
             """
@@ -362,7 +363,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            query = f"UPDATE tasks SET archived_at = NOW() WHERE id = {task_id}"
+            query = f"UPDATE {schema}.tasks SET archived_at = NOW() WHERE id = {task_id}"
             print(f"[DEBUG] Archiving task {task_id}")
             cur.execute(query)
             conn.commit()
