@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import AnimatedHero from '@/components/AnimatedHero';
-import SideMenu from '@/components/SideMenu';
+import BurgerMenu from '@/components/BurgerMenu';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -117,8 +117,8 @@ export default function LandingPage() {
         />
       </div>
 
-      {/* Side Menu */}
-      <SideMenu />
+      {/* Burger Menu */}
+      <BurgerMenu />
 
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
