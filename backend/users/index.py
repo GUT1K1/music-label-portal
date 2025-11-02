@@ -26,9 +26,12 @@ def handler(event, context):
     
     dsn = os.environ.get('DATABASE_URL')
     
-    # DEBUG
-    dsn_user = dsn.split('//')[1].split(':')[0] if '//' in dsn else 'unknown'
-    print(f"[DEBUG] DSN user: {dsn_user}")
+    # DEBUG: показываем DSN (без пароля)
+    dsn_parts = dsn.split('@')
+    if len(dsn_parts) > 1:
+        db_part = dsn_parts[1]  # host:port/database
+        print(f"[DEBUG] DSN database part: {db_part}")
+    print(f"[DEBUG] Full DSN (censored): {dsn[:30]}...{dsn[-50:]}")
     
     conn = psycopg2.connect(dsn)
     conn.autocommit = True
@@ -40,11 +43,10 @@ def handler(event, context):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         
         if user_id:
-            # Указываем схему ЯВНО
             query = f'''
                 SELECT id, username, role, full_name, revenue_share_percent, balance, created_at,
                        telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
-                       vk_photo, vk_email, avatar
+                       vk_photo, vk_email
                 FROM t_p35759334_music_label_portal.users
                 WHERE id = {int(user_id)}
             '''
@@ -73,7 +75,7 @@ def handler(event, context):
         query = '''
             SELECT id, username, role, full_name, revenue_share_percent, balance, created_at,
                    telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
-                   vk_photo, vk_email, avatar
+                   vk_photo, vk_email
             FROM t_p35759334_music_label_portal.users
             WHERE 1=1
         '''

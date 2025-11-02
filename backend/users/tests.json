@@ -6,8 +6,8 @@
       "path": "/?id=3",
       "expectedStatus": 200,
       "expectedBody": {
-        "id": "number",
-        "username": "string"
+        "id": 3,
+        "username": "artist2"
       },
       "bodyMatcher": "partial"
     }
