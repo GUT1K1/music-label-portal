@@ -1,25 +1,25 @@
 export default function AnimatedHero() {
   return (
-    <div className="relative py-20 px-4 overflow-visible">
-      <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[1.35] text-center tracking-tight overflow-visible">
-        <div className="block mb-8 pb-4 overflow-visible">
+    <div className="relative py-20 px-4">
+      <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[1.4] text-center tracking-tight">
+        <div className="block mb-6 py-2">
           <span className="inline-block bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl">
             Выпускай
           </span>
         </div>
         
-        <div className="block mb-8 pb-4 overflow-visible">
+        <div className="block mb-6 py-3">
           <span className="inline-block bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl" style={{ animationDelay: '0.3s' }}>
             музыку
           </span>
         </div>
         
-        <div className="block relative pb-12 overflow-visible">
+        <div className="block relative py-2 mb-12">
           <span className="inline-block bg-gradient-to-r from-yellow-500 via-orange-400 to-yellow-500 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl" style={{ animationDelay: '0.6s' }}>
             на всех площадках
           </span>
           <svg 
-            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-full max-w-[800px]" 
+            className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[800px]" 
             height="16" 
             viewBox="0 0 800 16" 
             preserveAspectRatio="none"
