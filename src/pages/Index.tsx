@@ -45,8 +45,11 @@ export default function Index() {
     const success = await updateUser(userId, updates);
     if (success) {
       updateUserProfile(updates);
+      if (userId === user!.id) {
+        setTimeout(() => refreshUserData(), 500);
+      }
     }
-  }, [updateUser, updateUserProfile, user]);
+  }, [updateUser, updateUserProfile, user, refreshUserData]);
 
   const LoadingFallback = memo(() => (
     <div className="min-h-screen bg-gradient-to-br from-black via-yellow-950/30 to-black flex items-center justify-center">

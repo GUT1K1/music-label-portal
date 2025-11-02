@@ -26,6 +26,8 @@ interface AppHeaderProps {
 export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, userRole, userId, userName = 'Пользователь', userAvatar, userBalance }: AppHeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [balance, setBalance] = useState<number | null>(userBalance !== undefined ? userBalance : null);
+  
+  console.log('[AppHeader] Props:', { userId, userName, userBalance, userAvatar });
 
   useEffect(() => {
     if (userBalance !== undefined) {
@@ -84,10 +86,15 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
           'X-User-Id': userId.toString()
         }
       });
+      
+      console.log('[AppHeader] loadBalance response:', response.status, response.statusText);
+      
       if (response.ok) {
         const data = await response.json();
         const users = data.users || data;
         const currentUser = Array.isArray(users) ? users.find((u: any) => u.id === userId) : null;
+        
+        console.log('[AppHeader] Current user from API:', currentUser);
         if (currentUser && currentUser.balance !== undefined && currentUser.balance !== null) {
           setBalance(parseFloat(currentUser.balance) || 0);
         }

@@ -76,8 +76,17 @@ export const useAuth = () => {
       if (updates.fullName) {
         updatedUser.full_name = updates.fullName;
       }
+      if (updates.full_name) {
+        updatedUser.fullName = updates.full_name;
+      }
       if (updates.avatar) {
         updatedUser.vk_photo = updates.avatar;
+      }
+      if (updates.vk_photo) {
+        updatedUser.avatar = updates.vk_photo;
+      }
+      if (updates.balance !== undefined) {
+        updatedUser.balance = updates.balance;
       }
       
       setUser(updatedUser);
@@ -91,7 +100,10 @@ export const useAuth = () => {
     try {
       const response = await fetch(`${API_URLS.users}?id=${user.id}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-User-Id': user.id.toString()
+        }
       });
       
       if (!response.ok) {
@@ -102,11 +114,19 @@ export const useAuth = () => {
       const updatedUser = data.users?.[0];
       
       if (updatedUser) {
-        // Проверяем, действительно ли данные изменились
-        if (JSON.stringify(updatedUser) !== JSON.stringify(user)) {
+        const hasChanges = 
+          updatedUser.role !== user.role || 
+          updatedUser.balance !== user.balance ||
+          updatedUser.avatar !== user.avatar ||
+          updatedUser.full_name !== user.full_name;
+        
+        if (hasChanges) {
           setUser(updatedUser);
           localStorage.setItem('user', JSON.stringify(updatedUser));
-          toast({ title: '✅ Данные обновлены', description: 'Ваши права доступа изменены' });
+          
+          if (updatedUser.role !== user.role) {
+            toast({ title: '✅ Данные обновлены', description: 'Ваши права доступа изменены' });
+          }
         }
       }
     } catch (error) {
