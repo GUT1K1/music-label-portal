@@ -112,20 +112,20 @@ const TicketManagement = React.memo(function TicketManagement({
     <div className="space-y-4 md:space-y-6 p-3 md:p-6">
       <Tabs defaultValue="open" className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
-          <TabsTrigger value="open" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
-            <Icon name="Inbox" className="w-3 h-3 md:w-4 md:h-4 text-blue-500" />
+          <TabsTrigger value="open" className="flex items-center justify-center gap-2 text-xs md:text-sm">
+            <Icon name="Inbox" className="w-4 h-4 text-blue-500 shrink-0" />
             <span>Открыто</span>
-            <span className="ml-1 text-xs">({openTickets.length})</span>
+            <span className="text-xs">({openTickets.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="in_progress" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
-            <Icon name="Loader" className="w-3 h-3 md:w-4 md:h-4 text-yellow-500 animate-spin-slow" />
+          <TabsTrigger value="in_progress" className="flex items-center justify-center gap-2 text-xs md:text-sm">
+            <Icon name="Loader" className="w-4 h-4 text-yellow-500 animate-spin-slow shrink-0" />
             <span>В работе</span>
-            <span className="ml-1 text-xs">({inProgressTickets.length})</span>
+            <span className="text-xs">({inProgressTickets.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="closed" className="flex items-center gap-1 md:gap-2 text-xs md:text-sm">
-            <Icon name="CheckCircle" className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
+          <TabsTrigger value="closed" className="flex items-center justify-center gap-2 text-xs md:text-sm">
+            <Icon name="CheckCircle" className="w-4 h-4 text-green-500 shrink-0" />
             <span>Решённые</span>
-            <span className="ml-1 text-xs">({closedTickets.length})</span>
+            <span className="text-xs">({closedTickets.length})</span>
           </TabsTrigger>
         </TabsList>
 
