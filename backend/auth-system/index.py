@@ -80,11 +80,13 @@ def send_email(to: str, subject: str, html_content: str) -> bool:
 
 
 def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
+    print('🚀 Начало регистрации пользователя')
     body_data = json.loads(event.get('body', '{}'))
     
     email = body_data.get('email', '').strip().lower()
     password = body_data.get('password', '')
     full_name = body_data.get('full_name', '').strip()
+    print(f'📝 Email: {email}, Name: {full_name}')
     
     if not email or not password or not full_name:
         return {
@@ -185,7 +187,22 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     </html>
     """
     
-    send_email(email, 'Подтверждение регистрации в 420 Music', html_content)
+    email_sent = send_email(email, 'Подтверждение регистрации в 420 Music', html_content)
+    
+    if email_sent:
+        print(f'✅ Регистрация успешна для {email}')
+    else:
+        print(f'⚠️ Письмо НЕ отправлено для {email}, но юзер создан')
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({
+            'message': 'Registration successful. Check your email for verification link.',
+            'user_id': user_id,
+            'email_sent': email_sent
+        })
+    }
     
     return {
         'statusCode': 200,
