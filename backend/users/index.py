@@ -51,7 +51,7 @@ def collect_stats(conn, vk_token: str, ya_token: str) -> int:
     
     cur.execute('''
         SELECT id, username, vk_group, yandex_music, tiktok
-        FROM users
+        FROM t_p35759334_music_label_portal.users
         WHERE role = 'artist' AND vk_group IS NOT NULL AND yandex_music IS NOT NULL
     ''')
     
@@ -72,7 +72,7 @@ def collect_stats(conn, vk_token: str, ya_token: str) -> int:
             
             cur.execute('''
                 SELECT vk_followers, yandex_listeners
-                FROM artist_stats
+                FROM t_p35759334_music_label_portal.artist_stats
                 WHERE user_id = %s
                 ORDER BY date DESC
                 LIMIT 1
@@ -86,7 +86,7 @@ def collect_stats(conn, vk_token: str, ya_token: str) -> int:
             ya_change = ya_listeners - prev_ya
             
             cur.execute('''
-                INSERT INTO artist_stats (user_id, date, vk_followers, vk_change, yandex_listeners, yandex_change, tiktok_followers, tiktok_change)
+                INSERT INTO t_p35759334_music_label_portal.artist_stats (user_id, date, vk_followers, vk_change, yandex_listeners, yandex_change, tiktok_followers, tiktok_change)
                 VALUES (%s, %s, %s, %s, %s, %s, 0, 0)
             ''', (artist_id, datetime.now().date(), vk_followers, vk_change, ya_listeners, ya_change))
             
@@ -103,7 +103,7 @@ def verify_user(user_id: int, conn) -> Optional[Dict[str, Any]]:
     
     try:
         cur.execute(
-            "SELECT id, username, role, is_blocked FROM users WHERE id = %s",
+            "SELECT id, username, role, is_blocked FROM t_p35759334_music_label_portal.users WHERE id = %s",
             (user_id,)
         )
         user = cur.fetchone()
@@ -168,7 +168,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     dsn = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(dsn, options='-c search_path=t_p35759334_music_label_portal,public')
+    conn = psycopg2.connect(dsn)
     
     current_user = verify_user(current_user_id, conn)
     if not current_user:
@@ -215,7 +215,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                                       telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                                       vk_photo, vk_email, avatar 
-                               FROM users WHERE id = %s'''
+                               FROM t_p35759334_music_label_portal.users WHERE id = %s'''
                     cur.execute(query, (requested_user_id,))
                     user = cur.fetchone()
                     
@@ -252,7 +252,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                           telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                           vk_photo, vk_email, avatar 
-                   FROM users WHERE 1=1'''
+                   FROM t_p35759334_music_label_portal.users WHERE 1=1'''
         params = []
         
         if role_filter and role_filter != 'all':
@@ -316,7 +316,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         try:
             cur.execute(
-                '''INSERT INTO users (username, password_hash, role, full_name, revenue_share_percent)
+                '''INSERT INTO t_p35759334_music_label_portal.users (username, password_hash, role, full_name, revenue_share_percent)
                    VALUES (%s, %s, %s, %s, %s) RETURNING id''',
                 (username, password_hash, role, full_name, revenue_share_percent)
             )
