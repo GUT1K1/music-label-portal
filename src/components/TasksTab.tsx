@@ -96,7 +96,7 @@ const TasksTab = React.memo(function TasksTab({
     }
   };
 
-  const openTickets = tickets.filter(t => t.status !== 'closed');
+  const openTickets = tickets?.filter(t => t.status !== 'closed') || [];
 
   return (
     <div className="space-y-6">
