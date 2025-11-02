@@ -1,0 +1,67 @@
+{
+  "tests": [
+    {
+      "name": "Register new user",
+      "method": "POST",
+      "queryStringParameters": {
+        "action": "register"
+      },
+      "body": {
+        "email": "newuser@example.com",
+        "password": "password123"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "user_id": "number"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login user",
+      "method": "POST",
+      "queryStringParameters": {
+        "action": "login"
+      },
+      "body": {
+        "email": "test@example.com",
+        "password": "password123"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "requires_2fa": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Verify 2FA code",
+      "method": "POST",
+      "queryStringParameters": {
+        "action": "verify-2fa"
+      },
+      "body": {
+        "user_id": 1,
+        "code": "123456"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Verify email",
+      "method": "GET",
+      "queryStringParameters": {
+        "action": "verify-email",
+        "token": "test-token-123"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
