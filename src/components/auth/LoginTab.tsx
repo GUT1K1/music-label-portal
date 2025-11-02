@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TabsContent } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import TelegramLoginButton from '@/components/auth/TelegramLoginButton';
 
 interface LoginTabProps {
   loginEmail: string;
@@ -12,6 +13,7 @@ interface LoginTabProps {
   setLoginPassword: (value: string) => void;
   handleLogin: () => void;
   setActiveTab: (tab: string) => void;
+  onTelegramAuth?: (userData: any) => void;
 }
 
 export default function LoginTab({
@@ -21,7 +23,8 @@ export default function LoginTab({
   setLoginEmail,
   setLoginPassword,
   handleLogin,
-  setActiveTab
+  setActiveTab,
+  onTelegramAuth
 }: LoginTabProps) {
   return (
     <TabsContent value="login" className="space-y-4">
@@ -77,6 +80,17 @@ export default function LoginTab({
       >
         Забыли пароль?
       </Button>
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-700" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-black px-2 text-gray-400">или</span>
+        </div>
+      </div>
+
+      {onTelegramAuth && <TelegramLoginButton onAuth={onTelegramAuth} />}
     </TabsContent>
   );
 }

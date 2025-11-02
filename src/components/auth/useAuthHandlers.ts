@@ -325,11 +325,34 @@ export const useAuthHandlers = () => {
     }
   };
 
+  const handleTelegramAuth = async (
+    userData: any,
+    setUserData: (data: any) => void,
+    setIsSuccess: (success: boolean) => void,
+    setShowMatrixLoader: (show: boolean) => void
+  ) => {
+    try {
+      setUserData(userData);
+      setIsSuccess(true);
+      
+      setTimeout(() => {
+        setShowMatrixLoader(true);
+      }, 1200);
+    } catch (error) {
+      toast({
+        title: "Ошибка авторизации",
+        description: "Не удалось войти через Telegram",
+        variant: "destructive"
+      });
+    }
+  };
+
   return {
     handleLogin,
     handleRegister,
     handleVerifyCode,
     handleForgotPassword,
-    handleResetPassword
+    handleResetPassword,
+    handleTelegramAuth
   };
 };

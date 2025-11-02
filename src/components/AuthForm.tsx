@@ -99,6 +99,15 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
     );
   };
 
+  const handleTelegramAuth = (userData: any) => {
+    authHandlers.handleTelegramAuth(
+      userData,
+      setUserData,
+      setIsSuccess,
+      setShowMatrixLoader
+    );
+  };
+
   if (showMatrixLoader) {
     return (
       <MatrixRain 
@@ -181,6 +190,7 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
               setLoginPassword={setLoginPassword}
               handleLogin={handleLogin}
               setActiveTab={setActiveTab}
+              onTelegramAuth={handleTelegramAuth}
             />
 
             <RegisterTab
