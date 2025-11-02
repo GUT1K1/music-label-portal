@@ -25,6 +25,7 @@ export interface User {
   vk_last_name?: string;
   telegram_chat_id?: string;
   telegram_id?: string;
+  balance?: number;
 }
 
 export interface Ticket {

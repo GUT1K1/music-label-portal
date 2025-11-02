@@ -83,6 +83,8 @@ export default function ManagerView({
             userRole="manager"
             userId={user.id}
             userName={user.full_name}
+            userAvatar={user.avatar || user.vk_photo}
+            userBalance={user.balance}
           />
         </div>
 

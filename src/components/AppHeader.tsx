@@ -19,25 +19,39 @@ interface AppHeaderProps {
   userRole: 'artist' | 'manager' | 'director';
   userId: number;
   userName?: string;
+  userAvatar?: string;
+  userBalance?: number;
 }
 
-export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, userRole, userId, userName = 'Пользователь' }: AppHeaderProps) {
+export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, userRole, userId, userName = 'Пользователь', userAvatar, userBalance }: AppHeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
-  const [balance, setBalance] = useState<number | null>(null);
+  const [balance, setBalance] = useState<number | null>(userBalance !== undefined ? userBalance : null);
+
+  useEffect(() => {
+    if (userBalance !== undefined) {
+      setBalance(userBalance);
+    }
+  }, [userBalance]);
 
   useEffect(() => {
     loadUnreadCount();
-    loadBalance();
+    if (userBalance === undefined) {
+      loadBalance();
+    }
     
     const interval = setInterval(() => {
       loadUnreadCount();
-      loadBalance();
+      if (userBalance === undefined) {
+        loadBalance();
+      }
     }, 60000);
     
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         loadUnreadCount();
-        loadBalance();
+        if (userBalance === undefined) {
+          loadBalance();
+        }
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -46,7 +60,7 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       clearInterval(interval);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [userId]);
+  }, [userId, userBalance]);
 
   const loadUnreadCount = async () => {
     try {
@@ -120,7 +134,18 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2 px-3 py-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold">
+              {userAvatar ? (
+                <img 
+                  src={userAvatar} 
+                  alt={userName}
+                  className="w-8 h-8 rounded-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+              ) : null}
+              <div className={`w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold ${userAvatar ? 'hidden' : ''}`}>
                 {userName.charAt(0).toUpperCase()}
               </div>
               <span className="font-medium">{userName.split(' ')[0]}</span>
