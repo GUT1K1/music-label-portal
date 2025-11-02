@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "Send verification email",
+      "method": "POST",
+      "body": {
+        "to": "test@example.com",
+        "subject": "Подтверждение регистрации",
+        "html_content": "<h1>Добро пожаловать!</h1><p>Ваш код: 123456</p>",
+        "from_name": "420 Music"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "Verify email with valid token",
+      "method": "GET",
+      "queryStringParameters": {
+        "token": "test-verification-token-123"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
