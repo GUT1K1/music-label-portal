@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { User, NewUser, API_URLS } from '@/types';
+import { User, NewUser } from '@/types';
+import { UserAPI } from '@/types/api';
+import { UserService } from '@/services/user.service';
 import { createNotification } from '@/hooks/useNotifications';
 
 interface CacheEntry<T> {
@@ -9,6 +11,37 @@ interface CacheEntry<T> {
 }
 
 const CACHE_TTL = 300000;
+
+function convertUserAPIToLegacy(apiUser: UserAPI): User {
+  return {
+    id: apiUser.id,
+    username: apiUser.username,
+    role: apiUser.role,
+    full_name: apiUser.fullName,
+    fullName: apiUser.fullName,
+    avatar: apiUser.avatar,
+    email: apiUser.email,
+    vk_photo: apiUser.avatar,
+    vk_first_name: apiUser.vkFirstName,
+    vk_last_name: apiUser.vkLastName,
+    telegram_id: apiUser.telegramId,
+    telegram_chat_id: apiUser.telegramChatId,
+    balance: apiUser.balance,
+    is_blocked: apiUser.isBlocked,
+    isBlocked: apiUser.isBlocked,
+    is_frozen: apiUser.isFrozen,
+    isFrozen: apiUser.isFrozen,
+    frozen_until: apiUser.frozenUntil,
+    freezeUntil: apiUser.frozenUntil,
+    blocked_reason: apiUser.blockedReason,
+    yandex_music_url: apiUser.yandexMusicUrl,
+    vk_group_url: apiUser.vkGroupUrl,
+    tiktok_url: apiUser.tiktokUrl,
+    social_links_filled: apiUser.socialLinksFilled,
+    last_ip: apiUser.lastIp,
+    device_fingerprint: apiUser.deviceFingerprint
+  };
+}
 
 export const useUsers = (user: User | null) => {
   const [managers, setManagers] = useState<User[]>([]);
@@ -31,13 +64,10 @@ export const useUsers = (user: User | null) => {
     }
     
     try {
-      const response = await fetch(`${API_URLS.users}?role=manager`, {
-        headers: { 'X-User-Id': user.id.toString() }
-      });
-      const users = await response.json();
-      const usersList = Array.isArray(users) ? users : [];
-      setManagers(usersList);
-      cacheRef.current.managers = { data: usersList, timestamp: now };
+      const apiUsers = await UserService.getManagers(user.id);
+      const legacyUsers = apiUsers.map(convertUserAPIToLegacy);
+      setManagers(legacyUsers);
+      cacheRef.current.managers = { data: legacyUsers, timestamp: now };
     } catch (error) {
       console.error('Failed to load managers:', error);
     }
@@ -55,13 +85,10 @@ export const useUsers = (user: User | null) => {
     }
     
     try {
-      const response = await fetch(API_URLS.users, {
-        headers: { 'X-User-Id': user.id.toString() }
-      });
-      const users = await response.json();
-      const usersList = Array.isArray(users) ? users : [];
-      setAllUsers(usersList);
-      cacheRef.current.allUsers = { data: usersList, timestamp: now };
+      const apiUsers = await UserService.getAllUsers(user.id);
+      const legacyUsers = apiUsers.map(convertUserAPIToLegacy);
+      setAllUsers(legacyUsers);
+      cacheRef.current.allUsers = { data: legacyUsers, timestamp: now };
     } catch (error) {
       console.error('Failed to load users:', error);
     }
@@ -76,7 +103,7 @@ export const useUsers = (user: User | null) => {
     }
     
     try {
-      const response = await fetch(API_URLS.users, {
+      const response = await fetch(`https://functions.poehali.dev/cf5d45c1-d64b-4400-af77-a51c7588d942`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -89,7 +116,6 @@ export const useUsers = (user: User | null) => {
         const data = await response.json();
         toast({ title: '✅ Пользователь создан', description: 'Пароль по умолчанию: 12345' });
         
-        // Notify directors about new user registration
         try {
           const roleLabel = data.role === 'artist' ? 'артист' : data.role === 'manager' ? 'менеджер' : 'пользователь';
           await createNotification({
@@ -119,20 +145,19 @@ export const useUsers = (user: User | null) => {
     if (!user?.id) return false;
     
     try {
-      const payload = { id: userId, ...userData };
-      const response = await fetch(API_URLS.users, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-User-Id': user.id.toString()
-        },
-        body: JSON.stringify(payload)
-      });
+      const updates = {
+        fullName: userData.fullName || userData.full_name,
+        avatar: userData.avatar || userData.vk_photo,
+        email: userData.email,
+        balance: userData.balance,
+        role: userData.role
+      };
+
+      const success = await UserService.updateUser(userId, updates, user.id);
       
-      if (response.ok) {
+      if (success) {
         toast({ title: '✅ Данные обновлены' });
         
-        // If role was changed, notify the user to refresh their session
         if (userData.role) {
           try {
             const roleLabels = {
@@ -149,7 +174,6 @@ export const useUsers = (user: User | null) => {
               related_entity_id: userId
             });
             
-            // Trigger a custom event that can be caught by useAuth
             window.dispatchEvent(new CustomEvent('user-role-changed', { 
               detail: { userId, newRole: userData.role } 
             }));
@@ -161,8 +185,7 @@ export const useUsers = (user: User | null) => {
         loadAllUsers(true);
         return true;
       } else {
-        const data = await response.json();
-        toast({ title: '❌ Ошибка', description: data.error, variant: 'destructive' });
+        toast({ title: '❌ Ошибка обновления', variant: 'destructive' });
         return false;
       }
     } catch (error) {

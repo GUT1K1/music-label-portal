@@ -88,7 +88,8 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       if (response.ok) {
         const user = await response.json();
         if (user && user.balance !== undefined && user.balance !== null) {
-          setBalance(parseFloat(user.balance) || 0);
+          const balanceValue = typeof user.balance === 'number' ? user.balance : parseFloat(user.balance);
+          setBalance(isNaN(balanceValue) ? 0 : balanceValue);
         }
       }
     } catch (error) {
