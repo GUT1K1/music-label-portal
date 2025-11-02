@@ -59,10 +59,15 @@ export default function SupportChatWindow({
   onStatusChange,
   onRatingSubmit
 }: SupportChatWindowProps) {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
   }, [messages]);
 
   const getStatusBadge = (status: string) => {
@@ -176,8 +181,8 @@ export default function SupportChatWindow({
         )}
       </CardHeader>
       <Separator />
-      <ScrollArea className="flex-1 px-4 py-3">
-        <div className="space-y-2">
+      <ScrollArea className="flex-1 px-4 py-3" ref={scrollAreaRef}>
+        <div className="space-y-2 min-h-full flex flex-col justify-end">
           {messages.map(msg => (
             <div
               key={msg.id}
@@ -218,7 +223,6 @@ export default function SupportChatWindow({
               </div>
             </div>
           ))}
-          <div ref={messagesEndRef} />
         </div>
       </ScrollArea>
       <Separator />
