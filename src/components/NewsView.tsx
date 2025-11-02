@@ -53,7 +53,9 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
     content: '',
     type: 'update' as 'update' | 'faq' | 'job',
     priority: 0,
-    is_active: true
+    is_active: true,
+    image_url: '',
+    poll: undefined as { question: string; options: string[] } | undefined
   });
 
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -143,7 +145,7 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
       });
 
       setIsCreating(false);
-      setFormData({ title: '', content: '', type: 'update', priority: 0, is_active: true });
+      setFormData({ title: '', content: '', type: 'update', priority: 0, is_active: true, image_url: '', poll: undefined });
       loadNews();
     } catch (error) {
       toast({
@@ -175,7 +177,7 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
       });
 
       setEditingNews(null);
-      setFormData({ title: '', content: '', type: 'update', priority: 0, is_active: true });
+      setFormData({ title: '', content: '', type: 'update', priority: 0, is_active: true, image_url: '', poll: undefined });
       loadNews();
     } catch (error) {
       toast({
@@ -193,7 +195,9 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
       content: item.content,
       type: item.type,
       priority: item.priority,
-      is_active: item.is_active
+      is_active: item.is_active,
+      image_url: '',
+      poll: undefined
     });
   };
 
@@ -420,6 +424,7 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
                   key={item.id}
                   item={item}
                   userRole={userRole}
+                  userId={userId}
                   onEdit={startEdit}
                   onDelete={handleDeleteNews}
                 />

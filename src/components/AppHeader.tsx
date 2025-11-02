@@ -15,15 +15,21 @@ interface AppHeaderProps {
 
 export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, userRole, userId }: AppHeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
+  const [balance, setBalance] = useState<number | null>(null);
 
   useEffect(() => {
     loadUnreadCount();
+    loadBalance();
     
-    const interval = setInterval(loadUnreadCount, 60000);
+    const interval = setInterval(() => {
+      loadUnreadCount();
+      loadBalance();
+    }, 60000);
     
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         loadUnreadCount();
+        loadBalance();
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -46,6 +52,25 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       }
     } catch (error) {
       console.error('Failed to load unread count:', error);
+    }
+  };
+
+  const loadBalance = async () => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.USERS}`, {
+        headers: {
+          'X-User-Id': userId.toString()
+        }
+      });
+      if (response.ok) {
+        const users = await response.json();
+        const currentUser = users.find((u: any) => u.id === userId);
+        if (currentUser && typeof currentUser.balance === 'number') {
+          setBalance(currentUser.balance);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load balance:', error);
     }
   };
 
@@ -73,6 +98,12 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       
       {/* Desktop menu */}
       <div className="hidden md:flex items-center gap-2 md:gap-3">
+        {balance !== null && (
+          <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30">
+            <Icon name="Wallet" size={18} className="text-primary" />
+            <span className="font-semibold text-sm">{balance.toFixed(2)} ₽</span>
+          </div>
+        )}
         <NotificationBell userId={userId} />
         {userRole !== 'artist' && (
           <Button
@@ -121,6 +152,12 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
 
       {/* Mobile menu */}
       <div className="flex md:hidden items-center gap-2">
+        {balance !== null && (
+          <div className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30">
+            <Icon name="Wallet" size={14} className="text-primary" />
+            <span className="font-semibold text-xs">{balance.toFixed(2)}</span>
+          </div>
+        )}
         <NotificationBell userId={userId} />
         {userRole !== 'artist' && (
           <Button
