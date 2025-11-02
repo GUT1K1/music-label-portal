@@ -3,6 +3,9 @@ import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
+import AnimatedHero from '@/components/AnimatedHero';
+import MusicWaves from '@/components/MusicWaves';
+import FloatingNotes from '@/components/FloatingNotes';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -193,6 +196,8 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <MusicWaves />
+        <FloatingNotes />
         <div 
           className="absolute inset-0 opacity-10"
           style={{
@@ -206,21 +211,9 @@ export default function LandingPage() {
         />
         
         <div className="container mx-auto px-4 relative z-10 py-20">
-          <div className="max-w-5xl mx-auto text-center">
-            <div className="mb-8 overflow-hidden">
-              <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-none mb-6 animate-slide-up">
-                <span className="inline-block bg-gradient-to-r from-yellow-400 via-orange-400 to-amber-400 bg-clip-text text-transparent animate-gradient-x">
-                  Выпускай
-                </span>
-                <br />
-                <span className="inline-block bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400 bg-clip-text text-transparent animate-gradient-x" style={{ animationDelay: '0.2s' }}>
-                  музыку
-                </span>
-                <br />
-                <span className="inline-block bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent animate-gradient-x" style={{ animationDelay: '0.4s' }}>
-                  на всех площадках
-                </span>
-              </h1>
+          <div className="max-w-6xl mx-auto text-center">
+            <div className="mb-12 overflow-hidden">
+              <AnimatedHero />
             </div>
             
             <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.6s' }}>
