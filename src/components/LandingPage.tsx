@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import AnimatedHero from '@/components/AnimatedHero';
+import SideMenu from '@/components/SideMenu';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -115,6 +116,9 @@ export default function LandingPage() {
           }}
         />
       </div>
+
+      {/* Side Menu */}
+      <SideMenu />
 
       {/* Header */}
       <header 
