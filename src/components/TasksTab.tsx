@@ -226,86 +226,133 @@ const TasksTab = React.memo(function TasksTab({
 
       <div className="grid gap-4">
         {tasks.length === 0 ? (
-          <Card className="p-8 text-center text-muted-foreground">
-            <Icon name="ListTodo" size={48} className="mx-auto mb-4 opacity-50" />
-            <p className="text-lg">Задач пока нет</p>
-            <p className="text-sm mt-2">Создайте первую задачу для менеджеров</p>
+          <Card className="p-12 text-center">
+            <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+              <Icon name="ListTodo" size={48} className="text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Задач пока нет</h3>
+            <p className="text-muted-foreground">Создайте первую задачу для менеджеров</p>
           </Card>
         ) : (
           tasks.map(task => (
             <Card 
               key={task.id} 
-              className="p-6 cursor-pointer hover:bg-accent/50 transition-colors"
+              className="group relative overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300 border-l-4"
+              style={{
+                borderLeftColor: 
+                  task.priority === 'urgent' ? 'rgb(239 68 68)' : 
+                  task.priority === 'high' ? 'rgb(251 146 60)' : 
+                  task.priority === 'medium' ? 'rgb(59 130 246)' : 
+                  'rgb(148 163 184)'
+              }}
               onClick={() => {
                 console.log('Task card clicked:', task);
                 setSelectedTask(task);
                 setIsDetailDialogOpen(true);
               }}
             >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 space-y-3">
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <h3 className="text-lg font-semibold">#{task.id} {task.title}</h3>
-                    <Badge variant={getPriorityColor(task.priority)}>
-                      <Icon name={getPriorityIcon(task.priority)} size={12} className="mr-1" />
-                      {task.priority}
-                    </Badge>
-                    <Badge variant={getStatusColor(task.status)}>
-                      <Icon name={getStatusIcon(task.status)} size={12} className="mr-1" />
-                      {task.status}
-                    </Badge>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              
+              <div className="relative p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
+                          #{task.id}
+                        </span>
+                        <Badge 
+                          variant={getPriorityColor(task.priority)}
+                          className="font-medium"
+                        >
+                          <Icon name={getPriorityIcon(task.priority)} size={12} className="mr-1" />
+                          {task.priority === 'urgent' ? 'Срочно' : 
+                           task.priority === 'high' ? 'Высокий' : 
+                           task.priority === 'medium' ? 'Средний' : 'Низкий'}
+                        </Badge>
+                        <Badge 
+                          variant={getStatusColor(task.status)}
+                          className="font-medium"
+                        >
+                          <Icon name={getStatusIcon(task.status)} size={12} className="mr-1" />
+                          {task.status === 'completed' ? 'Завершена' : 
+                           task.status === 'in_progress' ? 'В работе' : 'Открыта'}
+                        </Badge>
+                      </div>
+                      <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                        {task.title}
+                      </h3>
+                    </div>
+
+                    {task.description && (
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                        {task.description}
+                      </p>
+                    )}
+
+                    <div className="flex items-center gap-6 text-sm flex-wrap">
+                      {task.ticket_id && task.ticket_title && (
+                        <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                          <div className="bg-primary/10 p-1.5 rounded">
+                            <Icon name="Ticket" size={14} className="text-primary" />
+                          </div>
+                          <span className="font-medium">Тикет #{task.ticket_id}</span>
+                          <span className="text-xs opacity-70">• {task.ticket_title}</span>
+                        </div>
+                      )}
+                      {task.assignee_name && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <div className="bg-blue-500/10 p-1.5 rounded">
+                            <Icon name="User" size={14} className="text-blue-500" />
+                          </div>
+                          <span className="font-medium">{task.assignee_name}</span>
+                        </div>
+                      )}
+                      {task.deadline && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <div className="bg-orange-500/10 p-1.5 rounded">
+                            <Icon name="Calendar" size={14} className="text-orange-500" />
+                          </div>
+                          <span className="font-medium">
+                            {new Date(task.deadline).toLocaleDateString('ru-RU', {
+                              day: 'numeric',
+                              month: 'short',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  {task.description && (
-                    <p className="text-sm text-muted-foreground">{task.description}</p>
-                  )}
-
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
-                    {task.ticket_id && task.ticket_title && (
-                      <div className="flex items-center gap-1">
-                        <Icon name="Ticket" size={14} />
-                        <span>Тикет #{task.ticket_id}: {task.ticket_title}</span>
-                      </div>
+                  <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+                    {task.status !== 'completed' && (
+                      <Button
+                        size="sm"
+                        variant="default"
+                        className="shadow-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onUpdateTaskStatus(task.id, 'completed');
+                        }}
+                      >
+                        <Icon name="Check" size={14} className="mr-1" />
+                        Завершить
+                      </Button>
                     )}
-                    {task.assignee_name && (
-                      <div className="flex items-center gap-1">
-                        <Icon name="User" size={14} />
-                        <span>{task.assignee_name}</span>
-                      </div>
-                    )}
-                    {task.deadline && (
-                      <div className="flex items-center gap-1">
-                        <Icon name="Calendar" size={14} />
-                        <span>{new Date(task.deadline).toLocaleString('ru-RU')}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                  {task.status !== 'completed' && (
                     <Button
                       size="sm"
-                      variant="outline"
+                      variant="ghost"
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onUpdateTaskStatus(task.id, 'completed');
+                        onDeleteTask(task.id);
                       }}
                     >
-                      <Icon name="Check" size={14} className="mr-1" />
-                      Завершить
+                      <Icon name="Trash2" size={14} />
                     </Button>
-                  )}
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteTask(task.id);
-                    }}
-                  >
-                    <Icon name="Trash2" size={14} />
-                  </Button>
+                  </div>
                 </div>
               </div>
             </Card>
