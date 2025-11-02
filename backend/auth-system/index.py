@@ -51,6 +51,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 def send_email(to: str, subject: str, html_content: str) -> bool:
     resend_api_key = os.environ.get('RESEND_API_KEY')
     if not resend_api_key:
+        print('❌ RESEND_API_KEY не найден!')
         return False
     
     url = 'https://api.resend.com/emails'
@@ -66,8 +67,16 @@ def send_email(to: str, subject: str, html_content: str) -> bool:
         'html': html_content
     }
     
+    print(f'📧 Отправка письма на {to}...')
     response = requests.post(url, json=payload, headers=headers)
-    return response.status_code == 200
+    print(f'📡 Resend ответ: status={response.status_code}, body={response.text}')
+    
+    if response.status_code != 200:
+        print(f'❌ Ошибка отправки: {response.text}')
+        return False
+    
+    print('✅ Письмо отправлено успешно!')
+    return True
 
 
 def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
