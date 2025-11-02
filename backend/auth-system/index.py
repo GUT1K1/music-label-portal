@@ -9,6 +9,7 @@ from psycopg2.extras import RealDictCursor
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import bcrypt
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -238,7 +239,6 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
     
     print(f'📝 Login: {login_input}')
     
-    password_hash = hashlib.sha256(password.encode()).hexdigest()
     database_url = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(database_url)
     cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -252,7 +252,26 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
     )
     user = cur.fetchone()
     
-    if not user or user['password_hash'] != password_hash:
+    if not user:
+        cur.close()
+        conn.close()
+        print('❌ Неверный логин или пароль')
+        return {
+            'statusCode': 401,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Invalid login or password'})
+        }
+    
+    stored_hash = user['password_hash']
+    password_valid = False
+    
+    if stored_hash.startswith('$2b$'):
+        password_valid = bcrypt.checkpw(password.encode(), stored_hash.encode())
+    else:
+        sha256_hash = hashlib.sha256(password.encode()).hexdigest()
+        password_valid = (stored_hash == sha256_hash)
+    
+    if not password_valid:
         cur.close()
         conn.close()
         print('❌ Неверный логин или пароль')
