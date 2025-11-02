@@ -56,10 +56,7 @@ export default function NewsCard({ item, userRole, onEdit, onDelete }: NewsCardP
       <p className="text-sm text-white/70 whitespace-pre-wrap">{item.content}</p>
       <div className="mt-4 flex items-center justify-between text-xs text-white/50">
         <span>{new Date(item.created_at).toLocaleDateString('ru-RU')}</span>
-        <div className="flex items-center gap-2">
-          <span>Приоритет: {item.priority}</span>
-          {!item.is_active && <Badge variant="outline">Неактивна</Badge>}
-        </div>
+        {!item.is_active && <Badge variant="outline">Неактивна</Badge>}
       </div>
     </Card>
   );

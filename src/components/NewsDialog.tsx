@@ -63,23 +63,15 @@ export default function NewsDialog({
             onChange={(e) => onFormDataChange({ ...formData, content: e.target.value })}
             rows={6}
           />
-          <div className="grid grid-cols-2 gap-4">
-            <Select value={formData.type} onValueChange={(value: any) => onFormDataChange({ ...formData, type: value })}>
-              <SelectTrigger className="bg-black/40 border-primary/20 hover:border-primary/40 transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-black border-primary/30">
-                <SelectItem value="update">Обновление</SelectItem>
-                <SelectItem value="faq">FAQ</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              type="number"
-              placeholder="Приоритет (0-100)"
-              value={formData.priority}
-              onChange={(e) => onFormDataChange({ ...formData, priority: parseInt(e.target.value) || 0 })}
-            />
-          </div>
+          <Select value={formData.type} onValueChange={(value: any) => onFormDataChange({ ...formData, type: value })}>
+            <SelectTrigger className="bg-black/40 border-primary/20 hover:border-primary/40 transition-colors">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-black border-primary/30">
+              <SelectItem value="update">Обновление</SelectItem>
+              <SelectItem value="faq">FAQ</SelectItem>
+            </SelectContent>
+          </Select>
           <div className="flex items-center gap-2">
             <Switch
               checked={formData.is_active}
