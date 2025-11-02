@@ -51,7 +51,7 @@ def collect_stats(conn, vk_token: str, ya_token: str) -> int:
     
     cur.execute('''
         SELECT id, username, vk_group, yandex_music, tiktok
-        FROM t_p35759334_music_label_portal.users
+        FROM users
         WHERE role = 'artist' AND vk_group IS NOT NULL AND yandex_music IS NOT NULL
     ''')
     
@@ -72,7 +72,7 @@ def collect_stats(conn, vk_token: str, ya_token: str) -> int:
             
             cur.execute(f'''
                 SELECT vk_followers, yandex_listeners
-                FROM t_p35759334_music_label_portal.artist_stats
+                FROM artist_stats
                 WHERE user_id = {artist_id}
                 ORDER BY date DESC
                 LIMIT 1
@@ -87,7 +87,7 @@ def collect_stats(conn, vk_token: str, ya_token: str) -> int:
             
             date_str = datetime.now().date().isoformat()
             cur.execute(f'''
-                INSERT INTO t_p35759334_music_label_portal.artist_stats (user_id, date, vk_followers, vk_change, yandex_listeners, yandex_change, tiktok_followers, tiktok_change)
+                INSERT INTO artist_stats (user_id, date, vk_followers, vk_change, yandex_listeners, yandex_change, tiktok_followers, tiktok_change)
                 VALUES ({artist_id}, '{date_str}', {vk_followers}, {vk_change}, {ya_listeners}, {ya_change}, 0, 0)
             ''')
             
@@ -104,7 +104,7 @@ def verify_user(user_id: int, conn) -> Optional[Dict[str, Any]]:
     
     try:
         cur.execute(
-            f"SELECT id, username, role, is_blocked FROM t_p35759334_music_label_portal.users WHERE id = {user_id}"
+            f"SELECT id, username, role, is_blocked FROM users WHERE id = {user_id}"
         )
         user = cur.fetchone()
         cur.close()
@@ -168,7 +168,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     dsn = os.environ.get('DATABASE_URL')
-    conn = psycopg2.connect(dsn)
+    if '?' in dsn:
+        conn = psycopg2.connect(dsn)
+    else:
+        conn = psycopg2.connect(dsn + '?options=-c%20search_path=t_p35759334_music_label_portal,public')
     
     current_user = verify_user(current_user_id, conn)
     if not current_user:
@@ -215,7 +218,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     query = f'''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                                       telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                                       vk_photo, vk_email, avatar 
-                               FROM t_p35759334_music_label_portal.users WHERE id = {requested_user_id}'''
+                               FROM users WHERE id = {requested_user_id}'''
+                    print(f"[DEBUG] Executing query: {query}")
                     cur.execute(query)
                     user = cur.fetchone()
                     
@@ -252,7 +256,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                           telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                           vk_photo, vk_email, avatar 
-                   FROM t_p35759334_music_label_portal.users WHERE 1=1'''
+                   FROM users WHERE 1=1'''
         
         if role_filter and role_filter != 'all':
             safe_role = role_filter.replace("'", "''")
@@ -319,7 +323,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             safe_role = role.replace("'", "''")
             safe_name = full_name.replace("'", "''")
             cur.execute(
-                f'''INSERT INTO t_p35759334_music_label_portal.users (username, password_hash, role, full_name, revenue_share_percent)
+                f'''INSERT INTO users (username, password_hash, role, full_name, revenue_share_percent)
                    VALUES ('{safe_username}', '{safe_hash}', '{safe_role}', '{safe_name}', {revenue_share_percent}) RETURNING id'''
             )
             user_id = cur.fetchone()['id']
@@ -454,7 +458,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'No fields to update'})
             }
         
-        query = f"UPDATE t_p35759334_music_label_portal.users SET {', '.join(update_fields)} WHERE id = {user_id}"
+        query = f"UPDATE users SET {', '.join(update_fields)} WHERE id = {user_id}"
         
         try:
             cur.execute(query)
