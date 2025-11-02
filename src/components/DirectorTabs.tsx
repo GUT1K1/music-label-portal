@@ -152,89 +152,86 @@ export default function DirectorTabs({
         localStorage.setItem('director_active_tab', value);
       }} 
       className="w-full">
-      <div className="flex flex-col lg:flex-row gap-4 mt-4">
-        <div className="w-full lg:w-64 overflow-x-auto lg:overflow-visible scrollbar-hide">
-          <TabsList className="inline-flex lg:flex-col min-w-full lg:min-w-0 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1.5 gap-1">
-            <TabsTrigger value="news" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap lg:w-full lg:justify-start">
-              <Icon name="Newspaper" className="w-4 h-4 text-yellow-500" />
-              <span>Новости</span>
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap lg:w-full lg:justify-start">
-              <Icon name="BarChart3" className="w-4 h-4 text-primary" />
-              <span>Аналитика</span>
-            </TabsTrigger>
-            <TabsTrigger value="tickets" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap lg:w-full lg:justify-start">
-              <Icon name="Ticket" className="w-4 h-4 text-yellow-500" />
-              <span>Тикеты</span>
-              {unreadCounts.tickets > 0 && <Badge count={unreadCounts.tickets} />}
-            </TabsTrigger>
-            <TabsTrigger value="tasks" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap lg:w-full lg:justify-start">
-              <Icon name="CheckSquare" className="w-4 h-4 text-green-500" />
-              <span>Задачи</span>
-              {unreadCounts.tasks > 0 && <Badge count={unreadCounts.tasks} />}
-            </TabsTrigger>
-            <TabsTrigger value="releases" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap lg:w-full lg:justify-start">
-              <Icon name="Music" className="w-4 h-4 text-purple-500" />
-              <span>Релизы</span>
-            </TabsTrigger>
-            <TabsTrigger value="submissions" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap lg:w-full lg:justify-start">
-              <Icon name="ClipboardList" className="w-4 h-4 text-blue-500" />
-              <span>Заявки</span>
-              {unreadCounts.submissions > 0 && <Badge count={unreadCounts.submissions} />}
-            </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap lg:w-full lg:justify-start">
-              <Icon name="FolderOpen" className="w-4 h-4 text-orange-500" />
-              <span>Отчёты</span>
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap lg:w-full lg:justify-start">
-              <Icon name="Settings" className="w-4 h-4 text-gray-500" />
-              <span>Настройки</span>
-            </TabsTrigger>
-          </TabsList>
-        </div>
+      <div className="w-full overflow-x-auto scrollbar-hide mt-4">
+        <TabsList className="inline-flex min-w-full bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1.5 gap-1">
+          <TabsTrigger value="news" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="Newspaper" className="w-4 h-4 text-yellow-500" />
+            <span>Новости</span>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="BarChart3" className="w-4 h-4 text-primary" />
+            <span>Аналитика</span>
+          </TabsTrigger>
+          <TabsTrigger value="tickets" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="Ticket" className="w-4 h-4 text-yellow-500" />
+            <span>Тикеты</span>
+            {unreadCounts.tickets > 0 && <Badge count={unreadCounts.tickets} />}
+          </TabsTrigger>
+          <TabsTrigger value="tasks" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="CheckSquare" className="w-4 h-4 text-green-500" />
+            <span>Задачи</span>
+            {unreadCounts.tasks > 0 && <Badge count={unreadCounts.tasks} />}
+          </TabsTrigger>
+          <TabsTrigger value="releases" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="Music" className="w-4 h-4 text-purple-500" />
+            <span>Релизы</span>
+          </TabsTrigger>
+          <TabsTrigger value="submissions" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="ClipboardList" className="w-4 h-4 text-blue-500" />
+            <span>Заявки</span>
+            {unreadCounts.submissions > 0 && <Badge count={unreadCounts.submissions} />}
+          </TabsTrigger>
+          <TabsTrigger value="reports" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="FolderOpen" className="w-4 h-4 text-orange-500" />
+            <span>Отчёты</span>
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="Settings" className="w-4 h-4 text-gray-500" />
+            <span>Настройки</span>
+          </TabsTrigger>
+        </TabsList>
+      </div>
 
-        <div className="flex-1 min-w-0">
+      <TabsContent value="news" className="animate-fadeIn">
+        <NewsView userRole="director" userId={user.id} />
+      </TabsContent>
 
-          <TabsContent value="news" className="animate-fadeIn">
-            <NewsView userRole="director" userId={user.id} />
-          </TabsContent>
+      <TabsContent value="tickets" className="space-y-4 animate-fadeIn">
+        <TicketManagement
+          user={user}
+          tickets={tickets}
+          managers={managers}
+          statusFilter={statusFilter}
+          onStatusFilterChange={onStatusFilterChange}
+          onUpdateStatus={handleUpdateStatus}
+          onAssignTicket={handleAssignTicket}
+          onLoadTickets={onLoadTickets}
+          onDeleteTicket={handleDeleteTicket}
+        />
+      </TabsContent>
 
-          <TabsContent value="tickets" className="space-y-4 animate-fadeIn">
-            <TicketManagement
-              user={user}
-              tickets={tickets}
-              managers={managers}
-              statusFilter={statusFilter}
-              onStatusFilterChange={onStatusFilterChange}
-              onUpdateStatus={handleUpdateStatus}
-              onAssignTicket={handleAssignTicket}
-              onLoadTickets={onLoadTickets}
-              onDeleteTicket={handleDeleteTicket}
-            />
-          </TabsContent>
+      <TabsContent value="releases" className="animate-fadeIn">
+        <ReleaseModerationPanel userId={user.id} userRole="director" />
+      </TabsContent>
 
-          <TabsContent value="releases" className="animate-fadeIn">
-            <ReleaseModerationPanel userId={user.id} userRole="director" />
-          </TabsContent>
+      <TabsContent value="submissions" className="animate-fadeIn">
+        <SubmissionsManager userId={user.id} userRole="director" />
+      </TabsContent>
 
-          <TabsContent value="submissions" className="animate-fadeIn">
-            <SubmissionsManager userId={user.id} userRole="director" />
-          </TabsContent>
+      <TabsContent value="tasks" className="space-y-4 animate-fadeIn">
+        <TaskAssignment
+          tickets={tickets}
+          managers={managers}
+          onAssignTicket={onAssignTicket}
+          onLoadTickets={onLoadTickets}
+        />
+      </TabsContent>
 
-          <TabsContent value="tasks" className="space-y-4 animate-fadeIn">
-            <TaskAssignment
-              tickets={tickets}
-              managers={managers}
-              onAssignTicket={onAssignTicket}
-              onLoadTickets={onLoadTickets}
-            />
-          </TabsContent>
+      <TabsContent value="analytics" className="animate-fadeIn">
+        <AnalyticsView />
+      </TabsContent>
 
-          <TabsContent value="analytics" className="animate-fadeIn">
-            <AnalyticsView />
-          </TabsContent>
-
-          <TabsContent value="reports" className="animate-fadeIn">
+      <TabsContent value="reports" className="animate-fadeIn">
             <Tabs defaultValue="weekly" className="w-full">
               <TabsList className="grid w-full grid-cols-2 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
                 <TabsTrigger value="weekly" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
@@ -255,7 +252,7 @@ export default function DirectorTabs({
             </Tabs>
           </TabsContent>
 
-          <TabsContent value="settings" className="animate-fadeIn">
+      <TabsContent value="settings" className="animate-fadeIn">
             <Tabs defaultValue="team" className="w-full">
               <TabsList className="mb-4 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
                 <TabsTrigger value="team" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
@@ -322,10 +319,8 @@ export default function DirectorTabs({
               <TabsContent value="telegram" className="animate-fadeIn">
                 <TelegramBotSettings />
               </TabsContent>
-            </Tabs>
-          </TabsContent>
-        </div>
-      </div>
+        </Tabs>
+      </TabsContent>
     </Tabs>
   );
 }
