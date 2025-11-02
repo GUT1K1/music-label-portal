@@ -77,15 +77,15 @@ export default function SupportThreadList({
   });
 
   return (
-    <Card className="lg:col-span-1 flex flex-col">
-      <CardHeader className="space-y-4 pb-4">
+    <Card className="lg:col-span-1 flex flex-col h-[600px]">
+      <CardHeader className="space-y-3 pb-3 px-4 py-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold flex items-center gap-2">
-            <Icon name="MessageSquare" className="w-5 h-5 text-primary" />
-            Диалоги поддержки
+          <CardTitle className="text-base font-bold flex items-center gap-2">
+            <Icon name="MessageSquare" className="w-4 h-4 text-primary" />
+            Диалоги
           </CardTitle>
-          <Button size="sm" onClick={onNewThreadClick} className="gap-2">
-            <Icon name="Plus" className="w-4 h-4" />
+          <Button size="sm" onClick={onNewThreadClick} className="h-7 gap-1 text-xs">
+            <Icon name="Plus" className="w-3 h-3" />
             Новый
           </Button>
         </div>
@@ -95,15 +95,15 @@ export default function SupportThreadList({
             placeholder="Поиск..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full"
+            className="h-8 text-sm"
           />
           
           <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-            <SelectTrigger>
+            <SelectTrigger className="h-8 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все диалоги</SelectItem>
+              <SelectItem value="all">Все</SelectItem>
               <SelectItem value="new">Новые</SelectItem>
               <SelectItem value="in_progress">В работе</SelectItem>
               <SelectItem value="waiting">Ожидание</SelectItem>
@@ -114,7 +114,7 @@ export default function SupportThreadList({
       </CardHeader>
       <Separator />
       <ScrollArea className="flex-1">
-        <CardContent className="pt-4 space-y-2">
+        <CardContent className="pt-3 px-3 space-y-2">
           {filteredThreads.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Icon name="Inbox" className="w-12 h-12 mx-auto mb-2 opacity-50" />

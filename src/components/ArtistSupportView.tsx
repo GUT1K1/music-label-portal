@@ -24,6 +24,7 @@ interface ThreadData {
   artist_name?: string;
   artist_avatar?: string;
   artist_vk_photo?: string;
+  rating?: number;
 }
 
 interface ArtistSupportViewProps {
@@ -36,6 +37,7 @@ interface ArtistSupportViewProps {
   onCreateThread: () => void;
   onMessageChange: (message: string) => void;
   onSendMessage: () => void;
+  onRatingSubmit: (rating: number) => void;
 }
 
 export default function ArtistSupportView({
@@ -47,7 +49,8 @@ export default function ArtistSupportView({
   sendingMessage,
   onCreateThread,
   onMessageChange,
-  onSendMessage
+  onSendMessage,
+  onRatingSubmit
 }: ArtistSupportViewProps) {
   if (!hasThread) {
     return (
@@ -84,6 +87,7 @@ export default function ArtistSupportView({
         isStaff={false}
         onMessageChange={onMessageChange}
         onSendMessage={onSendMessage}
+        onRatingSubmit={onRatingSubmit}
       />
     </div>
   );

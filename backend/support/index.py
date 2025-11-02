@@ -70,6 +70,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 return assign_thread(conn, user_id, body_data)
             elif action == 'get_artists':
                 return get_artists(conn, user_id)
+            elif action == 'rate_thread':
+                return rate_thread(conn, user_id, body_data)
             else:
                 return {
                     'statusCode': 400,
@@ -361,4 +363,60 @@ def get_artists(conn, user_id: str) -> Dict[str, Any]:
         'body': json.dumps({
             'artists': [dict(artist) for artist in artists]
         }, default=str)
+    }
+
+def rate_thread(conn, user_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+    thread_id_int = int(data.get('thread_id'))
+    rating = int(data.get('rating'))
+    user_id_int = int(user_id)
+    
+    if rating < 1 or rating > 5:
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Rating must be between 1 and 5'})
+        }
+    
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    
+    cursor.execute("""
+        SELECT artist_id, status FROM t_p35759334_music_label_portal.support_threads
+        WHERE id = %s
+    """, (thread_id_int,))
+    
+    thread = cursor.fetchone()
+    
+    if not thread:
+        return {
+            'statusCode': 404,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Thread not found'})
+        }
+    
+    if thread['artist_id'] != user_id_int:
+        return {
+            'statusCode': 403,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'You can only rate your own threads'})
+        }
+    
+    if thread['status'] != 'resolved':
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Can only rate resolved threads'})
+        }
+    
+    cursor.execute("""
+        UPDATE t_p35759334_music_label_portal.support_threads
+        SET rating = %s, updated_at = NOW()
+        WHERE id = %s
+    """, (rating, thread_id_int))
+    
+    conn.commit()
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({'success': True, 'rating': rating})
     }

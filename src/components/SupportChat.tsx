@@ -20,6 +20,7 @@ interface SupportThread {
   artist_vk_photo?: string;
   last_message?: string;
   unread_count?: number;
+  rating?: number;
 }
 
 interface Message {
@@ -279,6 +280,74 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
     }
   };
 
+  const updateThreadStatus = async (status: string) => {
+    if (!activeThread) return;
+    
+    try {
+      const response = await fetch(SUPPORT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': userId.toString()
+        },
+        body: JSON.stringify({
+          action: 'update_status',
+          thread_id: activeThread,
+          status
+        })
+      });
+      
+      if (!response.ok) throw new Error('Failed to update status');
+      
+      await loadThreads();
+      toast({
+        title: 'Готово',
+        description: 'Статус обновлён'
+      });
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статус',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const submitRating = async (rating: number) => {
+    if (!activeThread) return;
+    
+    try {
+      const response = await fetch(SUPPORT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': userId.toString()
+        },
+        body: JSON.stringify({
+          action: 'rate_thread',
+          thread_id: activeThread,
+          rating
+        })
+      });
+      
+      if (!response.ok) throw new Error('Failed to submit rating');
+      
+      await loadThreads();
+      toast({
+        title: 'Спасибо!',
+        description: 'Ваша оценка учтена'
+      });
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отправить оценку',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const activeThreadData = threads.find(t => t.id === activeThread);
 
   if (loading && threads.length === 0) {
@@ -301,13 +370,14 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
         onCreateThread={createNewThread}
         onMessageChange={setNewMessage}
         onSendMessage={sendMessage}
+        onRatingSubmit={submitRating}
       />
     );
   }
 
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100vh-200px)]">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <SupportThreadList
           threads={threads}
           activeThread={activeThread}
@@ -328,6 +398,7 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
           isStaff={isStaff}
           onMessageChange={setNewMessage}
           onSendMessage={sendMessage}
+          onStatusChange={isStaff ? updateThreadStatus : undefined}
         />
       </div>
 

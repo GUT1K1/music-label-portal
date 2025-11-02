@@ -31,6 +31,7 @@ interface ThreadData {
   artist_name?: string;
   artist_avatar?: string;
   artist_vk_photo?: string;
+  rating?: number;
 }
 
 interface SupportChatWindowProps {
@@ -42,6 +43,8 @@ interface SupportChatWindowProps {
   isStaff: boolean;
   onMessageChange: (message: string) => void;
   onSendMessage: () => void;
+  onStatusChange?: (status: string) => void;
+  onRatingSubmit?: (rating: number) => void;
 }
 
 export default function SupportChatWindow({
@@ -52,7 +55,9 @@ export default function SupportChatWindow({
   sendingMessage,
   isStaff,
   onMessageChange,
-  onSendMessage
+  onSendMessage,
+  onStatusChange,
+  onRatingSubmit
 }: SupportChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -99,57 +104,91 @@ export default function SupportChatWindow({
   }
 
   return (
-    <Card className="lg:col-span-2 flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+    <Card className="lg:col-span-2 flex flex-col h-[600px]">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 px-4 py-3">
         {isStaff ? (
           <>
-            <div className="flex items-center gap-3">
-              <Avatar className="w-10 h-10">
+            <div className="flex items-center gap-2">
+              <Avatar className="w-8 h-8">
                 <AvatarImage src={threadData.artist_avatar || threadData.artist_vk_photo} />
-                <AvatarFallback className="bg-primary/10">
+                <AvatarFallback className="bg-primary/10 text-xs">
                   {threadData.artist_name?.[0] || threadData.artist_username?.[0] || '?'}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle className="text-lg">
+                <CardTitle className="text-base">
                   {threadData.artist_name || threadData.artist_username}
                 </CardTitle>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   @{threadData.artist_username}
                 </p>
               </div>
             </div>
-            {getStatusBadge(threadData.status)}
+            <div className="flex items-center gap-2">
+              {getStatusBadge(threadData.status)}
+              {onStatusChange && threadData.status !== 'resolved' && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onStatusChange('resolved')}
+                  className="h-7 text-xs"
+                >
+                  <Icon name="Check" className="w-3 h-3 mr-1" />
+                  Закрыть
+                </Button>
+              )}
+            </div>
           </>
         ) : (
           <>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <Icon name="Headphones" className="w-5 h-5 text-primary" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <Icon name="Headphones" className="w-4 h-4 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-lg">Техническая поддержка</CardTitle>
-                <p className="text-sm text-muted-foreground">Мы здесь, чтобы помочь</p>
+                <CardTitle className="text-base">Техподдержка</CardTitle>
+                <p className="text-xs text-muted-foreground">Ответим на ваши вопросы</p>
               </div>
             </div>
-            {getStatusBadge(threadData.status)}
+            <div className="flex items-center gap-2">
+              {getStatusBadge(threadData.status)}
+              {threadData.status === 'resolved' && !threadData.rating && onRatingSubmit && (
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => onRatingSubmit(star)}
+                      className="text-yellow-500 hover:scale-110 transition-transform"
+                    >
+                      <Icon name="Star" className="w-4 h-4 fill-current" />
+                    </button>
+                  ))}
+                </div>
+              )}
+              {threadData.rating && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Icon name="Star" className="w-3 h-3 fill-yellow-500 text-yellow-500" />
+                  <span>{threadData.rating}/5</span>
+                </div>
+              )}
+            </div>
           </>
         )}
       </CardHeader>
       <Separator />
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea className="flex-1 px-4 py-3">
+        <div className="space-y-2">
           {messages.map(msg => (
             <div
               key={msg.id}
               className={`flex gap-3 ${msg.sender_id === userId ? 'justify-end' : 'justify-start'}`}
             >
               {msg.sender_id !== userId && (
-                <Avatar className="w-8 h-8">
+                <Avatar className="w-7 h-7 shrink-0">
                   {isStaff ? (
                     <>
                       <AvatarImage src={threadData.artist_avatar || threadData.artist_vk_photo} />
-                      <AvatarFallback className="bg-primary/10">
+                      <AvatarFallback className="bg-primary/10 text-xs">
                         {threadData.artist_name?.[0] || '?'}
                       </AvatarFallback>
                     </>
@@ -157,24 +196,24 @@ export default function SupportChatWindow({
                     <>
                       <AvatarImage src="/support-avatar.png" />
                       <AvatarFallback className="bg-primary/10">
-                        <Icon name="Headphones" className="w-4 h-4" />
+                        <Icon name="Headphones" className="w-3 h-3" />
                       </AvatarFallback>
                     </>
                   )}
                 </Avatar>
               )}
-              <div className={`max-w-[70%] ${msg.sender_id === userId ? 'order-first' : ''}`}>
+              <div className={`max-w-[75%] ${msg.sender_id === userId ? 'order-first' : ''}`}>
                 <div
-                  className={`rounded-2xl px-4 py-2 ${
+                  className={`rounded-2xl px-3 py-1.5 ${
                     msg.sender_id === userId
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap break-words">{msg.message}</p>
+                  <p className="text-xs whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1 px-2">
-                  {format(new Date(msg.created_at), 'd MMMM, HH:mm', { locale: ru })}
+                <p className="text-[10px] text-muted-foreground mt-0.5 px-2">
+                  {format(new Date(msg.created_at), 'd MMM, HH:mm', { locale: ru })}
                 </p>
               </div>
             </div>
@@ -183,7 +222,7 @@ export default function SupportChatWindow({
         </div>
       </ScrollArea>
       <Separator />
-      <div className="p-4">
+      <div className="p-3 bg-muted/30">
         <div className="flex gap-2">
           <Input
             placeholder="Введите сообщение..."
@@ -191,9 +230,14 @@ export default function SupportChatWindow({
             onChange={(e) => onMessageChange(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={sendingMessage}
-            className="flex-1"
+            className="flex-1 h-9 text-sm"
           />
-          <Button onClick={onSendMessage} disabled={sendingMessage || !newMessage.trim()}>
+          <Button 
+            size="sm"
+            onClick={onSendMessage} 
+            disabled={sendingMessage || !newMessage.trim()}
+            className="h-9 px-3"
+          >
             {sendingMessage ? (
               <Icon name="Loader2" className="w-4 h-4 animate-spin" />
             ) : (
