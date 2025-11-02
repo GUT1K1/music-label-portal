@@ -222,17 +222,21 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
+    print('🔐 Начало логина пользователя')
     body_data = json.loads(event.get('body', '{}'))
     
-    email = body_data.get('email', '').strip().lower()
+    login_input = body_data.get('email', '') or body_data.get('username', '')
+    login_input = login_input.strip().lower()
     password = body_data.get('password', '')
     
-    if not email or not password:
+    if not login_input or not password:
         return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Email and password are required'})
+            'body': json.dumps({'error': 'Login (email or username) and password are required'})
         }
+    
+    print(f'📝 Login: {login_input}')
     
     password_hash = hashlib.sha256(password.encode()).hexdigest()
     database_url = os.environ.get('DATABASE_URL')
@@ -241,25 +245,37 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
     
     cur.execute(
         """
-        SELECT id, email, password_hash, email_verified, two_factor_enabled 
+        SELECT id, username, email, full_name, role, password_hash, email_verified, two_factor_enabled, is_blocked 
         FROM t_p35759334_music_label_portal.users 
-        WHERE email = '{}'
-        """.format(email.replace("'", "''"))
+        WHERE email = '{}' OR username = '{}'
+        """.format(login_input.replace("'", "''"), login_input.replace("'", "''"))
     )
     user = cur.fetchone()
     
     if not user or user['password_hash'] != password_hash:
         cur.close()
         conn.close()
+        print('❌ Неверный логин или пароль')
         return {
             'statusCode': 401,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Invalid email or password'})
+            'body': json.dumps({'error': 'Invalid login or password'})
         }
     
-    if not user.get('email_verified', False):
+    if user.get('is_blocked', False):
         cur.close()
         conn.close()
+        print(f'❌ Пользователь {login_input} заблокирован')
+        return {
+            'statusCode': 403,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Your account has been blocked'})
+        }
+    
+    if not user.get('email_verified', False) and user.get('email'):
+        cur.close()
+        conn.close()
+        print(f'⚠️ Email не подтвержден для {login_input}')
         return {
             'statusCode': 403,
             'headers': {'Access-Control-Allow-Origin': '*'},
@@ -341,6 +357,8 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
     user_data = cur.fetchone()
     cur.close()
     conn.close()
+    
+    print(f'✅ Успешный логин пользователя: {user_data["username"]} (role: {user_data["role"]})')
     
     return {
         'statusCode': 200,
