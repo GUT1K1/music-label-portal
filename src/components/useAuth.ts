@@ -110,10 +110,9 @@ export const useAuth = () => {
         throw new Error(`HTTP ${response.status}`);
       }
       
-      const data = await response.json();
-      const updatedUser = data.users?.[0];
+      const updatedUser = await response.json();
       
-      if (updatedUser) {
+      if (updatedUser && updatedUser.id) {
         const hasChanges = 
           updatedUser.role !== user.role || 
           updatedUser.balance !== user.balance ||

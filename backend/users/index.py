@@ -95,6 +95,57 @@ def handler(event, context):
             'isBase64Encoded': False
         }
     
+    if method == 'PUT':
+        body_data = json.loads(event.get('body', '{}'))
+        user_id = body_data.get('id')
+        
+        if not user_id:
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'User ID required'}),
+                'isBase64Encoded': False
+            }
+        
+        cur = conn.cursor()
+        
+        # Формируем SET часть запроса
+        updates = []
+        if 'full_name' in body_data or 'fullName' in body_data:
+            full_name = body_data.get('full_name') or body_data.get('fullName')
+            safe_name = full_name.replace("'", "''")
+            updates.append(f"full_name = '{safe_name}'")
+        
+        if 'avatar' in body_data or 'vk_photo' in body_data:
+            avatar = body_data.get('avatar') or body_data.get('vk_photo')
+            safe_avatar = avatar.replace("'", "''")
+            updates.append(f"vk_photo = '{safe_avatar}'")
+        
+        if 'balance' in body_data:
+            updates.append(f"balance = {float(body_data['balance'])}")
+        
+        if 'revenue_share_percent' in body_data:
+            updates.append(f"revenue_share_percent = {int(body_data['revenue_share_percent'])}")
+        
+        if 'role' in body_data:
+            updates.append(f"role = '{body_data['role']}'")
+        
+        if updates:
+            query = f"UPDATE t_p35759334_music_label_portal.users SET {', '.join(updates)} WHERE id = {int(user_id)}"
+            cur.execute(query)
+            conn.commit()
+        
+        cur.close()
+        conn.close()
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'success': True}),
+            'isBase64Encoded': False
+        }
+    
     conn.close()
     return {
         'statusCode': 405,
