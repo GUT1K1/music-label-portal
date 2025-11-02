@@ -44,7 +44,7 @@ export const useTasks = (user: any, ticketId?: number) => {
   const [showDeleted, setShowDeleted] = useState(false);
 
   const loadTasks = useCallback(async () => {
-    if (!user?.id) {
+    if (!user?.id || user.role === 'artist') {
       return;
     }
 

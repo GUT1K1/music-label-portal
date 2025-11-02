@@ -78,7 +78,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         # Get user role if not set
         if user_role is None:
-            cur.execute(f"SELECT id, role FROM {schema}.users WHERE id = {user_id}")
+            cur.execute(f"SELECT id, role, is_blocked FROM {schema}.users WHERE id = {user_id}")
             user = cur.fetchone()
             
             if not user:
@@ -89,7 +89,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
+            if user[2]:  # is_blocked
+                return {
+                    'statusCode': 403,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'User is blocked'}),
+                    'isBase64Encoded': False
+                }
+            
             user_role = user[1]
+        
+        # Только менеджеры и директора имеют доступ к задачам
+        if user_role == 'artist':
+            return {
+                'statusCode': 403,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Forbidden - tasks are for internal team only'}),
+                'isBase64Encoded': False
+            }
         
         if method == 'GET':
             params = event.get('queryStringParameters') or {}

@@ -1,22 +1,40 @@
 {
   "tests": [
     {
-      "name": "Get all users",
+      "name": "GET without auth returns 401",
       "method": "GET",
       "path": "/",
-      "expectedStatus": 200,
+      "expectedStatus": 401,
       "expectedBody": {
-        "users": "array"
+        "error": "Unauthorized - X-User-Id required"
       },
       "bodyMatcher": "partial"
     },
     {
-      "name": "Collect artist stats",
-      "method": "POST",
-      "path": "/?action=collect_stats",
-      "expectedStatus": 200,
+      "name": "GET with invalid user ID returns 401",
+      "method": "GET",
+      "path": "/",
+      "headers": {
+        "X-User-Id": "invalid"
+      },
+      "expectedStatus": 401,
       "expectedBody": {
-        "success": true
+        "error": "Invalid user ID"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST without auth returns 401",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "username": "test",
+        "full_name": "Test User",
+        "role": "artist"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
       },
       "bodyMatcher": "partial"
     }

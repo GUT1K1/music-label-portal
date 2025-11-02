@@ -96,6 +96,26 @@ def collect_stats(conn, vk_token: str, ya_token: str) -> int:
     cur.close()
     return updated_count
 
+def verify_user(user_id: int, conn) -> Optional[Dict[str, Any]]:
+    '''Проверяет пользователя и возвращает его данные'''
+    import psycopg2.extras
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute(
+        "SELECT id, username, role, is_blocked FROM t_p35759334_music_label_portal.users WHERE id = %s",
+        (user_id,)
+    )
+    user = cur.fetchone()
+    cur.close()
+    
+    if not user or user['is_blocked']:
+        return None
+    return dict(user)
+
+def check_permission(user_role: str, required_role: str) -> bool:
+    '''Проверяет права доступа'''
+    role_hierarchy = {'director': 3, 'manager': 2, 'artist': 1}
+    return role_hierarchy.get(user_role, 0) >= role_hierarchy.get(required_role, 0)
+
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
     Business: Управление пользователями лейбла и автосбор статистики
@@ -113,7 +133,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'headers': {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Headers': 'Content-Type, X-User-Id',
                 'Access-Control-Max-Age': '86400'
             },
             'body': ''
@@ -122,8 +142,36 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     import psycopg2
     import psycopg2.extras
     
+    headers = event.get('headers', {})
+    user_id_header = headers.get('X-User-Id') or headers.get('x-user-id')
+    
+    if not user_id_header:
+        return {
+            'statusCode': 401,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Unauthorized - X-User-Id required'})
+        }
+    
+    try:
+        current_user_id = int(user_id_header)
+    except ValueError:
+        return {
+            'statusCode': 401,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Invalid user ID'})
+        }
+    
     dsn = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(dsn)
+    
+    current_user = verify_user(current_user_id, conn)
+    if not current_user:
+        conn.close()
+        return {
+            'statusCode': 401,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'User not found or blocked'})
+        }
     
     if action == 'collect_stats' and method == 'POST':
         vk_token = os.environ.get('VK_SERVICE_TOKEN')
@@ -152,6 +200,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     
     if method == 'GET':
+        if not check_permission(current_user['role'], 'manager'):
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 403,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Forbidden - insufficient permissions'})
+            }
+        
         role_filter = query_params.get('role')
         
         query = '''SELECT id, username, role, full_name, revenue_share_percent, created_at, 
@@ -180,13 +237,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     if method == 'POST':
+        if not check_permission(current_user['role'], 'director'):
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 403,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Forbidden - only directors can create users'})
+            }
+        
         body_data = json.loads(event.get('body', '{}'))
         
         username = body_data.get('username')
         full_name = body_data.get('full_name')
         role = body_data.get('role')
         revenue_share_percent = body_data.get('revenue_share_percent', 50)
-        password = body_data.get('password', '12345')
         
         if not all([username, full_name, role]):
             cur.close()
@@ -260,6 +325,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'User ID is required'})
             }
         
+        if current_user_id != user_id and not check_permission(current_user['role'], 'director'):
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 403,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Forbidden - can only edit your own profile or must be director'})
+            }
+        
+        if 'role' in body_data:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 403,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Forbidden - role cannot be changed via API'})
+            }
+        
         update_fields = []
         
         if 'fullName' in body_data or 'full_name' in body_data:
@@ -271,11 +354,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if 'username' in body_data:
             safe_username = body_data['username'].replace("'", "''")
             update_fields.append(f"username = '{safe_username}'")
-        
-        if 'role' in body_data:
-            role = body_data['role']
-            if role in ['artist', 'manager', 'director']:
-                update_fields.append(f"role = '{role}'")
         
         if 'email' in body_data:
             email_val = body_data['email']
