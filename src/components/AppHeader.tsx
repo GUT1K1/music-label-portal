@@ -100,7 +100,10 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       {/* Desktop menu */}
       <div className="hidden md:flex items-center gap-2 md:gap-3">
         {balance !== null && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30">
+          <div 
+            className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30 cursor-help"
+            title="Вывод доступен от 1000₽"
+          >
             <Icon name="Wallet" size={18} className="text-primary" />
             <span className="font-semibold text-sm">{balance.toFixed(2)} ₽</span>
           </div>
@@ -154,7 +157,10 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       {/* Mobile menu */}
       <div className="flex md:hidden items-center gap-2">
         {balance !== null && (
-          <div className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30">
+          <div 
+            className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30 cursor-help"
+            title="Вывод доступен от 1000₽"
+          >
             <Icon name="Wallet" size={14} className="text-primary" />
             <span className="font-semibold text-xs">{balance.toFixed(2)}</span>
           </div>
