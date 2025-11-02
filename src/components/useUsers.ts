@@ -20,6 +20,8 @@ export const useUsers = (user: User | null) => {
   }>({ managers: null, allUsers: null });
 
   const loadManagers = useCallback(async (force = false) => {
+    if (!user?.id) return;
+    
     const now = Date.now();
     const cached = cacheRef.current.managers;
     
@@ -29,7 +31,9 @@ export const useUsers = (user: User | null) => {
     }
     
     try {
-      const response = await fetch(`${API_URLS.users}?role=manager`);
+      const response = await fetch(`${API_URLS.users}?role=manager`, {
+        headers: { 'X-User-Id': user.id.toString() }
+      });
       const data = await response.json();
       const users = data.users || [];
       setManagers(users);
@@ -37,9 +41,11 @@ export const useUsers = (user: User | null) => {
     } catch (error) {
       console.error('Failed to load managers:', error);
     }
-  }, []);
+  }, [user?.id]);
 
   const loadAllUsers = useCallback(async (force = false) => {
+    if (!user?.id) return;
+    
     const now = Date.now();
     const cached = cacheRef.current.allUsers;
     
@@ -49,7 +55,9 @@ export const useUsers = (user: User | null) => {
     }
     
     try {
-      const response = await fetch(API_URLS.users);
+      const response = await fetch(API_URLS.users, {
+        headers: { 'X-User-Id': user.id.toString() }
+      });
       const data = await response.json();
       const users = data.users || [];
       setAllUsers(users);
@@ -57,9 +65,11 @@ export const useUsers = (user: User | null) => {
     } catch (error) {
       console.error('Failed to load users:', error);
     }
-  }, []);
+  }, [user?.id]);
 
   const createUser = useCallback(async (newUser: NewUser) => {
+    if (!user?.id) return false;
+    
     if (!newUser.username || !newUser.full_name) {
       toast({ title: '❌ Заполните все поля', variant: 'destructive' });
       return false;
@@ -68,7 +78,10 @@ export const useUsers = (user: User | null) => {
     try {
       const response = await fetch(API_URLS.users, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-User-Id': user.id.toString()
+        },
         body: JSON.stringify(newUser)
       });
       
@@ -100,14 +113,19 @@ export const useUsers = (user: User | null) => {
       toast({ title: '❌ Ошибка создания', variant: 'destructive' });
     }
     return false;
-  }, [toast, loadAllUsers]);
+  }, [user?.id, toast, loadAllUsers]);
 
   const updateUser = useCallback(async (userId: number, userData: Partial<User>) => {
+    if (!user?.id) return false;
+    
     try {
       const payload = { id: userId, ...userData };
       const response = await fetch(API_URLS.users, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-User-Id': user.id.toString()
+        },
         body: JSON.stringify(payload)
       });
       
@@ -151,7 +169,7 @@ export const useUsers = (user: User | null) => {
       toast({ title: '❌ Ошибка обновления', variant: 'destructive' });
       return false;
     }
-  }, [toast, loadAllUsers]);
+  }, [user?.id, toast, loadAllUsers]);
 
   useEffect(() => {
     if (user?.role === 'director') {
