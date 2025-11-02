@@ -2,10 +2,10 @@ export default function AnimatedHero() {
   return (
     <div className="relative py-24 px-4">
       <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[1.5] text-center tracking-tight">
-        <div className="block mb-4" style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
+        <div className="block mb-6">
           <span 
             className="inline-block bg-gradient-to-r from-yellow-400 via-orange-500 to-yellow-400 bg-clip-text text-transparent animate-gradient-x drop-shadow-2xl"
-            style={{ paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+            style={{ paddingBottom: '1.5rem' }}
           >
             Выпускай
           </span>
