@@ -68,6 +68,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 return update_thread_status(conn, user_id, body_data)
             elif action == 'assign_thread':
                 return assign_thread(conn, user_id, body_data)
+            elif action == 'get_artists':
+                return get_artists(conn, user_id)
             else:
                 return {
                     'statusCode': 400,
@@ -140,21 +142,52 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
             
             if status_filter != 'all':
                 cursor.execute("""
-                    SELECT * FROM t_p35759334_music_label_portal.support_threads
-                    WHERE status = %s
-                    ORDER BY last_message_at DESC
-                """, (status_filter,))
+                    SELECT 
+                        st.*,
+                        u.username as artist_username,
+                        u.full_name as artist_name,
+                        u.avatar as artist_avatar,
+                        u.vk_photo as artist_vk_photo,
+                        (SELECT message FROM t_p35759334_music_label_portal.messages 
+                         WHERE thread_id = st.id 
+                         ORDER BY created_at DESC LIMIT 1) as last_message,
+                        (SELECT COUNT(*) FROM t_p35759334_music_label_portal.messages 
+                         WHERE thread_id = st.id AND is_read = false AND sender_id != %s) as unread_count
+                    FROM t_p35759334_music_label_portal.support_threads st
+                    LEFT JOIN t_p35759334_music_label_portal.users u ON st.artist_id = u.id
+                    WHERE st.status = %s
+                    ORDER BY st.last_message_at DESC
+                """, (user_id_int, status_filter))
             else:
                 cursor.execute("""
-                    SELECT * FROM t_p35759334_music_label_portal.support_threads
-                    ORDER BY last_message_at DESC
-                """)
+                    SELECT 
+                        st.*,
+                        u.username as artist_username,
+                        u.full_name as artist_name,
+                        u.avatar as artist_avatar,
+                        u.vk_photo as artist_vk_photo,
+                        (SELECT message FROM t_p35759334_music_label_portal.messages 
+                         WHERE thread_id = st.id 
+                         ORDER BY created_at DESC LIMIT 1) as last_message,
+                        (SELECT COUNT(*) FROM t_p35759334_music_label_portal.messages 
+                         WHERE thread_id = st.id AND is_read = false AND sender_id != %s) as unread_count
+                    FROM t_p35759334_music_label_portal.support_threads st
+                    LEFT JOIN t_p35759334_music_label_portal.users u ON st.artist_id = u.id
+                    ORDER BY st.last_message_at DESC
+                """, (user_id_int,))
         else:
             cursor.execute("""
-                SELECT * FROM t_p35759334_music_label_portal.support_threads
+                SELECT 
+                    st.*,
+                    (SELECT message FROM t_p35759334_music_label_portal.messages 
+                     WHERE thread_id = st.id 
+                     ORDER BY created_at DESC LIMIT 1) as last_message,
+                    (SELECT COUNT(*) FROM t_p35759334_music_label_portal.messages 
+                     WHERE thread_id = st.id AND is_read = false AND sender_id != %s) as unread_count
+                FROM t_p35759334_music_label_portal.support_threads st
                 WHERE artist_id = %s
                 ORDER BY last_message_at DESC
-            """, (user_id_int,))
+            """, (user_id_int, user_id_int))
         
         threads = cursor.fetchall()
         
@@ -174,12 +207,20 @@ def create_thread(conn, user_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
     
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     
+    cursor.execute("SELECT role FROM t_p35759334_music_label_portal.users WHERE id = %s", (user_id_int,))
+    user_role_result = cursor.fetchone()
+    user_role = user_role_result['role'] if user_role_result else 'artist'
+    
+    artist_id = user_id_int
+    if user_role in ['manager', 'boss']:
+        artist_id = data.get('artist_id', user_id_int)
+    
     cursor.execute("""
         INSERT INTO t_p35759334_music_label_portal.support_threads 
         (artist_id, subject, status, priority, created_at, updated_at, last_message_at)
         VALUES (%s, %s, 'new', %s, NOW(), NOW(), NOW())
         RETURNING id
-    """, (user_id_int, subject, priority))
+    """, (artist_id, subject, priority))
     
     thread_id = cursor.fetchone()['id']
     
@@ -287,4 +328,37 @@ def assign_thread(conn, user_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
         'statusCode': 200,
         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
         'body': json.dumps({'success': True})
+    }
+
+def get_artists(conn, user_id: str) -> Dict[str, Any]:
+    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    
+    user_id_int = int(user_id)
+    
+    cursor.execute("SELECT role FROM t_p35759334_music_label_portal.users WHERE id = %s", (user_id_int,))
+    user_role_result = cursor.fetchone()
+    user_role = user_role_result['role'] if user_role_result else 'artist'
+    
+    if user_role not in ['manager', 'boss']:
+        return {
+            'statusCode': 403,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Forbidden'})
+        }
+    
+    cursor.execute("""
+        SELECT id, username, full_name, avatar, vk_photo
+        FROM t_p35759334_music_label_portal.users
+        WHERE role = 'artist'
+        ORDER BY full_name ASC
+    """)
+    
+    artists = cursor.fetchall()
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({
+            'artists': [dict(artist) for artist in artists]
+        }, default=str)
     }
