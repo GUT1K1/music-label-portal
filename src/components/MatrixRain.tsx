@@ -8,7 +8,12 @@ interface Column {
   chars: string[];
 }
 
-export default function MatrixRain() {
+interface MatrixRainProps {
+  onComplete?: () => void;
+  duration?: number;
+}
+
+export default function MatrixRain({ onComplete, duration = 3500 }: MatrixRainProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -25,7 +30,7 @@ export default function MatrixRain() {
     setCanvasSize();
 
     const chars = ['4', '2', '0'];
-    const fontSize = 20;
+    const fontSize = 24;
     const columnCount = Math.floor(canvas.width / fontSize);
     const columns: Column[] = [];
 
@@ -33,8 +38,8 @@ export default function MatrixRain() {
       columns.push({
         x: i * fontSize,
         y: Math.random() * canvas.height - canvas.height,
-        speed: 0.5 + Math.random() * 1.5,
-        opacity: 0.1 + Math.random() * 0.3,
+        speed: 1 + Math.random() * 2,
+        opacity: 0.2 + Math.random() * 0.4,
         chars: Array(Math.floor(canvas.height / fontSize) + 1)
           .fill(0)
           .map(() => chars[Math.floor(Math.random() * chars.length)])
@@ -42,9 +47,14 @@ export default function MatrixRain() {
     }
 
     let animationId: number;
+    const startTime = Date.now();
 
     const draw = () => {
-      ctx.fillStyle = 'rgba(13, 13, 13, 0.08)';
+      const elapsed = Date.now() - startTime;
+      const fadeOut = elapsed > duration - 500;
+      const globalAlpha = fadeOut ? Math.max(0, 1 - (elapsed - (duration - 500)) / 500) : 1;
+
+      ctx.fillStyle = 'rgba(13, 13, 13, 0.15)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       columns.forEach((column) => {
@@ -53,14 +63,14 @@ export default function MatrixRain() {
           
           if (yPos > -fontSize && yPos < canvas.height) {
             const distanceFromTop = yPos / canvas.height;
-            const alpha = column.opacity * (1 - distanceFromTop * 0.5);
+            const alpha = column.opacity * (1 - distanceFromTop * 0.3) * globalAlpha;
             
             const isFirst = index === Math.floor(column.chars.length * 0.1);
             
             if (isFirst) {
-              ctx.shadowColor = 'rgba(234, 179, 8, 0.8)';
-              ctx.shadowBlur = 10;
-              ctx.fillStyle = `rgba(234, 179, 8, ${alpha * 1.5})`;
+              ctx.shadowColor = 'rgba(234, 179, 8, 0.9)';
+              ctx.shadowBlur = 15;
+              ctx.fillStyle = `rgba(234, 179, 8, ${Math.min(1, alpha * 1.8)})`;
               ctx.font = `bold ${fontSize}px monospace`;
             } else {
               ctx.shadowBlur = 0;
@@ -79,15 +89,19 @@ export default function MatrixRain() {
 
         if (column.y > canvas.height) {
           column.y = -canvas.height * Math.random();
-          column.speed = 0.5 + Math.random() * 1.5;
-          column.opacity = 0.1 + Math.random() * 0.3;
+          column.speed = 1 + Math.random() * 2;
+          column.opacity = 0.2 + Math.random() * 0.4;
           column.chars = Array(Math.floor(canvas.height / fontSize) + 1)
             .fill(0)
             .map(() => chars[Math.floor(Math.random() * chars.length)]);
         }
       });
 
-      animationId = requestAnimationFrame(draw);
+      if (elapsed < duration) {
+        animationId = requestAnimationFrame(draw);
+      } else {
+        onComplete?.();
+      }
     };
 
     draw();
@@ -100,8 +114,8 @@ export default function MatrixRain() {
         columns.push({
           x: i * fontSize,
           y: Math.random() * canvas.height - canvas.height,
-          speed: 0.5 + Math.random() * 1.5,
-          opacity: 0.1 + Math.random() * 0.3,
+          speed: 1 + Math.random() * 2,
+          opacity: 0.2 + Math.random() * 0.4,
           chars: Array(Math.floor(canvas.height / fontSize) + 1)
             .fill(0)
             .map(() => chars[Math.floor(Math.random() * chars.length)])
@@ -115,16 +129,14 @@ export default function MatrixRain() {
       cancelAnimationFrame(animationId);
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [onComplete, duration]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ 
-        opacity: 0.4,
-        mixBlendMode: 'screen'
-      }}
-    />
+    <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0"
+      />
+    </div>
   );
 }

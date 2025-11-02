@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import { API_ENDPOINTS } from '@/config/api';
+import MatrixRain from '@/components/MatrixRain';
 
 interface LoginFormProps {
   onLogin: (username: string, password: string, vkData?: any, telegramData?: any) => void;
@@ -22,6 +23,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showMatrixLoader, setShowMatrixLoader] = useState(false);
   const telegramRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -47,7 +49,13 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
         
         if (data.user) {
           console.log('Calling onLogin with user:', data.user);
-          onLogin('', '', undefined, data.user);
+          setIsSuccess(true);
+          setTimeout(() => {
+            setShowMatrixLoader(true);
+            setTimeout(() => {
+              onLogin('', '', undefined, data.user);
+            }, 3500);
+          }, 800);
         } else {
           throw new Error('Не удалось получить данные пользователя');
         }
@@ -112,7 +120,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
       setIsSuccess(true);
       
       setTimeout(() => {
-        onLogin(username, password);
+        setShowMatrixLoader(true);
       }, 1200);
     } catch (error) {
       setIsLoading(false);
@@ -123,6 +131,15 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
       });
     }
   };
+
+  if (showMatrixLoader) {
+    return (
+      <MatrixRain 
+        onComplete={() => onLogin(username, password)} 
+        duration={3500} 
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-yellow-950/20 to-black bg-grid-pattern p-4 relative overflow-hidden">
