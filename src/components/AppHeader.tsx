@@ -86,11 +86,9 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       });
       
       if (response.ok) {
-        const data = await response.json();
-        const users = data.users || data;
-        const currentUser = Array.isArray(users) ? users.find((u: any) => u.id === userId) : null;
-        if (currentUser && currentUser.balance !== undefined && currentUser.balance !== null) {
-          setBalance(parseFloat(currentUser.balance) || 0);
+        const user = await response.json();
+        if (user && user.balance !== undefined && user.balance !== null) {
+          setBalance(parseFloat(user.balance) || 0);
         }
       }
     } catch (error) {

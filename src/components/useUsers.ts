@@ -34,10 +34,10 @@ export const useUsers = (user: User | null) => {
       const response = await fetch(`${API_URLS.users}?role=manager`, {
         headers: { 'X-User-Id': user.id.toString() }
       });
-      const data = await response.json();
-      const users = data.users || [];
-      setManagers(users);
-      cacheRef.current.managers = { data: users, timestamp: now };
+      const users = await response.json();
+      const usersList = Array.isArray(users) ? users : [];
+      setManagers(usersList);
+      cacheRef.current.managers = { data: usersList, timestamp: now };
     } catch (error) {
       console.error('Failed to load managers:', error);
     }
@@ -58,10 +58,10 @@ export const useUsers = (user: User | null) => {
       const response = await fetch(API_URLS.users, {
         headers: { 'X-User-Id': user.id.toString() }
       });
-      const data = await response.json();
-      const users = data.users || [];
-      setAllUsers(users);
-      cacheRef.current.allUsers = { data: users, timestamp: now };
+      const users = await response.json();
+      const usersList = Array.isArray(users) ? users : [];
+      setAllUsers(usersList);
+      cacheRef.current.allUsers = { data: usersList, timestamp: now };
     } catch (error) {
       console.error('Failed to load users:', error);
     }
