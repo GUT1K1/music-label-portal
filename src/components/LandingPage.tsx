@@ -184,7 +184,7 @@ export default function LandingPage() {
         
         <div className="container mx-auto px-4 relative z-10 py-20">
           <div className="max-w-6xl mx-auto text-center">
-            <div className="mb-12 overflow-hidden">
+            <div className="mb-12">
               <AnimatedHero />
             </div>
             
