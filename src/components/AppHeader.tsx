@@ -79,7 +79,7 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
 
   const loadBalance = async () => {
     try {
-      const response = await fetch(`${API_ENDPOINTS.USERS}`, {
+      const response = await fetch(`${API_ENDPOINTS.USERS}?id=${userId}`, {
         headers: {
           'X-User-Id': userId.toString()
         }

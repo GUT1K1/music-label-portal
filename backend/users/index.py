@@ -100,16 +100,22 @@ def verify_user(user_id: int, conn) -> Optional[Dict[str, Any]]:
     '''Проверяет пользователя и возвращает его данные'''
     import psycopg2.extras
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute(
-        "SELECT id, username, role, is_blocked FROM users WHERE id = %s",
-        (user_id,)
-    )
-    user = cur.fetchone()
-    cur.close()
     
-    if not user or user['is_blocked']:
-        return None
-    return dict(user)
+    try:
+        cur.execute(
+            "SELECT id, username, role, is_blocked FROM users WHERE id = %s",
+            (user_id,)
+        )
+        user = cur.fetchone()
+        cur.close()
+        
+        if not user or user['is_blocked']:
+            return None
+        return dict(user)
+    except Exception as e:
+        print(f"[DEBUG] verify_user error: {type(e).__name__}: {str(e)}")
+        cur.close()
+        raise
 
 def check_permission(user_role: str, required_role: str) -> bool:
     '''Проверяет права доступа'''
@@ -162,11 +168,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     dsn = os.environ.get('DATABASE_URL')
+    if dsn and 'options=' not in dsn:
+        dsn += '?options=-c search_path=t_p35759334_music_label_portal,public'
     conn = psycopg2.connect(dsn)
-    
-    cur_temp = conn.cursor()
-    cur_temp.execute("SET search_path TO t_p35759334_music_label_portal, public")
-    cur_temp.close()
     
     current_user = verify_user(current_user_id, conn)
     if not current_user:
