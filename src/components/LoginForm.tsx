@@ -7,6 +7,7 @@ import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import { API_ENDPOINTS } from '@/config/api';
 import MatrixRain from '@/components/MatrixRain';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginFormProps {
   onLogin: (username: string, password: string, vkData?: any, telegramData?: any) => void;
@@ -27,6 +28,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   const [localUserData, setLocalUserData] = useState<any>(null);
   const telegramRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Глобальная функция для обработки авторизации
@@ -164,6 +166,15 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-yellow-950/20 to-black bg-grid-pattern p-4 relative overflow-hidden">
+      <Button
+        onClick={() => navigate('/')}
+        variant="ghost"
+        className="absolute top-4 left-4 z-10 text-primary hover:text-primary/80"
+      >
+        <Icon name="ArrowLeft" className="w-4 h-4 mr-2" />
+        На главную
+      </Button>
+
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
