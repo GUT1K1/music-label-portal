@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import CustomCursor from "@/components/CustomCursor";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
 import NotFoundCustom from "./pages/NotFoundCustom";
@@ -30,6 +31,7 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <NotificationProvider>
         <TooltipProvider>
+          <CustomCursor />
           <Toaster />
           <Sonner />
           <BrowserRouter>
