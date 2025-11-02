@@ -168,10 +168,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     dsn = os.environ.get('DATABASE_URL')
-    if '?' in dsn:
-        conn = psycopg2.connect(dsn)
-    else:
-        conn = psycopg2.connect(dsn + '?options=-c%20search_path=t_p35759334_music_label_portal,public')
+    conn = psycopg2.connect(dsn, options='-c search_path=t_p35759334_music_label_portal,public')
     
     current_user = verify_user(current_user_id, conn)
     if not current_user:
