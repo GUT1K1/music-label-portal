@@ -13,7 +13,7 @@ export const API_ENDPOINTS = {
   NOTIFICATIONS: funcUrls['notifications'],
   RELEASES: funcUrls['releases'],
   UNREAD_COUNTS: funcUrls['unread-counts'],
-  WEEKLY_REPORT: funcUrls['weekly-report'],
+  WEEKLY_REPORT: funcUrls['weekly-report'] as string | undefined,
   TASKS: funcUrls['tasks'],
   MESSAGES: funcUrls['messages'],
   TICKET_ANALYTICS: funcUrls['ticket-analytics'],

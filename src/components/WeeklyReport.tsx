@@ -38,21 +38,30 @@ export default function WeeklyReport() {
   const { toast } = useToast();
 
   const loadReport = async () => {
+    if (!API_URL) {
+      toast({ title: '⚠️ Функция в разработке', description: 'Еженедельные отчёты скоро будут доступны' });
+      return;
+    }
+    
     setLoading(true);
     try {
-      const token = localStorage.getItem('auth_token') || 'director-token';
-      const userId = localStorage.getItem('user_id') || '1';
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user.id) {
+        toast({ title: '❌ Требуется авторизация', variant: 'destructive' });
+        return;
+      }
 
       const response = await fetch(API_URL, {
         headers: {
-          'X-User-Id': userId,
-          'X-Auth-Token': token
+          'X-User-Id': user.id.toString()
         }
       });
 
       if (response.ok) {
         const data = await response.json();
         setReport(data);
+      } else {
+        toast({ title: '❌ Ошибка загрузки отчёта', variant: 'destructive' });
       }
     } catch (error) {
       console.error('Failed to load report:', error);
@@ -63,17 +72,24 @@ export default function WeeklyReport() {
   };
 
   const sendToTelegram = async () => {
+    if (!API_URL) {
+      toast({ title: '⚠️ Функция в разработке', description: 'Отправка отчётов скоро будет доступна' });
+      return;
+    }
+    
     setSending(true);
     try {
-      const token = localStorage.getItem('auth_token') || 'director-token';
-      const userId = localStorage.getItem('user_id') || '1';
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      if (!user.id) {
+        toast({ title: '❌ Требуется авторизация', variant: 'destructive' });
+        return;
+      }
 
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-User-Id': userId,
-          'X-Auth-Token': token
+          'X-User-Id': user.id.toString()
         },
         body: JSON.stringify({ send_to_telegram: true })
       });
