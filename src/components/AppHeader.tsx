@@ -3,6 +3,13 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import NotificationBell from '@/components/NotificationBell';
 import { API_ENDPOINTS } from '@/config/api';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface AppHeaderProps {
   onMessagesClick: () => void;
@@ -11,9 +18,10 @@ interface AppHeaderProps {
   onRefreshData?: () => void;
   userRole: 'artist' | 'manager' | 'director';
   userId: number;
+  userName?: string;
 }
 
-export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, userRole, userId }: AppHeaderProps) {
+export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, userRole, userId, userName = 'Пользователь' }: AppHeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [balance, setBalance] = useState<number | null>(null);
 
@@ -98,7 +106,7 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       </div>
       
       {/* Desktop menu */}
-      <div className="hidden md:flex items-center gap-2 md:gap-3">
+      <div className="hidden md:flex items-center gap-3">
         {balance !== null && (
           <div 
             className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30 cursor-help"
@@ -109,49 +117,45 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
           </div>
         )}
         <NotificationBell userId={userId} />
-        {userRole !== 'artist' && (
-          <Button
-            onClick={onMessagesClick}
-            variant="outline"
-            size="sm"
-            className={`flex items-center gap-1 md:gap-2 relative text-xs md:text-sm px-2 md:px-4 ${unreadCount > 0 ? 'animate-pulse border-red-500' : ''}`}
-          >
-            <Icon name="MessageSquare" size={16} className="md:w-[18px] md:h-[18px]" />
-            <span className="hidden md:inline">{getMessagesLabel()}</span>
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-bounce">
-                {unreadCount > 9 ? '9+' : unreadCount}
-              </span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="flex items-center gap-2 px-3 py-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              <span className="font-medium">{userName.split(' ')[0]}</span>
+              <Icon name="ChevronDown" size={16} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onClick={onProfileClick}>
+              <Icon name="User" size={16} className="mr-2" />
+              Профиль
+            </DropdownMenuItem>
+            {userRole !== 'artist' && (
+              <DropdownMenuItem onClick={onMessagesClick} className={unreadCount > 0 ? 'text-red-400' : ''}>
+                <Icon name="MessageSquare" size={16} className="mr-2" />
+                {getMessagesLabel()}
+                {unreadCount > 0 && (
+                  <span className="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </DropdownMenuItem>
             )}
-          </Button>
-        )}
-        {onRefreshData && (
-          <Button
-            onClick={onRefreshData}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-4"
-            title="Обновить данные профиля"
-          >
-            <Icon name="RefreshCw" size={16} className="md:w-[18px] md:h-[18px]" />
-            <span className="hidden lg:inline">Обновить</span>
-          </Button>
-        )}
-        <Button
-          onClick={onProfileClick}
-          variant="outline"
-          size="sm"
-          className="flex items-center gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-4"
-        >
-          <Icon name="User" size={16} className="md:w-[18px] md:h-[18px]" />
-          <span className="hidden md:inline">Профиль</span>
-        </Button>
-        <button 
-          onClick={onLogout}
-          className="px-3 py-2 md:px-6 md:py-2 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all text-xs md:text-sm"
-        >
-          Выйти
-        </button>
+            {onRefreshData && (
+              <DropdownMenuItem onClick={onRefreshData}>
+                <Icon name="RefreshCw" size={16} className="mr-2" />
+                Обновить
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-red-400" onClick={onLogout}>
+              <Icon name="LogOut" size={16} className="mr-2" />
+              Выйти
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Mobile menu */}

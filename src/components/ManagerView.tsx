@@ -82,6 +82,7 @@ export default function ManagerView({
             onRefreshData={onRefreshData}
             userRole="manager"
             userId={user.id}
+            userName={user.full_name}
           />
         </div>
 

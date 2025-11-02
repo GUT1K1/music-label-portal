@@ -92,6 +92,7 @@ export default function DirectorView({
             onRefreshData={onRefreshData}
             userRole="director"
             userId={user.id}
+            userName={user.full_name}
           />
         </div>
 

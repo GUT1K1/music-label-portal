@@ -80,6 +80,7 @@ export default function ArtistView({
             onRefreshData={onRefreshData}
             userRole="artist"
             userId={user.id}
+            userName={user.full_name}
           />
         </div>
 
