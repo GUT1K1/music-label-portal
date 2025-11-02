@@ -36,13 +36,14 @@ export default function ReleaseModerationPanel({ userId, userRole = 'manager' }:
         headers: { 'X-User-Id': userId.toString() }
       });
       const data = await response.json();
-      setReleases(data);
+      setReleases(Array.isArray(data) ? data : []);
     } catch (error) {
       toast({
         title: 'Ошибка',
         description: 'Не удалось загрузить релизы',
         variant: 'destructive'
       });
+      setReleases([]);
     } finally {
       setLoading(false);
     }
@@ -181,7 +182,8 @@ export default function ReleaseModerationPanel({ userId, userRole = 'manager' }:
     });
   };
 
-  const filteredReleases = releases.filter(filterByDate);
+  const safeReleases = Array.isArray(releases) ? releases : [];
+  const filteredReleases = safeReleases.filter(filterByDate);
   const pendingReleases = filteredReleases.filter((r) => r.status === 'pending');
   const approvedReleases = filteredReleases.filter((r) => r.status === 'approved');
   const rejectedReleases = filteredReleases.filter((r) => r.status === 'rejected_fixable' || r.status === 'rejected_final');
