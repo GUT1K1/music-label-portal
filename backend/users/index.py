@@ -101,7 +101,7 @@ def verify_user(user_id: int, conn) -> Optional[Dict[str, Any]]:
     import psycopg2.extras
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cur.execute(
-        "SELECT id, username, role, is_blocked FROM t_p35759334_music_label_portal.users WHERE id = %s",
+        "SELECT id, username, role, is_blocked FROM users WHERE id = %s",
         (user_id,)
     )
     user = cur.fetchone()
@@ -209,7 +209,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                                       telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                                       vk_photo, vk_email, avatar 
-                               FROM t_p35759334_music_label_portal.users WHERE id = %s'''
+                               FROM users WHERE id = %s'''
                     cur.execute(query, (requested_user_id,))
                     user = cur.fetchone()
                     
@@ -246,7 +246,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                           telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                           vk_photo, vk_email, avatar 
-                   FROM t_p35759334_music_label_portal.users WHERE 1=1'''
+                   FROM users WHERE 1=1'''
         params = []
         
         if role_filter and role_filter != 'all':
