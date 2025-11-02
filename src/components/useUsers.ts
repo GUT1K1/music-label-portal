@@ -1,28 +1,59 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { User, NewUser, API_URLS } from '@/types';
 import { createNotification } from '@/hooks/useNotifications';
+
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+const CACHE_TTL = 300000;
 
 export const useUsers = (user: User | null) => {
   const [managers, setManagers] = useState<User[]>([]);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const { toast } = useToast();
+  const cacheRef = useRef<{
+    managers: CacheEntry<User[]> | null;
+    allUsers: CacheEntry<User[]> | null;
+  }>({ managers: null, allUsers: null });
 
-  const loadManagers = useCallback(async () => {
+  const loadManagers = useCallback(async (force = false) => {
+    const now = Date.now();
+    const cached = cacheRef.current.managers;
+    
+    if (!force && cached && now - cached.timestamp < CACHE_TTL) {
+      setManagers(cached.data);
+      return;
+    }
+    
     try {
       const response = await fetch(`${API_URLS.users}?role=manager`);
       const data = await response.json();
-      setManagers(data.users || []);
+      const users = data.users || [];
+      setManagers(users);
+      cacheRef.current.managers = { data: users, timestamp: now };
     } catch (error) {
       console.error('Failed to load managers:', error);
     }
   }, []);
 
-  const loadAllUsers = useCallback(async () => {
+  const loadAllUsers = useCallback(async (force = false) => {
+    const now = Date.now();
+    const cached = cacheRef.current.allUsers;
+    
+    if (!force && cached && now - cached.timestamp < CACHE_TTL) {
+      setAllUsers(cached.data);
+      return;
+    }
+    
     try {
       const response = await fetch(API_URLS.users);
       const data = await response.json();
-      setAllUsers(data.users || []);
+      const users = data.users || [];
+      setAllUsers(users);
+      cacheRef.current.allUsers = { data: users, timestamp: now };
     } catch (error) {
       console.error('Failed to load users:', error);
     }
@@ -59,7 +90,7 @@ export const useUsers = (user: User | null) => {
           console.error('Failed to create notification:', notifError);
         }
         
-        loadAllUsers();
+        loadAllUsers(true);
         return true;
       } else {
         const data = await response.json();
@@ -109,7 +140,7 @@ export const useUsers = (user: User | null) => {
           }
         }
         
-        loadAllUsers();
+        loadAllUsers(true);
         return true;
       } else {
         const data = await response.json();
@@ -127,7 +158,7 @@ export const useUsers = (user: User | null) => {
       loadManagers();
       loadAllUsers();
     }
-  }, [user?.role, loadManagers, loadAllUsers]);
+  }, [user?.role]);
 
   return {
     managers,

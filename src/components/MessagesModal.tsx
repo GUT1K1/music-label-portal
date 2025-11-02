@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,6 +47,8 @@ export function MessagesModal({ open, onOpenChange, userId, userRole, userName }
   const [sending, setSending] = useState(false);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const dialogsCacheRef = useRef<{ data: DialogUser[]; timestamp: number } | null>(null);
+  const CACHE_TTL = 60000;
 
   useEffect(() => {
     if (open) {
@@ -62,7 +64,15 @@ export function MessagesModal({ open, onOpenChange, userId, userRole, userName }
     }
   }, [messages]);
 
-  const loadDialogsList = useCallback(async () => {
+  const loadDialogsList = useCallback(async (force = false) => {
+    const now = Date.now();
+    const cached = dialogsCacheRef.current;
+    
+    if (!force && cached && now - cached.timestamp < CACHE_TTL) {
+      setDialogUsers(cached.data);
+      return;
+    }
+    
     setLoading(true);
     try {
       const response = await fetch(`${MESSAGES_API}?list_dialogs=true&user_id=${userId}`);
@@ -70,6 +80,7 @@ export function MessagesModal({ open, onOpenChange, userId, userRole, userName }
       
       const data = await response.json();
       setDialogUsers(data);
+      dialogsCacheRef.current = { data, timestamp: now };
     } catch (error) {
       toast({
         title: 'Ошибка',

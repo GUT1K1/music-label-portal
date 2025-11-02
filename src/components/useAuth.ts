@@ -89,7 +89,7 @@ export const useAuth = () => {
     if (!user) return;
     
     try {
-      const response = await fetch(`${API_URLS.users}?role=all`, {
+      const response = await fetch(`${API_URLS.users}?id=${user.id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -99,7 +99,7 @@ export const useAuth = () => {
       }
       
       const data = await response.json();
-      const updatedUser = data.users.find((u: User) => u.id === user.id);
+      const updatedUser = data.users?.[0];
       
       if (updatedUser) {
         // Проверяем, действительно ли данные изменились
@@ -119,25 +119,6 @@ export const useAuth = () => {
     if (savedUser) {
       const userData = JSON.parse(savedUser);
       setUser(userData);
-      
-      // Check if user's role has changed since last login
-      fetch(`${API_URLS.users}?role=all`)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then(data => {
-          const currentUser = data.users.find((u: User) => u.id === userData.id);
-          if (currentUser && currentUser.role !== userData.role) {
-            setUser(currentUser);
-            localStorage.setItem('user', JSON.stringify(currentUser));
-            toast({ 
-              title: '⚡ Ваша роль изменена', 
-              description: 'Права доступа обновлены' 
-            });
-          }
-        })
-        .catch(err => console.error('Failed to verify user role:', err));
     }
   }, []); // Пустой массив - запускается только один раз при монтировании
 
@@ -145,8 +126,10 @@ export const useAuth = () => {
     if (!user) return;
     
     const interval = setInterval(() => {
-      refreshUserData();
-    }, 30000);
+      if (!document.hidden) {
+        refreshUserData();
+      }
+    }, 300000);
     
     // Listen for role changes from other tabs or admin actions
     const handleRoleChange = (event: CustomEvent) => {

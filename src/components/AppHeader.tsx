@@ -18,8 +18,20 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
 
   useEffect(() => {
     loadUnreadCount();
-    const interval = setInterval(loadUnreadCount, 5000);
-    return () => clearInterval(interval);
+    
+    const interval = setInterval(loadUnreadCount, 60000);
+    
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        loadUnreadCount();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [userId]);
 
   const loadUnreadCount = async () => {

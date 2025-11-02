@@ -1,14 +1,32 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { logActivity } from '@/utils/activityLogger';
 import { User, Ticket, NewTicket, API_URLS } from '@/types';
 import { createNotification } from '@/hooks/useNotifications';
 
+interface CacheEntry {
+  data: Ticket[];
+  timestamp: number;
+}
+
+const CACHE_TTL = 30000;
+
 export const useTickets = (user: User | null, statusFilter: string) => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const { toast } = useToast();
+  const cacheRef = useRef<Map<string, CacheEntry>>(new Map());
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  const loadTickets = useCallback(async () => {
+  const loadTickets = useCallback(async (force = false) => {
+    const cacheKey = `${statusFilter}-${user?.id || 'all'}`;
+    const now = Date.now();
+    const cached = cacheRef.current.get(cacheKey);
+    
+    if (!force && cached && now - cached.timestamp < CACHE_TTL) {
+      setTickets(cached.data);
+      return;
+    }
+    
     try {
       const params = new URLSearchParams();
       if (statusFilter !== 'all') params.append('status', statusFilter);
@@ -16,7 +34,9 @@ export const useTickets = (user: User | null, statusFilter: string) => {
       
       const response = await fetch(`${API_URLS.tickets}?${params}`);
       const data = await response.json();
-      setTickets(data.tickets || []);
+      const ticketsData = data.tickets || [];
+      setTickets(ticketsData);
+      cacheRef.current.set(cacheKey, { data: ticketsData, timestamp: now });
     } catch (error) {
       // Silent fail
     }
@@ -172,7 +192,7 @@ export const useTickets = (user: User | null, statusFilter: string) => {
           logActivity(user.id, 'delete_ticket', `Удалён тикет #${ticketId}`, { ticketId });
         }
         toast({ title: '✅ Тикет удалён' });
-        loadTickets();
+        loadTickets(true);
       } else {
         toast({ title: '❌ Ошибка удаления', variant: 'destructive' });
       }
@@ -183,9 +203,15 @@ export const useTickets = (user: User | null, statusFilter: string) => {
 
   useEffect(() => {
     if (user) {
-      loadTickets();
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      debounceRef.current = setTimeout(() => {
+        loadTickets();
+      }, 300);
     }
-  }, [user, loadTickets]);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [user?.id, statusFilter]);
 
   return {
     tickets,
