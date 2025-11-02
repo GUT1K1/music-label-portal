@@ -97,7 +97,8 @@ const UserManagement = React.memo(function UserManagement({
       full_name: user.full_name,
       username: user.username,
       role: user.role,
-      revenue_share_percent: user.revenue_share_percent || 50
+      revenue_share_percent: user.revenue_share_percent || 50,
+      balance: (user as any).balance || 0
     });
     setShowEditModal(true);
   };
@@ -377,6 +378,22 @@ const UserManagement = React.memo(function UserManagement({
                   />
                 </div>
               )}
+              <div className="space-y-2">
+                <Label className="text-sm flex items-center gap-2">
+                  <Icon name="Wallet" size={16} className="text-primary" />
+                  Баланс (₽)
+                </Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={(editData as any).balance || 0}
+                  onChange={(e) => setEditData({ ...editData, balance: parseFloat(e.target.value) || 0 } as any)}
+                  className="h-10"
+                  placeholder="0.00"
+                />
+                <p className="text-xs text-muted-foreground">Текущий баланс пользователя</p>
+              </div>
               <div className="flex flex-col sm:flex-row gap-2 pt-2">
                 <Button 
                   onClick={handleEditUser} 

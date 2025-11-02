@@ -211,7 +211,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         role_filter = query_params.get('role')
         
-        query = '''SELECT id, username, role, full_name, revenue_share_percent, created_at, 
+        query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                           telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                           vk_photo, vk_email 
                    FROM t_p35759334_music_label_portal.users WHERE 1=1'''
@@ -390,6 +390,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if 'blocked_reason' in body_data:
             reason = body_data['blocked_reason'].replace("'", "''") if body_data['blocked_reason'] else ''
             update_fields.append(f"blocked_reason = '{reason}'")
+        
+        if 'balance' in body_data and check_permission(current_user['role'], 'director'):
+            balance_val = float(body_data['balance'])
+            update_fields.append(f"balance = {balance_val}")
         
         if 'password' in body_data:
             from passlib.hash import bcrypt
