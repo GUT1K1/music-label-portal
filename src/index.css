@@ -93,19 +93,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
-    cursor: none;
-  }
-
-  * {
-    cursor: none !important;
-  }
-
-  a,
-  button,
-  input,
-  textarea,
-  select {
-    cursor: none !important;
   }
 
   /* Стилизованный скролл для всего сайта */
