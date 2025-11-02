@@ -33,12 +33,6 @@ def handler(event, context):
     conn = psycopg2.connect(dsn)
     conn.autocommit = True
     
-    test_cur = conn.cursor()
-    test_cur.execute("SELECT current_user, current_database()")
-    info = test_cur.fetchone()
-    print(f"[DEBUG] Connected as: {info[0]}, DB: {info[1]}")
-    test_cur.close()
-    
     if method == 'GET':
         params = event.get('queryStringParameters') or {}
         user_id = params.get('id')
@@ -46,13 +40,15 @@ def handler(event, context):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         
         if user_id:
-            cur.execute('''
+            # Указываем схему ЯВНО
+            query = f'''
                 SELECT id, username, role, full_name, revenue_share_percent, balance, created_at,
                        telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                        vk_photo, vk_email, avatar
-                FROM users
-                WHERE id = %s
-            ''', (user_id,))
+                FROM t_p35759334_music_label_portal.users
+                WHERE id = {int(user_id)}
+            '''
+            cur.execute(query)
             
             user = cur.fetchone()
             cur.close()
@@ -78,7 +74,7 @@ def handler(event, context):
             SELECT id, username, role, full_name, revenue_share_percent, balance, created_at,
                    telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                    vk_photo, vk_email, avatar
-            FROM users
+            FROM t_p35759334_music_label_portal.users
             WHERE 1=1
         '''
         
