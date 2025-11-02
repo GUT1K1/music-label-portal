@@ -200,6 +200,38 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     
     if method == 'GET':
+        user_id_param = query_params.get('id')
+        
+        if user_id_param:
+            try:
+                requested_user_id = int(user_id_param)
+                if requested_user_id == current_user_id:
+                    query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
+                                      telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
+                                      vk_photo, vk_email, avatar 
+                               FROM t_p35759334_music_label_portal.users WHERE id = %s'''
+                    cur.execute(query, (requested_user_id,))
+                    user = cur.fetchone()
+                    
+                    cur.close()
+                    conn.close()
+                    
+                    if user:
+                        return {
+                            'statusCode': 200,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'isBase64Encoded': False,
+                            'body': json.dumps({'users': [dict(user)]}, default=str)
+                        }
+                    else:
+                        return {
+                            'statusCode': 404,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'body': json.dumps({'error': 'User not found'})
+                        }
+            except ValueError:
+                pass
+        
         if not check_permission(current_user['role'], 'manager'):
             cur.close()
             conn.close()
@@ -213,7 +245,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         query = '''SELECT id, username, role, full_name, revenue_share_percent, balance, created_at, 
                           telegram_id, is_blocked, is_frozen, frozen_until, blocked_reason,
-                          vk_photo, vk_email 
+                          vk_photo, vk_email, avatar 
                    FROM t_p35759334_music_label_portal.users WHERE 1=1'''
         params = []
         
@@ -368,8 +400,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if avatar_val:
                 safe_avatar = avatar_val.replace("'", "''")
                 update_fields.append(f"vk_photo = '{safe_avatar}'")
+                update_fields.append(f"avatar = '{safe_avatar}'")
             else:
                 update_fields.append("vk_photo = NULL")
+                update_fields.append("avatar = NULL")
         
         if 'revenue_share_percent' in body_data:
             update_fields.append(f"revenue_share_percent = {body_data['revenue_share_percent']}")
