@@ -10,6 +10,20 @@
         "username": "artist2"
       },
       "bodyMatcher": "partial"
+    },
+    {
+      "name": "PUT update user",
+      "method": "PUT",
+      "path": "/",
+      "body": {
+        "id": 3,
+        "fullName": "Тестовое Имя"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
     }
   ]
 }
