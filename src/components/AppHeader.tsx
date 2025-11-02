@@ -66,8 +66,8 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
         const data = await response.json();
         const users = data.users || data;
         const currentUser = Array.isArray(users) ? users.find((u: any) => u.id === userId) : null;
-        if (currentUser && typeof currentUser.balance === 'number') {
-          setBalance(currentUser.balance);
+        if (currentUser && currentUser.balance !== undefined && currentUser.balance !== null) {
+          setBalance(parseFloat(currentUser.balance) || 0);
         }
       }
     } catch (error) {
