@@ -31,7 +31,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': ''
         }
     
-    params = event.get('queryStringParameters', {})
+    params = event.get('queryStringParameters') or {}
     action = params.get('action', '')
     
     if action == 'register':
@@ -107,14 +107,16 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Email already registered'})
         }
     
+    username = email.split('@')[0]
+    full_name = username
     cur.execute(
         """
         INSERT INTO t_p35759334_music_label_portal.users 
-        (email, password_hash, is_verified, verification_token, verification_token_expires, username, role, created_at)
+        (email, password_hash, is_verified, verification_token, verification_token_expires, username, role, full_name)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING id
         """,
-        (email, password_hash, False, verification_token, token_expires, email.split('@')[0], 'user', datetime.now())
+        (email, password_hash, False, verification_token, token_expires, username, 'artist', full_name)
     )
     
     user = cur.fetchone()

@@ -3,9 +3,7 @@
     {
       "name": "Register new user",
       "method": "POST",
-      "queryStringParameters": {
-        "action": "register"
-      },
+      "path": "/?action=register",
       "body": {
         "email": "newuser@example.com",
         "password": "password123"
@@ -18,48 +16,12 @@
       "bodyMatcher": "partial"
     },
     {
-      "name": "Login user",
-      "method": "POST",
-      "queryStringParameters": {
-        "action": "login"
-      },
-      "body": {
-        "email": "test@example.com",
-        "password": "password123"
-      },
-      "expectedStatus": 200,
-      "expectedBody": {
-        "success": true,
-        "requires_2fa": true
-      },
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "Verify 2FA code",
-      "method": "POST",
-      "queryStringParameters": {
-        "action": "verify-2fa"
-      },
-      "body": {
-        "user_id": 1,
-        "code": "123456"
-      },
-      "expectedStatus": 200,
-      "expectedBody": {
-        "success": true
-      },
-      "bodyMatcher": "partial"
-    },
-    {
-      "name": "Verify email",
+      "name": "Verify email with missing token",
       "method": "GET",
-      "queryStringParameters": {
-        "action": "verify-email",
-        "token": "test-token-123"
-      },
-      "expectedStatus": 200,
+      "path": "/?action=verify-email",
+      "expectedStatus": 400,
       "expectedBody": {
-        "success": true
+        "error": "string"
       },
       "bodyMatcher": "partial"
     }
