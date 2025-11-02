@@ -120,17 +120,91 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     cur.execute(
-        "SELECT id FROM t_p35759334_music_label_portal.users WHERE email = '" + email.replace("'", "''") + "' OR username = '" + username.replace("'", "''") + "'"
+        "SELECT id, email_verified, email, username FROM t_p35759334_music_label_portal.users WHERE email = '" + email.replace("'", "''") + "' OR username = '" + username.replace("'", "''") + "'"
     )
     
-    if cur.fetchone():
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 400,
-            'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Username or email already registered'})
-        }
+    existing_user = cur.fetchone()
+    
+    if existing_user:
+        if existing_user['email_verified']:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Username or email already registered'})
+            }
+        
+        if existing_user['email'] == email and existing_user['username'] == username:
+            print(f'📧 Повторная отправка кода для {email}')
+            
+            cur.execute(
+                """
+                UPDATE t_p35759334_music_label_portal.users
+                SET verification_token = '{}', verification_token_expires = '{}', password_hash = '{}'
+                WHERE id = {}
+                """.format(verification_code, code_expires.isoformat(), password_hash, existing_user['id'])
+            )
+            conn.commit()
+            
+            html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; background: #000; color: #fff; padding: 20px; }}
+            .container {{ max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%); 
+                         border: 2px solid #ff8c00; border-radius: 20px; padding: 40px; }}
+            .logo {{ text-align: center; font-size: 48px; font-weight: bold; 
+                     background: linear-gradient(to bottom, #ffd700, #ff8c00); 
+                     -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }}
+            h1 {{ color: #ff8c00; text-align: center; }}
+            p {{ line-height: 1.6; font-size: 16px; }}
+            .code {{ display: inline-block; background: #ff8c00; color: #000; padding: 20px 40px; 
+                    font-size: 32px; font-weight: bold; letter-spacing: 8px; border-radius: 10px; 
+                    margin: 20px 0; font-family: monospace; }}
+            .footer {{ text-align: center; color: #888; font-size: 12px; margin-top: 30px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo">420</div>
+            <h1>Новый код подтверждения</h1>
+            <p>Вы запросили повторную регистрацию. Ваш новый код:</p>
+            <p style="text-align: center;">
+                <span class="code">{verification_code}</span>
+            </p>
+            <p>Введите этот код на сайте для активации аккаунта.</p>
+            <p>Код действителен 10 минут.</p>
+            <div class="footer">
+                <p>2025 © 420 Music Label</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+            
+            email_sent = send_email(email, 'Новый код подтверждения 420 Music', html_content)
+            cur.close()
+            conn.close()
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({
+                    'message': 'New verification code sent. Check your email.',
+                    'user_id': existing_user['id'],
+                    'email_sent': email_sent
+                })
+            }
+        else:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Username or email already taken by another user'})
+            }
     
     cur.execute(
         """
