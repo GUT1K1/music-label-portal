@@ -213,14 +213,15 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Логин</Label>
+            <Label htmlFor="username">Логин или Email</Label>
             <Input
               id="username"
-              placeholder="Введите логин"
+              placeholder="Введите логин или email"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />
+            <p className="text-xs text-gray-400">Можно использовать логин или email для входа</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Пароль</Label>
@@ -257,11 +258,11 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
               <span className="w-full border-t border-gray-700" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-black/60 px-2 text-gray-400">или</span>
+              <span className="bg-black/60 px-2 text-gray-400">или войти через</span>
             </div>
           </div>
 
-          <div ref={telegramRef} className="flex justify-center" />
+          <div ref={telegramRef} className="flex justify-center telegram-login-button" />
         </CardContent>
       </Card>
     </div>
