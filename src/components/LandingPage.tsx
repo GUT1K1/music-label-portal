@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import AnimatedHero from '@/components/AnimatedHero';
-import MusicWaves from '@/components/MusicWaves';
-import FloatingNotes from '@/components/FloatingNotes';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -95,49 +93,25 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {/* Animated mesh background */}
-      <div className="fixed inset-0 opacity-30 pointer-events-none">
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: `
-              radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(234, 179, 8, 0.15), transparent 50%),
-              radial-gradient(circle at ${100 - mousePosition.x / 20}% ${mousePosition.y / 20}%, rgba(251, 146, 60, 0.1), transparent 50%),
-              linear-gradient(to bottom right, rgba(234, 179, 8, 0.05), rgba(251, 146, 60, 0.05))
-            `
-          }}
-        />
-      </div>
-
       {/* Floating orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div 
-          className="absolute w-96 h-96 rounded-full blur-3xl opacity-20 animate-float"
+          className="absolute w-96 h-96 rounded-full blur-3xl opacity-10 animate-float"
           style={{
             background: 'linear-gradient(45deg, #eab308, #fb923c)',
             top: '10%',
             left: '5%',
-            animationDuration: '20s'
+            animationDuration: '25s'
           }}
         />
         <div 
-          className="absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-20 animate-float"
+          className="absolute w-[500px] h-[500px] rounded-full blur-3xl opacity-10 animate-float"
           style={{
             background: 'linear-gradient(135deg, #f59e0b, #ea580c)',
-            bottom: '5%',
+            bottom: '10%',
             right: '10%',
-            animationDuration: '25s',
-            animationDelay: '5s'
-          }}
-        />
-        <div 
-          className="absolute w-72 h-72 rounded-full blur-3xl opacity-15 animate-float"
-          style={{
-            background: 'linear-gradient(90deg, #f59e0b, #ef4444)',
-            top: '50%',
-            left: '50%',
             animationDuration: '30s',
-            animationDelay: '10s'
+            animationDelay: '5s'
           }}
         />
       </div>
@@ -196,17 +170,15 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <MusicWaves />
-        <FloatingNotes />
         <div 
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 opacity-5"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(147, 51, 234, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(147, 51, 234, 0.1) 1px, transparent 1px)
+              linear-gradient(rgba(251, 146, 60, 0.15) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(251, 146, 60, 0.15) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px',
-            transform: `translateY(${scrollY * 0.5}px)`
+            backgroundSize: '60px 60px',
+            transform: `translateY(${scrollY * 0.3}px)`
           }}
         />
         
