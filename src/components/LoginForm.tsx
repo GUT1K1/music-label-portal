@@ -24,6 +24,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [showMatrixLoader, setShowMatrixLoader] = useState(false);
+  const [localUserData, setLocalUserData] = useState<any>(null);
   const telegramRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -99,20 +100,20 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
     
     // Обходной путь для директора (пока бекенд не работает)
     if (username === 'director' && password === 'director420') {
+      const userData = {
+        id: 'director-local',
+        username: 'director',
+        firstName: 'Директор',
+        role: 'director',
+        avatar: ''
+      };
+      
+      setLocalUserData(userData);
       setIsLoading(false);
       setIsSuccess(true);
       
       setTimeout(() => {
         setShowMatrixLoader(true);
-        setTimeout(() => {
-          onLogin(username, password, {
-            id: 'director-local',
-            username: 'director',
-            firstName: 'Директор',
-            role: 'director',
-            avatar: ''
-          });
-        }, 3500);
       }, 1200);
       return;
     }
@@ -155,7 +156,13 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   if (showMatrixLoader) {
     return (
       <MatrixRain 
-        onComplete={() => onLogin(username, password)} 
+        onComplete={() => {
+          if (localUserData) {
+            onLogin('', '', undefined, localUserData);
+          } else {
+            onLogin(username, password);
+          }
+        }} 
         duration={3500} 
       />
     );
