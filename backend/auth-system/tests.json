@@ -1,14 +1,10 @@
 {
   "tests": [
     {
-      "name": "Verify email with missing token",
+      "name": "Invalid action returns error",
       "method": "GET",
-      "path": "/?action=verify-email",
-      "expectedStatus": 400,
-      "expectedBody": {
-        "error": "string"
-      },
-      "bodyMatcher": "partial"
+      "path": "/",
+      "expectedStatus": 400
     }
   ]
 }

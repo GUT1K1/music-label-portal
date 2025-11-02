@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense, useCallback, memo } from 'react';
-import LoginForm from '@/components/LoginForm';
+import AuthForm from '@/components/AuthForm';
 import { useAuth } from '@/components/useAuth';
 import { useTickets } from '@/components/useTickets';
 import { useUsers } from '@/components/useUsers';
@@ -58,7 +58,7 @@ export default function Index() {
   ));
 
   if (!user) {
-    return <LoginForm onLogin={login} />;
+    return <AuthForm onLogin={login} />;
   }
 
   if (user.role === 'artist') {

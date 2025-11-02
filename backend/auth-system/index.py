@@ -16,7 +16,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     Returns: HTTP response based on action
     '''
     method: str = event.get('httpMethod', 'POST')
-    path: str = event.get('path', '')
     
     if method == 'OPTIONS':
         return {
@@ -76,19 +75,20 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     
     email = body_data.get('email', '').strip().lower()
     password = body_data.get('password', '')
+    full_name = body_data.get('full_name', '').strip()
     
-    if not email or not password:
+    if not email or not password or not full_name:
         return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Email and password are required'})
+            'body': json.dumps({'error': 'Email, password and full name are required'})
         }
     
-    if len(password) < 6:
+    if len(password) < 8:
         return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Password must be at least 6 characters'})
+            'body': json.dumps({'error': 'Password must be at least 8 characters'})
         }
     
     password_hash = hashlib.sha256(password.encode()).hexdigest()
@@ -100,8 +100,7 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     cur = conn.cursor(cursor_factory=RealDictCursor)
     
     cur.execute(
-        "SELECT id FROM t_p35759334_music_label_portal.users WHERE email = %s",
-        (email,)
+        "SELECT id FROM t_p35759334_music_label_portal.users WHERE email = '" + email.replace("'", "''") + "'"
     )
     
     if cur.fetchone():
@@ -114,15 +113,21 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
         }
     
     username = email.split('@')[0]
-    full_name = username
+    
     cur.execute(
         """
         INSERT INTO t_p35759334_music_label_portal.users 
-        (email, password_hash, is_verified, verification_token, verification_token_expires, username, role, full_name)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        (email, password_hash, email_verified, verification_token, verification_token_expires, username, role, full_name)
+        VALUES ('{}', '{}', FALSE, '{}', '{}', '{}', 'artist', '{}')
         RETURNING id
-        """,
-        (email, password_hash, False, verification_token, token_expires, username, 'artist', full_name)
+        """.format(
+            email.replace("'", "''"),
+            password_hash,
+            verification_token,
+            token_expires.isoformat(),
+            username.replace("'", "''"),
+            full_name.replace("'", "''")
+        )
     )
     
     user = cur.fetchone()
@@ -131,7 +136,7 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
     cur.close()
     conn.close()
     
-    verification_url = f"https://your-domain.poehali.dev/verify?token={verification_token}"
+    verification_url = f"https://420music.ru/verify?token={verification_token}"
     
     html_content = f"""
     <!DOCTYPE html>
@@ -156,7 +161,7 @@ def register_user(event: Dict[str, Any]) -> Dict[str, Any]:
         <div class="container">
             <div class="logo">420</div>
             <h1>Добро пожаловать в 420 Music!</h1>
-            <p>Спасибо за регистрацию! Для активации аккаунта нажмите на кнопку ниже:</p>
+            <p>Спасибо за регистрацию, {full_name}! Для активации аккаунта нажмите на кнопку ниже:</p>
             <p style="text-align: center;">
                 <a href="{verification_url}" class="button">Подтвердить email</a>
             </p>
@@ -208,11 +213,10 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
     
     cur.execute(
         """
-        SELECT id, email, password_hash, is_verified, two_fa_enabled 
+        SELECT id, email, password_hash, email_verified, two_factor_enabled 
         FROM t_p35759334_music_label_portal.users 
-        WHERE email = %s
-        """,
-        (email,)
+        WHERE email = '{}'
+        """.format(email.replace("'", "''"))
     )
     user = cur.fetchone()
     
@@ -225,7 +229,7 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Invalid email or password'})
         }
     
-    if not user['is_verified']:
+    if not user.get('email_verified', False):
         cur.close()
         conn.close()
         return {
@@ -234,73 +238,88 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Please verify your email first'})
         }
     
-    two_fa_code = ''.join([str(secrets.randbelow(10)) for _ in range(6)])
-    code_expires = datetime.now() + timedelta(minutes=10)
+    if user.get('two_factor_enabled', False):
+        two_fa_code = ''.join([str(secrets.randbelow(10)) for _ in range(6)])
+        code_expires = datetime.now() + timedelta(minutes=10)
+        
+        cur.execute(
+            """
+            UPDATE t_p35759334_music_label_portal.users 
+            SET two_fa_code = '{}', two_fa_code_expires = '{}'
+            WHERE id = {}
+            """.format(two_fa_code, code_expires.isoformat(), user['id'])
+        )
+        conn.commit()
+        
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; background: #000; color: #fff; padding: 20px; }}
+                .container {{ max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%); 
+                             border: 2px solid #ff8c00; border-radius: 20px; padding: 40px; }}
+                .logo {{ text-align: center; font-size: 48px; font-weight: bold; 
+                         background: linear-gradient(to bottom, #ffd700, #ff8c00); 
+                         -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }}
+                h1 {{ color: #ff8c00; text-align: center; }}
+                p {{ line-height: 1.6; font-size: 16px; }}
+                .code {{ display: inline-block; background: linear-gradient(to right, #ff8c00, #ffa500); 
+                        color: #000; padding: 20px 40px; font-size: 32px; font-weight: bold; 
+                        border-radius: 10px; letter-spacing: 5px; margin: 20px 0; }}
+                .footer {{ text-align: center; color: #888; font-size: 12px; margin-top: 30px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="logo">420</div>
+                <h1>Код двухфакторной авторизации</h1>
+                <p>Используйте этот код для входа в ваш аккаунт:</p>
+                <p style="text-align: center;">
+                    <span class="code">{two_fa_code}</span>
+                </p>
+                <p>Код действителен 10 минут.</p>
+                <p style="color: #ff6b6b;">Если вы не пытались войти в аккаунт, немедленно смените пароль!</p>
+                <div class="footer">
+                    <p>2025 © 420 Music Label</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        send_email(email, 'Код подтверждения входа - 420 Music', html_content)
+        cur.close()
+        conn.close()
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({
+                'requires_2fa': True,
+                'user_id': user['id'],
+                'message': 'Please check your email for the verification code'
+            })
+        }
     
     cur.execute(
         """
-        UPDATE t_p35759334_music_label_portal.users 
-        SET two_fa_code = %s, two_fa_code_expires = %s
-        WHERE id = %s
-        """,
-        (two_fa_code, code_expires, user['id'])
+        SELECT id, username, email, role, full_name, telegram_chat_id, 
+               yandex_music_url, vk_group_url, tiktok_url, revenue_share_percent
+        FROM t_p35759334_music_label_portal.users
+        WHERE id = {}
+        """.format(user['id'])
     )
-    
-    conn.commit()
+    user_data = cur.fetchone()
     cur.close()
     conn.close()
     
-    html_content = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body {{ font-family: Arial, sans-serif; background: #000; color: #fff; padding: 20px; }}
-            .container {{ max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 100%); 
-                         border: 2px solid #ff8c00; border-radius: 20px; padding: 40px; }}
-            .logo {{ text-align: center; font-size: 48px; font-weight: bold; 
-                     background: linear-gradient(to bottom, #ffd700, #ff8c00); 
-                     -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }}
-            h1 {{ color: #ff8c00; text-align: center; }}
-            p {{ line-height: 1.6; font-size: 16px; }}
-            .code {{ display: inline-block; background: linear-gradient(to right, #ff8c00, #ffa500); 
-                    color: #000; padding: 20px 40px; font-size: 32px; font-weight: bold; 
-                    border-radius: 10px; letter-spacing: 5px; margin: 20px 0; }}
-            .footer {{ text-align: center; color: #888; font-size: 12px; margin-top: 30px; }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="logo">420</div>
-            <h1>Код двухфакторной авторизации</h1>
-            <p>Используйте этот код для входа в ваш аккаунт:</p>
-            <p style="text-align: center;">
-                <span class="code">{two_fa_code}</span>
-            </p>
-            <p>Код действителен 10 минут.</p>
-            <p style="color: #ff6b6b;">Если вы не пытались войти в аккаунт, немедленно смените пароль!</p>
-            <div class="footer">
-                <p>2025 © 420 Music Label</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
-    
-    send_email(email, 'Код двухфакторной авторизации 420 Music', html_content)
-    
     return {
         'statusCode': 200,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        },
-        'isBase64Encoded': False,
+        'headers': {'Access-Control-Allow-Origin': '*'},
         'body': json.dumps({
             'success': True,
-            'requires_2fa': True,
-            'user_id': user['id'],
-            'message': '2FA code sent to your email'
+            'user': dict(user_data)
         })
     }
 
@@ -315,7 +334,7 @@ def verify_2fa(event: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'user_id and code are required'})
+            'body': json.dumps({'error': 'User ID and code are required'})
         }
     
     database_url = os.environ.get('DATABASE_URL')
@@ -324,11 +343,10 @@ def verify_2fa(event: Dict[str, Any]) -> Dict[str, Any]:
     
     cur.execute(
         """
-        SELECT id, email, two_fa_code, two_fa_code_expires, username, role
-        FROM t_p35759334_music_label_portal.users 
-        WHERE id = %s
-        """,
-        (user_id,)
+        SELECT id, email, two_fa_code, two_fa_code_expires
+        FROM t_p35759334_music_label_portal.users
+        WHERE id = {}
+        """.format(user_id)
     )
     user = cur.fetchone()
     
@@ -336,27 +354,9 @@ def verify_2fa(event: Dict[str, Any]) -> Dict[str, Any]:
         cur.close()
         conn.close()
         return {
-            'statusCode': 404,
-            'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'User not found'})
-        }
-    
-    if not user['two_fa_code'] or not user['two_fa_code_expires']:
-        cur.close()
-        conn.close()
-        return {
             'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'No 2FA code requested'})
-        }
-    
-    if datetime.now() > user['two_fa_code_expires']:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 400,
-            'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': '2FA code expired'})
+            'body': json.dumps({'error': 'Invalid user'})
         }
     
     if user['two_fa_code'] != code:
@@ -365,47 +365,52 @@ def verify_2fa(event: Dict[str, Any]) -> Dict[str, Any]:
         return {
             'statusCode': 401,
             'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Invalid 2FA code'})
+            'body': json.dumps({'error': 'Invalid verification code'})
+        }
+    
+    code_expires = user['two_fa_code_expires']
+    if datetime.fromisoformat(str(code_expires)) < datetime.now():
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 401,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Verification code expired'})
         }
     
     cur.execute(
         """
-        UPDATE t_p35759334_music_label_portal.users 
-        SET two_fa_code = NULL, two_fa_code_expires = NULL
-        WHERE id = %s
-        """,
-        (user_id,)
+        SELECT id, username, email, role, full_name, telegram_chat_id,
+               yandex_music_url, vk_group_url, tiktok_url, revenue_share_percent
+        FROM t_p35759334_music_label_portal.users
+        WHERE id = {}
+        """.format(user_id)
     )
+    user_data = cur.fetchone()
     
+    cur.execute(
+        """
+        UPDATE t_p35759334_music_label_portal.users
+        SET two_fa_code = NULL, two_fa_code_expires = NULL
+        WHERE id = {}
+        """.format(user_id)
+    )
     conn.commit()
     cur.close()
     conn.close()
     
-    session_token = hashlib.sha256(f"{user['id']}-{user['email']}-{datetime.now().isoformat()}".encode()).hexdigest()
-    
     return {
         'statusCode': 200,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        },
-        'isBase64Encoded': False,
+        'headers': {'Access-Control-Allow-Origin': '*'},
         'body': json.dumps({
             'success': True,
-            'message': 'Login successful',
-            'user': {
-                'id': user['id'],
-                'email': user['email'],
-                'username': user['username'],
-                'role': user['role']
-            },
-            'session_token': session_token
+            'user': dict(user_data)
         })
     }
 
 
 def verify_email(event: Dict[str, Any]) -> Dict[str, Any]:
-    params = event.get('queryStringParameters', {})
+    params = event.get('queryStringParameters') or {}
     token = params.get('token', '').strip()
     
     if not token:
@@ -421,11 +426,10 @@ def verify_email(event: Dict[str, Any]) -> Dict[str, Any]:
     
     cur.execute(
         """
-        SELECT id, email, verification_token_expires, is_verified
-        FROM t_p35759334_music_label_portal.users 
-        WHERE verification_token = %s
-        """,
-        (token,)
+        SELECT id, username, email, role, full_name, verification_token, verification_token_expires
+        FROM t_p35759334_music_label_portal.users
+        WHERE verification_token = '{}'
+        """.format(token.replace("'", "''"))
     )
     user = cur.fetchone()
     
@@ -433,21 +437,13 @@ def verify_email(event: Dict[str, Any]) -> Dict[str, Any]:
         cur.close()
         conn.close()
         return {
-            'statusCode': 404,
+            'statusCode': 400,
             'headers': {'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({'error': 'Invalid verification token'})
         }
     
-    if user['is_verified']:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 200,
-            'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'success': True, 'message': 'Email already verified'})
-        }
-    
-    if datetime.now() > user['verification_token_expires']:
+    token_expires = user.get('verification_token_expires')
+    if token_expires and datetime.fromisoformat(str(token_expires)) < datetime.now():
         cur.close()
         conn.close()
         return {
@@ -458,27 +454,25 @@ def verify_email(event: Dict[str, Any]) -> Dict[str, Any]:
     
     cur.execute(
         """
-        UPDATE t_p35759334_music_label_portal.users 
-        SET is_verified = TRUE, verification_token = NULL, verification_token_expires = NULL
-        WHERE id = %s
-        """,
-        (user['id'],)
+        UPDATE t_p35759334_music_label_portal.users
+        SET email_verified = TRUE, verification_token = NULL, verification_token_expires = NULL
+        WHERE id = {}
+        """.format(user['id'])
     )
-    
     conn.commit()
     cur.close()
     conn.close()
     
     return {
         'statusCode': 200,
-        'headers': {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        },
-        'isBase64Encoded': False,
+        'headers': {'Access-Control-Allow-Origin': '*'},
         'body': json.dumps({
             'success': True,
-            'message': 'Email verified successfully! You can now login.',
-            'email': user['email']
+            'message': 'Email verified successfully! You can now log in.',
+            'user': {
+                'id': user['id'],
+                'email': user['email'],
+                'username': user['username']
+            }
         })
     }
