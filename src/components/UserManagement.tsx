@@ -22,6 +22,21 @@ interface User {
   last_ip?: string;
   device_fingerprint?: string;
   telegram_id?: string;
+  telegram_username?: string;
+  telegram_first_name?: string;
+  telegram_last_name?: string;
+  email?: string;
+  vk_email?: string;
+  balance?: number;
+  created_at?: string;
+  yandex_music_url?: string;
+  vk_group_url?: string;
+  tiktok_url?: string;
+  vk_id?: string;
+  vk_first_name?: string;
+  vk_last_name?: string;
+  email_verified?: boolean;
+  two_factor_enabled?: boolean;
 }
 
 interface UserManagementProps {
@@ -98,7 +113,11 @@ const UserManagement = React.memo(function UserManagement({
       username: user.username,
       role: user.role,
       revenue_share_percent: user.revenue_share_percent || 50,
-      balance: (user as any).balance || 0
+      balance: user.balance || 0,
+      email: user.email || user.vk_email || '',
+      yandex_music_url: user.yandex_music_url || '',
+      vk_group_url: user.vk_group_url || '',
+      tiktok_url: user.tiktok_url || ''
     });
     setShowEditModal(true);
   };
@@ -323,90 +342,219 @@ const UserManagement = React.memo(function UserManagement({
 
       {showEditModal && selectedUser && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-3 overflow-y-auto">
-          <Card className="w-full max-w-md bg-card border-blue-500/30 my-4">
-            <CardHeader className="pb-3">
+          <Card className="w-full max-w-3xl bg-card border-blue-500/30 my-4 max-h-[95vh] overflow-y-auto">
+            <CardHeader className="pb-3 sticky top-0 bg-card z-10 border-b">
               <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-                <Icon name="Edit" size={20} className="text-blue-400" />
+                <Icon name="UserCog" size={20} className="text-blue-400" />
                 Редактирование пользователя
               </CardTitle>
+              <CardDescription className="flex items-center gap-2 text-xs">
+                <span>{selectedUser.full_name}</span>
+                {selectedUser.created_at && (
+                  <span className="text-muted-foreground">• Создан: {new Date(selectedUser.created_at).toLocaleDateString('ru-RU')}</span>
+                )}
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-2">
-                <Label className="text-sm">Полное имя</Label>
-                <Input
-                  value={editData.full_name || ''}
-                  onChange={(e) => setEditData({ ...editData, full_name: e.target.value })}
-                  placeholder="Иван Иванов"
-                  className="h-10"
-                />
+            <CardContent className="space-y-6 pt-4">
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+                  <Icon name="User" size={16} />
+                  Основная информация
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Полное имя</Label>
+                    <Input
+                      value={editData.full_name || ''}
+                      onChange={(e) => setEditData({ ...editData, full_name: e.target.value })}
+                      placeholder="Иван Иванов"
+                      className="h-10"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Логин</Label>
+                    <Input
+                      value={editData.username || ''}
+                      onChange={(e) => setEditData({ ...editData, username: e.target.value })}
+                      placeholder="username"
+                      className="h-10"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Email</Label>
+                    <Input
+                      type="email"
+                      value={(editData as any).email || ''}
+                      onChange={(e) => setEditData({ ...editData, email: e.target.value } as any)}
+                      placeholder="user@example.com"
+                      className="h-10"
+                    />
+                    {selectedUser.vk_email && (
+                      <p className="text-xs text-muted-foreground">VK Email: {selectedUser.vk_email}</p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Роль</Label>
+                    <Select 
+                      value={editData.role || selectedUser.role} 
+                      onValueChange={(val) => setEditData({ ...editData, role: val as 'artist' | 'manager' | 'director' })}
+                    >
+                      <SelectTrigger className="h-10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="artist">🎤 Артист</SelectItem>
+                        <SelectItem value="manager">🎯 Менеджер</SelectItem>
+                        <SelectItem value="director">👑 Руководитель</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label className="text-sm">Логин</Label>
-                <Input
-                  value={editData.username || ''}
-                  onChange={(e) => setEditData({ ...editData, username: e.target.value })}
-                  placeholder="username"
-                  className="h-10"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm">Роль</Label>
-                <Select 
-                  value={editData.role || selectedUser.role} 
-                  onValueChange={(val) => setEditData({ ...editData, role: val as 'artist' | 'manager' | 'director' })}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="artist">🎤 Артист</SelectItem>
-                    <SelectItem value="manager">🎯 Менеджер</SelectItem>
-                    <SelectItem value="director">👑 Руководитель</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+
               {(editData.role === 'artist' || selectedUser.role === 'artist') && (
-                <div className="space-y-2">
-                  <Label className="text-sm">% артиста от дохода</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    max="100"
-                    value={editData.revenue_share_percent || 50}
-                    onChange={(e) => setEditData({ ...editData, revenue_share_percent: parseInt(e.target.value) || 50 })}
-                    className="h-10"
-                  />
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+                    <Icon name="Music" size={16} />
+                    Артист информация
+                  </h3>
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="space-y-2">
+                      <Label className="text-sm">% артиста от дохода</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={editData.revenue_share_percent || 50}
+                        onChange={(e) => setEditData({ ...editData, revenue_share_percent: parseInt(e.target.value) || 50 })}
+                        className="h-10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm">Яндекс.Музыка URL</Label>
+                      <Input
+                        value={(editData as any).yandex_music_url || ''}
+                        onChange={(e) => setEditData({ ...editData, yandex_music_url: e.target.value } as any)}
+                        placeholder="https://music.yandex.ru/artist/..."
+                        className="h-10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm">VK группа URL</Label>
+                      <Input
+                        value={(editData as any).vk_group_url || ''}
+                        onChange={(e) => setEditData({ ...editData, vk_group_url: e.target.value } as any)}
+                        placeholder="https://vk.com/..."
+                        className="h-10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm">TikTok URL</Label>
+                      <Input
+                        value={(editData as any).tiktok_url || ''}
+                        onChange={(e) => setEditData({ ...editData, tiktok_url: e.target.value } as any)}
+                        placeholder="https://www.tiktok.com/@..."
+                        className="h-10"
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
-              <div className="space-y-2">
-                <Label className="text-sm flex items-center gap-2">
-                  <Icon name="Wallet" size={16} className="text-primary" />
-                  Баланс (₽)
-                </Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={(editData as any).balance || 0}
-                  onChange={(e) => setEditData({ ...editData, balance: parseFloat(e.target.value) || 0 } as any)}
-                  className="h-10"
-                  placeholder="0.00"
-                />
-                <p className="text-xs text-muted-foreground">Текущий баланс пользователя</p>
+
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+                  <Icon name="Wallet" size={16} />
+                  Финансы
+                </h3>
+                <div className="space-y-2">
+                  <Label className="text-sm flex items-center gap-2">
+                    <Icon name="Wallet" size={16} className="text-primary" />
+                    Баланс (₽)
+                  </Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={(editData as any).balance || 0}
+                    onChange={(e) => setEditData({ ...editData, balance: parseFloat(e.target.value) || 0 } as any)}
+                    className="h-10"
+                    placeholder="0.00"
+                  />
+                  <p className="text-xs text-muted-foreground">Текущий баланс пользователя</p>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 pt-2">
+
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+                  <Icon name="Info" size={16} />
+                  Дополнительная информация
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  {selectedUser.telegram_id && (
+                    <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Telegram</p>
+                      <div className="flex items-center gap-2">
+                        <Icon name="Send" size={14} className="text-blue-500" />
+                        <span className="font-mono text-xs">{selectedUser.telegram_username ? `@${selectedUser.telegram_username}` : selectedUser.telegram_id}</span>
+                      </div>
+                      {selectedUser.telegram_first_name && (
+                        <p className="text-xs">{selectedUser.telegram_first_name} {selectedUser.telegram_last_name}</p>
+                      )}
+                    </div>
+                  )}
+                  {selectedUser.vk_id && (
+                    <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
+                      <p className="text-xs text-muted-foreground">VKontakte</p>
+                      <div className="flex items-center gap-2">
+                        <Icon name="User" size={14} className="text-blue-600" />
+                        <span className="text-xs">{selectedUser.vk_first_name} {selectedUser.vk_last_name}</span>
+                      </div>
+                      <p className="font-mono text-xs">ID: {selectedUser.vk_id}</p>
+                    </div>
+                  )}
+                  {selectedUser.last_ip && (
+                    <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Последний IP</p>
+                      <p className="font-mono text-xs">{selectedUser.last_ip}</p>
+                    </div>
+                  )}
+                  {selectedUser.device_fingerprint && (
+                    <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
+                      <p className="text-xs text-muted-foreground">Отпечаток устройства</p>
+                      <p className="font-mono text-xs truncate" title={selectedUser.device_fingerprint}>
+                        {selectedUser.device_fingerprint}
+                      </p>
+                    </div>
+                  )}
+                  <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
+                    <p className="text-xs text-muted-foreground">Email подтверждён</p>
+                    <Badge variant={selectedUser.email_verified ? "default" : "secondary"} className="text-xs">
+                      {selectedUser.email_verified ? "✓ Да" : "✗ Нет"}
+                    </Badge>
+                  </div>
+                  <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
+                    <p className="text-xs text-muted-foreground">2FA включена</p>
+                    <Badge variant={selectedUser.two_factor_enabled ? "default" : "secondary"} className="text-xs">
+                      {selectedUser.two_factor_enabled ? "✓ Да" : "✗ Нет"}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t">
                 <Button 
                   onClick={handleEditUser} 
                   className="flex-1 bg-blue-500 hover:bg-blue-600 h-10"
                 >
-                  <Icon name="Check" size={16} className="mr-2" />
-                  <span className="text-sm">Сохранить</span>
+                  <Icon name="Save" size={16} className="mr-2" />
+                  <span className="text-sm">Сохранить изменения</span>
                 </Button>
                 <Button 
                   variant="outline" 
                   onClick={() => { setShowEditModal(false); setEditData({}); setSelectedUser(null); }} 
                   className="h-10"
                 >
+                  <Icon name="X" size={16} className="mr-2" />
                   <span className="text-sm">Отмена</span>
                 </Button>
               </div>
