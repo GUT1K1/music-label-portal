@@ -13,6 +13,7 @@ import NotFoundCustom from "./pages/NotFoundCustom";
 import AdminFix from "./pages/AdminFix";
 import AnimationShowcase from "./components/AnimationShowcase";
 import MenuShowcase from "./components/MenuShowcase";
+import HeaderVariants from "./components/HeaderVariants";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/app" element={<Index />} />
               <Route path="/animations" element={<AnimationShowcase />} />
               <Route path="/menus" element={<MenuShowcase />} />
+              <Route path="/header-variants" element={<HeaderVariants />} />
               <Route path="/admin-fix-passwords" element={<AdminFix />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFoundCustom />} />
