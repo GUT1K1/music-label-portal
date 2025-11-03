@@ -267,7 +267,7 @@ const TasksTab = React.memo(function TasksTab({
                 key={task.id}
                 className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800 hover:shadow-md transition-all"
               >
-                <div className="p-4 bg-[#000000]">
+                <div className="p-4 bg-neutral-700">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
