@@ -152,18 +152,20 @@ export default function SupportChatWindow({
           <>
             <div className="flex items-center gap-2">
               <Avatar className="w-8 h-8">
-                <AvatarImage src={threadData.artist_avatar || threadData.artist_vk_photo} />
+                <AvatarImage src={threadData.with_user_avatar} />
                 <AvatarFallback className="bg-primary/10 text-xs">
-                  {threadData.artist_name?.[0] || threadData.artist_username?.[0] || '?'}
+                  {threadData.with_user_name?.[0] || '?'}
                 </AvatarFallback>
               </Avatar>
               <div>
                 <CardTitle className="text-base">
-                  {threadData.artist_name || threadData.artist_username}
+                  {threadData.with_user_name}
                 </CardTitle>
-                <p className="text-xs text-muted-foreground">
-                  @{threadData.artist_username}
-                </p>
+                {threadData.artist_username && (
+                  <p className="text-xs text-muted-foreground">
+                    @{threadData.artist_username}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -239,9 +241,9 @@ export default function SupportChatWindow({
                 <Avatar className="w-7 h-7 shrink-0">
                   {isStaff ? (
                     <>
-                      <AvatarImage src={threadData.artist_avatar || threadData.artist_vk_photo} />
+                      <AvatarImage src={threadData.with_user_avatar} />
                       <AvatarFallback className="bg-primary/10 text-xs">
-                        {threadData.artist_name?.[0] || '?'}
+                        {threadData.with_user_name?.[0] || '?'}
                       </AvatarFallback>
                     </>
                   ) : (

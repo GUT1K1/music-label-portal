@@ -254,6 +254,7 @@ def create_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
     priority = body_data.get('priority', 'normal')
     release_id = body_data.get('release_id')
     track_id = body_data.get('track_id')
+    artist_id_param = body_data.get('artist_id')
     
     if not subject:
         return {
@@ -265,10 +266,25 @@ def create_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     user_id_int = int(user_id)
     
+    cursor.execute(f"SELECT role FROM t_p35759334_music_label_portal.users WHERE id = {sql_escape(user_id_int)}")
+    user_role_result = cursor.fetchone()
+    user_role = user_role_result['role'] if user_role_result else 'artist'
+    
+    if user_role in ['manager', 'director']:
+        if not artist_id_param:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'artist_id is required for staff'})
+            }
+        final_artist_id = int(artist_id_param)
+    else:
+        final_artist_id = user_id_int
+    
     cursor.execute(f"""
         INSERT INTO t_p35759334_music_label_portal.support_threads 
         (artist_id, subject, status, priority, release_id, track_id, created_at, updated_at, last_message_at)
-        VALUES ({sql_escape(user_id_int)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, {sql_escape(release_id)}, {sql_escape(track_id)}, NOW(), NOW(), NOW())
+        VALUES ({sql_escape(final_artist_id)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, {sql_escape(release_id)}, {sql_escape(track_id)}, NOW(), NOW(), NOW())
         RETURNING id
     """)
     
