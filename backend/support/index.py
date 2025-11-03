@@ -106,18 +106,38 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
     if thread_id:
         thread_id_int = int(thread_id)
         cursor.execute(f"""
-            SELECT 
-                st.*,
-                r.title as release_title,
-                r.cover_url as release_cover,
-                t.title as track_title
-            FROM t_p35759334_music_label_portal.support_threads st
-            LEFT JOIN t_p35759334_music_label_portal.releases r ON st.release_id = r.id
-            LEFT JOIN t_p35759334_music_label_portal.tracks t ON st.track_id = t.id
-            WHERE st.id = {sql_escape(thread_id_int)}
+            SELECT *
+            FROM t_p35759334_music_label_portal.support_threads
+            WHERE id = {sql_escape(thread_id_int)}
         """)
         
         thread = cursor.fetchone()
+        
+        if thread:
+            thread_dict = dict(thread)
+            
+            if thread_dict.get('release_id'):
+                cursor.execute(f"""
+                    SELECT title, cover_url
+                    FROM t_p35759334_music_label_portal.releases
+                    WHERE id = {sql_escape(thread_dict['release_id'])}
+                """)
+                release = cursor.fetchone()
+                if release:
+                    thread_dict['release_title'] = release['title']
+                    thread_dict['release_cover'] = release.get('cover_url')
+            
+            if thread_dict.get('track_id'):
+                cursor.execute(f"""
+                    SELECT title
+                    FROM t_p35759334_music_label_portal.tracks
+                    WHERE id = {sql_escape(thread_dict['track_id'])}
+                """)
+                track = cursor.fetchone()
+                if track:
+                    thread_dict['track_title'] = track['title']
+            
+            thread = thread_dict
         
         if not thread:
             return {
@@ -153,7 +173,7 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({
-                'thread': dict(thread),
+                'thread': thread,
                 'messages': [dict(msg) for msg in messages]
             }, default=str)
         }
