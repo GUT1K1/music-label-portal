@@ -252,8 +252,8 @@ const TasksTab = React.memo(function TasksTab({
           </Card>
         ) : (
           filteredTasks.map(task => {
-            const manager = managers.find(m => m.id === task.assigned_to);
-            const ticket = tickets.find(t => t.id === task.ticket_id);
+            const manager = managers?.find(m => m.id === task.assigned_to);
+            const ticket = tickets?.find(t => t.id === task.ticket_id);
             
             return (
               <Card
