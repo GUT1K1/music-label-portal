@@ -189,10 +189,8 @@ export default function LandingPage() {
               <div className="">
                 {/* Подпись лейбла */}
                 <div className="space-y-2">
-                  <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight py-0 px-0 my-0 mx-[110px]">
-                    Музыкальный Лейбл
-                  </h2>
-                  <p className="text-base md:text-lg text-gray-400">420</p>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight py-0 px-0 my-0 mx-[110px]">420</h2>
+                  <p className="text-base md:text-lg text-gray-400 font-black">Зайди и сравни с другими сервисами </p>
                 </div>
               </div>
             </div>
