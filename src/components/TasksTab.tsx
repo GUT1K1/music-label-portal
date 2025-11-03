@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { Task } from '@/components/useTasks';
 import TaskDetailDialog from '@/components/TaskDetailDialog';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 interface TasksTabProps {
   tasks: Task[];
@@ -34,6 +36,7 @@ const TasksTab = React.memo(function TasksTab({
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all');
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
@@ -58,65 +61,51 @@ const TasksTab = React.memo(function TasksTab({
     }
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityLabel = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'destructive';
-      case 'high': return 'default';
-      case 'medium': return 'secondary';
-      case 'low': return 'outline';
-      default: return 'secondary';
+      case 'urgent': return 'Срочный';
+      case 'high': return 'Высокий';
+      case 'medium': return 'Средний';
+      case 'low': return 'Низкий';
+      default: return 'Средний';
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'completed': return 'default';
-      case 'in_progress': return 'secondary';
-      case 'open': return 'outline';
-      default: return 'outline';
-    }
-  };
-
-  const getPriorityIcon = (priority: string) => {
-    switch (priority) {
-      case 'urgent': return 'Flame';
-      case 'high': return 'AlertTriangle';
-      case 'medium': return 'AlertCircle';
-      case 'low': return 'Info';
-      default: return 'AlertCircle';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed': return 'CheckCircle2';
-      case 'in_progress': return 'Clock';
-      case 'open': return 'Circle';
-      default: return 'Circle';
+      case 'completed': return 'Выполнено';
+      case 'in_progress': return 'В работе';
+      case 'open': return 'Открыто';
+      default: return 'Открыто';
     }
   };
 
   const openTickets = tickets?.filter(t => t.status !== 'closed') || [];
 
+  const filteredTasks = tasks.filter(task => {
+    if (statusFilter === 'all') return true;
+    return task.status === statusFilter;
+  });
+
+  const statusCounts = {
+    all: tasks.length,
+    in_progress: tasks.filter(t => t.status === 'in_progress').length,
+    completed: tasks.filter(t => t.status === 'completed').length,
+    open: tasks.filter(t => t.status === 'open').length,
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Задачи менеджеров</h2>
-        <div className="flex gap-2">
-          {onToggleDeleted && (
-            <Button 
-              variant={showDeleted ? "default" : "outline"}
-              onClick={onToggleDeleted}
-            >
-              <Icon name={showDeleted ? "Eye" : "EyeOff"} size={16} className="mr-2" />
-              {showDeleted ? "Скрыть удалённые" : "Показать удалённые"}
-            </Button>
-          )}
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <DialogTrigger asChild>
-            <Button>
+        <h2 className="text-xl font-bold flex items-center gap-2">
+          <Icon name="ListChecks" size={24} />
+          Все задачи
+        </h2>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-yellow-400 hover:bg-yellow-500 text-black">
               <Icon name="Plus" size={16} className="mr-2" />
-              Создать задачу
+              Создать новую задачу
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
@@ -220,154 +209,159 @@ const TasksTab = React.memo(function TasksTab({
               </div>
             </div>
           </DialogContent>
-          </Dialog>
-        </div>
+        </Dialog>
       </div>
 
-      <div className="grid gap-4">
-        {tasks.length === 0 ? (
-          <Card className="p-12 text-center">
-            <div className="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-              <Icon name="ListTodo" size={48} className="text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Задач пока нет</h3>
-            <p className="text-muted-foreground">Создайте первую задачу для менеджеров</p>
+      <div className="flex gap-2 border-b border-border pb-2">
+        <Button
+          variant={statusFilter === 'all' ? 'default' : 'ghost'}
+          onClick={() => setStatusFilter('all')}
+          size="sm"
+          className="relative"
+        >
+          Все ({statusCounts.all})
+        </Button>
+        <Button
+          variant={statusFilter === 'in_progress' ? 'default' : 'ghost'}
+          onClick={() => setStatusFilter('in_progress')}
+          size="sm"
+        >
+          В работе ({statusCounts.in_progress})
+        </Button>
+        <Button
+          variant={statusFilter === 'completed' ? 'default' : 'ghost'}
+          onClick={() => setStatusFilter('completed')}
+          size="sm"
+        >
+          Выполненные ({statusCounts.completed})
+        </Button>
+        <Button
+          variant={statusFilter === 'open' ? 'default' : 'ghost'}
+          onClick={() => setStatusFilter('open')}
+          size="sm"
+        >
+          Открытые ({statusCounts.open})
+        </Button>
+      </div>
+
+      <div className="space-y-2">
+        {filteredTasks.length === 0 ? (
+          <Card className="p-8 text-center text-muted-foreground">
+            <Icon name="Inbox" size={48} className="mx-auto mb-2 opacity-50" />
+            <p>Нет задач</p>
           </Card>
         ) : (
-          tasks.map(task => (
-            <Card 
-              key={task.id} 
-              className="group relative overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300 border-l-4"
-              style={{
-                borderLeftColor: 
-                  task.priority === 'urgent' ? 'rgb(239 68 68)' : 
-                  task.priority === 'high' ? 'rgb(251 146 60)' : 
-                  task.priority === 'medium' ? 'rgb(59 130 246)' : 
-                  'rgb(148 163 184)'
-              }}
-              onClick={() => {
-                console.log('Task card clicked:', task);
-                setSelectedTask(task);
-                setIsDetailDialogOpen(true);
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              
-              <div className="relative p-6">
+          filteredTasks.map(task => {
+            const manager = managers.find(m => m.id === task.assigned_to);
+            const ticket = tickets.find(t => t.id === task.ticket_id);
+            
+            return (
+              <Card
+                key={task.id}
+                className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4"
+                style={{
+                  borderLeftColor: 
+                    task.priority === 'urgent' ? '#ef4444' :
+                    task.priority === 'high' ? '#f59e0b' :
+                    task.priority === 'medium' ? '#3b82f6' : '#6b7280'
+                }}
+                onClick={() => {
+                  setSelectedTask(task);
+                  setIsDetailDialogOpen(true);
+                }}
+              >
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
-                          #{task.id}
-                        </span>
-                        <Badge 
-                          variant={getPriorityColor(task.priority)}
-                          className="font-medium"
-                        >
-                          <Icon name={getPriorityIcon(task.priority)} size={12} className="mr-1" />
-                          {task.priority === 'urgent' ? 'Срочно' : 
-                           task.priority === 'high' ? 'Высокий' : 
-                           task.priority === 'medium' ? 'Средний' : 'Низкий'}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge 
+                        variant={
+                          task.status === 'completed' ? 'default' :
+                          task.status === 'in_progress' ? 'secondary' : 'outline'
+                        }
+                        className="text-xs"
+                      >
+                        {getStatusLabel(task.status)}
+                      </Badge>
+                      <Badge 
+                        variant={
+                          task.priority === 'urgent' ? 'destructive' :
+                          task.priority === 'high' ? 'default' : 'secondary'
+                        }
+                        className="text-xs"
+                      >
+                        {getPriorityLabel(task.priority)}
+                      </Badge>
+                      {ticket && (
+                        <Badge variant="outline" className="text-xs">
+                          #{task.ticket_id}
                         </Badge>
-                        <Badge 
-                          variant={getStatusColor(task.status)}
-                          className="font-medium"
-                        >
-                          <Icon name={getStatusIcon(task.status)} size={12} className="mr-1" />
-                          {task.status === 'completed' ? 'Завершена' : 
-                           task.status === 'in_progress' ? 'В работе' : 'Открыта'}
-                        </Badge>
-                      </div>
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                        {task.title}
-                      </h3>
+                      )}
                     </div>
 
+                    <h3 className="font-semibold text-base mb-1 truncate">
+                      {task.title}
+                    </h3>
+
                     {task.description && (
-                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
                         {task.description}
                       </p>
                     )}
 
-                    <div className="flex items-center gap-6 text-sm flex-wrap">
-                      {task.ticket_id && task.ticket_title && (
-                        <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-                          <div className="bg-primary/10 p-1.5 rounded">
-                            <Icon name="Ticket" size={14} className="text-primary" />
-                          </div>
-                          <span className="font-medium">Тикет #{task.ticket_id}</span>
-                          <span className="text-xs opacity-70">• {task.ticket_title}</span>
-                        </div>
-                      )}
-                      {task.assignee_name && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <div className="bg-blue-500/10 p-1.5 rounded">
-                            <Icon name="User" size={14} className="text-blue-500" />
-                          </div>
-                          <span className="font-medium">{task.assignee_name}</span>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      {manager && (
+                        <div className="flex items-center gap-1">
+                          <Icon name="User" size={12} />
+                          <span>{manager.full_name}</span>
                         </div>
                       )}
                       {task.deadline && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <div className="bg-orange-500/10 p-1.5 rounded">
-                            <Icon name="Calendar" size={14} className="text-orange-500" />
-                          </div>
-                          <span className="font-medium">
-                            {new Date(task.deadline).toLocaleDateString('ru-RU', {
-                              day: 'numeric',
-                              month: 'short',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
+                        <div className="flex items-center gap-1">
+                          <Icon name="Calendar" size={12} />
+                          <span>
+                            {format(new Date(task.deadline), 'd MMM, HH:mm', { locale: ru })}
                           </span>
                         </div>
                       )}
+                      <div className="flex items-center gap-1">
+                        <Icon name="Clock" size={12} />
+                        <span>
+                          {format(new Date(task.created_at), 'd MMM, HH:mm', { locale: ru })}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                    {task.status !== 'completed' && (
-                      <Button
-                        size="sm"
-                        variant="default"
-                        className="shadow-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onUpdateTaskStatus(task.id, 'completed');
-                        }}
-                      >
-                        <Icon name="Check" size={14} className="mr-1" />
-                        Завершить
-                      </Button>
-                    )}
+                  <div className="flex gap-2">
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={(e) => {
                         e.stopPropagation();
-                        onDeleteTask(task.id);
+                        setSelectedTask(task);
+                        setIsDetailDialogOpen(true);
                       }}
                     >
-                      <Icon name="Trash2" size={14} />
+                      <Icon name="Eye" size={16} />
                     </Button>
                   </div>
                 </div>
-              </div>
-            </Card>
-          ))
+              </Card>
+            );
+          })
         )}
       </div>
 
-      <TaskDetailDialog
-        task={selectedTask}
-        open={isDetailDialogOpen}
-        onOpenChange={setIsDetailDialogOpen}
-        onUpdateStatus={onUpdateTaskStatus}
-        onDeleteTask={onDeleteTask}
-        userRole="director"
-      />
+      {selectedTask && (
+        <TaskDetailDialog
+          task={selectedTask}
+          open={isDetailDialogOpen}
+          onOpenChange={setIsDetailDialogOpen}
+          onUpdateStatus={onUpdateTaskStatus}
+          onDelete={onDeleteTask}
+          managers={managers}
+        />
+      )}
     </div>
   );
 });
