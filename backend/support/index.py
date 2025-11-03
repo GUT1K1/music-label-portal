@@ -95,7 +95,7 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
     
     user_id_int = int(user_id)
     
-    cursor.execute("SELECT role FROM t_p35759334_music_label_portal.users WHERE id = %s", (user_id_int,))
+    cursor.execute(f"SELECT role FROM t_p35759334_music_label_portal.users WHERE id = {sql_escape(user_id_int)}")
     user_role_result = cursor.fetchone()
     user_role = user_role_result['role'] if user_role_result else 'artist'
     
@@ -103,10 +103,10 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
     
     if thread_id:
         thread_id_int = int(thread_id)
-        cursor.execute("""
+        cursor.execute(f"""
             SELECT * FROM t_p35759334_music_label_portal.support_threads
-            WHERE id = %s
-        """, (thread_id_int,))
+            WHERE id = {sql_escape(thread_id_int)}
+        """)
         
         thread = cursor.fetchone()
         
@@ -117,26 +117,26 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Thread not found'})
             }
         
-        cursor.execute("""
+        cursor.execute(f"""
             SELECT * FROM t_p35759334_music_label_portal.messages
-            WHERE thread_id = %s
+            WHERE thread_id = {sql_escape(thread_id_int)}
             ORDER BY created_at ASC
-        """, (thread_id_int,))
+        """)
         
         messages = cursor.fetchall()
         
-        cursor.execute("""
+        cursor.execute(f"""
             UPDATE t_p35759334_music_label_portal.messages
             SET is_read = true
-            WHERE thread_id = %s AND sender_id != %s AND is_read = false
-        """, (thread_id_int, user_id_int))
+            WHERE thread_id = {sql_escape(thread_id_int)} AND sender_id != {sql_escape(user_id_int)} AND is_read = false
+        """)
         
         if user_role in ['manager', 'director'] and thread.get('status') == 'new':
-            cursor.execute("""
+            cursor.execute(f"""
                 UPDATE t_p35759334_music_label_portal.support_threads
                 SET status = 'in_progress'
-                WHERE id = %s
-            """, (thread_id_int,))
+                WHERE id = {sql_escape(thread_id_int)}
+            """)
         
 
         
@@ -150,129 +150,26 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
         }
     
     else:
+        where_clause = ""
         if user_role in ['manager', 'director']:
             status_filter = params.get('status', 'all')
-            
             if status_filter != 'all':
-                cursor.execute("""
-                    SELECT 
-                        id, artist_id, subject, status, priority, 
-                        assigned_to, created_at, updated_at, last_message_at, 
-                        is_archived, rating
-                    FROM t_p35759334_music_label_portal.support_threads
-                    WHERE status = %s
-                    ORDER BY last_message_at DESC
-                """, (status_filter,))
-                threads = cursor.fetchall()
-                result_threads = []
-                for thread in threads:
-                    thread_dict = dict(thread)
-                    cursor.execute("""
-                        SELECT username, full_name, avatar, vk_photo
-                        FROM t_p35759334_music_label_portal.users
-                        WHERE id = %s
-                    """, (thread['artist_id'],))
-                    artist = cursor.fetchone()
-                    if artist:
-                        thread_dict['artist_username'] = artist['username']
-                        thread_dict['artist_name'] = artist['full_name']
-                        thread_dict['artist_avatar'] = artist['avatar']
-                        thread_dict['artist_vk_photo'] = artist['vk_photo']
-                    else:
-                        thread_dict['artist_username'] = None
-                        thread_dict['artist_name'] = None
-                        thread_dict['artist_avatar'] = None
-                        thread_dict['artist_vk_photo'] = None
-                    
-                    cursor.execute("""
-                        SELECT message FROM t_p35759334_music_label_portal.messages 
-                        WHERE thread_id = %s 
-                        ORDER BY created_at DESC LIMIT 1
-                    """, (thread['id'],))
-                    last_msg = cursor.fetchone()
-                    thread_dict['last_message'] = last_msg['message'] if last_msg else None
-                    cursor.execute("""
-                        SELECT COUNT(*) as count FROM t_p35759334_music_label_portal.messages 
-                        WHERE thread_id = %s AND is_read = false AND sender_id != %s
-                    """, (thread['id'], user_id_int))
-                    unread = cursor.fetchone()
-                    thread_dict['unread_count'] = unread['count'] if unread else 0
-                    result_threads.append(thread_dict)
-                threads = result_threads
-            else:
-                cursor.execute("""
-                    SELECT 
-                        id, artist_id, subject, status, priority, 
-                        assigned_to, created_at, updated_at, last_message_at, 
-                        is_archived, rating
-                    FROM t_p35759334_music_label_portal.support_threads
-                    ORDER BY last_message_at DESC
-                """)
-                threads = cursor.fetchall()
-                result_threads = []
-                for thread in threads:
-                    thread_dict = dict(thread)
-                    cursor.execute("""
-                        SELECT username, full_name, avatar, vk_photo
-                        FROM t_p35759334_music_label_portal.users
-                        WHERE id = %s
-                    """, (thread['artist_id'],))
-                    artist = cursor.fetchone()
-                    if artist:
-                        thread_dict['artist_username'] = artist['username']
-                        thread_dict['artist_name'] = artist['full_name']
-                        thread_dict['artist_avatar'] = artist['avatar']
-                        thread_dict['artist_vk_photo'] = artist['vk_photo']
-                    else:
-                        thread_dict['artist_username'] = None
-                        thread_dict['artist_name'] = None
-                        thread_dict['artist_avatar'] = None
-                        thread_dict['artist_vk_photo'] = None
-                    
-                    cursor.execute("""
-                        SELECT message FROM t_p35759334_music_label_portal.messages 
-                        WHERE thread_id = %s 
-                        ORDER BY created_at DESC LIMIT 1
-                    """, (thread['id'],))
-                    last_msg = cursor.fetchone()
-                    thread_dict['last_message'] = last_msg['message'] if last_msg else None
-                    cursor.execute("""
-                        SELECT COUNT(*) as count FROM t_p35759334_music_label_portal.messages 
-                        WHERE thread_id = %s AND is_read = false AND sender_id != %s
-                    """, (thread['id'], user_id_int))
-                    unread = cursor.fetchone()
-                    thread_dict['unread_count'] = unread['count'] if unread else 0
-                    result_threads.append(thread_dict)
-                threads = result_threads
+                where_clause = f"WHERE status = {sql_escape(status_filter)}"
         else:
-            cursor.execute("""
-                SELECT 
-                    st.id, st.artist_id, st.subject, st.status, st.priority, 
-                    st.assigned_to, st.created_at, st.updated_at, st.last_message_at, 
-                    st.is_archived, st.rating
-                FROM t_p35759334_music_label_portal.support_threads st
-                WHERE st.artist_id = %s
-                ORDER BY st.last_message_at DESC
-            """, (user_id_int,))
-            threads = cursor.fetchall()
-            result_threads = []
-            for thread in threads:
-                thread_dict = dict(thread)
-                cursor.execute("""
-                    SELECT message FROM t_p35759334_music_label_portal.messages 
-                    WHERE thread_id = %s 
-                    ORDER BY created_at DESC LIMIT 1
-                """, (thread['id'],))
-                last_msg = cursor.fetchone()
-                thread_dict['last_message'] = last_msg['message'] if last_msg else None
-                cursor.execute("""
-                    SELECT COUNT(*) as count FROM t_p35759334_music_label_portal.messages 
-                    WHERE thread_id = %s AND is_read = false AND sender_id != %s
-                """, (thread['id'], user_id_int))
-                unread = cursor.fetchone()
-                thread_dict['unread_count'] = unread['count'] if unread else 0
-                result_threads.append(thread_dict)
-            threads = result_threads
+            where_clause = f"WHERE artist_id = {sql_escape(user_id_int)}"
+        
+        query = f"""
+            SELECT 
+                id, artist_id, subject, status, priority, 
+                assigned_to, created_at, updated_at, last_message_at, 
+                is_archived, rating
+            FROM t_p35759334_music_label_portal.support_threads
+            {where_clause}
+            ORDER BY last_message_at DESC
+        """
+        
+        cursor.execute(query)
+        threads = [dict(t) for t in cursor.fetchall()]
         
         return {
             'statusCode': 200,
@@ -294,12 +191,12 @@ def create_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     user_id_int = int(user_id)
     
-    cursor.execute("""
+    cursor.execute(f"""
         INSERT INTO t_p35759334_music_label_portal.support_threads 
         (artist_id, subject, status, priority, created_at, updated_at, last_message_at)
-        VALUES (%s, %s, 'new', %s, NOW(), NOW(), NOW())
+        VALUES ({sql_escape(user_id_int)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, NOW(), NOW(), NOW())
         RETURNING id
-    """, (user_id_int, subject, priority))
+    """)
     
     thread_id = cursor.fetchone()['id']
     
@@ -324,10 +221,10 @@ def send_message(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any
     user_id_int = int(user_id)
     thread_id_int = int(thread_id)
     
-    cursor.execute("""
+    cursor.execute(f"""
         SELECT * FROM t_p35759334_music_label_portal.support_threads 
-        WHERE id = %s
-    """, (thread_id_int,))
+        WHERE id = {sql_escape(thread_id_int)}
+    """)
     
     thread = cursor.fetchone()
     
@@ -338,20 +235,20 @@ def send_message(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any
             'body': json.dumps({'error': 'Thread not found'})
         }
     
-    cursor.execute("""
+    cursor.execute(f"""
         INSERT INTO t_p35759334_music_label_portal.messages 
         (thread_id, sender_id, message, created_at, is_read)
-        VALUES (%s, %s, %s, NOW(), false)
+        VALUES ({sql_escape(thread_id_int)}, {sql_escape(user_id_int)}, {sql_escape(message)}, NOW(), false)
         RETURNING id
-    """, (thread_id_int, user_id_int, message))
+    """)
     
     message_id = cursor.fetchone()['id']
     
-    cursor.execute("""
+    cursor.execute(f"""
         UPDATE t_p35759334_music_label_portal.support_threads 
         SET last_message_at = NOW(), updated_at = NOW()
-        WHERE id = %s
-    """, (thread_id_int,))
+        WHERE id = {sql_escape(thread_id_int)}
+    """)
     
     return {
         'statusCode': 200,
@@ -374,7 +271,7 @@ def update_thread_status(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[
     user_id_int = int(user_id)
     thread_id_int = int(thread_id)
     
-    cursor.execute("SELECT role FROM t_p35759334_music_label_portal.users WHERE id = %s", (user_id_int,))
+    cursor.execute(f"SELECT role FROM t_p35759334_music_label_portal.users WHERE id = {sql_escape(user_id_int)}")
     user_role_result = cursor.fetchone()
     user_role = user_role_result['role'] if user_role_result else 'artist'
     
@@ -385,11 +282,11 @@ def update_thread_status(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[
             'body': json.dumps({'error': 'Forbidden'})
         }
     
-    cursor.execute("""
+    cursor.execute(f"""
         UPDATE t_p35759334_music_label_portal.support_threads 
-        SET status = %s, updated_at = NOW()
-        WHERE id = %s
-    """, (status, thread_id_int))
+        SET status = {sql_escape(status)}, updated_at = NOW()
+        WHERE id = {sql_escape(thread_id_int)}
+    """)
     
     return {
         'statusCode': 200,
@@ -412,7 +309,7 @@ def assign_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
     user_id_int = int(user_id)
     thread_id_int = int(thread_id)
     
-    cursor.execute("SELECT role FROM t_p35759334_music_label_portal.users WHERE id = %s", (user_id_int,))
+    cursor.execute(f"SELECT role FROM t_p35759334_music_label_portal.users WHERE id = {sql_escape(user_id_int)}")
     user_role_result = cursor.fetchone()
     user_role = user_role_result['role'] if user_role_result else 'artist'
     
@@ -425,17 +322,17 @@ def assign_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
     
     if assigned_to is not None:
         assigned_to_int = int(assigned_to)
-        cursor.execute("""
+        cursor.execute(f"""
             UPDATE t_p35759334_music_label_portal.support_threads 
-            SET assigned_to = %s, updated_at = NOW()
-            WHERE id = %s
-        """, (assigned_to_int, thread_id_int))
+            SET assigned_to = {sql_escape(assigned_to_int)}, updated_at = NOW()
+            WHERE id = {sql_escape(thread_id_int)}
+        """)
     else:
-        cursor.execute("""
+        cursor.execute(f"""
             UPDATE t_p35759334_music_label_portal.support_threads 
             SET assigned_to = NULL, updated_at = NOW()
-            WHERE id = %s
-        """, (thread_id_int,))
+            WHERE id = {sql_escape(thread_id_int)}
+        """)
     
     return {
         'statusCode': 200,
@@ -447,7 +344,7 @@ def get_artists(conn, user_id: str) -> Dict[str, Any]:
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     user_id_int = int(user_id)
     
-    cursor.execute("SELECT role FROM t_p35759334_music_label_portal.users WHERE id = %s", (user_id_int,))
+    cursor.execute(f"SELECT role FROM t_p35759334_music_label_portal.users WHERE id = {sql_escape(user_id_int)}")
     user_role_result = cursor.fetchone()
     user_role = user_role_result['role'] if user_role_result else 'artist'
     
@@ -489,10 +386,10 @@ def rate_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]
     thread_id_int = int(thread_id)
     rating_int = int(rating)
     
-    cursor.execute("""
+    cursor.execute(f"""
         SELECT artist_id FROM t_p35759334_music_label_portal.support_threads 
-        WHERE id = %s
-    """, (thread_id_int,))
+        WHERE id = {sql_escape(thread_id_int)}
+    """)
     
     thread = cursor.fetchone()
     
@@ -510,11 +407,11 @@ def rate_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]
             'body': json.dumps({'error': 'Forbidden'})
         }
     
-    cursor.execute("""
+    cursor.execute(f"""
         UPDATE t_p35759334_music_label_portal.support_threads 
-        SET rating = %s, updated_at = NOW()
-        WHERE id = %s
-    """, (rating_int, thread_id_int))
+        SET rating = {sql_escape(rating_int)}, updated_at = NOW()
+        WHERE id = {sql_escape(thread_id_int)}
+    """)
     
     return {
         'statusCode': 200,
