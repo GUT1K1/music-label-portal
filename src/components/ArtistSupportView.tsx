@@ -19,7 +19,7 @@ interface Message {
 interface ThreadData {
   id: number;
   subject: string;
-  status: 'new' | 'in_progress' | 'waiting' | 'resolved';
+  status: 'new' | 'in_progress' | 'resolved';
   artist_username?: string;
   artist_name?: string;
   artist_avatar?: string;

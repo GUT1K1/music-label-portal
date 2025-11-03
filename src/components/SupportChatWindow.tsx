@@ -26,7 +26,7 @@ interface Message {
 interface ThreadData {
   id: number;
   subject: string;
-  status: 'new' | 'in_progress' | 'waiting' | 'resolved';
+  status: 'new' | 'in_progress' | 'resolved';
   artist_username?: string;
   artist_name?: string;
   artist_avatar?: string;
@@ -72,17 +72,16 @@ export default function SupportChatWindow({
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      new: { label: 'Новое', variant: 'default' as const, icon: 'CircleDot' },
-      in_progress: { label: 'В работе', variant: 'secondary' as const, icon: 'Clock' },
-      waiting: { label: 'Ожидание', variant: 'outline' as const, icon: 'Pause' },
-      resolved: { label: 'Решено', variant: 'default' as const, icon: 'CheckCircle' }
+      new: { label: 'Новое', color: 'bg-blue-500/10 text-blue-600 border-blue-500/20', icon: 'Sparkles' },
+      in_progress: { label: 'В работе', color: 'bg-amber-500/10 text-amber-600 border-amber-500/20', icon: 'Zap' },
+      resolved: { label: 'Решено', color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20', icon: 'CheckCircle2' }
     };
     
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.new;
     
     return (
-      <Badge variant={config.variant} className="flex items-center gap-1 text-xs">
-        <Icon name={config.icon} className="w-3 h-3" />
+      <Badge variant="outline" className={`flex items-center gap-1.5 text-xs font-medium border ${config.color}`}>
+        <Icon name={config.icon} className="w-3.5 h-3.5" />
         {config.label}
       </Badge>
     );
@@ -134,12 +133,11 @@ export default function SupportChatWindow({
               {onStatusChange && threadData.status !== 'resolved' && (
                 <Button
                   size="sm"
-                  variant="outline"
                   onClick={() => onStatusChange('resolved')}
-                  className="h-7 text-xs"
+                  className="h-7 text-xs bg-emerald-500 hover:bg-emerald-600 text-white"
                 >
                   <Icon name="Check" className="w-3 h-3 mr-1" />
-                  Закрыть
+                  Завершить
                 </Button>
               )}
             </div>
@@ -211,7 +209,7 @@ export default function SupportChatWindow({
                 <div
                   className={`rounded-2xl px-3 py-1.5 ${
                     msg.sender_id === userId
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm'
                       : 'bg-muted'
                   }`}
                 >
@@ -240,7 +238,7 @@ export default function SupportChatWindow({
             size="sm"
             onClick={onSendMessage} 
             disabled={sendingMessage || !newMessage.trim()}
-            className="h-9 px-3"
+            className="h-9 px-3 bg-blue-500 hover:bg-blue-600 text-white"
           >
             {sendingMessage ? (
               <Icon name="Loader2" className="w-4 h-4 animate-spin" />

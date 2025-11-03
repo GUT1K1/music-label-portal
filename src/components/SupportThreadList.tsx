@@ -13,7 +13,7 @@ import { ru } from 'date-fns/locale';
 interface SupportThread {
   id: number;
   subject: string;
-  status: 'new' | 'in_progress' | 'waiting' | 'resolved';
+  status: 'new' | 'in_progress' | 'resolved';
   priority: 'normal' | 'urgent';
   created_at: string;
   updated_at: string;
@@ -49,17 +49,16 @@ export default function SupportThreadList({
 }: SupportThreadListProps) {
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      new: { label: 'Новое', variant: 'default' as const, icon: 'CircleDot' },
-      in_progress: { label: 'В работе', variant: 'secondary' as const, icon: 'Clock' },
-      waiting: { label: 'Ожидание', variant: 'outline' as const, icon: 'Pause' },
-      resolved: { label: 'Решено', variant: 'default' as const, icon: 'CheckCircle' }
+      new: { label: 'Новое', color: 'bg-blue-500/10 text-blue-600 border-blue-500/20', icon: 'Sparkles' },
+      in_progress: { label: 'В работе', color: 'bg-amber-500/10 text-amber-600 border-amber-500/20', icon: 'Zap' },
+      resolved: { label: 'Решено', color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20', icon: 'CheckCircle2' }
     };
     
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.new;
     
     return (
-      <Badge variant={config.variant} className="flex items-center gap-1 text-xs">
-        <Icon name={config.icon} className="w-3 h-3" />
+      <Badge variant="outline" className={`flex items-center gap-1 text-[10px] font-medium border ${config.color}`}>
+        <Icon name={config.icon} className="w-2.5 h-2.5" />
         {config.label}
       </Badge>
     );
@@ -84,7 +83,7 @@ export default function SupportThreadList({
             <Icon name="MessageSquare" className="w-4 h-4 text-primary" />
             Диалоги
           </CardTitle>
-          <Button size="sm" onClick={onNewThreadClick} className="h-7 gap-1 text-xs">
+          <Button size="sm" onClick={onNewThreadClick} className="h-7 gap-1 text-xs bg-blue-500 hover:bg-blue-600 text-white">
             <Icon name="Plus" className="w-3 h-3" />
             Новый
           </Button>
@@ -106,7 +105,6 @@ export default function SupportThreadList({
               <SelectItem value="all">Все</SelectItem>
               <SelectItem value="new">Новые</SelectItem>
               <SelectItem value="in_progress">В работе</SelectItem>
-              <SelectItem value="waiting">Ожидание</SelectItem>
               <SelectItem value="resolved">Решённые</SelectItem>
             </SelectContent>
           </Select>

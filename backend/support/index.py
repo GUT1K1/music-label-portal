@@ -127,6 +127,14 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
             SET is_read = true
             WHERE thread_id = %s AND sender_id != %s AND is_read = false
         """, (thread_id_int, user_id_int))
+        
+        if user_role in ['manager', 'boss'] and thread.get('status') == 'new':
+            cursor.execute("""
+                UPDATE t_p35759334_music_label_portal.support_threads
+                SET status = 'in_progress'
+                WHERE id = %s
+            """, (thread_id_int,))
+        
         conn.commit()
         
         return {

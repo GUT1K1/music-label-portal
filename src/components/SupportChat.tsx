@@ -9,7 +9,7 @@ import ArtistSupportView from './ArtistSupportView';
 interface SupportThread {
   id: number;
   subject: string;
-  status: 'new' | 'in_progress' | 'waiting' | 'resolved';
+  status: 'new' | 'in_progress' | 'resolved';
   priority: 'normal' | 'urgent';
   created_at: string;
   updated_at: string;
