@@ -481,9 +481,7 @@ export default function LandingPage() {
           </div>
 
           <div className="border-t border-white/10 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs md:text-sm text-gray-500 text-center md:text-left">
-              © 2025 420. Все права защищены.
-            </p>
+            <p className="text-xs md:text-sm text-gray-500 text-center md:text-left">© 2025 420.РФ</p>
             <div className="flex gap-3 md:gap-4">
               {["Mail", "Send", "Music"].map((icon, i) => (
                 <a
