@@ -136,6 +136,26 @@ export default function LandingPage() {
         
         <div className="container mx-auto px-4 relative z-10 py-20">
           <div className="max-w-6xl mx-auto text-center">
+            {/* 420 Brand Identity */}
+            <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <div className="relative inline-block">
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-amber-600 opacity-30 blur-3xl animate-pulse" />
+                <h1 className="relative text-[120px] md:text-[180px] lg:text-[220px] font-black leading-none">
+                  <span className="bg-gradient-to-br from-yellow-400 via-orange-500 to-amber-600 bg-clip-text text-transparent drop-shadow-2xl">
+                    420
+                  </span>
+                </h1>
+              </div>
+              <div className="mt-4 mb-2">
+                <p className="text-2xl md:text-3xl font-bold text-white tracking-wide">
+                  Музыкальный Лейбл
+                </p>
+                <p className="text-lg md:text-xl text-gray-400 mt-2 max-w-2xl mx-auto">
+                  Твой путь к успеху в музыкальной индустрии
+                </p>
+              </div>
+            </div>
+            
             <div className="mb-12">
               <AnimatedHero />
             </div>
