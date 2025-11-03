@@ -171,6 +171,39 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
         cursor.execute(query)
         threads = [dict(t) for t in cursor.fetchall()]
         
+        artist_ids = list(set([t['artist_id'] for t in threads if t.get('artist_id')]))
+        artists_map = {}
+        
+        if artist_ids:
+            ids_str = ','.join([str(int(aid)) for aid in artist_ids])
+            artist_query = f"""
+                SELECT id, username, full_name, vk_photo
+                FROM t_p35759334_music_label_portal.users
+                WHERE id IN ({ids_str})
+            """
+            cursor2 = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cursor2.execute(artist_query)
+            for artist in cursor2.fetchall():
+                artist_dict = dict(artist)
+                artist_dict['avatar'] = None
+                artists_map[artist['id']] = artist_dict
+            cursor2.close()
+        
+        for thread in threads:
+            artist = artists_map.get(thread.get('artist_id'))
+            if artist:
+                thread['artist_username'] = artist.get('username')
+                thread['artist_name'] = artist.get('full_name')  
+                thread['artist_avatar'] = artist.get('avatar')
+                thread['artist_vk_photo'] = artist.get('vk_photo')
+            else:
+                thread['artist_username'] = None
+                thread['artist_name'] = None  
+                thread['artist_avatar'] = None
+                thread['artist_vk_photo'] = None
+            thread['last_message'] = None
+            thread['unread_count'] = 0
+        
         return {
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
