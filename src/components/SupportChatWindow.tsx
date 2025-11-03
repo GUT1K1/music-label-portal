@@ -103,7 +103,9 @@ export default function SupportChatWindow({
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (scrollContainer) {
-        scrollContainer.scrollTop = 0;
+        setTimeout(() => {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }, 0);
       }
     }
   }, [messages]);
@@ -230,7 +232,7 @@ export default function SupportChatWindow({
       </CardHeader>
       <Separator />
       <ScrollArea className="flex-1 px-4 py-3" ref={scrollAreaRef}>
-        <div className="space-y-reverse space-y-2 min-h-full flex flex-col-reverse justify-start">
+        <div className="space-y-2 min-h-full flex flex-col justify-end">
           {messages.map(msg => (
             <div
               key={msg.id}
