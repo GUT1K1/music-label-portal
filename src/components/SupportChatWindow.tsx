@@ -233,7 +233,7 @@ export default function SupportChatWindow({
       <Separator />
       <ScrollArea className="flex-1 px-4 py-3" ref={scrollAreaRef}>
         <div className="space-y-2 min-h-full flex flex-col justify-end">
-          {messages.map(msg => (
+          {[...messages].reverse().map(msg => (
             <div
               key={msg.id}
               className={`flex gap-3 ${msg.sender_id === userId ? 'justify-end' : 'justify-start'}`}
