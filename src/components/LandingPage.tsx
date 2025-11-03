@@ -179,7 +179,7 @@ export default function LandingPage() {
           }}
         />
 
-        <div className="container mx-auto px-4 relative z-10 py-20">
+        <div className="container mx-auto px-4 relative z-10 py-0">
           <div className="max-w-6xl mx-auto text-center">
             {/* Компактный блок 420 + Hero */}
             <div
@@ -189,8 +189,8 @@ export default function LandingPage() {
               <div className="">
                 {/* Подпись лейбла */}
                 <div className="space-y-2">
-                  <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight py-0 px-0 my-0 mx-[110px]">420</h2>
-                  <p className="text-base md:text-lg text-gray-400 font-black">Зайди и сравни с другими сервисами </p>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight py-0 px-0 my-0 mx-[110px]"></h2>
+                  <p className="text-base md:text-lg text-gray-400 font-black"></p>
                 </div>
               </div>
             </div>
