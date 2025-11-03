@@ -3,6 +3,8 @@ import { useToast } from '@/hooks/use-toast';
 
 const SUPPORT_URL = 'https://functions.poehali.dev/03b127de-537a-446c-af8d-01caba70e2e9';
 
+const UPLOAD_URL = 'https://functions.poehali.dev/4a51bf1f-9fb3-4d61-b2d4-e3c42bcb2dda';
+
 export function useSupportActions(
   userId: number,
   isStaff: boolean,
@@ -12,11 +14,37 @@ export function useSupportActions(
   const [sendingMessage, setSendingMessage] = useState(false);
   const { toast } = useToast();
 
-  const sendMessage = async (activeThread: number, newMessage: string, setNewMessage: (msg: string) => void) => {
-    if (!newMessage.trim() || !activeThread) return;
+  const sendMessage = async (
+    activeThread: number, 
+    newMessage: string, 
+    setNewMessage: (msg: string) => void,
+    file?: File | null,
+    releaseId?: number | null
+  ) => {
+    if (!newMessage.trim() && !file && !releaseId) return;
+    if (!activeThread) return;
     
     setSendingMessage(true);
     try {
+      let attachmentUrl: string | undefined;
+      let attachmentName: string | undefined;
+      let messageType = 'text';
+      
+      if (file) {
+        const uploadRes = await fetch(`${UPLOAD_URL}?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(file.type)}`);
+        const uploadData = await uploadRes.json();
+        
+        await fetch(uploadData.presignedUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type },
+          body: file
+        });
+        
+        attachmentUrl = uploadData.url;
+        attachmentName = file.name;
+        messageType = file.type.startsWith('image/') ? 'image' : 'file';
+      }
+      
       const response = await fetch(SUPPORT_URL, {
         method: 'POST',
         headers: {
@@ -26,7 +54,11 @@ export function useSupportActions(
         body: JSON.stringify({
           action: 'send_message',
           thread_id: activeThread,
-          message: newMessage.trim()
+          message: newMessage.trim() || (releaseId ? 'Прикреплён релиз' : 'Файл'),
+          message_type: messageType,
+          attachment_url: attachmentUrl,
+          attachment_name: attachmentName,
+          release_id: releaseId
         })
       });
       

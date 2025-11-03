@@ -64,7 +64,7 @@ interface SupportChatWindowProps {
   releases?: Release[];
   tracks?: Track[];
   onMessageChange: (message: string) => void;
-  onSendMessage: () => void;
+  onSendMessage: (file?: File | null, releaseId?: number | null) => void;
   onStatusChange?: (status: string) => void;
   onRatingSubmit?: (rating: number) => void;
   onAttachRelease?: (releaseId: number | null, trackId: number | null) => void;
@@ -86,9 +86,33 @@ export default function SupportChatWindow({
   onAttachRelease
 }: SupportChatWindowProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showAttachModal, setShowAttachModal] = useState(false);
+  const [showReleaseModal, setShowReleaseModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedRelease, setSelectedRelease] = useState<number | null>(null);
   const [selectedTrack, setSelectedTrack] = useState<number | null>(null);
+  
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setShowAttachModal(false);
+    }
+  };
+  
+  const handleSendWithAttachment = () => {
+    if (selectedFile) {
+      onSendMessage(selectedFile, null);
+      setSelectedFile(null);
+    } else if (selectedRelease) {
+      onSendMessage(null, selectedRelease);
+      setSelectedRelease(null);
+      setShowReleaseModal(false);
+    } else {
+      onSendMessage();
+    }
+  };
   
   const handleAttach = () => {
     if (onAttachRelease) {
@@ -127,7 +151,7 @@ export default function SupportChatWindow({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      onSendMessage();
+      handleSendWithAttachment();
     }
   };
 
@@ -257,14 +281,58 @@ export default function SupportChatWindow({
                 </Avatar>
               )}
               <div className={`max-w-[75%] ${msg.sender_id === userId ? 'order-first' : ''}`}>
-                <div
-                  className={`rounded-2xl px-3 py-1.5 ${
-                    msg.sender_id === userId
-                      ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <p className="text-xs whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
+                <div className="space-y-1">
+                  {msg.message_type === 'image' && msg.attachment_url && (
+                    <div className="rounded-lg overflow-hidden">
+                      <img src={msg.attachment_url} alt={msg.attachment_name || 'Изображение'} className="max-w-full h-auto" />
+                    </div>
+                  )}
+                  {msg.message_type === 'file' && msg.attachment_url && (
+                    <a
+                      href={msg.attachment_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center gap-2 p-2 rounded-lg border ${
+                        msg.sender_id === userId ? 'border-white/20 bg-white/10' : 'border-border bg-background'
+                      }`}
+                    >
+                      <Icon name="FileText" className="w-4 h-4" />
+                      <span className="text-xs flex-1 truncate">{msg.attachment_name || 'Файл'}</span>
+                      <Icon name="Download" className="w-3 h-3" />
+                    </a>
+                  )}
+                  {msg.release_id && msg.release_title && (
+                    <div
+                      className={`flex items-center gap-2 p-2 rounded-lg ${
+                        msg.sender_id === userId 
+                          ? 'bg-white/10 border border-white/20' 
+                          : 'bg-background border border-border'
+                      }`}
+                    >
+                      {msg.release_cover ? (
+                        <img src={msg.release_cover} alt={msg.release_title} className="w-10 h-10 rounded object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
+                          <Icon name="Music" className="w-5 h-5" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium truncate">{msg.release_title}</div>
+                        <div className="text-[10px] opacity-70">Релиз</div>
+                      </div>
+                    </div>
+                  )}
+                  {msg.message && (
+                    <div
+                      className={`rounded-2xl px-3 py-1.5 ${
+                        msg.sender_id === userId
+                          ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      <p className="text-xs whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
+                    </div>
+                  )}
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-0.5 px-2">
                   {format(new Date(msg.created_at), 'd MMM, HH:mm', { locale: ru })}
@@ -277,40 +345,147 @@ export default function SupportChatWindow({
       </ScrollArea>
       <Separator />
       <div className="p-3 bg-muted/30">
-        <div className="flex gap-2">
-          {!isStaff && onAttachRelease && (
-            <Button
-              onClick={() => setShowAttachModal(true)}
-              variant="outline"
-              size="sm"
-              className="h-9 px-3 shrink-0"
-              title="Прикрепить релиз или трек"
-            >
+        <div className="space-y-2">
+          {selectedFile && (
+            <div className="flex items-center gap-2 bg-muted p-2 rounded text-sm">
               <Icon name="Paperclip" className="w-4 h-4" />
-            </Button>
+              <span className="flex-1 truncate">{selectedFile.name}</span>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setSelectedFile(null)}
+                className="h-6 w-6 p-0"
+              >
+                <Icon name="X" className="w-3 h-3" />
+              </Button>
+            </div>
           )}
-          <Input
-            placeholder="Введите сообщение..."
-            value={newMessage}
-            onChange={(e) => onMessageChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={sendingMessage}
-            className="flex-1 h-9 text-sm"
-          />
-          <Button 
-            size="sm"
-            onClick={onSendMessage} 
-            disabled={sendingMessage || !newMessage.trim()}
-            className="h-9 px-3 bg-blue-500 hover:bg-blue-600 text-white shrink-0"
-          >
-            {sendingMessage ? (
-              <Icon name="Loader2" className="w-4 h-4 animate-spin" />
-            ) : (
-              <Icon name="Send" className="w-4 h-4" />
+          <div className="flex gap-2">
+            {isStaff && (
+              <>
+                <Button
+                  onClick={() => fileInputRef.current?.click()}
+                  variant="outline"
+                  size="sm"
+                  className="h-9 px-3 shrink-0"
+                  title="Прикрепить файл"
+                >
+                  <Icon name="Paperclip" className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={() => setShowReleaseModal(true)}
+                  variant="outline"
+                  size="sm"
+                  className="h-9 px-3 shrink-0"
+                  title="Прикрепить релиз"
+                >
+                  <Icon name="Music" className="w-4 h-4" />
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileSelect}
+                  accept="*/*"
+                />
+              </>
             )}
-          </Button>
+            {!isStaff && onAttachRelease && (
+              <Button
+                onClick={() => setShowAttachModal(true)}
+                variant="outline"
+                size="sm"
+                className="h-9 px-3 shrink-0"
+                title="Прикрепить релиз или трек"
+              >
+                <Icon name="Paperclip" className="w-4 h-4" />
+              </Button>
+            )}
+            <Input
+              placeholder="Введите сообщение..."
+              value={newMessage}
+              onChange={(e) => onMessageChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={sendingMessage}
+              className="flex-1 h-9 text-sm"
+            />
+            <Button 
+              size="sm"
+              onClick={handleSendWithAttachment} 
+              disabled={sendingMessage || (!newMessage.trim() && !selectedFile && !selectedRelease)}
+              className="h-9 px-3 bg-blue-500 hover:bg-blue-600 text-white shrink-0"
+            >
+              {sendingMessage ? (
+                <Icon name="Loader2" className="w-4 h-4 animate-spin" />
+              ) : (
+                <Icon name="Send" className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
+      
+      {showReleaseModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowReleaseModal(false)}>
+          <Card className="w-full max-w-md m-4" onClick={(e) => e.stopPropagation()}>
+            <CardHeader>
+              <CardTitle className="text-base">Прикрепить релиз артиста</CardTitle>
+            </CardHeader>
+            <div className="p-4 space-y-4">
+              {releases.length === 0 ? (
+                <div className="text-center py-6 text-muted-foreground">
+                  <Icon name="Music" className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                  <p className="text-sm">У артиста пока нет релизов</p>
+                </div>
+              ) : (
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Выберите релиз</label>
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {releases.map(release => (
+                      <button
+                        key={release.id}
+                        onClick={() => setSelectedRelease(release.id)}
+                        className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+                          selectedRelease === release.id 
+                            ? 'border-primary bg-primary/5' 
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        {release.cover_url ? (
+                          <img src={release.cover_url} alt={release.title} className="w-12 h-12 rounded object-cover" />
+                        ) : (
+                          <div className="w-12 h-12 rounded bg-muted flex items-center justify-center">
+                            <Icon name="Music" className="w-6 h-6 text-muted-foreground" />
+                          </div>
+                        )}
+                        <div className="flex-1 text-left">
+                          <div className="font-medium text-sm">{release.title}</div>
+                          <div className="text-xs text-muted-foreground">{release.status}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => {
+                  setShowReleaseModal(false);
+                  setSelectedRelease(null);
+                }}>
+                  Отмена
+                </Button>
+                <Button 
+                  onClick={handleSendWithAttachment}
+                  disabled={!selectedRelease}
+                >
+                  Прикрепить
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
       
       {showAttachModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowAttachModal(false)}>

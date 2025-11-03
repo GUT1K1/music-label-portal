@@ -42,8 +42,8 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
     submitRating
   } = useSupportActions(userId, isStaff, loadThreads, loadMessages);
 
-  const sendMessage = async () => {
-    await sendMessageAction(activeThread!, newMessage, setNewMessage);
+  const sendMessage = async (file?: File | null, releaseId?: number | null) => {
+    await sendMessageAction(activeThread!, newMessage, setNewMessage, file, releaseId);
   };
 
   const createNewThread = async () => {

@@ -149,9 +149,14 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
             }
         
         cursor.execute(f"""
-            SELECT * FROM t_p35759334_music_label_portal.messages
-            WHERE thread_id = {sql_escape(thread_id_int)}
-            ORDER BY created_at ASC
+            SELECT 
+                m.*,
+                r.title as release_title,
+                r.cover_url as release_cover
+            FROM t_p35759334_music_label_portal.messages m
+            LEFT JOIN t_p35759334_music_label_portal.releases r ON m.release_id = r.id
+            WHERE m.thread_id = {sql_escape(thread_id_int)}
+            ORDER BY m.created_at ASC
         """)
         
         messages = cursor.fetchall()
@@ -170,13 +175,25 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
             """)
         
 
+        artist_releases = []
+        if user_role in ['manager', 'director'] and thread.get('artist_id'):
+            cursor_releases = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cursor_releases.execute(f"""
+                SELECT id, title, cover_url, status
+                FROM t_p35759334_music_label_portal.releases
+                WHERE artist_id = {sql_escape(thread['artist_id'])}
+                ORDER BY created_at DESC
+            """)
+            artist_releases = [dict(r) for r in cursor_releases.fetchall()]
+            cursor_releases.close()
         
         return {
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({
                 'thread': thread,
-                'messages': [dict(msg) for msg in messages]
+                'messages': [dict(msg) for msg in messages],
+                'artist_releases': artist_releases
             }, default=str)
         }
     
@@ -316,13 +333,24 @@ def create_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
 
 def send_message(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
     thread_id = body_data.get('thread_id')
-    message = body_data.get('message')
+    message = body_data.get('message', '')
+    message_type = body_data.get('message_type', 'text')
+    attachment_url = body_data.get('attachment_url')
+    attachment_name = body_data.get('attachment_name')
+    release_id = body_data.get('release_id')
     
-    if not thread_id or not message:
+    if not thread_id:
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'thread_id and message are required'})
+            'body': json.dumps({'error': 'thread_id is required'})
+        }
+    
+    if not message and not attachment_url and not release_id:
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'message, attachment_url or release_id is required'})
         }
     
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -345,8 +373,18 @@ def send_message(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any
     
     cursor.execute(f"""
         INSERT INTO t_p35759334_music_label_portal.messages 
-        (thread_id, sender_id, message, created_at, is_read)
-        VALUES ({sql_escape(thread_id_int)}, {sql_escape(user_id_int)}, {sql_escape(message)}, NOW(), false)
+        (thread_id, sender_id, message, message_type, attachment_url, attachment_name, release_id, created_at, is_read)
+        VALUES (
+            {sql_escape(thread_id_int)}, 
+            {sql_escape(user_id_int)}, 
+            {sql_escape(message)}, 
+            {sql_escape(message_type)},
+            {sql_escape(attachment_url)},
+            {sql_escape(attachment_name)},
+            {sql_escape(release_id)},
+            NOW(), 
+            false
+        )
         RETURNING id
     """)
     

@@ -31,6 +31,9 @@ export interface Message {
   message_type: 'text' | 'image' | 'file';
   attachment_url?: string;
   attachment_name?: string;
+  release_id?: number;
+  release_title?: string;
+  release_cover?: string;
   sender_name?: string;
   sender_role?: string;
 }

@@ -62,6 +62,10 @@ export function useSupportData(
       
       const data = await response.json();
       setMessages(data.messages || []);
+      
+      if (isStaff && data.artist_releases) {
+        setReleases(data.artist_releases || []);
+      }
     } catch (error) {
       console.error('Error loading messages:', error);
     }
