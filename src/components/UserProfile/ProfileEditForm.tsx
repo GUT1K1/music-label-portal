@@ -26,17 +26,17 @@ export const ProfileEditForm = React.memo(function ProfileEditForm({
 }: ProfileEditFormProps) {
   return (
     <Card className="border-primary/20 shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Icon name="Edit" size={24} className="text-primary" />
+      <CardHeader className="p-4 md:p-6">
+        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+          <Icon name="Edit" size={20} className="text-primary md:size-6" />
           Редактирование профиля
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <CardContent className="space-y-4 md:space-y-6 p-4 md:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-base flex items-center gap-2">
-              <Icon name="User" size={16} />
+            <Label htmlFor="fullName" className="text-sm md:text-base flex items-center gap-2">
+              <Icon name="User" size={14} className="md:size-4" />
               Полное имя
             </Label>
             <Input 
@@ -44,12 +44,12 @@ export const ProfileEditForm = React.memo(function ProfileEditForm({
               value={fullName}
               onChange={(e) => onFullNameChange(e.target.value)}
               placeholder="Иван Иванов"
-              className="h-11"
+              className="h-10 md:h-11 text-sm md:text-base"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-base flex items-center gap-2">
-              <Icon name="Mail" size={16} />
+            <Label htmlFor="email" className="text-sm md:text-base flex items-center gap-2">
+              <Icon name="Mail" size={14} className="md:size-4" />
               Email
             </Label>
             <Input 
@@ -58,38 +58,40 @@ export const ProfileEditForm = React.memo(function ProfileEditForm({
               value={email}
               onChange={(e) => onEmailChange(e.target.value)}
               placeholder="your@email.com"
-              className="h-11"
+              className="h-10 md:h-11 text-sm md:text-base"
             />
           </div>
         </div>
 
-        <div className="flex gap-3 pt-4">
+        <div className="flex flex-col md:flex-row gap-3 pt-2 md:pt-4">
           <Button 
             onClick={onSave}
-            className="flex-1 h-11 gap-2"
+            className="flex-1 h-10 md:h-11 gap-2 text-sm md:text-base"
             size="lg"
             disabled={isUploadingAvatar}
           >
             {isUploadingAvatar ? (
               <>
-                <Icon name="Loader" size={18} className="animate-spin" />
-                Загрузка...
+                <Icon name="Loader" size={16} className="animate-spin md:size-[18px]" />
+                <span className="hidden sm:inline">Загрузка...</span>
+                <span className="sm:hidden">Загрузка...</span>
               </>
             ) : (
               <>
-                <Icon name="Check" size={18} />
-                Сохранить изменения
+                <Icon name="Check" size={16} className="md:size-[18px]" />
+                <span className="hidden sm:inline">Сохранить изменения</span>
+                <span className="sm:hidden">Сохранить</span>
               </>
             )}
           </Button>
           <Button 
             onClick={onCancel}
             variant="outline"
-            className="flex-1 h-11 gap-2"
+            className="flex-1 h-10 md:h-11 gap-2 text-sm md:text-base"
             size="lg"
             disabled={isUploadingAvatar}
           >
-            <Icon name="X" size={18} />
+            <Icon name="X" size={16} className="md:size-[18px]" />
             Отмена
           </Button>
         </div>

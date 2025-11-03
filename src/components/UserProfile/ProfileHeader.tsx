@@ -57,11 +57,11 @@ export const ProfileHeader = React.memo(function ProfileHeader({
   }, [isEditing, onAvatarDrop]);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 p-8">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20 p-4 md:p-8">
+      <div className="absolute top-0 right-0 w-32 md:w-64 h-32 md:h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 left-0 w-32 md:w-64 h-32 md:h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
       
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6">
         <div 
           className="relative group"
           onDragOver={handleDragOver}
@@ -72,32 +72,32 @@ export const ProfileHeader = React.memo(function ProfileHeader({
             <img 
               src={avatarPreview} 
               alt="Avatar" 
-              className={`w-32 h-32 rounded-2xl object-cover border-4 shadow-xl transition-all ${
+              className={`w-24 h-24 md:w-32 md:h-32 rounded-2xl object-cover border-4 shadow-xl transition-all ${
                 isDragging 
                   ? 'border-primary border-dashed scale-105' 
                   : 'border-primary/20'
               }`}
             />
           ) : (
-            <div className={`w-32 h-32 rounded-2xl ${getRoleColor(user.role)} flex items-center justify-center border-4 shadow-xl transition-all ${
+            <div className={`w-24 h-24 md:w-32 md:h-32 rounded-2xl ${getRoleColor(user.role)} flex items-center justify-center border-4 shadow-xl transition-all ${
               isDragging 
                 ? 'border-white border-dashed scale-105' 
                 : 'border-white/20'
             }`}>
-              <Icon name={getRoleIcon(user.role)} size={56} className="text-white" />
+              <Icon name={getRoleIcon(user.role)} size={40} className="text-white md:size-14" />
             </div>
           )}
           {isDragging && (
             <div className="absolute inset-0 flex items-center justify-center bg-primary/20 rounded-2xl backdrop-blur-sm">
               <div className="text-center">
-                <Icon name="Upload" size={32} className="text-primary mx-auto mb-1" />
+                <Icon name="Upload" size={24} className="text-primary mx-auto mb-1 md:size-8" />
                 <div className="text-xs font-medium">Отпустите</div>
               </div>
             </div>
           )}
           {isEditing && !isDragging && (
-            <label className="absolute bottom-2 right-2 bg-primary hover:bg-primary/90 text-white p-2.5 rounded-xl cursor-pointer transition-all shadow-lg hover:scale-105">
-              <Icon name="Camera" size={18} />
+            <label className="absolute bottom-1 right-1 md:bottom-2 md:right-2 bg-primary hover:bg-primary/90 text-white p-2 md:p-2.5 rounded-xl cursor-pointer transition-all shadow-lg hover:scale-105">
+              <Icon name="Camera" size={16} className="md:size-[18px]" />
               <input 
                 type="file" 
                 accept="image/*" 
@@ -108,40 +108,40 @@ export const ProfileHeader = React.memo(function ProfileHeader({
           )}
         </div>
 
-        <div className="flex-1 text-center md:text-left space-y-3">
+        <div className="flex-1 text-center md:text-left space-y-2 md:space-y-3">
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-4xl font-bold">{fullName || user.username || 'Пользователь'}</h1>
-            <div className="flex items-center gap-2 justify-center md:justify-start flex-wrap">
-              <Badge className={`${getRoleColor(user.role)} text-white border-0 px-3 py-1`}>
-                <Icon name={getRoleIcon(user.role)} size={14} className="mr-1.5" />
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold break-words">{fullName || user.username || 'Пользователь'}</h1>
+            <div className="flex items-center gap-1.5 md:gap-2 justify-center md:justify-start flex-wrap">
+              <Badge className={`${getRoleColor(user.role)} text-white border-0 px-2 py-0.5 md:px-3 md:py-1 text-xs md:text-sm`}>
+                <Icon name={getRoleIcon(user.role)} size={12} className="mr-1 md:mr-1.5 md:size-[14px]" />
                 {getRoleLabel(user.role)}
               </Badge>
-              <Badge variant={user.isBlocked ? 'destructive' : 'default'} className="px-3 py-1">
-                <Icon name={user.isBlocked ? 'Ban' : 'CheckCircle'} size={14} className="mr-1.5" />
+              <Badge variant={user.isBlocked ? 'destructive' : 'default'} className="px-2 py-0.5 md:px-3 md:py-1 text-xs md:text-sm">
+                <Icon name={user.isBlocked ? 'Ban' : 'CheckCircle'} size={12} className="mr-1 md:mr-1.5 md:size-[14px]" />
                 {user.isBlocked ? 'Заблокирован' : 'Активен'}
               </Badge>
               {user.isFrozen && (
-                <Badge variant="secondary" className="px-3 py-1">
-                  <Icon name="Snowflake" size={14} className="mr-1.5" />
+                <Badge variant="secondary" className="px-2 py-0.5 md:px-3 md:py-1 text-xs md:text-sm">
+                  <Icon name="Snowflake" size={12} className="mr-1 md:mr-1.5 md:size-[14px]" />
                   Заморожен
                 </Badge>
               )}
             </div>
           </div>
           
-          <div className="flex items-center gap-4 text-sm text-muted-foreground justify-center md:justify-start flex-wrap">
-            <div className="flex items-center gap-1.5">
-              <Icon name="AtSign" size={16} />
-              <span>{user.login || user.username}</span>
+          <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5 justify-center md:justify-start">
+              <Icon name="AtSign" size={14} className="md:size-4" />
+              <span className="break-all">{user.login || user.username}</span>
             </div>
             {email && (
-              <div className="flex items-center gap-1.5">
-                <Icon name="Mail" size={16} />
-                <span>{email}</span>
+              <div className="flex items-center gap-1.5 justify-center md:justify-start">
+                <Icon name="Mail" size={14} className="md:size-4" />
+                <span className="break-all">{email}</span>
               </div>
             )}
-            <div className="flex items-center gap-1.5">
-              <Icon name="Hash" size={16} />
+            <div className="flex items-center gap-1.5 justify-center md:justify-start">
+              <Icon name="Hash" size={14} className="md:size-4" />
               <span className="font-mono">ID: {user.id}</span>
             </div>
           </div>
@@ -149,10 +149,10 @@ export const ProfileHeader = React.memo(function ProfileHeader({
           {!isEditing && (
             <Button 
               onClick={onEditClick}
-              className="mt-4 gap-2"
+              className="mt-3 md:mt-4 gap-2 w-full md:w-auto text-sm md:text-base"
               size="lg"
             >
-              <Icon name="Edit" size={18} />
+              <Icon name="Edit" size={16} className="md:size-[18px]" />
               Редактировать профиль
             </Button>
           )}

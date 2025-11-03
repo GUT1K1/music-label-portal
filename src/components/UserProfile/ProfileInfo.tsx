@@ -31,20 +31,20 @@ export const ProfileInfo = React.memo(function ProfileInfo({ user }: ProfileInfo
 
   return (
     <Card className="border-primary/20 shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Icon name="Info" size={24} className="text-primary" />
+      <CardHeader className="p-4 md:p-6">
+        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+          <Icon name="Info" size={20} className="text-primary md:size-6" />
           Информация о профиле
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="p-4 md:p-6">
+        <div className="space-y-3 md:space-y-4">
           {infoItems.map((item) => (
-            <div key={item.label} className="flex items-start gap-3 p-3 rounded-lg bg-gradient-to-r from-primary/5 to-transparent border border-primary/10">
-              <Icon name={item.icon} size={20} className="text-primary mt-0.5 flex-shrink-0" />
+            <div key={item.label} className="flex items-start gap-2 md:gap-3 p-2.5 md:p-3 rounded-lg bg-gradient-to-r from-primary/5 to-transparent border border-primary/10">
+              <Icon name={item.icon} size={18} className="text-primary mt-0.5 flex-shrink-0 md:size-5" />
               <div className="flex-1 min-w-0">
-                <div className="text-sm text-muted-foreground">{item.label}</div>
-                <div className="font-medium text-foreground break-words">{item.value}</div>
+                <div className="text-xs md:text-sm text-muted-foreground">{item.label}</div>
+                <div className="font-medium text-sm md:text-base text-foreground break-words">{item.value}</div>
               </div>
             </div>
           ))}

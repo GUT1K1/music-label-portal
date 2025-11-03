@@ -165,30 +165,30 @@ export default function LandingPage() {
               <span className="text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text font-semibold"> Без скрытых комиссий</span> и сложных договоров.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in" style={{ animationDelay: '0.8s' }}>
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-12 md:mb-16 animate-fade-in px-4" style={{ animationDelay: '0.8s' }}>
               <Button 
                 onClick={() => navigate('/app')}
                 size="lg"
-                className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-orange-600 to-amber-600 hover:shadow-2xl hover:shadow-yellow-500/50 text-black font-bold text-lg px-10 py-7 border-0 group transition-all duration-500"
+                className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-orange-600 to-amber-600 hover:shadow-2xl hover:shadow-yellow-500/50 text-black font-bold text-base md:text-lg px-8 md:px-10 py-5 md:py-7 border-0 group transition-all duration-500 w-full sm:w-auto"
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center gap-2 justify-center">
                   Начать бесплатно
-                  <Icon name="ArrowRight" className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <Icon name="ArrowRight" className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </Button>
               <Button 
                 size="lg"
-                className="relative overflow-hidden bg-white/5 backdrop-blur-xl border border-white/10 hover:border-yellow-500/50 text-white font-semibold text-lg px-10 py-7 group transition-all duration-500"
+                className="relative overflow-hidden bg-white/5 backdrop-blur-xl border border-white/10 hover:border-yellow-500/50 text-white font-semibold text-base md:text-lg px-8 md:px-10 py-5 md:py-7 group transition-all duration-500 w-full sm:w-auto"
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center gap-2 justify-center">
                   Узнать больше
-                  <Icon name="PlayCircle" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <Icon name="PlayCircle" className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
                 </span>
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto animate-fade-in" style={{ animationDelay: '1s' }}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto animate-fade-in px-2" style={{ animationDelay: '1s' }}>
               {stats.map((stat, index) => (
                 <div 
                   key={index}
@@ -197,11 +197,11 @@ export default function LandingPage() {
                   <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl" 
                     style={{ backgroundImage: `linear-gradient(135deg, var(--tw-gradient-stops))` }}
                   />
-                  <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-500 group-hover:scale-105">
-                    <div className={`text-5xl font-black bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-2`}>
+                  <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl md:rounded-2xl p-3 md:p-6 hover:border-white/20 transition-all duration-500 group-hover:scale-105">
+                    <div className={`text-3xl md:text-5xl font-black bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-1 md:mb-2`}>
                       {stat.value}
                     </div>
-                    <div className="text-sm text-gray-400 uppercase tracking-wider font-medium">
+                    <div className="text-xs md:text-sm text-gray-400 uppercase tracking-wider font-medium">
                       {stat.label}
                     </div>
                   </div>
@@ -217,44 +217,44 @@ export default function LandingPage() {
       </section>
 
       {/* Services Section */}
-      <section id="услуги" className="relative py-32">
+      <section id="услуги" className="relative py-16 md:py-32">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
-            <div className="inline-block mb-4">
-              <span className="text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+          <div className="text-center mb-12 md:mb-20">
+            <div className="inline-block mb-3 md:mb-4">
+              <span className="text-xs md:text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                 Наши услуги
               </span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 bg-gradient-to-r from-white via-yellow-200 to-white bg-clip-text text-transparent px-4">
               Что мы предлагаем
             </h2>
-            <p className="text-gray-400 text-xl max-w-2xl mx-auto">
+            <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto px-4">
               Полный комплекс услуг для развития твоей музыкальной карьеры
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
             {services.map((service, index) => (
               <div
                 key={index}
                 className="group relative"
               >
                 <div 
-                  className={`absolute -inset-1 bg-gradient-to-r ${service.gradient} rounded-3xl blur-2xl opacity-0 group-hover:opacity-75 transition-all duration-700`}
+                  className={`absolute -inset-1 bg-gradient-to-r ${service.gradient} rounded-2xl md:rounded-3xl blur-2xl opacity-0 group-hover:opacity-75 transition-all duration-700`}
                 />
-                <Card className="relative bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-white/20 transition-all duration-500 group-hover:scale-105 p-8 rounded-3xl h-full">
-                  <div className={`w-20 h-20 rounded-2xl bg-gradient-to-r ${service.gradient} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                    <Icon name={service.icon as any} className="w-10 h-10 text-white" />
+                <Card className="relative bg-black/40 backdrop-blur-2xl border border-white/10 hover:border-white/20 transition-all duration-500 group-hover:scale-105 p-5 md:p-8 rounded-2xl md:rounded-3xl h-full">
+                  <div className={`w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-gradient-to-r ${service.gradient} flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                    <Icon name={service.icon as any} className="w-7 h-7 md:w-10 md:h-10 text-white" />
                   </div>
-                  <h3 className={`text-3xl font-black mb-4 bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
+                  <h3 className={`text-xl md:text-3xl font-black mb-3 md:mb-4 bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`}>
                     {service.title}
                   </h3>
-                  <p className="text-gray-400 mb-6 leading-relaxed">{service.description}</p>
-                  <ul className="space-y-3">
+                  <p className="text-gray-400 mb-4 md:mb-6 leading-relaxed text-sm md:text-base">{service.description}</p>
+                  <ul className="space-y-2 md:space-y-3">
                     {service.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-3 text-sm text-gray-500 group-hover:text-gray-300 transition-colors">
-                        <div className={`w-5 h-5 rounded-full bg-gradient-to-r ${service.gradient} flex items-center justify-center flex-shrink-0`}>
-                          <Icon name="Check" className="w-3 h-3 text-white" />
+                      <li key={i} className="flex items-center gap-2 md:gap-3 text-xs md:text-sm text-gray-500 group-hover:text-gray-300 transition-colors">
+                        <div className={`w-4 h-4 md:w-5 md:h-5 rounded-full bg-gradient-to-r ${service.gradient} flex items-center justify-center flex-shrink-0`}>
+                          <Icon name="Check" className="w-2.5 h-2.5 md:w-3 md:h-3 text-white" />
                         </div>
                         {feature}
                       </li>
@@ -268,17 +268,17 @@ export default function LandingPage() {
       </section>
 
       {/* Platforms Section */}
-      <section id="площадки" className="relative py-32 overflow-hidden">
+      <section id="площадки" className="relative py-16 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-yellow-950/20 to-transparent" />
         
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-20">
-            <div className="inline-block mb-4">
-              <span className="text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">
+          <div className="text-center mb-12 md:mb-20">
+            <div className="inline-block mb-3 md:mb-4">
+              <span className="text-xs md:text-sm font-bold uppercase tracking-widest bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">
                 Интеграции
               </span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-black mb-6">
+            <h2 className="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 px-4">
               <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
                 Все площадки
               </span>
@@ -287,18 +287,18 @@ export default function LandingPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 max-w-6xl mx-auto">
             {platforms.map((platform, index) => (
               <div
                 key={index}
                 className="group relative"
               >
-                <div className={`absolute -inset-1 bg-gradient-to-r ${platform.gradient} rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500`} />
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/20 rounded-3xl p-8 transition-all duration-500 group-hover:scale-110 h-full flex flex-col items-center justify-center">
-                  <div className="text-5xl mb-4 group-hover:scale-125 transition-transform duration-500">
+                <div className={`absolute -inset-1 bg-gradient-to-r ${platform.gradient} rounded-2xl md:rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500`} />
+                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/20 rounded-2xl md:rounded-3xl p-5 md:p-8 transition-all duration-500 group-hover:scale-110 h-full flex flex-col items-center justify-center">
+                  <div className="text-3xl md:text-5xl mb-2 md:mb-4 group-hover:scale-125 transition-transform duration-500">
                     {platform.logo}
                   </div>
-                  <div className="text-xs font-bold text-center text-gray-400 group-hover:text-white transition-colors">
+                  <div className="text-[10px] md:text-xs font-bold text-center text-gray-400 group-hover:text-white transition-colors">
                     {platform.name}
                   </div>
                 </div>
@@ -309,7 +309,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-40 overflow-hidden">
+      <section className="relative py-20 md:py-40 overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-r from-yellow-600/20 via-orange-600/20 to-amber-600/20" />
           <div className="absolute inset-0 backdrop-blur-3xl" />
@@ -317,24 +317,24 @@ export default function LandingPage() {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-5xl md:text-8xl font-black mb-8 leading-tight">
+            <h2 className="text-3xl md:text-5xl lg:text-8xl font-black mb-6 md:mb-8 leading-tight px-4">
               <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
                 Готов выпустить
               </span>
               <br />
               <span className="text-white">свою музыку?</span>
             </h2>
-            <p className="text-2xl text-gray-300 mb-12 leading-relaxed">
+            <p className="text-base md:text-2xl text-gray-300 mb-8 md:mb-12 leading-relaxed px-4">
               Присоединяйся к <span className="font-bold text-yellow-400">420</span> и выведи свою карьеру на новый уровень
             </p>
             <Button 
               onClick={() => navigate('/app')}
               size="lg"
-              className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-orange-600 to-amber-600 hover:shadow-2xl hover:shadow-yellow-500/50 text-black font-black text-2xl px-16 py-8 border-0 group transition-all duration-500 rounded-2xl"
+              className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-orange-600 to-amber-600 hover:shadow-2xl hover:shadow-yellow-500/50 text-black font-black text-base md:text-2xl px-8 md:px-16 py-5 md:py-8 border-0 group transition-all duration-500 rounded-xl md:rounded-2xl w-full md:w-auto"
             >
-              <span className="relative z-10 flex items-center gap-3">
+              <span className="relative z-10 flex items-center gap-2 md:gap-3 justify-center">
                 Начать сейчас
-                <Icon name="Rocket" className="w-7 h-7 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />
+                <Icon name="Rocket" className="w-5 h-5 md:w-7 md:h-7 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </Button>
@@ -343,21 +343,21 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer id="контакты" className="relative border-t border-white/10 py-16">
+      <footer id="контакты" className="relative border-t border-white/10 py-8 md:py-16">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50" />
         
         <div className="container mx-auto px-4 relative z-10">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-8 md:mb-12">
+            <div className="text-center md:text-left">
+              <div className="flex items-center gap-3 mb-4 justify-center md:justify-start">
                 <img 
                   src="https://cdn.poehali.dev/files/89837016-5bd9-4196-8bef-fad51c37ba4e.jpg" 
                   alt="420" 
-                  className="w-12 h-12 rounded-xl"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-xl"
                 />
-                <span className="text-2xl font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">420</span>
+                <span className="text-xl md:text-2xl font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">420</span>
               </div>
-              <p className="text-sm text-gray-500 leading-relaxed">
+              <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
                 Независимый музыкальный лейбл полного цикла
               </p>
             </div>
@@ -367,14 +367,14 @@ export default function LandingPage() {
               { title: 'Компания', items: ['О нас', 'Блог', 'Контакты'] },
               { title: 'Поддержка', items: ['Помощь', 'FAQ', 'Документация'] }
             ].map((column, i) => (
-              <div key={i}>
-                <h4 className="font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+              <div key={i} className="text-center md:text-left">
+                <h4 className="font-bold mb-3 md:mb-4 text-sm md:text-base bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                   {column.title}
                 </h4>
                 <ul className="space-y-2">
                   {column.items.map((item, j) => (
                     <li key={j}>
-                      <a href="#" className="text-sm text-gray-500 hover:text-yellow-400 transition-colors">
+                      <a href="#" className="text-xs md:text-sm text-gray-500 hover:text-yellow-400 transition-colors">
                         {item}
                       </a>
                     </li>
@@ -384,18 +384,18 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-500">
+          <div className="border-t border-white/10 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs md:text-sm text-gray-500 text-center md:text-left">
               © 2025 420. Все права защищены.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3 md:gap-4">
               {['Mail', 'Send', 'Music'].map((icon, i) => (
                 <a 
                   key={i}
                   href="#" 
-                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-gradient-to-r hover:from-yellow-600 hover:to-orange-600 border border-white/10 hover:border-transparent flex items-center justify-center transition-all duration-300 group"
+                  className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white/5 hover:bg-gradient-to-r hover:from-yellow-600 hover:to-orange-600 border border-white/10 hover:border-transparent flex items-center justify-center transition-all duration-300 group"
                 >
-                  <Icon name={icon as any} className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                  <Icon name={icon as any} className="w-4 h-4 md:w-5 md:h-5 text-gray-400 group-hover:text-white transition-colors" />
                 </a>
               ))}
             </div>

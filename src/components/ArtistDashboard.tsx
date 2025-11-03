@@ -116,68 +116,68 @@ export default function ArtistDashboard({ userId }: Props) {
         </Card>
 
         <Card className="bg-gradient-to-br from-pink-500/20 to-pink-600/10 border-pink-500/30 backdrop-blur-sm hover:border-pink-500/50 transition-all">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
-                <Icon name="Video" size={20} className="text-pink-400" />
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="flex items-center gap-2 text-white text-base md:text-lg">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+                <Icon name="Video" size={16} className="text-pink-400 md:size-5" />
               </div>
               TikTok
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 md:p-6">
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-white">
+              <div className="text-2xl md:text-4xl font-bold text-white">
                 {stats.tiktok_followers.toLocaleString('ru-RU')}
               </div>
-              <div className={`flex items-center gap-1 ${getChangeColor(stats.tiktok_followers_change)}`}>
+              <div className={`flex items-center gap-1 text-sm md:text-base ${getChangeColor(stats.tiktok_followers_change)}`}>
                 <Icon name={getChangeIcon(stats.tiktok_followers_change) as any} size={16} />
                 <span className="font-semibold">
                   {formatChange(stats.tiktok_followers_change)} за сегодня
                 </span>
               </div>
-              <p className="text-sm text-gray-400">Подписчиков</p>
+              <p className="text-xs md:text-sm text-gray-400">Подписчиков</p>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 border-purple-500/30 backdrop-blur-sm hover:border-purple-500/50 transition-all">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
-                <Icon name="Music" size={20} className="text-purple-400" />
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="flex items-center gap-2 text-white text-base md:text-lg">
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+                <Icon name="Music" size={16} className="text-purple-400 md:size-5" />
               </div>
               Яндекс.Музыка
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 md:p-6">
             <div className="space-y-2">
-              <div className="text-4xl font-bold text-white">
+              <div className="text-2xl md:text-4xl font-bold text-white">
                 {stats.yandex_listeners.toLocaleString('ru-RU')}
               </div>
-              <div className={`flex items-center gap-1 ${getChangeColor(stats.yandex_listeners_change)}`}>
+              <div className={`flex items-center gap-1 text-sm md:text-base ${getChangeColor(stats.yandex_listeners_change)}`}>
                 <Icon name={getChangeIcon(stats.yandex_listeners_change) as any} size={16} />
                 <span className="font-semibold">
                   {formatChange(stats.yandex_listeners_change)} за сегодня
                 </span>
               </div>
-              <p className="text-sm text-gray-400">Слушателей в месяц</p>
+              <p className="text-xs md:text-sm text-gray-400">Слушателей в месяц</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
       <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
-            <Icon name="Info" size={20} />
+        <CardHeader className="p-4 md:p-6">
+          <CardTitle className="text-white flex items-center gap-2 text-base md:text-lg">
+            <Icon name="Info" size={18} className="md:size-5" />
             Как мы собираем статистику?
           </CardTitle>
         </CardHeader>
-        <CardContent className="text-gray-300 space-y-2">
+        <CardContent className="text-gray-300 space-y-2 p-4 md:p-6 text-sm md:text-base">
           <p>📊 Данные обновляются автоматически каждый день в полночь</p>
           <p>📈 Мы отслеживаем изменения и показываем тренды</p>
           <p>🔗 Убедись, что ты указал правильные ссылки на свои профили</p>
-          <p className="text-sm text-gray-400 mt-4">
+          <p className="text-xs md:text-sm text-gray-400 mt-4">
             * Статистика может обновляться с задержкой до 24 часов
           </p>
         </CardContent>
