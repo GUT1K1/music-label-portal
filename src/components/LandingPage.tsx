@@ -139,7 +139,8 @@ export default function LandingPage() {
           <div className="max-w-6xl mx-auto text-center">
             {/* Компактный блок 420 + Hero */}
             <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <div className="flex flex-col items-center gap-4">
+              <div className="
+">
                 {/* SVG Анимация 420 */}
                 <Animated420Logo />
                 
