@@ -233,12 +233,28 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
                 thread['artist_avatar'] = None
                 thread['artist_vk_photo'] = None
             
-            if user_role in ['manager', 'director']:
+            if thread.get('artist_id') == user_id_int:
+                if thread.get('assigned_to'):
+                    cursor_staff = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+                    cursor_staff.execute(f"""
+                        SELECT username, full_name, vk_photo
+                        FROM t_p35759334_music_label_portal.users
+                        WHERE id = {sql_escape(thread['assigned_to'])}
+                    """)
+                    staff = cursor_staff.fetchone()
+                    cursor_staff.close()
+                    if staff:
+                        thread['with_user_name'] = staff.get('full_name') or staff.get('username') or 'Поддержка'
+                        thread['with_user_avatar'] = staff.get('vk_photo')
+                    else:
+                        thread['with_user_name'] = 'Техподдержка'
+                        thread['with_user_avatar'] = None
+                else:
+                    thread['with_user_name'] = 'Техподдержка'
+                    thread['with_user_avatar'] = None
+            else:
                 thread['with_user_name'] = thread['artist_name'] or thread['artist_username'] or 'Артист'
                 thread['with_user_avatar'] = thread['artist_avatar'] or thread['artist_vk_photo']
-            else:
-                thread['with_user_name'] = 'Техподдержка'
-                thread['with_user_avatar'] = None
             
             thread['last_message'] = None
             thread['unread_count'] = 0
@@ -278,13 +294,15 @@ def create_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
                 'body': json.dumps({'error': 'artist_id is required for staff'})
             }
         final_artist_id = int(artist_id_param)
+        assigned_to_id = user_id_int
     else:
         final_artist_id = user_id_int
+        assigned_to_id = None
     
     cursor.execute(f"""
         INSERT INTO t_p35759334_music_label_portal.support_threads 
-        (artist_id, subject, status, priority, release_id, track_id, created_at, updated_at, last_message_at)
-        VALUES ({sql_escape(final_artist_id)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, {sql_escape(release_id)}, {sql_escape(track_id)}, NOW(), NOW(), NOW())
+        (artist_id, subject, status, priority, release_id, track_id, assigned_to, created_at, updated_at, last_message_at)
+        VALUES ({sql_escape(final_artist_id)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, {sql_escape(release_id)}, {sql_escape(track_id)}, {sql_escape(assigned_to_id)}, NOW(), NOW(), NOW())
         RETURNING id
     """)
     
