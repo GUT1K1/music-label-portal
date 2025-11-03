@@ -21,7 +21,7 @@ export function useSupportData(
   const loadThreads = async () => {
     setLoading(true);
     try {
-      const url = statusFilter !== 'all' 
+      const url = (isStaff && statusFilter !== 'all')
         ? `${SUPPORT_URL}?status=${statusFilter}` 
         : SUPPORT_URL;
         

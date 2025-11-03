@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import SupportThreadList from './SupportThreadList';
 import SupportChatWindow from './SupportChatWindow';
@@ -32,6 +32,16 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
     loadThreads,
     loadMessages
   } = useSupportData(userId, isStaff, statusFilter, activeThread);
+
+  // Автоматически выбираем диалог для артиста
+  useEffect(() => {
+    if (!isStaff && threads.length > 0) {
+      const hasActiveThread = threads.some(t => t.id === activeThread);
+      if (!hasActiveThread) {
+        setActiveThread(threads[0].id);
+      }
+    }
+  }, [threads, isStaff, activeThread]);
 
   const {
     sendingMessage,
