@@ -366,6 +366,43 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
     }
   };
 
+  const attachRelease = async (releaseId: number | null, trackId: number | null) => {
+    if (!activeThread) return;
+    
+    try {
+      const response = await fetch(SUPPORT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': userId.toString()
+        },
+        body: JSON.stringify({
+          action: 'attach_release',
+          thread_id: activeThread,
+          release_id: releaseId,
+          track_id: trackId
+        })
+      });
+      
+      if (!response.ok) throw new Error('Failed to attach release');
+      
+      await loadThreads();
+      await loadMessages(activeThread);
+      
+      toast({
+        title: 'Готово',
+        description: 'Релиз прикреплён к обращению'
+      });
+    } catch (error) {
+      console.error('Error attaching release:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось прикрепить релиз',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const submitRating = async (rating: number) => {
     if (!activeThread) return;
     
@@ -429,6 +466,7 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
         onMessageChange={setNewMessage}
         onSendMessage={sendMessage}
         onRatingSubmit={submitRating}
+        onAttachRelease={attachRelease}
       />
     );
   }
@@ -454,9 +492,12 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
           newMessage={newMessage}
           sendingMessage={sendingMessage}
           isStaff={isStaff}
+          releases={releases}
+          tracks={tracks}
           onMessageChange={setNewMessage}
           onSendMessage={sendMessage}
           onStatusChange={isStaff ? updateThreadStatus : undefined}
+          onAttachRelease={!isStaff ? attachRelease : undefined}
         />
       </div>
 

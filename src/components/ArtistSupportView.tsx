@@ -61,6 +61,7 @@ interface ArtistSupportViewProps {
   onMessageChange: (message: string) => void;
   onSendMessage: () => void;
   onRatingSubmit: (rating: number) => void;
+  onAttachRelease?: (releaseId: number | null, trackId: number | null) => void;
 }
 
 export default function ArtistSupportView({
@@ -75,7 +76,8 @@ export default function ArtistSupportView({
   onCreateThread,
   onMessageChange,
   onSendMessage,
-  onRatingSubmit
+  onRatingSubmit,
+  onAttachRelease
 }: ArtistSupportViewProps) {
   const [showNewThreadModal, setShowNewThreadModal] = useState(false);
   const [selectedRelease, setSelectedRelease] = useState<number | null>(null);
@@ -121,9 +123,12 @@ export default function ArtistSupportView({
           newMessage={newMessage}
           sendingMessage={sendingMessage}
           isStaff={false}
+          releases={releases}
+          tracks={tracks}
           onMessageChange={onMessageChange}
           onSendMessage={onSendMessage}
           onRatingSubmit={onRatingSubmit}
+          onAttachRelease={onAttachRelease}
         />
       </div>
       

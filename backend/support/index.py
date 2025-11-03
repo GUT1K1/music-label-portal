@@ -75,6 +75,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 return get_artists(conn, user_id)
             elif action == 'get_user_releases':
                 return get_user_releases(conn, user_id)
+            elif action == 'attach_release':
+                return attach_release(conn, user_id, body_data)
             elif action == 'rate_thread':
                 return rate_thread(conn, user_id, body_data)
             else:
@@ -149,7 +151,7 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
         cursor.execute(f"""
             SELECT * FROM t_p35759334_music_label_portal.messages
             WHERE thread_id = {sql_escape(thread_id_int)}
-            ORDER BY created_at DESC
+            ORDER BY created_at ASC
         """)
         
         messages = cursor.fetchall()
@@ -404,6 +406,47 @@ def assign_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
         'body': json.dumps({'success': True})
     }
 
+def attach_release(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
+    thread_id = body_data.get('thread_id')
+    release_id = body_data.get('release_id')
+    track_id = body_data.get('track_id')
+    
+    if not thread_id:
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'thread_id is required'})
+        }
+    
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    thread_id_int = int(thread_id)
+    user_id_int = int(user_id)
+    
+    cursor.execute(f"""
+        SELECT artist_id FROM t_p35759334_music_label_portal.support_threads
+        WHERE id = {sql_escape(thread_id_int)}
+    """)
+    thread = cursor.fetchone()
+    
+    if not thread or thread['artist_id'] != user_id_int:
+        return {
+            'statusCode': 403,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'body': json.dumps({'error': 'Forbidden'})
+        }
+    
+    cursor.execute(f"""
+        UPDATE t_p35759334_music_label_portal.support_threads
+        SET release_id = {sql_escape(release_id)}, track_id = {sql_escape(track_id)}, updated_at = NOW()
+        WHERE id = {sql_escape(thread_id_int)}
+    """)
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({'success': True})
+    }
+
 def get_user_releases(conn, user_id: str) -> Dict[str, Any]:
     cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     
@@ -418,15 +461,26 @@ def get_user_releases(conn, user_id: str) -> Dict[str, Any]:
     
     releases = [dict(r) for r in cursor.fetchall()]
     
-    cursor.execute(f"""
-        SELECT t.id, t.title, t.release_id, r.title as release_title
-        FROM t_p35759334_music_label_portal.tracks t
-        JOIN t_p35759334_music_label_portal.releases r ON t.release_id = r.id
-        WHERE r.artist_id = {sql_escape(user_id_int)}
-        ORDER BY t.track_number ASC
-    """)
+    release_ids = [r['id'] for r in releases]
+    tracks = []
     
-    tracks = [dict(t) for t in cursor.fetchall()]
+    if release_ids:
+        ids_str = ','.join([str(rid) for rid in release_ids])
+        cursor.execute(f"""
+            SELECT id, title, release_id
+            FROM t_p35759334_music_label_portal.tracks
+            WHERE release_id IN ({ids_str})
+            ORDER BY track_number ASC
+        """)
+        
+        tracks_data = cursor.fetchall()
+        
+        for track in tracks_data:
+            release = next((r for r in releases if r['id'] == track['release_id']), None)
+            if release:
+                track_dict = dict(track)
+                track_dict['release_title'] = release['title']
+                tracks.append(track_dict)
     
     return {
         'statusCode': 200,

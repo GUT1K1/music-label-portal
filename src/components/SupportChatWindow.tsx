@@ -1,5 +1,6 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -39,6 +40,20 @@ interface ThreadData {
   track_title?: string;
 }
 
+interface Release {
+  id: number;
+  title: string;
+  cover_url?: string;
+  status: string;
+}
+
+interface Track {
+  id: number;
+  title: string;
+  release_id: number;
+  release_title: string;
+}
+
 interface SupportChatWindowProps {
   threadData: ThreadData | null;
   messages: Message[];
@@ -46,10 +61,13 @@ interface SupportChatWindowProps {
   newMessage: string;
   sendingMessage: boolean;
   isStaff: boolean;
+  releases?: Release[];
+  tracks?: Track[];
   onMessageChange: (message: string) => void;
   onSendMessage: () => void;
   onStatusChange?: (status: string) => void;
   onRatingSubmit?: (rating: number) => void;
+  onAttachRelease?: (releaseId: number | null, trackId: number | null) => void;
 }
 
 export default function SupportChatWindow({
@@ -59,12 +77,27 @@ export default function SupportChatWindow({
   newMessage,
   sendingMessage,
   isStaff,
+  releases = [],
+  tracks = [],
   onMessageChange,
   onSendMessage,
   onStatusChange,
-  onRatingSubmit
+  onRatingSubmit,
+  onAttachRelease
 }: SupportChatWindowProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [showAttachModal, setShowAttachModal] = useState(false);
+  const [selectedRelease, setSelectedRelease] = useState<number | null>(null);
+  const [selectedTrack, setSelectedTrack] = useState<number | null>(null);
+  
+  const handleAttach = () => {
+    if (onAttachRelease) {
+      onAttachRelease(selectedRelease, selectedTrack);
+    }
+    setShowAttachModal(false);
+    setSelectedRelease(null);
+    setSelectedTrack(null);
+  };
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -197,7 +230,7 @@ export default function SupportChatWindow({
       </CardHeader>
       <Separator />
       <ScrollArea className="flex-1 px-4 py-3" ref={scrollAreaRef}>
-        <div className="space-y-2 min-h-full flex flex-col-reverse justify-start">
+        <div className="space-y-2 min-h-full flex flex-col justify-end">
           {messages.map(msg => (
             <div
               key={msg.id}
@@ -243,6 +276,17 @@ export default function SupportChatWindow({
       <Separator />
       <div className="p-3 bg-muted/30">
         <div className="flex gap-2">
+          {!isStaff && onAttachRelease && releases.length > 0 && (
+            <Button
+              onClick={() => setShowAttachModal(true)}
+              variant="outline"
+              size="sm"
+              className="h-9 px-3 shrink-0"
+              title="Прикрепить релиз"
+            >
+              <Icon name="Paperclip" className="w-4 h-4" />
+            </Button>
+          )}
           <Input
             placeholder="Введите сообщение..."
             value={newMessage}
@@ -255,7 +299,7 @@ export default function SupportChatWindow({
             size="sm"
             onClick={onSendMessage} 
             disabled={sendingMessage || !newMessage.trim()}
-            className="h-9 px-3 bg-blue-500 hover:bg-blue-600 text-white"
+            className="h-9 px-3 bg-blue-500 hover:bg-blue-600 text-white shrink-0"
           >
             {sendingMessage ? (
               <Icon name="Loader2" className="w-4 h-4 animate-spin" />
@@ -265,6 +309,64 @@ export default function SupportChatWindow({
           </Button>
         </div>
       </div>
+      
+      {showAttachModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowAttachModal(false)}>
+          <Card className="w-full max-w-md m-4" onClick={(e) => e.stopPropagation()}>
+            <CardHeader>
+              <CardTitle className="text-base">Прикрепить релиз или трек</CardTitle>
+            </CardHeader>
+            <div className="p-4 space-y-4">
+              {releases.length > 0 && (
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Релиз (опционально)</label>
+                  <Select value={selectedRelease?.toString() || ''} onValueChange={(val) => setSelectedRelease(val ? Number(val) : null)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Не выбрано" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Не выбрано</SelectItem>
+                      {releases.map(release => (
+                        <SelectItem key={release.id} value={release.id.toString()}>
+                          {release.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
+              {tracks.length > 0 && (
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Трек (опционально)</label>
+                  <Select value={selectedTrack?.toString() || ''} onValueChange={(val) => setSelectedTrack(val ? Number(val) : null)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Не выбрано" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Не выбрано</SelectItem>
+                      {tracks.map(track => (
+                        <SelectItem key={track.id} value={track.id.toString()}>
+                          {track.title} ({track.release_title})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setShowAttachModal(false)}>
+                  Отмена
+                </Button>
+                <Button onClick={handleAttach}>
+                  Прикрепить
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
     </Card>
   );
 }
