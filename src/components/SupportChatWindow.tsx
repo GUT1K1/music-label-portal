@@ -32,6 +32,11 @@ interface ThreadData {
   artist_avatar?: string;
   artist_vk_photo?: string;
   rating?: number;
+  release_id?: number;
+  track_id?: number;
+  release_title?: string;
+  release_cover?: string;
+  track_title?: string;
 }
 
 interface SupportChatWindowProps {
@@ -109,7 +114,8 @@ export default function SupportChatWindow({
 
   return (
     <Card className="lg:col-span-2 flex flex-col h-[600px]">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 px-4 py-3">
+      <CardHeader className="flex flex-col space-y-2 pb-3 px-4 py-3">
+        <div className="flex flex-row items-center justify-between space-y-0">
         {isStaff ? (
           <>
             <div className="flex items-center gap-2">
@@ -177,10 +183,21 @@ export default function SupportChatWindow({
             </div>
           </>
         )}
+        </div>
+        
+        {(threadData.release_id || threadData.track_id) && (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground border-t pt-2">
+            <Icon name="Music" className="w-3.5 h-3.5" />
+            <span>
+              {threadData.track_id && threadData.track_title && `Трек: ${threadData.track_title}`}
+              {threadData.release_id && threadData.release_title && !threadData.track_id && `Релиз: ${threadData.release_title}`}
+            </span>
+          </div>
+        )}
       </CardHeader>
       <Separator />
       <ScrollArea className="flex-1 px-4 py-3" ref={scrollAreaRef}>
-        <div className="space-y-2 min-h-full flex flex-col justify-end">
+        <div className="space-y-2 min-h-full flex flex-col-reverse justify-start">
           {messages.map(msg => (
             <div
               key={msg.id}

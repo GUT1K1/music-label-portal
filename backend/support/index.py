@@ -73,6 +73,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 return assign_thread(conn, user_id, body_data)
             elif action == 'get_artists':
                 return get_artists(conn, user_id)
+            elif action == 'get_user_releases':
+                return get_user_releases(conn, user_id)
             elif action == 'rate_thread':
                 return rate_thread(conn, user_id, body_data)
             else:
@@ -104,8 +106,15 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
     if thread_id:
         thread_id_int = int(thread_id)
         cursor.execute(f"""
-            SELECT * FROM t_p35759334_music_label_portal.support_threads
-            WHERE id = {sql_escape(thread_id_int)}
+            SELECT 
+                st.*,
+                r.title as release_title,
+                r.cover_url as release_cover,
+                t.title as track_title
+            FROM t_p35759334_music_label_portal.support_threads st
+            LEFT JOIN t_p35759334_music_label_portal.releases r ON st.release_id = r.id
+            LEFT JOIN t_p35759334_music_label_portal.tracks t ON st.track_id = t.id
+            WHERE st.id = {sql_escape(thread_id_int)}
         """)
         
         thread = cursor.fetchone()
@@ -120,7 +129,7 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
         cursor.execute(f"""
             SELECT * FROM t_p35759334_music_label_portal.messages
             WHERE thread_id = {sql_escape(thread_id_int)}
-            ORDER BY created_at ASC
+            ORDER BY created_at DESC
         """)
         
         messages = cursor.fetchall()
@@ -213,6 +222,8 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
 def create_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, Any]:
     subject = body_data.get('subject')
     priority = body_data.get('priority', 'normal')
+    release_id = body_data.get('release_id')
+    track_id = body_data.get('track_id')
     
     if not subject:
         return {
@@ -226,8 +237,8 @@ def create_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
     
     cursor.execute(f"""
         INSERT INTO t_p35759334_music_label_portal.support_threads 
-        (artist_id, subject, status, priority, created_at, updated_at, last_message_at)
-        VALUES ({sql_escape(user_id_int)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, NOW(), NOW(), NOW())
+        (artist_id, subject, status, priority, release_id, track_id, created_at, updated_at, last_message_at)
+        VALUES ({sql_escape(user_id_int)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, {sql_escape(release_id)}, {sql_escape(track_id)}, NOW(), NOW(), NOW())
         RETURNING id
     """)
     
@@ -371,6 +382,36 @@ def assign_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
         'statusCode': 200,
         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
         'body': json.dumps({'success': True})
+    }
+
+def get_user_releases(conn, user_id: str) -> Dict[str, Any]:
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    
+    user_id_int = int(user_id)
+    
+    cursor.execute(f"""
+        SELECT id, title, cover_url, status
+        FROM t_p35759334_music_label_portal.releases
+        WHERE artist_id = {sql_escape(user_id_int)}
+        ORDER BY created_at DESC
+    """)
+    
+    releases = [dict(r) for r in cursor.fetchall()]
+    
+    cursor.execute(f"""
+        SELECT t.id, t.title, t.release_id, r.title as release_title
+        FROM t_p35759334_music_label_portal.tracks t
+        JOIN t_p35759334_music_label_portal.releases r ON t.release_id = r.id
+        WHERE r.artist_id = {sql_escape(user_id_int)}
+        ORDER BY t.track_number ASC
+    """)
+    
+    tracks = [dict(t) for t in cursor.fetchall()]
+    
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+        'body': json.dumps({'releases': releases, 'tracks': tracks}, default=str)
     }
 
 def get_artists(conn, user_id: str) -> Dict[str, Any]:

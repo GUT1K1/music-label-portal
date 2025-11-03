@@ -21,6 +21,11 @@ interface SupportThread {
   last_message?: string;
   unread_count?: number;
   rating?: number;
+  release_id?: number;
+  track_id?: number;
+  release_title?: string;
+  release_cover?: string;
+  track_title?: string;
 }
 
 interface Message {
@@ -44,6 +49,20 @@ interface Artist {
   vk_photo?: string;
 }
 
+interface Release {
+  id: number;
+  title: string;
+  cover_url?: string;
+  status: string;
+}
+
+interface Track {
+  id: number;
+  title: string;
+  release_id: number;
+  release_title: string;
+}
+
 interface SupportChatProps {
   userId: number;
   userRole: 'artist' | 'manager' | 'director';
@@ -63,6 +82,10 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
   const [newThreadMessage, setNewThreadMessage] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [releases, setReleases] = useState<Release[]>([]);
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [selectedRelease, setSelectedRelease] = useState<number | null>(null);
+  const [selectedTrack, setSelectedTrack] = useState<number | null>(null);
   const { toast } = useToast();
 
   const SUPPORT_URL = 'https://functions.poehali.dev/03b127de-537a-446c-af8d-01caba70e2e9';
@@ -73,6 +96,8 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
     loadThreads();
     if (isStaff) {
       loadArtists();
+    } else {
+      loadUserReleases();
     }
     const interval = setInterval(loadThreads, 10000);
     return () => clearInterval(interval);
@@ -157,6 +182,29 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
       console.error('Error loading artists:', error);
     }
   };
+  
+  const loadUserReleases = async () => {
+    try {
+      const response = await fetch(SUPPORT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': userId.toString()
+        },
+        body: JSON.stringify({
+          action: 'get_user_releases'
+        })
+      });
+      
+      if (!response.ok) throw new Error('Failed to load releases');
+      
+      const data = await response.json();
+      setReleases(data.releases || []);
+      setTracks(data.tracks || []);
+    } catch (error) {
+      console.error('Error loading releases:', error);
+    }
+  };
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !activeThread) return;
@@ -208,7 +256,9 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
             action: 'create_thread',
             subject,
             message: 'Здравствуйте! У меня вопрос.',
-            priority: 'normal'
+            priority: 'normal',
+            release_id: selectedRelease,
+            track_id: selectedTrack
           })
         });
         
@@ -217,6 +267,8 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
         const data = await response.json();
         await loadThreads();
         setActiveThread(data.thread_id);
+        setSelectedRelease(null);
+        setSelectedTrack(null);
         
         toast({
           title: 'Готово',
@@ -367,7 +419,13 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
         userId={userId}
         newMessage={newMessage}
         sendingMessage={sendingMessage}
-        onCreateThread={createNewThread}
+        releases={releases}
+        tracks={tracks}
+        onCreateThread={(releaseId, trackId) => {
+          setSelectedRelease(releaseId || null);
+          setSelectedTrack(trackId || null);
+          createNewThread();
+        }}
         onMessageChange={setNewMessage}
         onSendMessage={sendMessage}
         onRatingSubmit={submitRating}
@@ -408,10 +466,17 @@ export default function SupportChat({ userId, userRole }: SupportChatProps) {
         selectedArtist={selectedArtist}
         newThreadSubject={newThreadSubject}
         newThreadMessage={newThreadMessage}
+        releases={releases}
+        tracks={tracks}
+        selectedRelease={selectedRelease}
+        selectedTrack={selectedTrack}
+        isArtist={!isStaff}
         onOpenChange={setShowNewThreadModal}
         onArtistChange={setSelectedArtist}
         onSubjectChange={setNewThreadSubject}
         onMessageChange={setNewThreadMessage}
+        onReleaseChange={setSelectedRelease}
+        onTrackChange={setSelectedTrack}
         onCreate={createNewThread}
       />
     </>

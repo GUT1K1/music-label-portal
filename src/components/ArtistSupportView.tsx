@@ -1,7 +1,23 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import SupportChatWindow from './SupportChatWindow';
+import NewThreadModal from './NewThreadModal';
+
+interface Release {
+  id: number;
+  title: string;
+  cover_url?: string;
+  status: string;
+}
+
+interface Track {
+  id: number;
+  title: string;
+  release_id: number;
+  release_title: string;
+}
 
 interface Message {
   id: number;
@@ -25,6 +41,11 @@ interface ThreadData {
   artist_avatar?: string;
   artist_vk_photo?: string;
   rating?: number;
+  release_id?: number;
+  track_id?: number;
+  release_title?: string;
+  release_cover?: string;
+  track_title?: string;
 }
 
 interface ArtistSupportViewProps {
@@ -34,7 +55,9 @@ interface ArtistSupportViewProps {
   userId: number;
   newMessage: string;
   sendingMessage: boolean;
-  onCreateThread: () => void;
+  releases?: Release[];
+  tracks?: Track[];
+  onCreateThread: (releaseId?: number | null, trackId?: number | null) => void;
   onMessageChange: (message: string) => void;
   onSendMessage: () => void;
   onRatingSubmit: (rating: number) => void;
@@ -47,11 +70,23 @@ export default function ArtistSupportView({
   userId,
   newMessage,
   sendingMessage,
+  releases = [],
+  tracks = [],
   onCreateThread,
   onMessageChange,
   onSendMessage,
   onRatingSubmit
 }: ArtistSupportViewProps) {
+  const [showNewThreadModal, setShowNewThreadModal] = useState(false);
+  const [selectedRelease, setSelectedRelease] = useState<number | null>(null);
+  const [selectedTrack, setSelectedTrack] = useState<number | null>(null);
+  
+  const handleCreateThread = () => {
+    onCreateThread(selectedRelease, selectedTrack);
+    setShowNewThreadModal(false);
+    setSelectedRelease(null);
+    setSelectedTrack(null);
+  };
   if (!hasThread) {
     return (
       <Card className="max-w-2xl mx-auto mt-8">
@@ -66,7 +101,7 @@ export default function ArtistSupportView({
             <p className="text-muted-foreground mb-6">
               Создайте первое обращение, чтобы начать диалог с поддержкой
             </p>
-            <Button onClick={onCreateThread} size="lg" className="gap-2">
+            <Button onClick={() => setShowNewThreadModal(true)} size="lg" className="gap-2">
               <Icon name="Plus" className="w-5 h-5" />
               Создать обращение
             </Button>
@@ -77,18 +112,40 @@ export default function ArtistSupportView({
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <SupportChatWindow
-        threadData={threadData}
-        messages={messages}
-        userId={userId}
-        newMessage={newMessage}
-        sendingMessage={sendingMessage}
-        isStaff={false}
-        onMessageChange={onMessageChange}
-        onSendMessage={onSendMessage}
-        onRatingSubmit={onRatingSubmit}
+    <>
+      <div className="max-w-4xl mx-auto">
+        <SupportChatWindow
+          threadData={threadData}
+          messages={messages}
+          userId={userId}
+          newMessage={newMessage}
+          sendingMessage={sendingMessage}
+          isStaff={false}
+          onMessageChange={onMessageChange}
+          onSendMessage={onSendMessage}
+          onRatingSubmit={onRatingSubmit}
+        />
+      </div>
+      
+      <NewThreadModal
+        open={showNewThreadModal}
+        artists={[]}
+        selectedArtist={null}
+        newThreadSubject=""
+        newThreadMessage=""
+        releases={releases}
+        tracks={tracks}
+        selectedRelease={selectedRelease}
+        selectedTrack={selectedTrack}
+        isArtist={true}
+        onOpenChange={setShowNewThreadModal}
+        onArtistChange={() => {}}
+        onSubjectChange={() => {}}
+        onMessageChange={() => {}}
+        onReleaseChange={setSelectedRelease}
+        onTrackChange={setSelectedTrack}
+        onCreate={handleCreateThread}
       />
-    </div>
+    </>
   );
 }
