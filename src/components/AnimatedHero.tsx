@@ -1,6 +1,6 @@
 export default function AnimatedHero() {
   return (
-    <div className="relative py-24 px-4" style={{ perspective: '1000px' }}>
+    <div className="relative px-0.5 rounded-0 py-0" style={{ perspective: '1000px' }}>
       <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[1.5] text-center tracking-tight" style={{ transformStyle: 'preserve-3d' }}>
         <div className="block mb-2">
           <span 
