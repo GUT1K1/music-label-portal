@@ -100,11 +100,10 @@ export default function SupportChatWindow({
   };
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        scrollContainer.scrollTop = 0;
-      }
+    if (messages.length > 0) {
+      setTimeout(() => {
+        scrollAreaRef.current?.scrollIntoView({ behavior: 'auto' });
+      }, 100);
     }
   }, [messages]);
 
@@ -229,8 +228,8 @@ export default function SupportChatWindow({
         )}
       </CardHeader>
       <Separator />
-      <ScrollArea className="flex-1 px-4 py-3" ref={scrollAreaRef}>
-        <div className="flex flex-col-reverse gap-2">
+      <ScrollArea className="flex-1 px-4 py-3">
+        <div className="flex flex-col gap-2">
           {messages.map(msg => (
             <div
               key={msg.id}
@@ -271,6 +270,7 @@ export default function SupportChatWindow({
               </div>
             </div>
           ))}
+          <div ref={scrollAreaRef} />
         </div>
       </ScrollArea>
       <Separator />
