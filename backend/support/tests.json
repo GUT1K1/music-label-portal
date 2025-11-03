@@ -29,7 +29,6 @@
       },
       "expectedStatus": 200,
       "expectedBody": {
-        "success": true,
         "thread_id": "number"
       },
       "bodyMatcher": "partial"

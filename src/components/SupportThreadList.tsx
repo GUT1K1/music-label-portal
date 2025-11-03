@@ -22,6 +22,8 @@ interface SupportThread {
   artist_name?: string;
   artist_avatar?: string;
   artist_vk_photo?: string;
+  with_user_name?: string;
+  with_user_avatar?: string;
   last_message?: string;
   unread_count?: number;
 }
@@ -130,16 +132,16 @@ export default function SupportThreadList({
                 <CardContent className="p-3">
                   <div className="flex items-start gap-3">
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={thread.artist_avatar || thread.artist_vk_photo} />
+                      <AvatarImage src={thread.with_user_avatar} />
                       <AvatarFallback className="bg-primary/10">
-                        {thread.artist_name?.[0] || thread.artist_username?.[0] || '?'}
+                        {thread.with_user_name?.[0] || '?'}
                       </AvatarFallback>
                     </Avatar>
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <p className="font-semibold text-sm truncate">
-                          {thread.artist_name || thread.artist_username}
+                          {thread.with_user_name}
                         </p>
                         {thread.unread_count! > 0 && (
                           <Badge variant="destructive" className="text-xs px-1.5 py-0">
@@ -148,9 +150,11 @@ export default function SupportThreadList({
                         )}
                       </div>
                       
-                      <p className="text-xs text-muted-foreground truncate mb-1">
-                        @{thread.artist_username}
-                      </p>
+                      {thread.artist_username && (
+                        <p className="text-xs text-muted-foreground truncate mb-1">
+                          @{thread.artist_username}
+                        </p>
+                      )}
                       
                       {thread.last_message && (
                         <p className="text-sm text-muted-foreground truncate mb-2">

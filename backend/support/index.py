@@ -232,6 +232,14 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
                 thread['artist_name'] = None  
                 thread['artist_avatar'] = None
                 thread['artist_vk_photo'] = None
+            
+            if user_role in ['manager', 'director']:
+                thread['with_user_name'] = thread['artist_name'] or thread['artist_username'] or 'Артист'
+                thread['with_user_avatar'] = thread['artist_avatar'] or thread['artist_vk_photo']
+            else:
+                thread['with_user_name'] = 'Техподдержка'
+                thread['with_user_avatar'] = None
+            
             thread['last_message'] = None
             thread['unread_count'] = 0
         

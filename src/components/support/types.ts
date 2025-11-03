@@ -10,6 +10,8 @@ export interface SupportThread {
   artist_name?: string;
   artist_avatar?: string;
   artist_vk_photo?: string;
+  with_user_name?: string;
+  with_user_avatar?: string;
   last_message?: string;
   unread_count?: number;
   rating?: number;
