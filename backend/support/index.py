@@ -317,13 +317,32 @@ def create_thread(conn, user_id: str, body_data: Dict[str, Any]) -> Dict[str, An
         assigned_to_id = None
     
     cursor.execute(f"""
-        INSERT INTO t_p35759334_music_label_portal.support_threads 
-        (artist_id, subject, status, priority, release_id, track_id, assigned_to, created_at, updated_at, last_message_at)
-        VALUES ({sql_escape(final_artist_id)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, {sql_escape(release_id)}, {sql_escape(track_id)}, {sql_escape(assigned_to_id)}, NOW(), NOW(), NOW())
-        RETURNING id
+        SELECT id FROM t_p35759334_music_label_portal.support_threads
+        WHERE artist_id = {sql_escape(final_artist_id)} 
+        AND is_archived = false
+        ORDER BY created_at DESC
+        LIMIT 1
     """)
     
-    thread_id = cursor.fetchone()['id']
+    existing_thread = cursor.fetchone()
+    
+    if existing_thread:
+        thread_id = existing_thread['id']
+        
+        cursor.execute(f"""
+            UPDATE t_p35759334_music_label_portal.support_threads
+            SET updated_at = NOW(), last_message_at = NOW()
+            WHERE id = {sql_escape(thread_id)}
+        """)
+    else:
+        cursor.execute(f"""
+            INSERT INTO t_p35759334_music_label_portal.support_threads 
+            (artist_id, subject, status, priority, release_id, track_id, assigned_to, created_at, updated_at, last_message_at)
+            VALUES ({sql_escape(final_artist_id)}, {sql_escape(subject)}, 'new', {sql_escape(priority)}, {sql_escape(release_id)}, {sql_escape(track_id)}, {sql_escape(assigned_to_id)}, NOW(), NOW(), NOW())
+            RETURNING id
+        """)
+        
+        thread_id = cursor.fetchone()['id']
     
     return {
         'statusCode': 200,
@@ -584,10 +603,16 @@ def get_artists(conn, user_id: str) -> Dict[str, Any]:
         }
     
     cursor.execute("""
-        SELECT id, username, full_name, vk_photo
-        FROM t_p35759334_music_label_portal.users
-        WHERE role = 'artist'
-        ORDER BY full_name ASC
+        SELECT u.id, u.username, u.full_name, u.vk_photo
+        FROM t_p35759334_music_label_portal.users u
+        WHERE u.role = 'artist'
+        AND NOT EXISTS (
+            SELECT 1 
+            FROM t_p35759334_music_label_portal.support_threads st
+            WHERE st.artist_id = u.id 
+            AND st.is_archived = false
+        )
+        ORDER BY u.full_name ASC
     """)
     
     artists = cursor.fetchall()
