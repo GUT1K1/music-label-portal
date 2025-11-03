@@ -1,15 +1,13 @@
 import { useRef, useEffect, useState } from 'react';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Icon from '@/components/ui/icon';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import ChatHeader from './support/ChatHeader';
+import ChatMessage from './support/ChatMessage';
+import ChatInput from './support/ChatInput';
+import ReleaseAttachModal from './support/ReleaseAttachModal';
+import ArtistAttachModal from './support/ArtistAttachModal';
 
 interface Message {
   id: number;
@@ -20,6 +18,9 @@ interface Message {
   message_type: 'text' | 'image' | 'file';
   attachment_url?: string;
   attachment_name?: string;
+  release_id?: number;
+  release_title?: string;
+  release_cover?: string;
   sender_name?: string;
   sender_role?: string;
 }
@@ -32,6 +33,8 @@ interface ThreadData {
   artist_name?: string;
   artist_avatar?: string;
   artist_vk_photo?: string;
+  with_user_name?: string;
+  with_user_avatar?: string;
   rating?: number;
   release_id?: number;
   track_id?: number;
@@ -86,7 +89,6 @@ export default function SupportChatWindow({
   onAttachRelease
 }: SupportChatWindowProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showAttachModal, setShowAttachModal] = useState(false);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -131,30 +133,6 @@ export default function SupportChatWindow({
     }
   }, [messages]);
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      new: { label: 'Новое', color: 'bg-blue-500/10 text-blue-600 border-blue-500/20', icon: 'Sparkles' },
-      in_progress: { label: 'В работе', color: 'bg-amber-500/10 text-amber-600 border-amber-500/20', icon: 'Zap' },
-      resolved: { label: 'Решено', color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20', icon: 'CheckCircle2' }
-    };
-    
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.new;
-    
-    return (
-      <Badge variant="outline" className={`flex items-center gap-1.5 text-xs font-medium border ${config.color}`}>
-        <Icon name={config.icon} className="w-3.5 h-3.5" />
-        {config.label}
-      </Badge>
-    );
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendWithAttachment();
-    }
-  };
-
   if (!threadData) {
     return (
       <Card className="lg:col-span-2 flex flex-col">
@@ -170,391 +148,69 @@ export default function SupportChatWindow({
 
   return (
     <Card className="lg:col-span-2 flex flex-col h-[600px]">
-      <CardHeader className="flex flex-col space-y-2 pb-3 px-4 py-3">
-        <div className="flex flex-row items-center justify-between space-y-0">
-        {isStaff ? (
-          <>
-            <div className="flex items-center gap-2">
-              <Avatar className="w-8 h-8">
-                <AvatarImage src={threadData.with_user_avatar} />
-                <AvatarFallback className="bg-primary/10 text-xs">
-                  {threadData.with_user_name?.[0] || '?'}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <CardTitle className="text-base">
-                  {threadData.with_user_name}
-                </CardTitle>
-                {threadData.artist_username && (
-                  <p className="text-xs text-muted-foreground">
-                    @{threadData.artist_username}
-                  </p>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {getStatusBadge(threadData.status)}
-              {onStatusChange && threadData.status !== 'resolved' && (
-                <Button
-                  size="sm"
-                  onClick={() => onStatusChange('resolved')}
-                  className="h-7 text-xs bg-emerald-500 hover:bg-emerald-600 text-white"
-                >
-                  <Icon name="Check" className="w-3 h-3 mr-1" />
-                  Завершить
-                </Button>
-              )}
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                <Icon name="Headphones" className="w-4 h-4 text-primary" />
-              </div>
-              <div>
-                <CardTitle className="text-base">Техподдержка</CardTitle>
-                <p className="text-xs text-muted-foreground">Ответим на ваши вопросы</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {getStatusBadge(threadData.status)}
-              {threadData.status === 'resolved' && !threadData.rating && onRatingSubmit && (
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      onClick={() => onRatingSubmit(star)}
-                      className="text-yellow-500 hover:scale-110 transition-transform"
-                    >
-                      <Icon name="Star" className="w-4 h-4 fill-current" />
-                    </button>
-                  ))}
-                </div>
-              )}
-              {threadData.rating && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Icon name="Star" className="w-3 h-3 fill-yellow-500 text-yellow-500" />
-                  <span>{threadData.rating}/5</span>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-        </div>
-        
-        {(threadData.release_id || threadData.track_id) && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground border-t pt-2">
-            <Icon name="Music" className="w-3.5 h-3.5" />
-            <span>
-              {threadData.track_id && threadData.track_title && `Трек: ${threadData.track_title}`}
-              {threadData.release_id && threadData.release_title && !threadData.track_id && `Релиз: ${threadData.release_title}`}
-            </span>
-          </div>
-        )}
-      </CardHeader>
+      <ChatHeader
+        threadData={threadData}
+        isStaff={isStaff}
+        onStatusChange={onStatusChange}
+        onRatingSubmit={onRatingSubmit}
+      />
       <Separator />
       <ScrollArea className="flex-1 px-4 py-3">
         <div className="flex flex-col gap-2">
           {messages.map(msg => (
-            <div
+            <ChatMessage
               key={msg.id}
-              className={`flex gap-3 ${msg.sender_id === userId ? 'justify-end' : 'justify-start'}`}
-            >
-              {msg.sender_id !== userId && (
-                <Avatar className="w-7 h-7 shrink-0">
-                  {isStaff ? (
-                    <>
-                      <AvatarImage src={threadData.with_user_avatar} />
-                      <AvatarFallback className="bg-primary/10 text-xs">
-                        {threadData.with_user_name?.[0] || '?'}
-                      </AvatarFallback>
-                    </>
-                  ) : (
-                    <>
-                      <AvatarImage src="/support-avatar.png" />
-                      <AvatarFallback className="bg-primary/10">
-                        <Icon name="Headphones" className="w-3 h-3" />
-                      </AvatarFallback>
-                    </>
-                  )}
-                </Avatar>
-              )}
-              <div className={`max-w-[75%] ${msg.sender_id === userId ? 'order-first' : ''}`}>
-                <div className="space-y-1">
-                  {msg.message_type === 'image' && msg.attachment_url && (
-                    <div className="rounded-lg overflow-hidden">
-                      <img src={msg.attachment_url} alt={msg.attachment_name || 'Изображение'} className="max-w-full h-auto" />
-                    </div>
-                  )}
-                  {msg.message_type === 'file' && msg.attachment_url && (
-                    <a
-                      href={msg.attachment_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`flex items-center gap-2 p-2 rounded-lg border ${
-                        msg.sender_id === userId ? 'border-white/20 bg-white/10' : 'border-border bg-background'
-                      }`}
-                    >
-                      <Icon name="FileText" className="w-4 h-4" />
-                      <span className="text-xs flex-1 truncate">{msg.attachment_name || 'Файл'}</span>
-                      <Icon name="Download" className="w-3 h-3" />
-                    </a>
-                  )}
-                  {msg.release_id && msg.release_title && (
-                    <div
-                      className={`flex items-center gap-2 p-2 rounded-lg ${
-                        msg.sender_id === userId 
-                          ? 'bg-white/10 border border-white/20' 
-                          : 'bg-background border border-border'
-                      }`}
-                    >
-                      {msg.release_cover ? (
-                        <img src={msg.release_cover} alt={msg.release_title} className="w-10 h-10 rounded object-cover" />
-                      ) : (
-                        <div className="w-10 h-10 rounded bg-muted flex items-center justify-center">
-                          <Icon name="Music" className="w-5 h-5" />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium truncate">{msg.release_title}</div>
-                        <div className="text-[10px] opacity-70">Релиз</div>
-                      </div>
-                    </div>
-                  )}
-                  {msg.message && (
-                    <div
-                      className={`rounded-2xl px-3 py-1.5 ${
-                        msg.sender_id === userId
-                          ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm'
-                          : 'bg-muted'
-                      }`}
-                    >
-                      <p className="text-xs whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
-                    </div>
-                  )}
-                </div>
-                <p className="text-[10px] text-muted-foreground mt-0.5 px-2">
-                  {format(new Date(msg.created_at), 'd MMM, HH:mm', { locale: ru })}
-                </p>
-              </div>
-            </div>
+              message={msg}
+              userId={userId}
+              isStaff={isStaff}
+              threadData={threadData}
+            />
           ))}
           <div ref={scrollAreaRef} />
         </div>
       </ScrollArea>
       <Separator />
-      <div className="p-3 bg-muted/30">
-        <div className="space-y-2">
-          {selectedFile && (
-            <div className="flex items-center gap-2 bg-muted p-2 rounded text-sm">
-              <Icon name="Paperclip" className="w-4 h-4" />
-              <span className="flex-1 truncate">{selectedFile.name}</span>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setSelectedFile(null)}
-                className="h-6 w-6 p-0"
-              >
-                <Icon name="X" className="w-3 h-3" />
-              </Button>
-            </div>
-          )}
-          <div className="flex gap-2">
-            {isStaff && (
-              <>
-                <Button
-                  onClick={() => fileInputRef.current?.click()}
-                  variant="outline"
-                  size="sm"
-                  className="h-9 px-3 shrink-0"
-                  title="Прикрепить файл"
-                >
-                  <Icon name="Paperclip" className="w-4 h-4" />
-                </Button>
-                <Button
-                  onClick={() => setShowReleaseModal(true)}
-                  variant="outline"
-                  size="sm"
-                  className="h-9 px-3 shrink-0"
-                  title="Прикрепить релиз"
-                >
-                  <Icon name="Music" className="w-4 h-4" />
-                </Button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileSelect}
-                  accept="*/*"
-                />
-              </>
-            )}
-            {!isStaff && onAttachRelease && (
-              <Button
-                onClick={() => setShowAttachModal(true)}
-                variant="outline"
-                size="sm"
-                className="h-9 px-3 shrink-0"
-                title="Прикрепить релиз или трек"
-              >
-                <Icon name="Paperclip" className="w-4 h-4" />
-              </Button>
-            )}
-            <Input
-              placeholder="Введите сообщение..."
-              value={newMessage}
-              onChange={(e) => onMessageChange(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={sendingMessage}
-              className="flex-1 h-9 text-sm"
-            />
-            <Button 
-              size="sm"
-              onClick={handleSendWithAttachment} 
-              disabled={sendingMessage || (!newMessage.trim() && !selectedFile && !selectedRelease)}
-              className="h-9 px-3 bg-blue-500 hover:bg-blue-600 text-white shrink-0"
-            >
-              {sendingMessage ? (
-                <Icon name="Loader2" className="w-4 h-4 animate-spin" />
-              ) : (
-                <Icon name="Send" className="w-4 h-4" />
-              )}
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ChatInput
+        newMessage={newMessage}
+        sendingMessage={sendingMessage}
+        isStaff={isStaff}
+        selectedFile={selectedFile}
+        onMessageChange={onMessageChange}
+        onSendMessage={handleSendWithAttachment}
+        onFileSelect={handleFileSelect}
+        onRemoveFile={() => setSelectedFile(null)}
+        onShowReleaseModal={() => setShowReleaseModal(true)}
+        onShowAttachModal={!isStaff ? () => setShowAttachModal(true) : undefined}
+      />
       
       {showReleaseModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowReleaseModal(false)}>
-          <Card className="w-full max-w-md m-4" onClick={(e) => e.stopPropagation()}>
-            <CardHeader>
-              <CardTitle className="text-base">Прикрепить релиз артиста</CardTitle>
-            </CardHeader>
-            <div className="p-4 space-y-4">
-              {releases.length === 0 ? (
-                <div className="text-center py-6 text-muted-foreground">
-                  <Icon name="Music" className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p className="text-sm">У артиста пока нет релизов</p>
-                </div>
-              ) : (
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Выберите релиз</label>
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {releases.map(release => (
-                      <button
-                        key={release.id}
-                        onClick={() => setSelectedRelease(release.id)}
-                        className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-colors ${
-                          selectedRelease === release.id 
-                            ? 'border-primary bg-primary/5' 
-                            : 'border-border hover:border-primary/50'
-                        }`}
-                      >
-                        {release.cover_url ? (
-                          <img src={release.cover_url} alt={release.title} className="w-12 h-12 rounded object-cover" />
-                        ) : (
-                          <div className="w-12 h-12 rounded bg-muted flex items-center justify-center">
-                            <Icon name="Music" className="w-6 h-6 text-muted-foreground" />
-                          </div>
-                        )}
-                        <div className="flex-1 text-left">
-                          <div className="font-medium text-sm">{release.title}</div>
-                          <div className="text-xs text-muted-foreground">{release.status}</div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => {
-                  setShowReleaseModal(false);
-                  setSelectedRelease(null);
-                }}>
-                  Отмена
-                </Button>
-                <Button 
-                  onClick={handleSendWithAttachment}
-                  disabled={!selectedRelease}
-                >
-                  Прикрепить
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
+        <ReleaseAttachModal
+          releases={releases}
+          selectedRelease={selectedRelease}
+          onSelectRelease={setSelectedRelease}
+          onConfirm={handleSendWithAttachment}
+          onCancel={() => {
+            setShowReleaseModal(false);
+            setSelectedRelease(null);
+          }}
+        />
       )}
       
       {showAttachModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowAttachModal(false)}>
-          <Card className="w-full max-w-md m-4" onClick={(e) => e.stopPropagation()}>
-            <CardHeader>
-              <CardTitle className="text-base">Прикрепить релиз или трек</CardTitle>
-            </CardHeader>
-            <div className="p-4 space-y-4">
-              {releases.length === 0 && tracks.length === 0 ? (
-                <div className="text-center py-6 text-muted-foreground">
-                  <Icon name="Music" className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p className="text-sm">У вас пока нет релизов</p>
-                  <p className="text-xs mt-1">Загрузите релиз, чтобы прикрепить его к обращению</p>
-                </div>
-              ) : (
-                <>
-                  {releases.length > 0 && (
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Релиз (опционально)</label>
-                      <Select value={selectedRelease?.toString() || ''} onValueChange={(val) => setSelectedRelease(val ? Number(val) : null)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Не выбрано" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="">Не выбрано</SelectItem>
-                          {releases.map(release => (
-                            <SelectItem key={release.id} value={release.id.toString()}>
-                              {release.title}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                  
-                  {tracks.length > 0 && (
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Трек (опционально)</label>
-                  <Select value={selectedTrack?.toString() || ''} onValueChange={(val) => setSelectedTrack(val ? Number(val) : null)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Не выбрано" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Не выбрано</SelectItem>
-                      {tracks.map(track => (
-                        <SelectItem key={track.id} value={track.id.toString()}>
-                          {track.title} ({track.release_title})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-                </>
-              )}
-              
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => setShowAttachModal(false)}>
-                  Отмена
-                </Button>
-                {(releases.length > 0 || tracks.length > 0) && (
-                  <Button onClick={handleAttach}>
-                    Прикрепить
-                  </Button>
-                )}
-              </div>
-            </div>
-          </Card>
-        </div>
+        <ArtistAttachModal
+          releases={releases}
+          tracks={tracks}
+          selectedRelease={selectedRelease}
+          selectedTrack={selectedTrack}
+          onSelectRelease={setSelectedRelease}
+          onSelectTrack={setSelectedTrack}
+          onConfirm={handleAttach}
+          onCancel={() => {
+            setShowAttachModal(false);
+            setSelectedRelease(null);
+            setSelectedTrack(null);
+          }}
+        />
       )}
     </Card>
   );
