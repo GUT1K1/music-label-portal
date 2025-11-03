@@ -140,9 +140,7 @@ export default function LandingPage() {
             {/* Компактный блок 420 + Hero */}
             <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="
-">
-                {/* SVG Анимация 420 */}
-                <Animated420Logo />
+
                 
                 {/* Подпись лейбла */}
                 <div className="space-y-2">
