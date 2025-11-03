@@ -202,17 +202,28 @@ def get_threads(conn, user_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
         if user_role in ['manager', 'director']:
             status_filter = params.get('status', 'all')
             if status_filter != 'all':
-                where_clause = f"WHERE status = {sql_escape(status_filter)}"
+                where_clause = f"WHERE status = {sql_escape(status_filter)} AND is_archived = false"
+            else:
+                where_clause = "WHERE is_archived = false"
         else:
-            where_clause = f"WHERE artist_id = {sql_escape(user_id_int)}"
+            where_clause = f"WHERE artist_id = {sql_escape(user_id_int)} AND is_archived = false"
         
         query = f"""
+            WITH ranked_threads AS (
+                SELECT 
+                    id, artist_id, subject, status, priority, 
+                    assigned_to, created_at, updated_at, last_message_at, 
+                    is_archived, rating,
+                    ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY last_message_at DESC) as rn
+                FROM t_p35759334_music_label_portal.support_threads
+                {where_clause}
+            )
             SELECT 
                 id, artist_id, subject, status, priority, 
                 assigned_to, created_at, updated_at, last_message_at, 
                 is_archived, rating
-            FROM t_p35759334_music_label_portal.support_threads
-            {where_clause}
+            FROM ranked_threads
+            WHERE rn = 1
             ORDER BY last_message_at DESC
         """
         
