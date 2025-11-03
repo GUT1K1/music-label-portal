@@ -21,7 +21,7 @@ interface UserActivityStats {
   currentSession?: ActivitySession;
 }
 
-const TRACKING_INTERVAL = 60000; // 1 минута
+const TRACKING_INTERVAL = 300000; // Оптимизация: 5 минут вместо 1 минуты
 
 export const useActivityTracking = (userId?: number) => {
   const [stats, setStats] = useState<Map<number, UserActivityStats>>(new Map());

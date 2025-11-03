@@ -144,11 +144,12 @@ export const useAuth = () => {
   useEffect(() => {
     if (!user) return;
     
+    // Оптимизация: обновляем данные пользователя раз в 10 минут вместо 5
     const interval = setInterval(() => {
       if (!document.hidden) {
         refreshUserData();
       }
-    }, 300000);
+    }, 600000);
     
     // Listen for role changes from other tabs or admin actions
     const handleRoleChange = (event: CustomEvent) => {

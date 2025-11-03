@@ -151,14 +151,28 @@ export function useSupportData(
     } else {
       loadUserReleases();
     }
-    const interval = setInterval(loadThreads, 10000);
+    
+    // Оптимизация: обновляем список диалогов раз в минуту только когда вкладка активна
+    const interval = setInterval(() => {
+      if (!document.hidden) {
+        loadThreads();
+      }
+    }, 60000);
+    
     return () => clearInterval(interval);
   }, [statusFilter]);
 
   useEffect(() => {
     if (activeThread) {
       loadMessages(activeThread);
-      const interval = setInterval(() => loadMessages(activeThread), 5000);
+      
+      // Оптимизация: обновляем сообщения раз в 30 секунд только когда вкладка активна
+      const interval = setInterval(() => {
+        if (!document.hidden) {
+          loadMessages(activeThread);
+        }
+      }, 30000);
+      
       return () => clearInterval(interval);
     }
   }, [activeThread]);

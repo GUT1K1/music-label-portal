@@ -59,7 +59,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const cacheRef = useRef<{ data: UnreadCounts | null; timestamp: number }>({ data: null, timestamp: 0 });
   const DEBOUNCE_TIME = 5000;
   const CACHE_TIME = 30000;
-  const POLLING_INTERVAL = 120000;
+  const POLLING_INTERVAL = 300000; // Оптимизация: 5 минут вместо 2
 
   const fetchUnreadCounts = useCallback(async (force = false) => {
     const now = Date.now();

@@ -96,7 +96,12 @@ export default function ManagerTasks({ userId }: ManagerTasksProps) {
   useEffect(() => {
     loadTasks();
     
-    const interval = setInterval(loadTasks, 120000);
+    // Оптимизация: обновляем задачи раз в 5 минут вместо 2
+    const interval = setInterval(() => {
+      if (!document.hidden) {
+        loadTasks();
+      }
+    }, 300000);
     
     const handleVisibilityChange = () => {
       if (!document.hidden) {

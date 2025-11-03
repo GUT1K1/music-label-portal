@@ -6,8 +6,8 @@ interface UserOnlineStatus {
   lastSeen: string;
 }
 
-const HEARTBEAT_INTERVAL = 30000; // 30 секунд
-const ONLINE_THRESHOLD = 60000; // 1 минута
+const HEARTBEAT_INTERVAL = 60000; // Оптимизация: 1 минута вместо 30 секунд
+const ONLINE_THRESHOLD = 120000; // 2 минуты
 
 export const useOnlineStatus = (currentUserId?: number) => {
   const [onlineUsers, setOnlineUsers] = useState<Map<number, UserOnlineStatus>>(new Map());
@@ -53,9 +53,10 @@ export const useOnlineStatus = (currentUserId?: number) => {
       updateHeartbeat(currentUserId);
     }, HEARTBEAT_INTERVAL);
 
+    // Оптимизация: проверяем статусы раз в 30 секунд вместо 10
     const checkTimer = setInterval(() => {
       checkOnlineStatus();
-    }, 10000);
+    }, 30000);
 
     const handleVisibilityChange = () => {
       if (!document.hidden && currentUserId) {

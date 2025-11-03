@@ -32,7 +32,8 @@ export default function VKPosts() {
   const loadPosts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_ENDPOINTS.VK_POSTS}?count=6&_=${Date.now()}`);
+      // Оптимизация: убрали cache-busting, используем нормальное кеширование браузера
+      const response = await fetch(`${API_ENDPOINTS.VK_POSTS}?count=6`);
       const data = await response.json();
       
       if (data.error) {

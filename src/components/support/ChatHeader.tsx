@@ -92,9 +92,12 @@ export default function ChatHeader({
       ) : (
         <>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <Icon name="Headphones" className="w-4 h-4 text-primary" />
-            </div>
+            <Avatar className="w-8 h-8 ring-2 ring-primary/20">
+              <AvatarImage src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/a2d10492-6925-46a2-b570-b8026c74c51e.jpg" />
+              <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600">
+                <Icon name="Headphones" className="w-4 h-4 text-white" />
+              </AvatarFallback>
+            </Avatar>
             <div>
               <CardTitle className="text-base">Техподдержка</CardTitle>
               <p className="text-xs text-muted-foreground">Ответим на ваши вопросы</p>
