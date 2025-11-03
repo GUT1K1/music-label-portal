@@ -95,18 +95,14 @@ export default function ArtistSupportView({
         <CardContent className="pt-8 text-center space-y-4">
           <div className="flex justify-center">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-              <Icon name="MessageSquare" className="w-10 h-10 text-primary" />
+              <Icon name="Loader2" className="w-10 h-10 text-primary animate-spin" />
             </div>
           </div>
           <div>
-            <h3 className="text-xl font-bold mb-2">Техническая поддержка</h3>
-            <p className="text-muted-foreground mb-6">
-              Создайте первое обращение, чтобы начать диалог с поддержкой
+            <h3 className="text-xl font-bold mb-2">Загрузка диалога с поддержкой</h3>
+            <p className="text-muted-foreground">
+              Подождите, создаём ваш диалог с техподдержкой...
             </p>
-            <Button onClick={() => setShowNewThreadModal(true)} size="lg" className="gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md">
-              <Icon name="Plus" className="w-5 h-5" />
-              Создать обращение
-            </Button>
           </div>
         </CardContent>
       </Card>

@@ -117,7 +117,35 @@ export function useSupportData(
   };
 
   useEffect(() => {
-    loadThreads();
+    const initializeSupport = async () => {
+      const loadedThreads = await loadThreads();
+      
+      if (!isStaff && loadedThreads.length === 0) {
+        try {
+          const response = await fetch(SUPPORT_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-User-Id': userId.toString()
+            },
+            body: JSON.stringify({
+              action: 'create_thread',
+              subject: 'Новое обращение',
+              priority: 'normal'
+            })
+          });
+          
+          if (response.ok) {
+            await loadThreads();
+          }
+        } catch (error) {
+          console.error('Error auto-creating thread:', error);
+        }
+      }
+    };
+    
+    initializeSupport();
+    
     if (isStaff) {
       loadArtists();
     } else {
