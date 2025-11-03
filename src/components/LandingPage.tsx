@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import AnimatedHero from '@/components/AnimatedHero';
 import BurgerMenu from '@/components/BurgerMenu';
+import Animated420Logo from '@/components/Animated420Logo';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -136,31 +137,30 @@ export default function LandingPage() {
         
         <div className="container mx-auto px-4 relative z-10 py-20">
           <div className="max-w-6xl mx-auto text-center">
-            {/* 420 Brand Identity */}
-            <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <div className="relative inline-block">
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-amber-600 opacity-30 blur-3xl animate-pulse" />
-                <h1 className="relative text-[120px] md:text-[180px] lg:text-[220px] font-black leading-none">
-                  <span className="bg-gradient-to-br from-yellow-400 via-orange-500 to-amber-600 bg-clip-text text-transparent drop-shadow-2xl">
-                    420
-                  </span>
-                </h1>
-              </div>
-              <div className="mt-4 mb-2">
-                <p className="text-2xl md:text-3xl font-bold text-white tracking-wide">
-                  Музыкальный Лейбл
-                </p>
-                <p className="text-lg md:text-xl text-gray-400 mt-2 max-w-2xl mx-auto">
-                  Твой путь к успеху в музыкальной индустрии
-                </p>
+            {/* Компактный блок 420 + Hero */}
+            <div className="mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <div className="flex flex-col items-center gap-4">
+                {/* SVG Анимация 420 */}
+                <Animated420Logo />
+                
+                {/* Подпись лейбла */}
+                <div className="space-y-2">
+                  <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                    Музыкальный Лейбл
+                  </h2>
+                  <p className="text-base md:text-lg text-gray-400">
+                    Твой путь к успеху в музыкальной индустрии
+                  </p>
+                </div>
               </div>
             </div>
             
-            <div className="mb-12">
+            {/* Hero текст */}
+            <div className="mb-8">
               <AnimatedHero />
             </div>
             
-            <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.6s' }}>
               Дистрибуция, продвижение и аналитика для артистов. 
               <span className="text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text font-semibold"> Без скрытых комиссий</span> и сложных договоров.
             </p>
