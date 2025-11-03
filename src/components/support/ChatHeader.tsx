@@ -81,9 +81,9 @@ export default function ChatHeader({
               <Button
                 size="sm"
                 onClick={() => onStatusChange('resolved')}
-                className="h-7 text-xs bg-emerald-500 hover:bg-emerald-600 text-white"
+                className="h-7 text-xs gap-1 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-sm"
               >
-                <Icon name="Check" className="w-3 h-3 mr-1" />
+                <Icon name="CheckCircle2" className="w-3.5 h-3.5" />
                 Завершить
               </Button>
             )}
