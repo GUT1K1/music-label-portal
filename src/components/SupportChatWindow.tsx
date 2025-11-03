@@ -276,13 +276,13 @@ export default function SupportChatWindow({
       <Separator />
       <div className="p-3 bg-muted/30">
         <div className="flex gap-2">
-          {!isStaff && onAttachRelease && releases.length > 0 && (
+          {!isStaff && onAttachRelease && (
             <Button
               onClick={() => setShowAttachModal(true)}
               variant="outline"
               size="sm"
               className="h-9 px-3 shrink-0"
-              title="Прикрепить релиз"
+              title="Прикрепить релиз или трек"
             >
               <Icon name="Paperclip" className="w-4 h-4" />
             </Button>
@@ -317,26 +317,34 @@ export default function SupportChatWindow({
               <CardTitle className="text-base">Прикрепить релиз или трек</CardTitle>
             </CardHeader>
             <div className="p-4 space-y-4">
-              {releases.length > 0 && (
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Релиз (опционально)</label>
-                  <Select value={selectedRelease?.toString() || ''} onValueChange={(val) => setSelectedRelease(val ? Number(val) : null)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Не выбрано" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="">Не выбрано</SelectItem>
-                      {releases.map(release => (
-                        <SelectItem key={release.id} value={release.id.toString()}>
-                          {release.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              {releases.length === 0 && tracks.length === 0 ? (
+                <div className="text-center py-6 text-muted-foreground">
+                  <Icon name="Music" className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                  <p className="text-sm">У вас пока нет релизов</p>
+                  <p className="text-xs mt-1">Загрузите релиз, чтобы прикрепить его к обращению</p>
                 </div>
-              )}
-              
-              {tracks.length > 0 && (
+              ) : (
+                <>
+                  {releases.length > 0 && (
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Релиз (опционально)</label>
+                      <Select value={selectedRelease?.toString() || ''} onValueChange={(val) => setSelectedRelease(val ? Number(val) : null)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Не выбрано" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">Не выбрано</SelectItem>
+                          {releases.map(release => (
+                            <SelectItem key={release.id} value={release.id.toString()}>
+                              {release.title}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  
+                  {tracks.length > 0 && (
                 <div>
                   <label className="text-sm font-medium mb-2 block">Трек (опционально)</label>
                   <Select value={selectedTrack?.toString() || ''} onValueChange={(val) => setSelectedTrack(val ? Number(val) : null)}>
@@ -354,14 +362,18 @@ export default function SupportChatWindow({
                   </Select>
                 </div>
               )}
+                </>
+              )}
               
               <div className="flex gap-2 justify-end">
                 <Button variant="outline" onClick={() => setShowAttachModal(false)}>
                   Отмена
                 </Button>
-                <Button onClick={handleAttach}>
-                  Прикрепить
-                </Button>
+                {(releases.length > 0 || tracks.length > 0) && (
+                  <Button onClick={handleAttach}>
+                    Прикрепить
+                  </Button>
+                )}
               </div>
             </div>
           </Card>
