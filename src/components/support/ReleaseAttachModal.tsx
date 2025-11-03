@@ -44,10 +44,10 @@ export default function ReleaseAttachModal({
                   <button
                     key={release.id}
                     onClick={() => onSelectRelease(release.id)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
                       selectedRelease === release.id 
-                        ? 'border-primary bg-primary/5' 
-                        : 'border-border hover:border-primary/50'
+                        ? 'border-blue-500 bg-blue-500/10 shadow-sm' 
+                        : 'border-border hover:border-blue-400 hover:bg-blue-500/5'
                     }`}
                   >
                     {release.cover_url ? (
@@ -68,12 +68,13 @@ export default function ReleaseAttachModal({
           )}
           
           <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={onCancel}>
+            <Button variant="outline" onClick={onCancel} className="hover:bg-muted transition-colors">
               Отмена
             </Button>
             <Button 
               onClick={onConfirm}
               disabled={!selectedRelease}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Прикрепить
             </Button>

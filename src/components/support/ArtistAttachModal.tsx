@@ -94,12 +94,13 @@ export default function ArtistAttachModal({
           )}
           
           <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={onCancel}>
+            <Button variant="outline" onClick={onCancel} className="hover:bg-muted transition-colors">
               Отмена
             </Button>
             <Button 
               onClick={onConfirm}
               disabled={!selectedRelease && !selectedTrack}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Прикрепить
             </Button>

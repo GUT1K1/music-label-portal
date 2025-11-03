@@ -103,7 +103,7 @@ export default function ArtistSupportView({
             <p className="text-muted-foreground mb-6">
               Создайте первое обращение, чтобы начать диалог с поддержкой
             </p>
-            <Button onClick={() => setShowNewThreadModal(true)} size="lg" className="gap-2">
+            <Button onClick={() => setShowNewThreadModal(true)} size="lg" className="gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-md">
               <Icon name="Plus" className="w-5 h-5" />
               Создать обращение
             </Button>

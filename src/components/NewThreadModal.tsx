@@ -159,10 +159,10 @@ export default function NewThreadModal({
           </div>
           
           <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="hover:bg-muted transition-colors">
               Отмена
             </Button>
-            <Button onClick={onCreate} disabled={!isArtist && !selectedArtist}>
+            <Button onClick={onCreate} disabled={!isArtist && !selectedArtist} className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
               Создать
             </Button>
           </div>

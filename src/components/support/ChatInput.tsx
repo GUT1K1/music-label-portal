@@ -41,14 +41,14 @@ export default function ChatInput({
     <div className="p-3 bg-muted/30">
       <div className="space-y-2">
         {selectedFile && (
-          <div className="flex items-center gap-2 bg-muted p-2 rounded text-sm">
-            <Icon name="Paperclip" className="w-4 h-4" />
-            <span className="flex-1 truncate">{selectedFile.name}</span>
+          <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg text-sm">
+            <Icon name="Paperclip" className="w-4 h-4 text-blue-600" />
+            <span className="flex-1 truncate text-blue-900 dark:text-blue-100">{selectedFile.name}</span>
             <Button
               size="sm"
               variant="ghost"
               onClick={onRemoveFile}
-              className="h-6 w-6 p-0"
+              className="h-6 w-6 p-0 hover:bg-blue-500/20 transition-colors"
             >
               <Icon name="X" className="w-3 h-3" />
             </Button>
@@ -61,7 +61,7 @@ export default function ChatInput({
                 onClick={() => fileInputRef.current?.click()}
                 variant="outline"
                 size="sm"
-                className="h-9 px-3 shrink-0"
+                className="h-9 px-3 shrink-0 hover:bg-primary/10 hover:border-primary/50 transition-colors"
                 title="Прикрепить файл"
               >
                 <Icon name="Paperclip" className="w-4 h-4" />
@@ -70,7 +70,7 @@ export default function ChatInput({
                 onClick={onShowReleaseModal}
                 variant="outline"
                 size="sm"
-                className="h-9 px-3 shrink-0"
+                className="h-9 px-3 shrink-0 hover:bg-primary/10 hover:border-primary/50 transition-colors"
                 title="Прикрепить релиз"
               >
                 <Icon name="Music" className="w-4 h-4" />
@@ -89,7 +89,7 @@ export default function ChatInput({
               onClick={onShowAttachModal}
               variant="outline"
               size="sm"
-              className="h-9 px-3 shrink-0"
+              className="h-9 px-3 shrink-0 hover:bg-primary/10 hover:border-primary/50 transition-colors"
               title="Прикрепить релиз или трек"
             >
               <Icon name="Paperclip" className="w-4 h-4" />
@@ -107,7 +107,7 @@ export default function ChatInput({
             size="sm"
             onClick={onSendMessage} 
             disabled={sendingMessage || (!newMessage.trim() && !selectedFile)}
-            className="h-9 px-3 bg-blue-500 hover:bg-blue-600 text-white shrink-0"
+            className="h-9 px-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-sm shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {sendingMessage ? (
               <Icon name="Loader2" className="w-4 h-4 animate-spin" />
