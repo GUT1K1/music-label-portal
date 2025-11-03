@@ -192,9 +192,7 @@ export default function LandingPage() {
                   <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight py-0 px-0 my-0 mx-[110px]">
                     Музыкальный Лейбл
                   </h2>
-                  <p className="text-base md:text-lg text-gray-400">
-                    Твой путь к успеху в музыкальной индустрии
-                  </p>
+                  <p className="text-base md:text-lg text-gray-400">420</p>
                 </div>
               </div>
             </div>
