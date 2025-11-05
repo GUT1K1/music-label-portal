@@ -20,6 +20,7 @@ interface ReleasePlayerProps {
 
 export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps) {
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [artistName, setArtistName] = useState<string>('');
   const [currentTrack, setCurrentTrack] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -81,6 +82,9 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
       
       const data = await response.json();
       const tracksArray = Array.isArray(data) ? data : (data.tracks || []);
+      const artist = data.artist_name || '';
+      console.log('🎵 Loaded data:', { artist, tracksCount: tracksArray.length });
+      setArtistName(artist);
       setTracks(tracksArray);
     } catch (error) {
       console.error('Failed to load tracks:', error);
@@ -157,7 +161,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-sm md:text-base text-foreground truncate">{currentTrackInfo.title}</h4>
-            <p className="text-xs text-muted-foreground truncate">{currentTrackInfo.composer}</p>
+            <p className="text-xs text-muted-foreground truncate">{artistName}</p>
           </div>
           <div className="text-right">
             <p className="text-xs text-yellow-500 font-medium">Трек {currentTrack + 1} из {tracks.length}</p>
@@ -236,7 +240,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
                 {track.title}
               </p>
               <p className="text-xs text-muted-foreground truncate">
-                {track.composer}
+                {artistName}
               </p>
             </div>
             {currentTrack === index && (
