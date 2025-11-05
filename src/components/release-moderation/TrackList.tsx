@@ -146,32 +146,73 @@ export default function TrackList({ tracks }: TrackListProps) {
       </div>
 
       {/* Track List */}
-      <div className="space-y-1 max-h-[300px] overflow-y-auto">
+      <div className="space-y-2 max-h-[400px] overflow-y-auto">
+        <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Список треков</h5>
         {tracks.map((track, index) => (
-          <button
+          <div
             key={track.id}
-            onClick={() => playTrack(index)}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left group ${
+            className={`rounded-lg border transition-all ${
               currentTrack === index 
-                ? 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30 shadow-lg shadow-yellow-500/10' 
-                : 'hover:bg-yellow-500/5 border border-transparent hover:border-yellow-500/20'
+                ? 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border-yellow-500/30 shadow-lg shadow-yellow-500/10' 
+                : 'bg-card border-border'
             }`}
           >
-            <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 rounded-md bg-yellow-500/10 border border-yellow-500/20">
-              {currentTrack === index && isPlaying ? (
-                <Icon name="Volume2" size={16} className="text-yellow-500 animate-pulse" />
-              ) : (
-                <span className="text-xs font-bold text-yellow-500">{track.track_number}</span>
+            <button
+              onClick={() => playTrack(index)}
+              className="w-full flex items-center gap-3 px-3 py-2.5 transition-all text-left group hover:bg-yellow-500/5"
+            >
+              <div className="w-8 h-8 flex items-center justify-center flex-shrink-0 rounded-md bg-yellow-500/10 border border-yellow-500/20">
+                {currentTrack === index && isPlaying ? (
+                  <Icon name="Volume2" size={16} className="text-yellow-500 animate-pulse" />
+                ) : (
+                  <span className="text-xs font-bold text-yellow-500">{track.track_number}</span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate text-foreground">{track.title}</p>
+                <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
+                  {track.composer && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Icon name="Music2" size={10} className="flex-shrink-0" />
+                      {track.composer}
+                    </p>
+                  )}
+                  {track.language_audio && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Icon name="Languages" size={10} className="flex-shrink-0" />
+                      {track.language_audio}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {currentTrack === index && (
+                <Icon name="Music" size={16} className="text-yellow-500 flex-shrink-0" />
               )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate text-foreground">{track.title}</p>
-              <p className="text-xs text-muted-foreground truncate">{track.composer}</p>
-            </div>
-            {currentTrack === index && (
-              <Icon name="Music" size={16} className="text-yellow-500 flex-shrink-0" />
+            </button>
+            
+            {(track.author_lyrics || track.lyrics_text) && (
+              <div className="px-3 pb-3 pt-0 space-y-2 border-t border-yellow-500/10 mt-2">
+                {track.author_lyrics && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="PenTool" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Автор текста</p>
+                      <p className="text-xs font-medium">{track.author_lyrics}</p>
+                    </div>
+                  </div>
+                )}
+                {track.lyrics_text && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="FileText" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Текст песни</p>
+                      <p className="text-xs whitespace-pre-wrap max-h-24 overflow-y-auto">{track.lyrics_text}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
-          </button>
+          </div>
         ))}
       </div>
     </div>

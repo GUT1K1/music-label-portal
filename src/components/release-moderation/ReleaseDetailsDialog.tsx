@@ -95,27 +95,101 @@ export default function ReleaseDetailsDialog({
         <DialogHeader>
           <DialogTitle>Детали релиза</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
-          {release.cover_url && (
-            <img 
-              src={release.cover_url} 
-              alt={release.release_name} 
-              className="w-32 h-32 md:w-48 md:h-48 object-cover rounded-lg mx-auto shadow-2xl" 
-            />
-          )}
-          <div>
-            <h3 className="font-semibold text-base md:text-lg">{release.release_name}</h3>
-            <p className="text-sm text-muted-foreground">
-              Артист: <span className="text-foreground font-medium">{release.artist_name}</span>
-            </p>
-            {release.genre && <p className="text-sm text-muted-foreground">Жанр: {release.genre}</p>}
-            {release.copyright && <p className="text-sm text-muted-foreground">Копирайт: {release.copyright}</p>}
-            {release.release_date && (
-              <p className="text-sm text-muted-foreground">
-                Дата релиза: {new Date(release.release_date).toLocaleDateString('ru-RU')}
-              </p>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6">
+            {release.cover_url && (
+              <img 
+                src={release.cover_url} 
+                alt={release.release_name} 
+                className="w-48 h-48 object-cover rounded-xl shadow-2xl border border-border mx-auto md:mx-0" 
+              />
             )}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-xl md:text-2xl font-bold text-foreground">{release.release_name}</h3>
+                <p className="text-base text-muted-foreground">
+                  Артист: <span className="text-foreground font-semibold">{release.artist_name}</span>
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {release.release_date && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="Calendar" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Дата релиза</p>
+                      <p className="text-sm font-medium">{new Date(release.release_date).toLocaleDateString('ru-RU')}</p>
+                    </div>
+                  </div>
+                )}
+                {release.genre && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="Music" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Жанр</p>
+                      <p className="text-sm font-medium">{release.genre}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
+          
+          {(release.copyright || (release as any).preorder_date || (release as any).sales_start_date || (release as any).price_category || (release as any).title_language) && (
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                <Icon name="Info" size={16} />
+                Дополнительная информация
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {release.copyright && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="Copyright" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Копирайт</p>
+                      <p className="text-sm font-medium">{release.copyright}</p>
+                    </div>
+                  </div>
+                )}
+                {(release as any).preorder_date && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="Clock" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Дата предзаказа</p>
+                      <p className="text-sm font-medium">{new Date((release as any).preorder_date).toLocaleDateString('ru-RU')}</p>
+                    </div>
+                  </div>
+                )}
+                {(release as any).sales_start_date && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="DollarSign" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Начало продаж</p>
+                      <p className="text-sm font-medium">{new Date((release as any).sales_start_date).toLocaleDateString('ru-RU')}</p>
+                    </div>
+                  </div>
+                )}
+                {(release as any).price_category && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="Tag" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Ценовая категория</p>
+                      <p className="text-sm font-medium">{(release as any).price_category}</p>
+                    </div>
+                  </div>
+                )}
+                {(release as any).title_language && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="Languages" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Язык названия</p>
+                      <p className="text-sm font-medium">{(release as any).title_language}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {release.tracks && release.tracks.length > 0 && (
             <TrackList tracks={release.tracks} />

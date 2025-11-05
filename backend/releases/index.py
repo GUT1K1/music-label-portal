@@ -150,8 +150,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             query = f"""
                 SELECT 
                     r.id, r.release_name, r.cover_url, r.release_date, r.preorder_date,
-                    r.sales_start_date, r.genre, r.copyright, r.status, r.created_at,
-                    r.review_comment, r.artist_id as user_id,
+                    r.sales_start_date, r.genre, r.copyright, r.price_category, r.title_language,
+                    r.status, r.created_at, r.review_comment, r.artist_id as user_id,
                     u.full_name as artist_name,
                     r.reviewed_by as reviewer_id,
                     rev.full_name as reviewer_name,

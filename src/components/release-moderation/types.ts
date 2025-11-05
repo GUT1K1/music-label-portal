@@ -33,8 +33,12 @@ export interface Release {
   user_id?: number;
   cover_url?: string;
   release_date?: string;
+  preorder_date?: string;
+  sales_start_date?: string;
   genre?: string;
   copyright?: string;
+  price_category?: string;
+  title_language?: string;
   status: string;
   tracks_count?: number;
   created_at: string;
