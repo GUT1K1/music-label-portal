@@ -9,13 +9,13 @@ export interface UploadFileResult {
  * Загрузка файла: маленькие через FormData, большие через presigned S3 URL
  */
 export async function uploadFile(file: File): Promise<UploadFileResult> {
-  const maxSize = 50 * 1024 * 1024;
+  const maxSize = 100 * 1024 * 1024;
   const fileSizeMB = (file.size / 1024 / 1024).toFixed(2);
   
   console.log(`[Upload] File: ${file.name}, Size: ${fileSizeMB}MB`);
   
   if (file.size > maxSize) {
-    throw new Error('Размер файла превышает 50MB');
+    throw new Error(`Размер файла превышает 100MB (текущий: ${fileSizeMB}MB)`);
   }
   
   try {
