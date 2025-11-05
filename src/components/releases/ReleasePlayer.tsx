@@ -21,6 +21,7 @@ interface ReleasePlayerProps {
 export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps) {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [artistName, setArtistName] = useState<string>('');
+  const [releaseName, setReleaseName] = useState<string>('');
   const [currentTrack, setCurrentTrack] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -83,8 +84,10 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
       const data = await response.json();
       const tracksArray = Array.isArray(data) ? data : (data.tracks || []);
       const artist = data.artist_name || '';
-      console.log('🎵 Loaded data:', { artist, tracksCount: tracksArray.length });
+      const release = data.release_name || '';
+      console.log('🎵 Loaded data:', { artist, release, tracksCount: tracksArray.length });
       setArtistName(artist);
+      setReleaseName(release);
       setTracks(tracksArray);
     } catch (error) {
       console.error('Failed to load tracks:', error);
@@ -160,7 +163,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
             <Icon name={isPlaying ? 'Music' : 'Disc'} size={24} className={`text-yellow-500 ${isPlaying ? 'animate-pulse' : ''}`} />
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-sm md:text-base text-foreground truncate">{currentTrackInfo.title}</h4>
+            <h4 className="font-semibold text-sm md:text-base text-foreground truncate">{releaseName}</h4>
             <p className="text-xs text-foreground/70 truncate">{artistName}</p>
           </div>
           <div className="text-right">
@@ -237,7 +240,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
             </div>
             <div className="flex-1 min-w-0">
               <p className={`text-sm truncate ${currentTrack === index ? 'font-semibold text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>
-                {track.title}
+                {releaseName}
               </p>
               <p className="text-xs text-foreground/60 truncate">
                 {artistName}
