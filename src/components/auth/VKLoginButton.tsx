@@ -7,8 +7,8 @@ interface VKLoginButtonProps {
   onAuth: (userData: any) => void;
 }
 
-const VK_APP_ID = '54299242';
-const VK_REDIRECT_URI = 'https://poehali.dev/vk-callback.html';
+const VK_APP_ID = '54299244';
+const VK_REDIRECT_URI = 'https://420.рф/vk-callback.html';
 
 export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
   const { toast } = useToast();
