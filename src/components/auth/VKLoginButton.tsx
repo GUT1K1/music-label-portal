@@ -59,11 +59,24 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
     try {
       const VKID = window.VKIDSDK;
 
+      // Генерируем state - случайная строка минимум 32 символа
+      const generateRandomString = (length: number) => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+      };
+
+      const state = generateRandomString(32);
+
+      // Инициализируем SDK с callback режимом (без перезагрузки страницы)
       VKID.Config.init({
         app: parseInt(VK_APP_ID),
         redirectUrl: VK_REDIRECT_URI,
         responseMode: VKID.ConfigResponseMode.Callback,
-        source: VKID.ConfigSource.LOWCODE,
+        state: state,
         scope: 'email',
       });
 
@@ -90,15 +103,15 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
           const code = payload.code;
           const deviceId = payload.device_id;
 
+          // Обмениваем код на токен на фронтенде
           const authData = await VKID.Auth.exchangeCode(code, deviceId);
           console.log('✅ VK auth data:', authData);
           
-          // Отправляем данные на бэкенд
+          // Отправляем access_token на бэкенд для создания/обновления пользователя
           const response = await fetch(API_ENDPOINTS.VK_AUTH, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-              code,
               access_token: authData.access_token,
               user_id: authData.user_id 
             })
