@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
   GEN_HASH: funcUrls['gen-hash'],
   MIGRATE_DB: funcUrls['migrate-db'],
   VK_POSTS: funcUrls['vk-posts'],
+  VK_AUTH: funcUrls['vk-auth'],
   TELEGRAM_AUTH: funcUrls['telegram-auth'],
   PITCHING: funcUrls['pitching'],
   CREATE_NOTIFICATION: funcUrls['create-notification'],

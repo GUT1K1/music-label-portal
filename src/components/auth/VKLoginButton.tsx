@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { API_ENDPOINTS } from '@/config/api';
 
 interface VKLoginButtonProps {
   onAuth: (userData: any) => void;
@@ -11,15 +12,65 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
-  const handleVKLogin = () => {
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    if (code) {
+      setLoading(true);
+      
+      fetch(`${API_ENDPOINTS.VK_AUTH}?code=${code}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.user) {
+            onAuth(data.user);
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } else {
+            toast({
+              title: '❌ Ошибка авторизации',
+              description: 'Не удалось получить данные пользователя',
+              variant: 'destructive',
+            });
+          }
+        })
+        .catch(error => {
+          console.error('VK auth error:', error);
+          toast({
+            title: '❌ Ошибка подключения',
+            description: 'Не удалось связаться с сервером',
+            variant: 'destructive',
+          });
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [onAuth, toast]);
+
+  const handleVKLogin = async () => {
     setLoading(true);
     
-    toast({
-      title: '🚧 В разработке',
-      description: 'VK авторизация будет доступна в ближайшее время',
-    });
-    
-    setTimeout(() => setLoading(false), 1000);
+    try {
+      const response = await fetch(API_ENDPOINTS.VK_AUTH);
+      const data = await response.json();
+      
+      if (data.auth_url) {
+        window.location.href = data.auth_url;
+      } else {
+        toast({
+          title: '❌ Ошибка',
+          description: 'Не удалось получить ссылку авторизации',
+          variant: 'destructive',
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('VK auth error:', error);
+      toast({
+        title: '❌ Ошибка подключения',
+        description: 'Не удалось связаться с сервером',
+        variant: 'destructive',
+      });
+      setLoading(false);
+    }
   };
 
   return (
@@ -27,7 +78,7 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       onClick={handleVKLogin}
       disabled={loading}
       variant="outline"
-      className="w-full bg-[#0077FF] hover:bg-[#0066DD] text-white border-[#0077FF] hover:border-[#0066DD]"
+      className="w-full h-[46px] bg-[#0077FF] hover:bg-[#0066DD] text-white border-[#0077FF] hover:border-[#0066DD]"
     >
       {loading ? (
         <>
