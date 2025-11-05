@@ -1,7 +1,15 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 import { useToast } from "@/hooks/use-toast";
 import type { Release } from "./types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 interface CopyReleaseButtonProps {
   release: Release;
@@ -9,8 +17,10 @@ interface CopyReleaseButtonProps {
 
 export default function CopyReleaseButton({ release }: CopyReleaseButtonProps) {
   const { toast } = useToast();
+  const [showDialog, setShowDialog] = useState(false);
+  const [releaseText, setReleaseText] = useState("");
 
-  const copyReleaseInfo = async () => {
+  const generateReleaseText = () => {
     let text = `📀 РЕЛИЗ: ${release.release_name}\n`;
     text += `═══════════════════════════════════════\n\n`;
 
@@ -101,30 +111,75 @@ export default function CopyReleaseButton({ release }: CopyReleaseButtonProps) {
     text += `Статус: ${release.status}\n`;
     text += `Создан: ${new Date(release.created_at).toLocaleString('ru-RU')}\n`;
 
+    return text;
+  };
+
+  const handleCopy = () => {
+    const text = generateReleaseText();
+    setReleaseText(text);
+    setShowDialog(true);
+  };
+
+  const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(releaseText);
       toast({
         title: "Скопировано!",
-        description: "Информация о релизе скопирована в буфер обмена",
+        description: "Информация скопирована в буфер обмена",
       });
+      setShowDialog(false);
     } catch (error) {
-      toast({
-        title: "Ошибка",
-        description: "Не удалось скопировать. Проверьте разрешения браузера.",
-        variant: "destructive"
-      });
+      const textarea = document.getElementById('release-text-area') as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.select();
+        toast({
+          title: "Выделено",
+          description: "Нажмите Ctrl+C (Cmd+C на Mac) чтобы скопировать",
+        });
+      }
     }
   };
 
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={copyReleaseInfo}
-      className="gap-2"
-    >
-      <Icon name="Copy" size={14} />
-      Скопировать все данные
-    </Button>
+    <>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleCopy}
+        className="gap-2"
+      >
+        <Icon name="Copy" size={14} />
+        Скопировать все данные
+      </Button>
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="max-w-3xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Информация о релизе</DialogTitle>
+            <DialogDescription>
+              Нажмите кнопку "Скопировать" или выделите текст вручную (Ctrl+A, затем Ctrl+C)
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <textarea
+              id="release-text-area"
+              value={releaseText}
+              readOnly
+              className="w-full h-[50vh] p-4 border rounded-lg font-mono text-xs resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+              onClick={(e) => e.currentTarget.select()}
+            />
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setShowDialog(false)}>
+                Закрыть
+              </Button>
+              <Button onClick={copyToClipboard}>
+                <Icon name="Copy" size={16} className="mr-2" />
+                Скопировать
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
