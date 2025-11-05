@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import Icon from '@/components/ui/icon';
 import { API_ENDPOINTS } from '@/config/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -16,10 +15,9 @@ declare global {
 
 export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps) {
   const { toast } = useToast();
-  const scriptLoaded = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Глобальная функция для Telegram Widget
     window.onTelegramAuth = async (telegramUser: any) => {
       try {
         const response = await fetch(API_ENDPOINTS.TELEGRAM_AUTH, {
@@ -52,21 +50,17 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
       }
     };
 
-    // Загрузка Telegram Widget скрипта
-    if (!scriptLoaded.current) {
+    if (containerRef.current && containerRef.current.children.length === 0) {
       const script = document.createElement('script');
       script.src = 'https://telegram.org/js/telegram-widget.js?22';
       script.async = true;
       script.setAttribute('data-telegram-login', 'Music420Label_bot');
       script.setAttribute('data-size', 'large');
+      script.setAttribute('data-radius', '8');
       script.setAttribute('data-onauth', 'onTelegramAuth(user)');
       script.setAttribute('data-request-access', 'write');
       
-      const container = document.getElementById('telegram-login-container');
-      if (container) {
-        container.appendChild(script);
-        scriptLoaded.current = true;
-      }
+      containerRef.current.appendChild(script);
     }
 
     return () => {
@@ -75,14 +69,11 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
   }, [onAuth, toast]);
 
   return (
-    <div className="space-y-4">
-      <div id="telegram-login-container" className="flex justify-center" />
-      
-      <div className="text-center">
-        <p className="text-xs text-gray-400">
-          Войдите через Telegram для быстрого доступа
-        </p>
-      </div>
+    <div className="w-full">
+      <div 
+        ref={containerRef} 
+        className="flex justify-center w-full [&_iframe]:!w-full [&_iframe]:!h-[46px] [&_iframe]:rounded-lg"
+      />
     </div>
   );
 }

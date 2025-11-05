@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { TabsContent } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import TelegramLoginButton from '@/components/auth/TelegramLoginButton';
+import VKLoginButton from '@/components/auth/VKLoginButton';
 
 interface LoginTabProps {
   loginEmail: string;
@@ -86,11 +87,16 @@ export default function LoginTab({
           <div className="w-full border-t border-gray-700" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-black px-2 text-gray-400">или</span>
+          <span className="bg-black px-2 text-gray-400">или войдите через</span>
         </div>
       </div>
 
-      {onTelegramAuth && <TelegramLoginButton onAuth={onTelegramAuth} />}
+      {onTelegramAuth && (
+        <div className="space-y-3">
+          <TelegramLoginButton onAuth={onTelegramAuth} />
+          <VKLoginButton onAuth={onTelegramAuth} />
+        </div>
+      )}
     </TabsContent>
   );
 }

@@ -186,13 +186,15 @@ def save_or_update_user(tg_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         conn.commit()
         
         if user_row:
+            avatar_url = user_row[5]
             return {
                 'id': user_row[0],
                 'username': user_row[1],
                 'role': user_row[2],
                 'full_name': user_row[3],
                 'telegram_chat_id': user_row[4],
-                'avatar': user_row[5],
+                'avatar': avatar_url,
+                'vk_photo': avatar_url,  # Синхронизируем avatar и vk_photo
                 'is_blocked': user_row[6] or False,
                 'is_frozen': user_row[7] or False
             }
