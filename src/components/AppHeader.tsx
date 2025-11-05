@@ -26,6 +26,9 @@ interface AppHeaderProps {
 export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, userRole, userId, userName = 'Пользователь', userAvatar, userBalance }: AppHeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [balance, setBalance] = useState<number | null>(userBalance !== undefined ? userBalance : null);
+  
+  // Логируем аватарку для отладки
+  console.log('AppHeader userAvatar:', userAvatar);
 
   useEffect(() => {
     if (userBalance !== undefined) {

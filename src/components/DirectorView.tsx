@@ -48,6 +48,14 @@ export default function DirectorView({
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem('director_active_tab') || 'news';
   });
+  
+  // Логируем user для отладки аватарки
+  console.log('DirectorView user:', { 
+    id: user.id, 
+    avatar: user.avatar, 
+    vk_photo: user.vk_photo, 
+    full_name: user.full_name 
+  });
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);

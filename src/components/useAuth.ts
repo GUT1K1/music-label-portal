@@ -14,9 +14,11 @@ export const useAuth = () => {
           id: telegramData.id,
           username: telegramData.username,
           full_name: telegramData.full_name,
+          fullName: telegramData.full_name,
           role: telegramData.role as 'artist' | 'manager' | 'director',
           telegram_chat_id: telegramData.telegram_chat_id,
           avatar: telegramData.avatar,
+          vk_photo: telegramData.avatar, // Синхронизируем avatar и vk_photo
           is_blocked: telegramData.is_blocked,
           is_frozen: telegramData.is_frozen
         };
@@ -50,10 +52,22 @@ export const useAuth = () => {
       const data = await response.json();
       
       if (response.ok) {
-        setUser(data.user);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        logActivity(data.user.id, 'login', `Пользователь ${data.user.full_name} вошёл в систему`);
-        toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${data.user.full_name}` });
+        // Синхронизируем vk_photo и avatar при входе
+        const userData = data.user;
+        if (userData.vk_photo) {
+          userData.avatar = userData.vk_photo;
+        }
+        if (userData.avatar) {
+          userData.vk_photo = userData.avatar;
+        }
+        if (userData.full_name) {
+          userData.fullName = userData.full_name;
+        }
+        
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        logActivity(userData.id, 'login', `Пользователь ${userData.full_name} вошёл в систему`);
+        toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name}` });
       } else {
         toast({ title: '❌ Ошибка', description: data.error, variant: 'destructive' });
       }
@@ -175,7 +189,24 @@ export const useAuth = () => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       const userData = JSON.parse(savedUser);
+      
+      // Синхронизируем поля при загрузке из localStorage
+      if (userData.vk_photo && !userData.avatar) {
+        userData.avatar = userData.vk_photo;
+      }
+      if (userData.avatar && !userData.vk_photo) {
+        userData.vk_photo = userData.avatar;
+      }
+      if (userData.full_name && !userData.fullName) {
+        userData.fullName = userData.full_name;
+      }
+      if (userData.fullName && !userData.full_name) {
+        userData.full_name = userData.fullName;
+      }
+      
       setUser(userData);
+      // Пересохраняем с синхронизированными полями
+      localStorage.setItem('user', JSON.stringify(userData));
     }
   }, []); // Пустой массив - запускается только один раз при монтировании
 
