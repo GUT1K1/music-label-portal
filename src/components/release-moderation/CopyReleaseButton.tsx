@@ -10,7 +10,7 @@ interface CopyReleaseButtonProps {
 export default function CopyReleaseButton({ release }: CopyReleaseButtonProps) {
   const { toast } = useToast();
 
-  const copyReleaseInfo = () => {
+  const copyReleaseInfo = async () => {
     let text = `📀 РЕЛИЗ: ${release.release_name}\n`;
     text += `═══════════════════════════════════════\n\n`;
 
@@ -101,18 +101,33 @@ export default function CopyReleaseButton({ release }: CopyReleaseButtonProps) {
     text += `Статус: ${release.status}\n`;
     text += `Создан: ${new Date(release.created_at).toLocaleString('ru-RU')}\n`;
 
-    navigator.clipboard.writeText(text).then(() => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
+      
       toast({
         title: "Скопировано!",
         description: "Информация о релизе скопирована в буфер обмена",
       });
-    }).catch(() => {
+    } catch (error) {
       toast({
         title: "Ошибка",
         description: "Не удалось скопировать информацию",
         variant: "destructive"
       });
-    });
+    }
   };
 
   return (
