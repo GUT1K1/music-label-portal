@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>VK Authorization</title>
+</head>
+<body>
+    <script>
+        // VK redirects here with access_token in hash
+        // This page just needs to exist so parent window can read the URL
+        if (window.opener) {
+            // Keep window open so parent can read the hash
+            setTimeout(() => {
+                window.close();
+            }, 1000);
+        }
+    </script>
+    <p style="text-align: center; padding-top: 50px; font-family: sans-serif;">
+        Авторизация выполнена. Это окно закроется автоматически...
+    </p>
+</body>
+</html>
