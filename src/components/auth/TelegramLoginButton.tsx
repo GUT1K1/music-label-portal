@@ -19,6 +19,7 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
 
   useEffect(() => {
     window.onTelegramAuth = async (telegramUser: any) => {
+      console.log('🔵 Telegram auth data received:', telegramUser);
       try {
         const response = await fetch(API_ENDPOINTS.TELEGRAM_AUTH, {
           method: 'POST',
@@ -28,8 +29,11 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
           body: JSON.stringify(telegramUser),
         });
 
+        console.log('🔵 Backend response status:', response.status);
+
         if (!response.ok) {
           const errorData = await response.json();
+          console.error('🔴 Backend error:', errorData);
           toast({
             title: '❌ Ошибка авторизации',
             description: errorData.error || 'Не удалось войти через Telegram',
@@ -39,9 +43,10 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
         }
 
         const data = await response.json();
+        console.log('✅ Auth successful:', data);
         onAuth(data.user);
       } catch (error) {
-        console.error('Telegram auth error:', error);
+        console.error('🔴 Telegram auth error:', error);
         toast({
           title: '❌ Ошибка подключения',
           description: 'Не удалось связаться с сервером',
@@ -59,6 +64,28 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
       script.setAttribute('data-radius', '8');
       script.setAttribute('data-onauth', 'onTelegramAuth(user)');
       script.setAttribute('data-request-access', 'write');
+      
+      script.onerror = () => {
+        console.error('🔴 Telegram widget script failed to load');
+        toast({
+          title: '❌ Ошибка загрузки',
+          description: 'Не удалось загрузить виджет Telegram. Проверьте подключение к интернету.',
+          variant: 'destructive',
+        });
+      };
+      
+      script.onload = () => {
+        console.log('✅ Telegram widget loaded successfully');
+        // Проверяем наличие ошибок в iframe через небольшую задержку
+        setTimeout(() => {
+          const iframe = containerRef.current?.querySelector('iframe');
+          if (iframe) {
+            console.log('✅ Telegram iframe found');
+          } else {
+            console.warn('⚠️ Telegram iframe not found - возможно бот не настроен');
+          }
+        }, 1000);
+      };
       
       containerRef.current.appendChild(script);
     }
