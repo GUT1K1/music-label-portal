@@ -6,22 +6,63 @@
 </head>
 <body>
     <script>
-        // VK redirects here with authorization code in query params
-        // This page just needs to exist so parent window can read the URL
         console.log('🟢 VK callback page loaded');
         console.log('🟢 Full URL:', window.location.href);
-        console.log('🟢 Query params:', window.location.search);
         
-        if (window.opener) {
-            // Keep window open so parent can read the URL with code
-            setTimeout(() => {
-                console.log('🟢 Closing callback window');
-                window.close();
-            }, 2000);
+        // Получаем параметры из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const payload = urlParams.get('payload');
+        
+        if (payload) {
+            try {
+                // Декодируем payload
+                const data = JSON.parse(decodeURIComponent(payload));
+                console.log('🟢 VK payload:', data);
+                
+                // Отправляем данные родительскому окну
+                if (window.opener) {
+                    window.opener.postMessage({
+                        code: data.code,
+                        state: data.state,
+                        device_id: data.device_id
+                    }, window.location.origin);
+                    
+                    console.log('🟢 Data sent to parent window');
+                    
+                    // Закрываем окно через 500мс
+                    setTimeout(() => {
+                        window.close();
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('🔴 Error parsing payload:', error);
+            }
+        } else {
+            // Если payload нет, пробуем получить параметры напрямую
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const device_id = urlParams.get('device_id');
+            
+            console.log('🟢 Direct params:', { code, state, device_id });
+            
+            if (code && window.opener) {
+                window.opener.postMessage({
+                    code,
+                    state,
+                    device_id
+                }, window.location.origin);
+                
+                console.log('🟢 Data sent to parent window');
+                
+                setTimeout(() => {
+                    window.close();
+                }, 500);
+            }
         }
     </script>
-    <p style="text-align: center; padding-top: 50px; font-family: sans-serif;">
-        Авторизация выполнена. Это окно закроется автоматически...
+    <p style="text-align: center; padding-top: 50px; font-family: sans-serif; color: #4CAF50;">
+        ✓ Авторизация выполнена<br>
+        <small style="color: #666;">Это окно закроется автоматически...</small>
     </p>
 </body>
 </html>

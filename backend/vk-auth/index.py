@@ -3,6 +3,7 @@ import os
 import psycopg2
 from typing import Dict, Any
 import urllib.request
+import urllib.parse
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -30,41 +31,86 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         body_str = event.get('body', '{}')
         body = json.loads(body_str)
         
-        vk_token = body.get('access_token')
-        vk_user_id_from_request = body.get('user_id')
+        vk_code = body.get('code')
+        code_verifier = body.get('code_verifier')
+        device_id = body.get('device_id')
+        redirect_uri = body.get('redirect_uri')
         
-        if not vk_token:
+        if not vk_code or not code_verifier:
             return {
                 'statusCode': 400,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': 'Missing VK access token'}),
+                'body': json.dumps({'error': 'Missing code or code_verifier'}),
                 'isBase64Encoded': False
             }
         
-        # Получаем информацию о пользователе через VK API
-        api_url = f"https://api.vk.com/method/users.get?access_token={vk_token}&fields=photo_200&v=5.131"
+        # Получаем настройки из переменных окружения
+        vk_app_id = os.environ.get('VK_APP_ID', '54299249')
         
-        with urllib.request.urlopen(api_url) as response:
-            user_data = json.loads(response.read().decode())
+        # Обмениваем код на токен через VK ID API
+        token_params = {
+            'grant_type': 'authorization_code',
+            'code': vk_code,
+            'code_verifier': code_verifier,
+            'client_id': vk_app_id,
+            'device_id': device_id,
+            'redirect_uri': redirect_uri or 'https://420.рф/vk-callback.html'
+        }
         
-        if 'error' in user_data:
+        token_data_encoded = urllib.parse.urlencode(token_params).encode('utf-8')
+        token_req = urllib.request.Request(
+            'https://id.vk.ru/oauth2/auth',
+            data=token_data_encoded,
+            headers={'Content-Type': 'application/x-www-form-urlencoded'}
+        )
+        
+        with urllib.request.urlopen(token_req) as token_response:
+            token_result = json.loads(token_response.read().decode())
+        
+        if 'error' in token_result:
             return {
                 'statusCode': 400,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': user_data['error'].get('error_msg', 'VK API error')}),
+                'body': json.dumps({'error': token_result.get('error_description', 'Token exchange failed')}),
                 'isBase64Encoded': False
             }
         
-        vk_user = user_data['response'][0]
-        vk_user_id = vk_user.get('id', vk_user_id_from_request)
-        vk_photo = vk_user.get('photo_200')
-        full_name = f"{vk_user.get('first_name', '')} {vk_user.get('last_name', '')}".strip()
+        vk_token = token_result.get('access_token')
+        vk_user_id_from_token = token_result.get('user_id')
+        
+        # Получаем информацию о пользователе через VK ID API
+        user_info_req = urllib.request.Request(
+            'https://id.vk.ru/oauth2/user_info',
+            data=f'access_token={vk_token}'.encode('utf-8'),
+            headers={'Content-Type': 'application/x-www-form-urlencoded'}
+        )
+        
+        with urllib.request.urlopen(user_info_req) as user_response:
+            user_info = json.loads(user_response.read().decode())
+        
+        if 'error' in user_info:
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'Failed to get user info'}),
+                'isBase64Encoded': False
+            }
+        
+        vk_user = user_info.get('user', {})
+        vk_user_id = str(vk_user.get('user_id', vk_user_id_from_token))
+        vk_photo = vk_user.get('avatar')
+        first_name = vk_user.get('first_name', '')
+        last_name = vk_user.get('last_name', '')
+        full_name = f"{first_name} {last_name}".strip()
         username = f"vk_{vk_user_id}"
         
         dsn = os.environ.get('DATABASE_URL')
