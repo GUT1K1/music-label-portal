@@ -29,11 +29,11 @@ export default function Index() {
     const userId = typeof userIdOrUpdates === 'number' ? userIdOrUpdates : user!.id;
     
     const success = await updateUser(userId, updates);
-    if (success) {
+    if (success && userId === user!.id) {
+      // Обновляем профиль текущего пользователя сразу
       updateUserProfile(updates);
-      if (userId === user!.id) {
-        setTimeout(() => refreshUserData(), 500);
-      }
+      // Перезагружаем данные с сервера через небольшую задержку
+      setTimeout(() => refreshUserData(), 300);
     }
   }, [updateUser, updateUserProfile, user, refreshUserData]);
 

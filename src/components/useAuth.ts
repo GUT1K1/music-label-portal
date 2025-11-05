@@ -79,18 +79,34 @@ export const useAuth = () => {
       if (updates.full_name) {
         updatedUser.fullName = updates.full_name;
       }
+      
+      // КРИТИЧНО: синхронизируем avatar и vk_photo в обе стороны
       if (updates.avatar) {
         updatedUser.vk_photo = updates.avatar;
+        updatedUser.avatar = updates.avatar;
       }
       if (updates.vk_photo) {
         updatedUser.avatar = updates.vk_photo;
+        updatedUser.vk_photo = updates.vk_photo;
       }
+      
+      if (updates.email) {
+        updatedUser.email = updates.email;
+      }
+      
       if (updates.balance !== undefined) {
         updatedUser.balance = updates.balance;
       }
       
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      // Логируем для отладки
+      console.log('User profile updated:', { 
+        avatar: updatedUser.avatar, 
+        vk_photo: updatedUser.vk_photo,
+        fullName: updatedUser.fullName 
+      });
     }
   };
 
@@ -113,15 +129,37 @@ export const useAuth = () => {
       const updatedUser = await response.json();
       
       if (updatedUser && updatedUser.id) {
+        // Синхронизируем vk_photo и avatar
+        if (updatedUser.vk_photo) {
+          updatedUser.avatar = updatedUser.vk_photo;
+        }
+        if (updatedUser.avatar) {
+          updatedUser.vk_photo = updatedUser.avatar;
+        }
+        
+        // Синхронизируем full_name и fullName
+        if (updatedUser.full_name) {
+          updatedUser.fullName = updatedUser.full_name;
+        }
+        if (updatedUser.fullName) {
+          updatedUser.full_name = updatedUser.fullName;
+        }
+        
         const hasChanges = 
           updatedUser.role !== user.role || 
           updatedUser.balance !== user.balance ||
-          updatedUser.avatar !== user.avatar ||
+          updatedUser.vk_photo !== user.vk_photo ||
           updatedUser.full_name !== user.full_name;
         
         if (hasChanges) {
           setUser(updatedUser);
           localStorage.setItem('user', JSON.stringify(updatedUser));
+          
+          console.log('User data refreshed from server:', {
+            avatar: updatedUser.avatar,
+            vk_photo: updatedUser.vk_photo,
+            fullName: updatedUser.fullName
+          });
           
           if (updatedUser.role !== user.role) {
             toast({ title: '✅ Данные обновлены', description: 'Ваши права доступа изменены' });
