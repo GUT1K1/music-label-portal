@@ -161,7 +161,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-sm md:text-base text-foreground truncate">{currentTrackInfo.title}</h4>
-            <p className="text-xs text-muted-foreground truncate">{artistName}</p>
+            <p className="text-xs text-foreground/70 truncate">{artistName}</p>
           </div>
           <div className="text-right">
             <p className="text-xs text-yellow-500 font-medium">Трек {currentTrack + 1} из {tracks.length}</p>
@@ -239,7 +239,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
               <p className={`text-sm truncate ${currentTrack === index ? 'font-semibold text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>
                 {track.title}
               </p>
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="text-xs text-foreground/60 truncate">
                 {artistName}
               </p>
             </div>
