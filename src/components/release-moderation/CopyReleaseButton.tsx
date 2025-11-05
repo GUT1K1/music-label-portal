@@ -10,7 +10,7 @@ interface CopyReleaseButtonProps {
 export default function CopyReleaseButton({ release }: CopyReleaseButtonProps) {
   const { toast } = useToast();
 
-  const copyReleaseInfo = async () => {
+  const copyReleaseInfo = () => {
     let text = `📀 РЕЛИЗ: ${release.release_name}\n`;
     text += `═══════════════════════════════════════\n\n`;
 
@@ -101,32 +101,31 @@ export default function CopyReleaseButton({ release }: CopyReleaseButtonProps) {
     text += `Статус: ${release.status}\n`;
     text += `Создан: ${new Date(release.created_at).toLocaleString('ru-RU')}\n`;
 
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'absolute';
+    textArea.style.left = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    
     try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(text);
+      const successful = document.execCommand('copy');
+      if (successful) {
+        toast({
+          title: "Скопировано!",
+          description: "Информация о релизе скопирована в буфер обмена",
+        });
       } else {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand('copy');
-        textArea.remove();
+        throw new Error('Copy command failed');
       }
-      
-      toast({
-        title: "Скопировано!",
-        description: "Информация о релизе скопирована в буфер обмена",
-      });
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось скопировать информацию",
+        description: "Не удалось скопировать. Попробуйте выделить текст вручную.",
         variant: "destructive"
       });
+    } finally {
+      document.body.removeChild(textArea);
     }
   };
 
