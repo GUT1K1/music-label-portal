@@ -10,7 +10,7 @@ interface CopyReleaseButtonProps {
 export default function CopyReleaseButton({ release }: CopyReleaseButtonProps) {
   const { toast } = useToast();
 
-  const copyReleaseInfo = () => {
+  const copyReleaseInfo = async () => {
     let text = `📀 РЕЛИЗ: ${release.release_name}\n`;
     text += `═══════════════════════════════════════\n\n`;
 
@@ -101,31 +101,18 @@ export default function CopyReleaseButton({ release }: CopyReleaseButtonProps) {
     text += `Статус: ${release.status}\n`;
     text += `Создан: ${new Date(release.created_at).toLocaleString('ru-RU')}\n`;
 
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    textArea.style.position = 'absolute';
-    textArea.style.left = '-9999px';
-    document.body.appendChild(textArea);
-    textArea.select();
-    
     try {
-      const successful = document.execCommand('copy');
-      if (successful) {
-        toast({
-          title: "Скопировано!",
-          description: "Информация о релизе скопирована в буфер обмена",
-        });
-      } else {
-        throw new Error('Copy command failed');
-      }
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Скопировано!",
+        description: "Информация о релизе скопирована в буфер обмена",
+      });
     } catch (error) {
       toast({
         title: "Ошибка",
-        description: "Не удалось скопировать. Попробуйте выделить текст вручную.",
+        description: "Не удалось скопировать. Проверьте разрешения браузера.",
         variant: "destructive"
       });
-    } finally {
-      document.body.removeChild(textArea);
     }
   };
 
