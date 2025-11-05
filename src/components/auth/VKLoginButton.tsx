@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { API_ENDPOINTS } from '@/config/api';
 
 interface VKLoginButtonProps {
   onAuth: (userData: any) => void;
@@ -22,7 +23,10 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
     const left = (window.screen.width - width) / 2;
     const top = (window.screen.height - height) / 2;
     
-    const authUrl = `https://oauth.vk.com/authorize?client_id=${VK_APP_ID}&display=popup&redirect_uri=${encodeURIComponent(VK_REDIRECT_URI)}&scope=email&response_type=token&v=5.131`;
+    // Используем Authorization Code Flow вместо Implicit Flow
+    const authUrl = `https://oauth.vk.com/authorize?client_id=${VK_APP_ID}&display=popup&redirect_uri=${encodeURIComponent(VK_REDIRECT_URI)}&scope=email&response_type=code&v=5.131`;
+    
+    console.log('🔵 Opening VK auth popup:', authUrl);
     
     const popup = window.open(
       authUrl,
@@ -38,54 +42,50 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
           return;
         }
         
-        if (popup.location.href.includes(VK_REDIRECT_URI)) {
-          const hash = popup.location.hash.substring(1);
-          const params = new URLSearchParams(hash);
-          const accessToken = params.get('access_token');
-          const userId = params.get('user_id');
+        const popupUrl = popup.location.href;
+        console.log('🔵 Checking popup URL...');
+        
+        if (popupUrl.includes(VK_REDIRECT_URI) || popupUrl.includes('xn--420-43d1a.xn--p1ai')) {
+          const urlParams = new URLSearchParams(popup.location.search);
+          const code = urlParams.get('code');
           
-          if (accessToken && userId) {
+          console.log('🔵 Got VK code:', code);
+          
+          if (code) {
             popup.close();
             clearInterval(checkPopup);
             
-            fetch('https://api.vk.com/method/users.get', {
+            // Отправляем код на бэкенд для обмена на токен
+            fetch(API_ENDPOINTS.VK_AUTH, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: `user_ids=${userId}&fields=photo_200&access_token=${accessToken}&v=5.131`
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code })
             })
             .then(res => res.json())
             .then(data => {
-              if (data.response && data.response[0]) {
-                const vkUser = data.response[0];
-                const userData = {
-                  id: vkUser.id,
-                  username: `vk_${vkUser.id}`,
-                  full_name: `${vkUser.first_name} ${vkUser.last_name}`,
-                  fullName: `${vkUser.first_name} ${vkUser.last_name}`,
-                  role: 'artist' as const,
-                  vk_id: String(vkUser.id),
-                  avatar: vkUser.photo_200,
-                  vk_photo: vkUser.photo_200,
-                  is_blocked: false,
-                  is_frozen: false
-                };
-                
-                onAuth(userData);
+              console.log('🔵 Backend response:', data);
+              
+              if (data.user) {
+                onAuth(data.user);
                 setLoading(false);
+                toast({
+                  title: '✅ Успешно',
+                  description: 'Вход через VK выполнен',
+                });
               } else {
                 toast({
                   title: '❌ Ошибка',
-                  description: 'Не удалось получить данные пользователя',
+                  description: data.error || 'Не удалось авторизоваться',
                   variant: 'destructive',
                 });
                 setLoading(false);
               }
             })
             .catch(error => {
-              console.error('VK API error:', error);
+              console.error('🔴 Backend error:', error);
               toast({
                 title: '❌ Ошибка',
-                description: 'Не удалось получить данные из VK',
+                description: 'Не удалось связаться с сервером',
                 variant: 'destructive',
               });
               setLoading(false);
@@ -93,7 +93,7 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
           }
         }
       } catch (e) {
-        // Cross-origin error - ignore
+        // Cross-origin error - это нормально, пока пользователь на другом домене
       }
     }, 500);
     
@@ -103,6 +103,11 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
         popup.close();
       }
       setLoading(false);
+      toast({
+        title: '⏱️ Время истекло',
+        description: 'Попробуйте авторизоваться снова',
+        variant: 'destructive',
+      });
     }, 60000);
   };
 
