@@ -19,8 +19,8 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
   }
   
   try {
-    // Маленькие файлы (<3MB) через FormData
-    if (file.size < 3 * 1024 * 1024) {
+    // Маленькие файлы (<10MB) через FormData
+    if (file.size < 10 * 1024 * 1024) {
       console.log('[Upload] Using FormData for small file');
       const formData = new FormData();
       formData.append('file', file);
@@ -45,7 +45,48 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       return result;
     }
     
-    // Большие файлы (>3MB) - разбиваем на chunks по 2MB
+    // Большие файлы (>10MB) - используем presigned URL для прямой загрузки в S3
+    console.log('[Upload] 🚀 Large file detected, using direct S3 upload via presigned URL');
+    
+    const contentType = file.type || 'application/octet-stream';
+    
+    // Получаем presigned URL
+    const presignedResponse = await fetch(
+      `https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(contentType)}`,
+      { method: 'GET' }
+    );
+    
+    if (!presignedResponse.ok) {
+      throw new Error('Не удалось получить ссылку для загрузки');
+    }
+    
+    const { presignedUrl, url, s3Key } = await presignedResponse.json();
+    console.log('[Upload] Got presigned URL, uploading directly to S3...');
+    
+    // Загружаем файл напрямую в S3
+    const uploadResponse = await fetch(presignedUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': contentType
+      }
+    });
+    
+    if (!uploadResponse.ok) {
+      throw new Error(`Ошибка загрузки в S3: ${uploadResponse.status}`);
+    }
+    
+    console.log('[Upload] ✅ File uploaded successfully to S3:', url);
+    
+    return {
+      url,
+      s3Key,
+      fileName: file.name,
+      fileSize: file.size
+    };
+    
+    /* СТАРАЯ ЛОГИКА ЧАНКОВ - ЗАКОММЕНТИРОВАНА
+    // Большие файлы (>10MB) - разбиваем на chunks по 2MB
     console.log('[Upload] 📦 Large file detected, using chunked upload');
     
     const chunkSize = 2 * 1024 * 1024; // 2MB chunks
@@ -77,9 +118,9 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
             reader.readAsDataURL(chunk);
           });
           
-          // Send chunk to backend с таймаутом 60 секунд
+          // Send chunk to backend с таймаутом 120 секунд
           const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 60000);
+          const timeout = setTimeout(() => controller.abort(), 120000);
           
           const response = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
             method: 'POST',
@@ -133,6 +174,7 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       fileName: file.name,
       fileSize: file.size
     };
+    */
     
   } catch (error) {
     console.error('[Upload] Fetch error:', error instanceof Error ? error.message : 'Unknown', 'for', file.name);
