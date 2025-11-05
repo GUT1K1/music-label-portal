@@ -3,7 +3,6 @@ import os
 import psycopg2
 from typing import Dict, Any
 import urllib.request
-import urllib.parse
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -31,63 +30,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         body_str = event.get('body', '{}')
         body = json.loads(body_str)
         
-        vk_code = body.get('code')
+        vk_token = body.get('access_token')
+        vk_user_id_from_request = body.get('user_id')
         
-        if not vk_code:
+        if not vk_token:
             return {
                 'statusCode': 400,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': 'Missing VK authorization code'}),
+                'body': json.dumps({'error': 'Missing VK access token'}),
                 'isBase64Encoded': False
             }
         
-        # Получаем настройки VK из переменных окружения
-        vk_app_id = os.environ.get('VK_APP_ID', '54299244')
-        vk_app_secret = os.environ.get('VK_APP_SECRET')
-        vk_redirect_uri = os.environ.get('VK_REDIRECT_URI', 'https://420.рф/vk-callback.html')
-        
-        if not vk_app_secret:
-            return {
-                'statusCode': 500,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'body': json.dumps({'error': 'VK_APP_SECRET not configured'}),
-                'isBase64Encoded': False
-            }
-        
-        # Обмениваем authorization code на access token
-        token_params = urllib.parse.urlencode({
-            'client_id': vk_app_id,
-            'client_secret': vk_app_secret,
-            'redirect_uri': vk_redirect_uri,
-            'code': vk_code
-        })
-        
-        token_url = f"https://oauth.vk.com/access_token?{token_params}"
-        
-        with urllib.request.urlopen(token_url) as token_response:
-            token_data = json.loads(token_response.read().decode())
-        
-        if 'error' in token_data:
-            return {
-                'statusCode': 400,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'body': json.dumps({'error': token_data.get('error_description', 'VK token exchange failed')}),
-                'isBase64Encoded': False
-            }
-        
-        vk_token = token_data.get('access_token')
-        vk_user_id_from_token = token_data.get('user_id')
-        
-        # Получаем информацию о пользователе
+        # Получаем информацию о пользователе через VK API
         api_url = f"https://api.vk.com/method/users.get?access_token={vk_token}&fields=photo_200&v=5.131"
         
         with urllib.request.urlopen(api_url) as response:
@@ -105,7 +62,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         vk_user = user_data['response'][0]
-        vk_user_id = vk_user.get('id', vk_user_id_from_token)
+        vk_user_id = vk_user.get('id', vk_user_id_from_request)
         vk_photo = vk_user.get('photo_200')
         full_name = f"{vk_user.get('first_name', '')} {vk_user.get('last_name', '')}".strip()
         username = f"vk_{vk_user_id}"
