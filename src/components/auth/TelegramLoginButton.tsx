@@ -69,10 +69,10 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
   }, [onAuth, toast]);
 
   return (
-    <div className="w-full">
+    <div className="w-full h-[46px]">
       <div 
         ref={containerRef} 
-        className="flex justify-center w-full [&_iframe]:!w-full [&_iframe]:!h-[46px] [&_iframe]:rounded-lg"
+        className="flex justify-center w-full h-full [&_iframe]:!w-full [&_iframe]:!h-full [&_iframe]:rounded-lg overflow-hidden"
       />
     </div>
   );

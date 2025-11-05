@@ -3,8 +3,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TabsContent } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
-import TelegramLoginButton from '@/components/auth/TelegramLoginButton';
-import VKLoginButton from '@/components/auth/VKLoginButton';
 
 interface RegisterTabProps {
   regUsername: string;
@@ -19,7 +17,6 @@ interface RegisterTabProps {
   setVerifyCode: (value: string) => void;
   handleRegister: () => void;
   handleVerifyCode: () => void;
-  onTelegramAuth?: (userData: any) => void;
 }
 
 export default function RegisterTab({
@@ -34,8 +31,7 @@ export default function RegisterTab({
   setRegPassword,
   setVerifyCode,
   handleRegister,
-  handleVerifyCode,
-  onTelegramAuth
+  handleVerifyCode
 }: RegisterTabProps) {
   return (
     <TabsContent value="register" className="space-y-4">
@@ -118,21 +114,9 @@ export default function RegisterTab({
             )}
           </Button>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-700" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-black px-2 text-gray-400">или зарегистрируйтесь через</span>
-            </div>
-          </div>
-
-          {onTelegramAuth && (
-            <div className="space-y-3">
-              <TelegramLoginButton onAuth={onTelegramAuth} />
-              <VKLoginButton onAuth={onTelegramAuth} />
-            </div>
-          )}
+          <p className="text-xs text-center text-gray-400 mt-4">
+            Или используйте Telegram/VK во вкладке "Вход" — регистрация произойдёт автоматически
+          </p>
         </>
       )}
     </TabsContent>

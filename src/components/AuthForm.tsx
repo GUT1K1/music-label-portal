@@ -206,7 +206,6 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
               setVerifyCode={setVerifyCode}
               handleRegister={handleRegister}
               handleVerifyCode={handleVerifyCode}
-              onTelegramAuth={handleTelegramAuth}
             />
 
             <ForgotPasswordTab

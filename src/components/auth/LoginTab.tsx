@@ -92,7 +92,7 @@ export default function LoginTab({
       </div>
 
       {onTelegramAuth && (
-        <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
           <TelegramLoginButton onAuth={onTelegramAuth} />
           <VKLoginButton onAuth={onTelegramAuth} />
         </div>
