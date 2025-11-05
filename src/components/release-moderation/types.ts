@@ -8,6 +8,8 @@ export interface Track {
   author_lyrics?: string;
   language_audio: string;
   lyrics_text?: string;
+  explicit_content?: boolean;
+  tiktok_preview_start?: number;
 }
 
 export interface Pitching {

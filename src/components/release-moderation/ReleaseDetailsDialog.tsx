@@ -5,6 +5,8 @@ import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 import TrackList from './TrackList';
 import PitchingSection from './PitchingSection';
+import ReleaseMetadataSection from './ReleaseMetadataSection';
+import TracksOverview from './TracksOverview';
 import type { Release } from './types';
 
 interface ReleaseDetailsDialogProps {
@@ -135,64 +137,13 @@ export default function ReleaseDetailsDialog({
             </div>
           </div>
           
-          {(release.copyright || (release as any).preorder_date || (release as any).sales_start_date || (release as any).price_category || (release as any).title_language) && (
-            <div className="border-t pt-4">
-              <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                <Icon name="Info" size={16} />
-                Дополнительная информация
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {release.copyright && (
-                  <div className="flex items-start gap-2">
-                    <Icon name="Copyright" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Копирайт</p>
-                      <p className="text-sm font-medium">{release.copyright}</p>
-                    </div>
-                  </div>
-                )}
-                {(release as any).preorder_date && (
-                  <div className="flex items-start gap-2">
-                    <Icon name="Clock" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Дата предзаказа</p>
-                      <p className="text-sm font-medium">{new Date((release as any).preorder_date).toLocaleDateString('ru-RU')}</p>
-                    </div>
-                  </div>
-                )}
-                {(release as any).sales_start_date && (
-                  <div className="flex items-start gap-2">
-                    <Icon name="DollarSign" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Начало продаж</p>
-                      <p className="text-sm font-medium">{new Date((release as any).sales_start_date).toLocaleDateString('ru-RU')}</p>
-                    </div>
-                  </div>
-                )}
-                {(release as any).price_category && (
-                  <div className="flex items-start gap-2">
-                    <Icon name="Tag" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Ценовая категория</p>
-                      <p className="text-sm font-medium">{(release as any).price_category}</p>
-                    </div>
-                  </div>
-                )}
-                {(release as any).title_language && (
-                  <div className="flex items-start gap-2">
-                    <Icon name="Languages" size={16} className="text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Язык названия</p>
-                      <p className="text-sm font-medium">{(release as any).title_language}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          <ReleaseMetadataSection release={release} />
 
           {release.tracks && release.tracks.length > 0 && (
-            <TrackList tracks={release.tracks} />
+            <>
+              <TracksOverview tracks={release.tracks} />
+              <TrackList tracks={release.tracks} />
+            </>
           )}
 
           {release.pitching && (

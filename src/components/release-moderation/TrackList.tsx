@@ -169,7 +169,14 @@ export default function TrackList({ tracks }: TrackListProps) {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate text-foreground">{track.title}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium truncate text-foreground">{track.title}</p>
+                  {track.explicit_content && (
+                    <span className="px-1.5 py-0.5 text-[9px] font-bold bg-red-500/20 text-red-500 border border-red-500/30 rounded">
+                      18+
+                    </span>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
                   {track.composer && (
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -183,6 +190,12 @@ export default function TrackList({ tracks }: TrackListProps) {
                       {track.language_audio}
                     </p>
                   )}
+                  {track.tiktok_preview_start !== undefined && track.tiktok_preview_start !== null && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Icon name="Play" size={10} className="flex-shrink-0" />
+                      TikTok: {track.tiktok_preview_start}с
+                    </p>
+                  )}
                 </div>
               </div>
               {currentTrack === index && (
@@ -190,23 +203,40 @@ export default function TrackList({ tracks }: TrackListProps) {
               )}
             </button>
             
-            {(track.author_lyrics || track.lyrics_text) && (
-              <div className="px-3 pb-3 pt-0 space-y-2 border-t border-yellow-500/10 mt-2">
-                {track.author_lyrics && (
-                  <div className="flex items-start gap-2">
-                    <Icon name="PenTool" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Автор текста</p>
-                      <p className="text-xs font-medium">{track.author_lyrics}</p>
+            {(track.author_lyrics || track.lyrics_text || track.explicit_content !== undefined) && (
+              <div className="px-3 pb-3 pt-2 space-y-2 border-t border-yellow-500/10 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {track.author_lyrics && (
+                    <div className="flex items-start gap-2">
+                      <Icon name="PenTool" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Автор текста</p>
+                        <p className="text-xs font-medium">{track.author_lyrics}</p>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                  {track.explicit_content !== undefined && (
+                    <div className="flex items-start gap-2">
+                      <Icon name="Shield" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Возрастной рейтинг</p>
+                        <p className="text-xs font-medium">
+                          {track.explicit_content ? (
+                            <span className="text-red-500 font-semibold">18+ (Нецензурный контент)</span>
+                          ) : (
+                            <span className="text-green-500 font-semibold">0+ (Без ограничений)</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {track.lyrics_text && (
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2 pt-2">
                     <Icon name="FileText" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-1">Текст песни</p>
-                      <p className="text-xs whitespace-pre-wrap max-h-24 overflow-y-auto">{track.lyrics_text}</p>
+                      <p className="text-xs whitespace-pre-wrap max-h-24 overflow-y-auto bg-muted/50 p-2 rounded">{track.lyrics_text}</p>
                     </div>
                   </div>
                 )}
