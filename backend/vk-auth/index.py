@@ -2,17 +2,14 @@ import json
 import os
 import psycopg2
 from typing import Dict, Any
-from urllib.parse import urlencode
 import urllib.request
-import hashlib
-import hmac
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: VK OAuth authorization with auto-registration
-    Args: event - dict with httpMethod, queryStringParameters, body
+    Business: VK ID authorization with auto-registration
+    Args: event - dict with httpMethod, body
           context - object with request_id attribute
-    Returns: HTTP response dict with user data or auth URL
+    Returns: HTTP response dict with user data
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -29,66 +26,46 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'isBase64Encoded': False
         }
     
-    dsn = os.environ.get('DATABASE_URL')
-    vk_app_id = os.environ.get('VK_APP_ID')
-    vk_app_secret = os.environ.get('VK_APP_SECRET')
-    vk_redirect_uri = os.environ.get('VK_REDIRECT_URI', 'https://poehali.dev/app')
-    
-    if method == 'GET':
-        params = event.get('queryStringParameters', {})
-        code = params.get('code')
+    if method == 'POST':
+        body_str = event.get('body', '{}')
+        body = json.loads(body_str)
         
-        if not code:
-            auth_params = {
-                'client_id': vk_app_id,
-                'redirect_uri': vk_redirect_uri,
-                'display': 'page',
-                'scope': 'email',
-                'response_type': 'code',
-                'v': '5.131'
-            }
-            auth_url = f"https://oauth.vk.com/authorize?{urlencode(auth_params)}"
-            
+        vk_token = body.get('token')
+        
+        if not vk_token:
             return {
-                'statusCode': 200,
+                'statusCode': 400,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'auth_url': auth_url}),
+                'body': json.dumps({'error': 'Missing VK token'}),
                 'isBase64Encoded': False
             }
         
-        token_params = {
-            'client_id': vk_app_id,
-            'client_secret': vk_app_secret,
-            'redirect_uri': vk_redirect_uri,
-            'code': code
-        }
-        token_url = f"https://oauth.vk.com/access_token?{urlencode(token_params)}"
-        
-        with urllib.request.urlopen(token_url) as response:
-            token_data = json.loads(response.read().decode())
-        
-        access_token = token_data.get('access_token')
-        vk_user_id = token_data.get('user_id')
-        vk_email = token_data.get('email')
-        
-        api_params = {
-            'user_ids': str(vk_user_id),
-            'fields': 'photo_200',
-            'access_token': access_token,
-            'v': '5.131'
-        }
-        api_url = f"https://api.vk.com/method/users.get?{urlencode(api_params)}"
+        api_url = f"https://api.vk.com/method/users.get?access_token={vk_token}&fields=photo_200&v=5.131"
         
         with urllib.request.urlopen(api_url) as response:
             user_data = json.loads(response.read().decode())
         
+        if 'error' in user_data:
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': user_data['error'].get('error_msg', 'VK API error')}),
+                'isBase64Encoded': False
+            }
+        
         vk_user = user_data['response'][0]
+        vk_user_id = vk_user.get('id')
         vk_photo = vk_user.get('photo_200')
         full_name = f"{vk_user.get('first_name', '')} {vk_user.get('last_name', '')}".strip()
         username = f"vk_{vk_user_id}"
+        
+        dsn = os.environ.get('DATABASE_URL')
         
         conn = psycopg2.connect(dsn)
         cur = conn.cursor()
@@ -128,7 +105,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 (username, full_name, role, vk_id, vk_photo, avatar, email)
                 VALUES (%s, %s, 'artist', %s, %s, %s, %s)
                 RETURNING id, username, role, full_name, vk_id, vk_photo, is_blocked, is_frozen
-            """, (username, full_name, str(vk_user_id), vk_photo, vk_photo, vk_email))
+            """, (username, full_name, str(vk_user_id), vk_photo, vk_photo, None))
             
             new_user = cur.fetchone()
             conn.commit()
