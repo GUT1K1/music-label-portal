@@ -138,12 +138,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Invalid credentials'})
         }
     
+    vk_photo_url = user[4] if len(user) > 4 else None
     user_data = {
         'id': user[0],
         'username': user[1],
         'role': user[2],
         'full_name': user[3],
-        'vk_photo': user[4] if len(user) > 4 else None
+        'vk_photo': vk_photo_url,
+        'avatar': vk_photo_url  # Синхронизируем avatar с vk_photo
     }
     
     return {

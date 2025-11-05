@@ -111,6 +111,11 @@ def handle_put(event: Dict[str, Any], conn) -> Dict[str, Any]:
         updates.append("vk_photo = %s")
         params.append(body_data['vk_photo'])
     
+    # Поддерживаем обновление через avatar
+    if 'avatar' in body_data and 'vk_photo' not in body_data:
+        updates.append("vk_photo = %s")
+        params.append(body_data['avatar'])
+    
     if 'vk_email' in body_data:
         updates.append("vk_email = %s")
         params.append(body_data['vk_email'])
@@ -172,11 +177,18 @@ def handle_post(event: Dict[str, Any], conn) -> Dict[str, Any]:
 
 
 def normalize_user(user: Dict[str, Any]) -> Dict[str, Any]:
-    """Приводит данные пользователя к числовым типам где нужно"""
+    """Приводит данные пользователя к числовым типам где нужно и синхронизирует avatar с vk_photo"""
     if 'balance' in user and user['balance'] is not None:
         user['balance'] = float(user['balance'])
     if 'revenue_share_percent' in user and user['revenue_share_percent'] is not None:
         user['revenue_share_percent'] = int(user['revenue_share_percent'])
+    
+    # Синхронизируем avatar и vk_photo
+    if 'vk_photo' in user and user['vk_photo']:
+        user['avatar'] = user['vk_photo']
+    elif 'avatar' in user and user['avatar']:
+        user['vk_photo'] = user['avatar']
+    
     return user
 
 
