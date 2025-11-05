@@ -163,7 +163,9 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
             <Icon name={isPlaying ? 'Music' : 'Disc'} size={24} className={`text-yellow-500 ${isPlaying ? 'animate-pulse' : ''}`} />
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-sm md:text-base text-foreground truncate">{releaseName}</h4>
+            <h4 className="font-semibold text-sm md:text-base text-foreground truncate">
+              {tracks.length === 1 ? releaseName : currentTrackInfo.title}
+            </h4>
             <p className="text-xs text-foreground/70 truncate">{artistName}</p>
           </div>
           <div className="text-right">
@@ -240,7 +242,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
             </div>
             <div className="flex-1 min-w-0">
               <p className={`text-sm truncate ${currentTrack === index ? 'font-semibold text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>
-                {releaseName}
+                {tracks.length === 1 ? releaseName : track.title}
               </p>
               <p className="text-xs text-foreground/60 truncate">
                 {artistName}
