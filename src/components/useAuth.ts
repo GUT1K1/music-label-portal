@@ -207,6 +207,42 @@ export const useAuth = () => {
       setUser(userData);
       // Пересохраняем с синхронизированными полями
       localStorage.setItem('user', JSON.stringify(userData));
+      
+      // КРИТИЧНО: Сразу после загрузки из localStorage обновляем данные с сервера
+      // чтобы получить актуальную аватарку
+      setTimeout(() => {
+        fetch(`${API_URLS.users}?id=${userData.id}`, {
+          method: 'GET',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-User-Id': userData.id.toString()
+          }
+        })
+        .then(res => res.json())
+        .then(serverUser => {
+          if (serverUser && serverUser.id) {
+            // Синхронизируем avatar и vk_photo
+            if (serverUser.vk_photo) {
+              serverUser.avatar = serverUser.vk_photo;
+            }
+            if (serverUser.avatar) {
+              serverUser.vk_photo = serverUser.avatar;
+            }
+            if (serverUser.full_name) {
+              serverUser.fullName = serverUser.full_name;
+            }
+            
+            setUser(serverUser);
+            localStorage.setItem('user', JSON.stringify(serverUser));
+            
+            console.log('✅ Avatar loaded from server:', {
+              avatar: serverUser.avatar,
+              vk_photo: serverUser.vk_photo
+            });
+          }
+        })
+        .catch(err => console.error('Failed to refresh user on mount:', err));
+      }, 100);
     }
   }, []); // Пустой массив - запускается только один раз при монтировании
 
