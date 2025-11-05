@@ -256,6 +256,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     file_size = sql_escape(track.get('file_size'))
                     composer = sql_escape(track.get('composer'))
                     author_lyrics = sql_escape(track.get('author_lyrics'))
+                    author_phonogram = sql_escape(track.get('author_phonogram'))
                     lang_audio = sql_escape(track.get('language_audio'))
                     explicit = sql_escape(track.get('explicit_content', False))
                     lyrics = sql_escape(track.get('lyrics_text'))
@@ -266,11 +267,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     track_sql = f"""
                         INSERT INTO {schema}.release_tracks
                         (release_id, artist_id, track_number, title, file_url, file_name, file_size,
-                         composer, author_lyrics, language_audio, explicit_content, lyrics_text, 
-                         tiktok_preview_start, genre, description)
+                         composer, author_lyrics, author_phonogram, language_audio, explicit_content, 
+                         lyrics_text, tiktok_preview_start, genre, description)
                         VALUES ({release_id}, {user_id}, {track_num}, {title}, {file_url}, {file_name}, 
-                                {file_size}, {composer}, {author_lyrics}, {lang_audio}, {explicit}, 
-                                {lyrics}, {tiktok_start}, {track_genre}, {description})
+                                {file_size}, {composer}, {author_lyrics}, {author_phonogram}, {lang_audio}, 
+                                {explicit}, {lyrics}, {tiktok_start}, {track_genre}, {description})
                     """
                     print(f"[POST] Track {idx+1}/{len(tracks)}: {track.get('title')}")
                     cur.execute(track_sql)

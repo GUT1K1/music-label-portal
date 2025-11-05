@@ -13,6 +13,7 @@ export default function TracksOverview({ tracks }: TracksOverviewProps) {
   const languages = [...new Set(tracks.map(t => t.language_audio).filter(Boolean))];
   const composers = [...new Set(tracks.map(t => t.composer).filter(Boolean))];
   const lyricists = [...new Set(tracks.map(t => t.author_lyrics).filter(Boolean))];
+  const phonogramAuthors = [...new Set(tracks.map(t => t.author_phonogram).filter(Boolean))];
 
   return (
     <div className="border rounded-lg p-4 bg-muted/30">
@@ -68,13 +69,13 @@ export default function TracksOverview({ tracks }: TracksOverviewProps) {
         )}
       </div>
 
-      {(composers.length > 0 || lyricists.length > 0) && (
+      {(composers.length > 0 || lyricists.length > 0 || phonogramAuthors.length > 0) && (
         <div className="mt-3 pt-3 border-t space-y-2">
           {composers.length > 0 && (
             <div className="flex items-start gap-2">
               <Icon name="Music2" size={14} className="text-muted-foreground mt-0.5 flex-shrink-0" />
               <div className="flex-1">
-                <p className="text-xs text-muted-foreground">Композиторы</p>
+                <p className="text-xs text-muted-foreground">Авторы музыки</p>
                 <p className="text-xs font-medium">{composers.join(", ")}</p>
               </div>
             </div>
@@ -85,6 +86,15 @@ export default function TracksOverview({ tracks }: TracksOverviewProps) {
               <div className="flex-1">
                 <p className="text-xs text-muted-foreground">Авторы текстов</p>
                 <p className="text-xs font-medium">{lyricists.join(", ")}</p>
+              </div>
+            </div>
+          )}
+          {phonogramAuthors.length > 0 && (
+            <div className="flex items-start gap-2">
+              <Icon name="Disc" size={14} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground">Авторы фонограмм</p>
+                <p className="text-xs font-medium">{phonogramAuthors.join(", ")}</p>
               </div>
             </div>
           )}

@@ -203,15 +203,33 @@ export default function TrackList({ tracks }: TrackListProps) {
               )}
             </button>
             
-            {(track.author_lyrics || track.lyrics_text || track.explicit_content !== undefined) && (
+            {(track.author_lyrics || track.author_phonogram || track.lyrics_text || track.explicit_content !== undefined) && (
               <div className="px-3 pb-3 pt-2 space-y-2 border-t border-yellow-500/10 mt-2">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {track.composer && (
+                    <div className="flex items-start gap-2">
+                      <Icon name="Music2" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Автор музыки</p>
+                        <p className="text-xs font-medium">{track.composer}</p>
+                      </div>
+                    </div>
+                  )}
                   {track.author_lyrics && (
                     <div className="flex items-start gap-2">
                       <Icon name="PenTool" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
                       <div>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Автор текста</p>
                         <p className="text-xs font-medium">{track.author_lyrics}</p>
+                      </div>
+                    </div>
+                  )}
+                  {track.author_phonogram && (
+                    <div className="flex items-start gap-2">
+                      <Icon name="Disc" size={12} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Автор фонограммы</p>
+                        <p className="text-xs font-medium">{track.author_phonogram}</p>
                       </div>
                     </div>
                   )}

@@ -100,11 +100,20 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             />
           </div>
           <div>
-            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Автор слов</label>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Автор текста</label>
             <Input
-              placeholder="Автор слов"
+              placeholder="Автор текста"
               value={track.author_lyrics || ''}
               onChange={(e) => updateTrack(index, 'author_lyrics', e.target.value)}
+              className="text-sm"
+            />
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Автор фонограммы</label>
+            <Input
+              placeholder="Автор фонограммы"
+              value={track.author_phonogram || ''}
+              onChange={(e) => updateTrack(index, 'author_phonogram', e.target.value)}
               className="text-sm"
             />
           </div>

@@ -7,6 +7,7 @@ import TrackList from './TrackList';
 import PitchingSection from './PitchingSection';
 import ReleaseMetadataSection from './ReleaseMetadataSection';
 import TracksOverview from './TracksOverview';
+import CopyReleaseButton from './CopyReleaseButton';
 import type { Release } from './types';
 
 interface ReleaseDetailsDialogProps {
@@ -95,7 +96,10 @@ export default function ReleaseDetailsDialog({
     <Dialog open={release !== null} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-4 md:p-6">
         <DialogHeader>
-          <DialogTitle>Детали релиза</DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle>Детали релиза</DialogTitle>
+            <CopyReleaseButton release={release} />
+          </div>
         </DialogHeader>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6">

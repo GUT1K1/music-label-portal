@@ -6,6 +6,7 @@ export interface Track {
   file_name: string;
   composer: string;
   author_lyrics?: string;
+  author_phonogram?: string;
   language_audio: string;
   lyrics_text?: string;
   explicit_content?: boolean;
