@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useCallback, memo } from 'react';
+import { useState, lazy, Suspense, useCallback, memo, useEffect } from 'react';
 import AuthForm from '@/components/AuthForm';
 import { useAuth } from '@/components/useAuth';
 import { useUsers } from '@/components/useUsers';
@@ -13,6 +13,23 @@ export default function Index() {
   const { user, login, logout, updateUserProfile, refreshUserData } = useAuth();
   const [newUser, setNewUser] = useState({ username: '', full_name: '', role: 'artist' });
   const [messagesOpen, setMessagesOpen] = useState(false);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const vkCode = urlParams.get('code');
+    const vkState = urlParams.get('state');
+    
+    if (vkCode && vkState) {
+      console.log('🟢 VK callback detected on /app page');
+      window.postMessage({
+        code: vkCode,
+        state: vkState,
+        device_id: urlParams.get('device_id')
+      }, window.location.origin);
+      
+      window.history.replaceState({}, document.title, '/app');
+    }
+  }, []);
 
   const { managers, allUsers, loadAllUsers, createUser, updateUser } = useUsers(user);
   const { tasks, createTask, updateTaskStatus, deleteTask } = useTasks(user);
