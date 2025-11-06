@@ -56,11 +56,14 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     
     console.log('[Upload] Uploading to Telegram...');
     
+    // Кодируем имя файла в base64 для поддержки кириллицы
+    const fileNameBase64 = btoa(unescape(encodeURIComponent(file.name)));
+    
     const uploadResponse = await fetch('https://functions.poehali.dev/46a53204-4754-4d80-bde1-22aafe49f088', {
       method: 'POST',
       body: fileBlob,
       headers: {
-        'X-File-Name': file.name,
+        'X-File-Name': fileNameBase64,
         'X-Chat-Id': '420'
       }
     });

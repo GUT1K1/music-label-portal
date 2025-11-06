@@ -44,8 +44,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             raise ValueError('TELEGRAM_BOT_TOKEN not configured')
         
         headers = event.get('headers', {})
-        file_name = headers.get('x-file-name') or headers.get('X-File-Name', 'audio.wav')
+        file_name_encoded = headers.get('x-file-name') or headers.get('X-File-Name', 'audio.wav')
         chat_id = headers.get('x-chat-id') or headers.get('X-Chat-Id', '420')
+        
+        # Декодируем имя файла из base64 (поддержка кириллицы)
+        try:
+            file_name = base64.b64decode(file_name_encoded).decode('utf-8')
+        except Exception:
+            file_name = file_name_encoded
         
         # Get file from body (binary or base64)
         body = event.get('body', '')
