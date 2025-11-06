@@ -317,63 +317,69 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-4 md:space-y-6 p-3 md:p-6">
       <Card className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 border-primary/30 backdrop-blur-sm overflow-hidden relative">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="relative px-6 py-4">
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-primary/20 rounded-lg border border-primary/30">
-                <Icon name="Clock" className="text-primary" size={20} />
+        <div className="relative px-3 py-3 md:px-6 md:py-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="p-1.5 md:p-2.5 bg-primary/20 rounded-lg border border-primary/30">
+                <Icon name="Clock" className="text-primary" size={18} />
               </div>
               <div>
-                <h2 className="text-sm font-medium text-muted-foreground">До следующего отчета</h2>
+                <h2 className="text-xs md:text-sm font-medium text-muted-foreground">До следующего отчета</h2>
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
-              <div className="text-center min-w-[60px]">
-                <div className="text-3xl font-bold text-primary leading-none">{countdown.days}</div>
-                <div className="text-xs text-muted-foreground mt-1">дней</div>
+            <div className="flex items-center justify-center gap-2 md:gap-3">
+              <div className="text-center min-w-[45px] md:min-w-[60px]">
+                <div className="text-2xl md:text-3xl font-bold text-primary leading-none">{countdown.days}</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">дней</div>
               </div>
-              <div className="text-2xl text-primary/30 font-light">:</div>
-              <div className="text-center min-w-[50px]">
-                <div className="text-3xl font-bold text-primary leading-none">{countdown.hours}</div>
-                <div className="text-xs text-muted-foreground mt-1">часов</div>
+              <div className="text-xl md:text-2xl text-primary/30 font-light">:</div>
+              <div className="text-center min-w-[40px] md:min-w-[50px]">
+                <div className="text-2xl md:text-3xl font-bold text-primary leading-none">{countdown.hours}</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">часов</div>
               </div>
-              <div className="text-2xl text-primary/30 font-light">:</div>
-              <div className="text-center min-w-[50px]">
-                <div className="text-3xl font-bold text-primary leading-none">{countdown.minutes}</div>
-                <div className="text-xs text-muted-foreground mt-1">минут</div>
+              <div className="text-xl md:text-2xl text-primary/30 font-light hidden md:block">:</div>
+              <div className="text-center min-w-[40px] md:min-w-[50px] hidden md:block">
+                <div className="text-2xl md:text-3xl font-bold text-primary leading-none">{countdown.minutes}</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">минут</div>
               </div>
-              <div className="text-2xl text-primary/30 font-light">:</div>
-              <div className="text-center min-w-[50px]">
-                <div className="text-3xl font-bold text-secondary leading-none animate-pulse">{countdown.seconds}</div>
-                <div className="text-xs text-muted-foreground mt-1">секунд</div>
+              <div className="text-xl md:text-2xl text-primary/30 font-light hidden md:block">:</div>
+              <div className="text-center min-w-[40px] md:min-w-[50px] hidden md:block">
+                <div className="text-2xl md:text-3xl font-bold text-secondary leading-none animate-pulse">{countdown.seconds}</div>
+                <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">секунд</div>
               </div>
             </div>
           </div>
         </div>
       </Card>
 
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="flex gap-2">
+      <div className="space-y-3 md:space-y-4">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+          <div className="flex gap-1.5 md:gap-2 overflow-x-auto">
             <Button
               variant={selectedType === 'update' ? 'default' : 'outline'}
               onClick={() => setSelectedType('update')}
+              className="text-xs md:text-sm whitespace-nowrap"
+              size="sm"
             >
               Обновления
             </Button>
             <Button
               variant={selectedType === 'faq' ? 'default' : 'outline'}
               onClick={() => setSelectedType('faq')}
+              className="text-xs md:text-sm whitespace-nowrap"
+              size="sm"
             >
               FAQ
             </Button>
             <Button
               variant={selectedType === 'job' ? 'default' : 'outline'}
               onClick={() => setSelectedType('job')}
+              className="text-xs md:text-sm whitespace-nowrap"
+              size="sm"
             >
               Вакансии
             </Button>
@@ -381,14 +387,14 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
           {canManage && (
             <div className="flex gap-2">
               {selectedType !== 'job' && (
-                <Button onClick={() => setIsCreating(true)}>
-                  <Icon name="Plus" className="w-4 h-4 mr-2" />
+                <Button onClick={() => setIsCreating(true)} size="sm" className="text-xs md:text-sm w-full md:w-auto">
+                  <Icon name="Plus" className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                   Создать новость
                 </Button>
               )}
               {selectedType === 'job' && (
-                <Button onClick={() => setIsCreatingJob(true)} variant="secondary">
-                  <Icon name="Plus" className="w-4 h-4 mr-2" />
+                <Button onClick={() => setIsCreatingJob(true)} variant="secondary" size="sm" className="text-xs md:text-sm w-full md:w-auto">
+                  <Icon name="Plus" className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                   Создать вакансию
                 </Button>
               )}
