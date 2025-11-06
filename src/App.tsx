@@ -38,6 +38,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/app" element={<Index />} />
+              <Route path="/vk-callback" element={<VKCallback />} />
               <Route path="/vk-callback.html" element={<VKCallback />} />
               <Route path="/animations" element={<AnimationShowcase />} />
               <Route path="/menus" element={<MenuShowcase />} />
