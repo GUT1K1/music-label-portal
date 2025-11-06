@@ -173,10 +173,9 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
               href={TELEGRAM_BOT_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded-lg hover:bg-primary/10 whitespace-nowrap flex-shrink-0"
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded hover:bg-primary/10 whitespace-nowrap flex-shrink-0"
             >
-              <span className="hidden md:inline">Открыть</span>
-              <Icon name="ArrowRight" size={16} className="flex-shrink-0" />
+              <Icon name="ArrowRight" size={14} className="flex-shrink-0" />
             </a>
             
             <Button
@@ -184,13 +183,13 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
               size="sm"
               onClick={handleUnlink}
               disabled={isUnlinking}
-              className="h-8 w-8 p-0 hover:bg-red-500/10 hover:text-red-500 flex-shrink-0"
+              className="h-7 w-7 p-0 hover:bg-red-500/10 hover:text-red-500 flex-shrink-0"
               title="Отвязать"
             >
               {isUnlinking ? (
-                <Icon name="Loader2" size={16} className="animate-spin" />
+                <Icon name="Loader2" size={12} className="animate-spin" />
               ) : (
-                <Icon name="X" size={16} />
+                <Icon name="X" size={12} />
               )}
             </Button>
           </div>
@@ -238,55 +237,53 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
               <Button
                 onClick={() => setShowCode(true)}
                 size="sm"
-                className="flex-shrink-0 h-8"
+                className="flex-shrink-0 h-8 text-xs px-2"
               >
-                <Icon name="Link" size={14} className="mr-1.5" />
-                <span>Привязать аккаунт</span>
+                <Icon name="Link" size={12} className="mr-1" />
+                <span className="hidden lg:inline">Привязать</span>
               </Button>
             ) : code ? (
               <>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <code className="text-lg font-bold text-primary tabular-nums bg-primary/5 px-3 py-1 rounded-lg border border-primary/20">
-                    {code}
-                  </code>
-                  {timeLeft > 0 && (
-                    <span className="text-xs text-amber-500 tabular-nums whitespace-nowrap">
-                      {formatTime(timeLeft)}
-                    </span>
-                  )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={copyCode}
-                    className="h-8 w-8 p-0"
-                    title="Скопировать"
-                  >
-                    <Icon name="Copy" size={14} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => { setShowCode(false); setCode(null); }}
-                    className="h-8 w-8 p-0"
-                    title="Отменить"
-                  >
-                    <Icon name="X" size={14} />
-                  </Button>
-                </div>
+                <code className="text-sm font-bold text-primary tabular-nums bg-primary/5 px-2 py-1 rounded border border-primary/20 flex-shrink-0">
+                  {code}
+                </code>
+                {timeLeft > 0 && (
+                  <span className="text-xs text-amber-500 tabular-nums whitespace-nowrap flex-shrink-0">
+                    {formatTime(timeLeft)}
+                  </span>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={copyCode}
+                  className="h-7 w-7 p-0 flex-shrink-0"
+                  title="Скопировать"
+                >
+                  <Icon name="Copy" size={12} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setShowCode(false); setCode(null); }}
+                  className="h-7 w-7 p-0 flex-shrink-0"
+                  title="Отменить"
+                >
+                  <Icon name="X" size={12} />
+                </Button>
               </>
             ) : (
               <Button
                 onClick={generateCode}
                 disabled={isGenerating}
                 size="sm"
-                className="flex-shrink-0 h-8"
+                className="flex-shrink-0 h-8 text-xs px-2"
               >
                 {isGenerating ? (
-                  <Icon name="Loader2" size={14} className="animate-spin" />
+                  <Icon name="Loader2" size={12} className="animate-spin" />
                 ) : (
                   <>
-                    <Icon name="Key" size={14} className="mr-1.5" />
-                    Получить код
+                    <Icon name="Key" size={12} className="mr-1" />
+                    <span className="hidden lg:inline">Код</span>
                   </>
                 )}
               </Button>
@@ -296,10 +293,9 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
               href={TELEGRAM_BOT_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded-lg hover:bg-primary/10 whitespace-nowrap flex-shrink-0"
+              className="inline-flex items-center gap-1 px-2 py-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded hover:bg-primary/10 whitespace-nowrap flex-shrink-0"
             >
-              <span className="hidden md:inline">Открыть</span>
-              <Icon name="ArrowRight" size={16} className="flex-shrink-0" />
+              <Icon name="ArrowRight" size={14} className="flex-shrink-0" />
             </a>
           </div>
         </CardContent>
