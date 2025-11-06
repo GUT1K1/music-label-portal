@@ -51,20 +51,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Получаем настройки из переменных окружения
         vk_app_id = os.environ.get('VK_APP_ID', '54299249')
         
-        # Обмениваем код на токен через VK ID API
-        vk_redirect_uri = os.environ.get('VK_REDIRECT_URI', 'https://420.рф/app')
+        # КРИТИЧНО: redirect_uri должен ТОЧНО совпадать с тем, что был в authorize!
+        # VK проверяет его при token exchange
+        vk_redirect_uri = 'https://functions.poehali.dev/07be7329-c8ac-448b-99b7-930db7c3b704'
         
-        # VK ID token exchange - нужны device_id, state и code_verifier
+        # VK ID token exchange - минимальный набор параметров
         token_params = {
             'grant_type': 'authorization_code',
             'code': vk_code,
             'code_verifier': code_verifier,
             'client_id': vk_app_id,
-            'redirect_uri': redirect_uri or vk_redirect_uri,
-            'device_id': device_id
+            'redirect_uri': vk_redirect_uri
         }
         
-        # Добавляем state если передан
+        # device_id опциональный - добавляем только если есть
+        if device_id:
+            token_params['device_id'] = device_id
+        
+        # state опциональный - добавляем только если есть
         if body.get('state'):
             token_params['state'] = body.get('state')
         
