@@ -39,7 +39,7 @@ export default function Index() {
         const deviceId = urlParams.get('device_id');
         
         try {
-          const response = await fetch('https://functions.poehali.dev/d4e10e36-b44c-46ba-aaba-6de7c05b5c44', {
+          const response = await fetch('https://functions.poehali.dev/9733f2f5-a548-43c2-a405-0600fb27532e', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
