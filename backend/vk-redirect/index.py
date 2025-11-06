@@ -40,15 +40,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             redirect_params['device_id'] = device_id
         
         query_string = urlencode(redirect_params)
-        redirect_url = f"https://420.рф/app?{query_string}"
+        redirect_url = f"https://420.xn--p1ai/app?{query_string}"
+        
+        # Используем HTML редирект вместо 302, т.к. Cloud Functions может его перехватывать
+        html_body = f'''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting...</title>
+    <script>
+        window.location.href = "{redirect_url}";
+    </script>
+</head>
+<body>
+    <p>Redirecting to 420.рф...</p>
+    <p>If not redirected, <a href="{redirect_url}">click here</a></p>
+</body>
+</html>'''
         
         return {
-            'statusCode': 302,
+            'statusCode': 200,
             'headers': {
-                'Location': redirect_url,
+                'Content-Type': 'text/html; charset=utf-8',
                 'Access-Control-Allow-Origin': '*'
             },
-            'body': '',
+            'body': html_body,
             'isBase64Encoded': False
         }
     
