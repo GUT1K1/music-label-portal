@@ -51,7 +51,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         vk_app_id = os.environ.get('VK_APP_ID', '54299249')
         
         # Обмениваем код на токен через VK ID API
-        vk_redirect_uri = os.environ.get('VK_REDIRECT_URI', 'https://xn--420-43d1a.xn--p1ai/vk-callback.html')
+        vk_redirect_uri = os.environ.get('VK_REDIRECT_URI', 'https://p35759334.poehali.dev/vk-callback.html')
         
         token_params = {
             'grant_type': 'authorization_code',
