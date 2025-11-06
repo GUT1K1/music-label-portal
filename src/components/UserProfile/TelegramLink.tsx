@@ -11,7 +11,7 @@ interface TelegramLinkProps {
   onUnlink?: () => void;
 }
 
-const TELEGRAM_BOT_URL = 'https://t.me/imnothot_bot';
+const TELEGRAM_BOT_URL = 'https://t.me/rf420smm_bot';
 
 export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkProps) {
   const { toast } = useToast();
