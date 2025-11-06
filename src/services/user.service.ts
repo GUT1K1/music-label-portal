@@ -11,7 +11,7 @@ export class UserService {
       role: dbUser.role,
       fullName: dbUser.full_name,
       avatar: dbUser.vk_photo || undefined,
-      email: dbUser.vk_email || undefined,
+      email: dbUser.email || dbUser.vk_email || undefined,
       vkFirstName: dbUser.vk_first_name || undefined,
       vkLastName: dbUser.vk_last_name || undefined,
       telegramId: dbUser.telegram_id || undefined,
@@ -28,6 +28,7 @@ export class UserService {
       tiktokUrl: dbUser.tiktok_url || undefined,
       socialLinksFilled: Boolean(dbUser.social_links_filled),
       lastIp: dbUser.last_ip || undefined,
+      passwordHash: dbUser.password_hash || undefined,
       deviceFingerprint: dbUser.device_fingerprint || undefined
     };
   }

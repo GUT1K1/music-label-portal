@@ -39,7 +39,8 @@ function convertUserAPIToLegacy(apiUser: UserAPI): User {
     tiktok_url: apiUser.tiktokUrl,
     social_links_filled: apiUser.socialLinksFilled,
     last_ip: apiUser.lastIp,
-    device_fingerprint: apiUser.deviceFingerprint
+    device_fingerprint: apiUser.deviceFingerprint,
+    password_hash: apiUser.passwordHash
   };
 }
 

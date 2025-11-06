@@ -190,6 +190,33 @@ export default function EditUserModal({
               Безопасность
             </h3>
             <div className="space-y-3">
+              {user.password_hash && (
+                <div className="space-y-2 p-3 bg-muted/30 rounded-lg border border-primary/10">
+                  <Label className="text-sm flex items-center gap-2">
+                    <Icon name="ShieldAlert" size={14} />
+                    Текущий пароль (SHA256 хеш)
+                  </Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={user.password_hash}
+                      readOnly
+                      className="h-9 font-mono text-xs bg-background"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-9 w-9 p-0 flex-shrink-0"
+                      onClick={() => {
+                        navigator.clipboard.writeText(user.password_hash || '');
+                      }}
+                    >
+                      <Icon name="Copy" size={14} />
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">⚠️ Пароли хранятся в зашифрованном виде и не могут быть расшифрованы</p>
+                </div>
+              )}
               <div className="space-y-2">
                 <Label className="text-sm flex items-center gap-2">
                   <Icon name="Key" size={14} />
@@ -213,9 +240,6 @@ export default function EditUserModal({
                     <Icon name={showPassword ? 'EyeOff' : 'Eye'} size={16} />
                   </Button>
                 </div>
-                {user.password_hash && (
-                  <p className="text-xs text-muted-foreground font-mono truncate">Текущий хеш: {user.password_hash.slice(0, 40)}...</p>
-                )}
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1 p-3 bg-muted/30 rounded-lg">

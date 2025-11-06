@@ -4,6 +4,7 @@ export interface UserDB {
   role: 'artist' | 'manager' | 'director';
   full_name: string;
   vk_photo: string | null;
+  email: string | null;
   vk_email: string | null;
   vk_first_name: string | null;
   vk_last_name: string | null;
@@ -22,6 +23,7 @@ export interface UserDB {
   social_links_filled: boolean;
   last_ip: string | null;
   device_fingerprint: string | null;
+  password_hash: string | null;
 }
 
 export interface TicketDB {

@@ -22,6 +22,7 @@ export interface UserAPI {
   socialLinksFilled: boolean;
   lastIp?: string;
   deviceFingerprint?: string;
+  passwordHash?: string;
 }
 
 export interface TicketAPI {
