@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { Task } from '@/components/useTasks';
@@ -33,7 +32,7 @@ const TasksTab = React.memo(function TasksTab({
   showDeleted = false,
   onToggleDeleted
 }: TasksTabProps) {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -57,7 +56,7 @@ const TasksTab = React.memo(function TasksTab({
         deadline: '',
         ticket_id: null,
       });
-      setIsCreateDialogOpen(false);
+      setShowCreateForm(false);
     }
   };
 
@@ -124,21 +123,22 @@ const TasksTab = React.memo(function TasksTab({
           </p>
         </div>
         
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 font-medium">
-              <Icon name="Plus" size={18} className="mr-2" />
-              Создать задачу
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Icon name="Plus" size={24} className="text-primary" />
-                Новая задача
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 mt-4">
+        <Button 
+          onClick={() => setShowCreateForm(!showCreateForm)}
+          className={`bg-gradient-to-r from-primary to-secondary hover:opacity-90 font-medium ${showCreateForm ? 'opacity-75' : ''}`}
+        >
+          <Icon name={showCreateForm ? "X" : "Plus"} size={18} className="mr-2" />
+          {showCreateForm ? 'Закрыть' : 'Создать задачу'}
+        </Button>
+      </div>
+
+      {showCreateForm && (
+        <Card className="p-4 md:p-6 bg-card/80 border-primary/30 animate-fadeIn">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Icon name="Plus" size={24} className="text-primary" />
+              <h3 className="text-lg font-semibold">Новая задача</h3>
+            </div>
               <div>
                 <label className="text-sm font-medium mb-2 block">Название задачи *</label>
                 <Input
@@ -206,26 +206,35 @@ const TasksTab = React.memo(function TasksTab({
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setIsCreateDialogOpen(false)}
-                  className="flex-1"
-                >
-                  Отмена
-                </Button>
-                <Button 
-                  onClick={handleCreateTask} 
-                  disabled={!newTask.title}
-                  className="flex-1 bg-gradient-to-r from-primary to-secondary"
-                >
-                  Создать задачу
-                </Button>
-              </div>
+            <div className="flex gap-3 pt-2">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowCreateForm(false);
+                  setNewTask({
+                    title: '',
+                    description: '',
+                    priority: 'medium',
+                    assigned_to: null,
+                    deadline: '',
+                    ticket_id: null,
+                  });
+                }}
+                className="flex-1"
+              >
+                Отмена
+              </Button>
+              <Button 
+                onClick={handleCreateTask} 
+                disabled={!newTask.title}
+                className="flex-1 bg-gradient-to-r from-primary to-secondary"
+              >
+                Создать задачу
+              </Button>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </div>
+        </Card>
+      )}
 
       <div className="flex flex-wrap gap-2">
         <Button
