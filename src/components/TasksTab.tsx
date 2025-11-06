@@ -390,10 +390,10 @@ const TasksTab = React.memo(function TasksTab({
                           <span>{format(new Date(task.created_at), 'd MMM, HH:mm', { locale: ru })}</span>
                         </div>
                       )}
-                      {task.assigned_name && (
+                      {(task.assignee_name || task.assigned_name) && (
                         <div className="flex items-center gap-1">
                           <Icon name="UserCheck" size={11} />
-                          <span className="truncate max-w-[120px]">{task.assigned_name}</span>
+                          <span className="truncate max-w-[120px]">{task.assignee_name || task.assigned_name}</span>
                         </div>
                       )}
                     </div>
