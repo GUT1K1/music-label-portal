@@ -46,8 +46,7 @@ export default function Index() {
               code: vkCode,
               code_verifier: savedCodeVerifier,
               device_id: deviceIdFromUrl,
-              state: vkState,
-              redirect_uri: 'https://functions.poehali.dev/07be7329-c8ac-448b-99b7-930db7c3b704'
+              state: vkState
             })
           });
           
