@@ -85,7 +85,6 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
       const tracksArray = Array.isArray(data) ? data : (data.tracks || []);
       const artist = data.artist_name || '';
       const release = data.release_name || '';
-      console.log('🎵 Loaded data:', { artist, release, tracksCount: tracksArray.length });
       setArtistName(artist);
       setReleaseName(release);
       setTracks(tracksArray);
@@ -164,7 +163,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold text-sm md:text-base text-foreground truncate">
-              {tracks.length === 1 ? releaseName : currentTrackInfo.title}
+              {currentTrackInfo.title || releaseName}
             </h4>
             <p className="text-xs text-foreground/70 truncate">{artistName}</p>
           </div>
@@ -242,7 +241,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
             </div>
             <div className="flex-1 min-w-0">
               <p className={`text-sm truncate ${currentTrack === index ? 'font-semibold text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>
-                {tracks.length === 1 ? releaseName : track.title}
+                {track.title || releaseName}
               </p>
               <p className="text-xs text-foreground/60 truncate">
                 {artistName}
