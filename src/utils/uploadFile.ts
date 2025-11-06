@@ -45,7 +45,7 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     // Большие файлы (>50MB) - chunked upload через multipart
     console.log('[Upload] 📦 Large file, using chunked upload');
     
-    const chunkSize = 40 * 1024 * 1024; // 40MB chunks (безопасно под лимит 60MB)
+    const chunkSize = 10 * 1024 * 1024; // 10MB chunks
     const totalChunks = Math.ceil(file.size / chunkSize);
     console.log(`[Upload] Splitting into ${totalChunks} chunks`);
     
