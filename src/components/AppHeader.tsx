@@ -124,19 +124,10 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       
       {/* Desktop menu */}
       <div className="hidden md:flex items-center gap-3">
-        {balance !== null && (
-          <div 
-            className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30 cursor-help"
-            title="Вывод доступен от 1000₽"
-          >
-            <Icon name="Wallet" size={18} className="text-primary" />
-            <span className="font-semibold text-sm">{Number(balance || 0).toFixed(2)} ₽</span>
-          </div>
-        )}
         <NotificationBell userId={userId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-2 px-3 py-2">
+            <Button variant="outline" className="flex items-center gap-2 px-3 py-2 hover:bg-primary/10 transition-colors">
               {userAvatar ? (
                 <img 
                   src={userAvatar} 
@@ -151,7 +142,12 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
               <div className={`w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold ${userAvatar ? 'hidden' : ''}`}>
                 {userName.charAt(0).toUpperCase()}
               </div>
-              <span className="font-medium">{userName.split(' ')[0]}</span>
+              {balance !== null && (
+                <div className="flex items-center gap-1.5">
+                  <Icon name="Wallet" size={16} className="text-primary" />
+                  <span className="font-semibold text-sm">{Number(balance || 0).toFixed(2)} ₽</span>
+                </div>
+              )}
               <Icon name="ChevronDown" size={16} />
             </Button>
           </DropdownMenuTrigger>
@@ -160,6 +156,12 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
               <Icon name="User" size={16} className="mr-2" />
               Профиль
             </DropdownMenuItem>
+            {userRole !== 'artist' && balance !== null && balance >= 1000 && (
+              <DropdownMenuItem>
+                <Icon name="Wallet" size={16} className="mr-2" />
+                Запрос на вывод
+              </DropdownMenuItem>
+            )}
             {userRole !== 'artist' && (
               <DropdownMenuItem onClick={onMessagesClick} className={unreadCount > 0 ? 'text-red-400' : ''}>
                 <Icon name="MessageSquare" size={16} className="mr-2" />
@@ -188,15 +190,6 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
 
       {/* Mobile menu */}
       <div className="flex md:hidden items-center gap-2">
-        {balance !== null && (
-          <div 
-            className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg border border-primary/30 cursor-help"
-            title="Вывод доступен от 1000₽"
-          >
-            <Icon name="Wallet" size={14} className="text-primary" />
-            <span className="font-semibold text-xs">{Number(balance || 0).toFixed(2)}</span>
-          </div>
-        )}
         <NotificationBell userId={userId} />
         {userRole !== 'artist' && (
           <Button
@@ -213,31 +206,53 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
             )}
           </Button>
         )}
-        {onRefreshData && (
-          <Button
-            onClick={onRefreshData}
-            variant="outline"
-            size="sm"
-            className="p-2"
-            title="Обновить данные профиля"
-          >
-            <Icon name="RefreshCw" size={16} />
-          </Button>
-        )}
-        <Button
-          onClick={onProfileClick}
-          variant="outline"
-          size="sm"
-          className="p-2"
-        >
-          <Icon name="User" size={16} />
-        </Button>
-        <button 
-          onClick={onLogout}
-          className="px-3 py-2 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/50 transition-all text-xs"
-        >
-          <Icon name="LogOut" size={16} />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="flex items-center gap-1.5 px-2 py-1.5">
+              {userAvatar ? (
+                <img 
+                  src={userAvatar} 
+                  alt={userName}
+                  className="w-6 h-6 rounded-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+              ) : null}
+              <div className={`w-6 h-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xs font-bold ${userAvatar ? 'hidden' : ''}`}>
+                {userName.charAt(0).toUpperCase()}
+              </div>
+              {balance !== null && (
+                <span className="font-semibold text-xs">{Number(balance || 0).toFixed(2)} ₽</span>
+              )}
+              <Icon name="ChevronDown" size={14} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onClick={onProfileClick}>
+              <Icon name="User" size={16} className="mr-2" />
+              Профиль
+            </DropdownMenuItem>
+            {userRole !== 'artist' && balance !== null && balance >= 1000 && (
+              <DropdownMenuItem>
+                <Icon name="Wallet" size={16} className="mr-2" />
+                Запрос на вывод
+              </DropdownMenuItem>
+            )}
+            {onRefreshData && (
+              <DropdownMenuItem onClick={onRefreshData}>
+                <Icon name="RefreshCw" size={16} className="mr-2" />
+                Обновить
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-red-400" onClick={onLogout}>
+              <Icon name="LogOut" size={16} className="mr-2" />
+              Выйти
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
