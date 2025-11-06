@@ -151,30 +151,30 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
     return (
       <Card className="border-primary/20 shadow-lg">
         <CardContent className="p-4 md:p-6">
-          <div className="flex items-center gap-4">
-            <Icon name="Send" size={20} className="text-primary flex-shrink-0" />
+          <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
+            <Icon name="Send" size={18} className="text-primary flex-shrink-0" />
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <Icon name="CheckCircle" className="text-green-500 flex-shrink-0" size={16} />
               <span className="text-sm text-muted-foreground whitespace-nowrap">Привязан</span>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <div className={`w-2 h-2 rounded-full flex-shrink-0 ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
               <span className="text-sm text-muted-foreground whitespace-nowrap">
-                {botActive ? 'Бот активен' : 'Бот недоступен'}
+                {botActive ? 'Активен' : 'Недоступен'}
               </span>
             </div>
             
-            <div className="flex-1"></div>
+            <div className="flex-1 min-w-0"></div>
             
             <a
               href={TELEGRAM_BOT_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded-lg hover:bg-primary/10 whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded-lg hover:bg-primary/10 whitespace-nowrap flex-shrink-0"
             >
-              <span>Открыть Telegram</span>
+              <span className="hidden md:inline">Открыть</span>
               <Icon name="ArrowRight" size={16} className="flex-shrink-0" />
             </a>
             
@@ -183,7 +183,7 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
               size="sm"
               onClick={handleUnlink}
               disabled={isUnlinking}
-              className="h-9 w-9 p-0 hover:bg-red-500/10 hover:text-red-500 flex-shrink-0"
+              className="h-8 w-8 p-0 hover:bg-red-500/10 hover:text-red-500 flex-shrink-0"
               title="Отвязать"
             >
               {isUnlinking ? (
