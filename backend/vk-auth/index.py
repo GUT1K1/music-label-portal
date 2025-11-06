@@ -51,13 +51,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         vk_app_id = os.environ.get('VK_APP_ID', '54299249')
         
         # Обмениваем код на токен через VK ID API
+        vk_redirect_uri = os.environ.get('VK_REDIRECT_URI', 'https://xn--420-43d1a.xn--p1ai/vk-callback.html')
+        
         token_params = {
             'grant_type': 'authorization_code',
             'code': vk_code,
             'code_verifier': code_verifier,
             'client_id': vk_app_id,
             'device_id': device_id,
-            'redirect_uri': redirect_uri or 'https://xn--420-43d1a.xn--p1ai/vk-callback.html'
+            'redirect_uri': redirect_uri or vk_redirect_uri
         }
         
         token_data_encoded = urllib.parse.urlencode(token_params).encode('utf-8')

@@ -9,7 +9,7 @@ interface VKLoginButtonProps {
 }
 
 const VK_APP_ID = '54299249';
-const VK_REDIRECT_URI = encodeURIComponent('https://420.рф/vk-callback.html');
+const VK_REDIRECT_URI = 'https://xn--420-43d1a.xn--p1ai/vk-callback.html';
 
 export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
   const { toast } = useToast();
@@ -61,7 +61,7 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       sessionStorage.setItem('vk_state', state);
       
       // Формируем URL авторизации
-      const redirectUri = 'https://420.рф/vk-callback.html';
+      const redirectUri = VK_REDIRECT_URI;
       const params = new URLSearchParams({
         response_type: 'code',
         client_id: VK_APP_ID,
@@ -117,7 +117,7 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
             code,
             code_verifier: savedCodeVerifier,
             device_id,
-            redirect_uri: 'https://420.рф/vk-callback.html'
+            redirect_uri: VK_REDIRECT_URI
           })
         });
         
