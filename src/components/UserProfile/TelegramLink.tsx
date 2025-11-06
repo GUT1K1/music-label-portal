@@ -150,52 +150,50 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
   if (telegramLinked) {
     return (
       <Card className="border-primary/20 shadow-lg">
-        <CardHeader className="p-4 md:p-6">
-          <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-            <Icon name="Send" size={20} className="text-primary md:size-6" />
-            Telegram
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 md:p-6 space-y-4">
-          <div className="flex items-center justify-between p-3 md:p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20">
+        <CardContent className="p-4 md:p-6">
+          <div className="grid grid-cols-4 gap-3 md:gap-4 items-center">
             <div className="flex items-center gap-2">
-              <Icon name="CheckCircle" className="text-green-500" size={20} />
-              <span className="text-sm md:text-base font-medium">Привязан</span>
+              <Icon name="Send" size={20} className="text-primary" />
+              <span className="text-sm md:text-base font-medium">Telegram</span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleUnlink}
-              disabled={isUnlinking}
-              className="h-8 px-3 text-xs hover:bg-red-500/10 hover:text-red-500"
-            >
-              {isUnlinking ? (
-                <Icon name="Loader2" size={14} className="animate-spin" />
-              ) : (
-                <>
-                  <Icon name="X" size={14} className="mr-1" />
-                  <span>Отвязать</span>
-                </>
-              )}
-            </Button>
-          </div>
-
-          <div className="flex items-center justify-between p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10">
+            
+            <div className="flex items-center gap-2">
+              <Icon name="CheckCircle" className="text-green-500" size={18} />
+              <span className="text-xs md:text-sm text-muted-foreground">Привязан</span>
+            </div>
+            
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
               <span className="text-xs md:text-sm text-muted-foreground">
                 {botActive ? 'Бот активен' : 'Бот недоступен'}
               </span>
             </div>
-            <a
-              href={TELEGRAM_BOT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs md:text-sm text-primary hover:text-primary/80 transition-colors font-medium"
-            >
-              <Icon name="ExternalLink" size={14} />
-              <span>Открыть</span>
-            </a>
+            
+            <div className="flex items-center gap-2 justify-end">
+              <a
+                href={TELEGRAM_BOT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs md:text-sm text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded-lg hover:bg-primary/10"
+              >
+                <Icon name="ExternalLink" size={14} />
+                <span>Открыть Telegram</span>
+              </a>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleUnlink}
+                disabled={isUnlinking}
+                className="h-8 w-8 p-0 hover:bg-red-500/10 hover:text-red-500"
+                title="Отвязать"
+              >
+                {isUnlinking ? (
+                  <Icon name="Loader2" size={14} className="animate-spin" />
+                ) : (
+                  <Icon name="X" size={14} />
+                )}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
