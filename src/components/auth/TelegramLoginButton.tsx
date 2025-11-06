@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-const BOT_USERNAME = 'fosmmtrtrdev_bot';
+const BOT_USERNAME = 'rf420smm_bot';
 
 export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps) {
   const { toast } = useToast();
