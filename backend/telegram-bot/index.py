@@ -138,9 +138,13 @@ def handle_telegram_update(update: Dict[str, Any], bot_token: str, db_url: str) 
             else:
                 # Проверяем, есть ли активное состояние
                 if chat_id in user_states:
-                    state = user_states[chat_id].get('state', '')
-                    if state.startswith('announcement_'):
+                    state_data = user_states[chat_id]
+                    action = state_data.get('action', '')
+                    
+                    if action == 'creating_announcement':
                         handle_announcement_creation_step(text, chat_id, bot_token, db_url, user)
+                    elif action == 'creating_support':
+                        handle_support_creation_step(text, chat_id, bot_token, db_url, user)
                     else:
                         handle_ticket_creation_step(text, chat_id, bot_token, db_url, user)
                 else:
@@ -191,7 +195,7 @@ def show_main_menu(bot_token: str, chat_id: int, user: Optional[Dict]):
     
     if role == 'director':
         keyboard = [
-            [{'text': '📢 Создать объявление', 'callback_data': 'create_announcement'}],
+            [{'text': '📢 Объявления', 'callback_data': 'announcements_menu'}],
             [{'text': '🎵 Модерация релизов', 'callback_data': 'moderate_releases'}, {'text': '➕ Создать задачу', 'callback_data': 'create_task'}],
             [{'text': '💬 Техподдержка', 'callback_data': 'support_threads'}, {'text': '✅ Задачи', 'callback_data': 'tasks_list'}],
             [{'text': '📊 Аналитика', 'callback_data': 'analytics_main'}],
@@ -202,17 +206,16 @@ def show_main_menu(bot_token: str, chat_id: int, user: Optional[Dict]):
     elif role == 'manager':
         keyboard = [
             [{'text': '✅ Мои задачи', 'callback_data': 'my_tasks'}],
-            [{'text': '📊 Моя статистика', 'callback_data': 'my_stats'}, {'text': '✍️ Отчёт', 'callback_data': 'report_menu'}],
-            [{'text': '⚡ Быстрые действия', 'callback_data': 'quick_actions'}],
-            [{'text': '💬 Комментарии', 'callback_data': 'comments_menu'}]
+            [{'text': '💬 Техподдержка', 'callback_data': 'support_threads'}],
+            [{'text': '📊 Моя статистика', 'callback_data': 'my_stats'}],
+            [{'text': '⚡ Быстрые действия', 'callback_data': 'quick_actions'}]
         ]
         text = f'🎯 Главное меню - {name}\n\nВыберите действие:'
     else:  # artist
         keyboard = [
-            [{'text': '➕ Создать тикет', 'callback_data': 'create_ticket'}],
-            [{'text': '📋 Мои тикеты', 'callback_data': 'my_tickets'}],
+            [{'text': '📋 Мои релизы', 'callback_data': 'my_releases'}],
             [{'text': '📊 Моя статистика', 'callback_data': 'my_stats'}],
-            [{'text': '✍️ Отправить отчёт', 'callback_data': 'submit_report'}]
+            [{'text': '💬 Поддержка', 'callback_data': 'artist_support'}]
         ]
         text = f'🎤 Главное меню - {name}\n\nВыберите действие:'
     
@@ -228,12 +231,35 @@ def handle_callback_query(update: Dict[str, Any], bot_token: str, db_url: str) -
     user = get_user_by_chat_id(chat_id, db_url) if db_url else None
     
     # Объявления
+    if data == 'announcements_menu':
+        return handle_announcements_menu(chat_id, message_id, bot_token, db_url, user)
+    
     if data == 'create_announcement':
         return handle_create_announcement(chat_id, message_id, bot_token, db_url, user)
+    
+    if data.startswith('view_announcement_'):
+        announcement_id = int(data.split('_')[2])
+        return handle_view_announcement(announcement_id, chat_id, message_id, bot_token, db_url, user)
+    
+    if data.startswith('edit_announcement_'):
+        announcement_id = int(data.split('_')[2])
+        return handle_edit_announcement(announcement_id, chat_id, message_id, bot_token, db_url, user)
+    
+    if data.startswith('delete_announcement_'):
+        announcement_id = int(data.split('_')[2])
+        return handle_delete_announcement(announcement_id, chat_id, message_id, bot_token, db_url, user)
+    
+    if data.startswith('toggle_announcement_'):
+        announcement_id = int(data.split('_')[2])
+        return handle_toggle_announcement(announcement_id, chat_id, message_id, bot_token, db_url, user)
     
     # Модерация релизов
     if data == 'moderate_releases':
         return handle_moderate_releases(chat_id, message_id, bot_token, db_url, user)
+    
+    if data.startswith('view_release_'):
+        release_id = int(data.split('_')[2])
+        return handle_view_release_detail(release_id, chat_id, message_id, bot_token, db_url, user)
     
     if data.startswith('approve_release_'):
         release_id = int(data.split('_')[2])
@@ -247,6 +273,9 @@ def handle_callback_query(update: Dict[str, Any], bot_token: str, db_url: str) -
     if data == 'support_threads':
         return handle_support_threads(chat_id, message_id, bot_token, db_url, user)
     
+    if data == 'artist_support':
+        return handle_artist_support(chat_id, message_id, bot_token, db_url, user)
+    
     if data.startswith('support_thread_'):
         thread_id = int(data.split('_')[2])
         return handle_support_thread_detail(thread_id, chat_id, message_id, bot_token, db_url, user)
@@ -254,6 +283,21 @@ def handle_callback_query(update: Dict[str, Any], bot_token: str, db_url: str) -
     if data.startswith('close_thread_'):
         thread_id = int(data.split('_')[2])
         return handle_close_thread(thread_id, chat_id, message_id, bot_token, db_url, user)
+    
+    if data == 'create_support_request':
+        return handle_create_support_request(chat_id, message_id, bot_token, db_url, user)
+    
+    if data.startswith('support_priority_'):
+        priority = data.split('_')[2]
+        return handle_finalize_support_creation(priority, chat_id, message_id, bot_token, db_url, user)
+    
+    # Релизы артиста
+    if data == 'my_releases':
+        return handle_my_releases(chat_id, message_id, bot_token, db_url, user)
+    
+    if data.startswith('artist_release_'):
+        release_id = int(data.split('_')[2])
+        return handle_artist_release_detail(release_id, chat_id, message_id, bot_token, db_url, user)
     
     # Задачи
     if data == 'tasks_list':
@@ -1089,12 +1133,137 @@ def send_ticket_notification(data: Dict, bot_token: str, db_url: str) -> Dict[st
 
 # ==================== ОБЪЯВЛЕНИЯ ====================
 
+def handle_announcements_menu(chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    if not user or user.get('role') != 'director':
+        send_message(bot_token, chat_id, '❌ Недостаточно прав')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """SELECT id, title, type, is_active, created_at
+        FROM t_p35759334_music_label_portal.news
+        ORDER BY created_at DESC
+        LIMIT 10"""
+    )
+    
+    announcements = cur.fetchall()
+    cur.close()
+    release_db_connection(conn)
+    
+    text = '📢 <b>Объявления:</b>\n\n'
+    keyboard = []
+    
+    if announcements:
+        type_emoji = {'info': 'ℹ️', 'important': '⚠️', 'urgent': '🚨'}
+        for ann_id, title, ann_type, is_active, created_at in announcements:
+            status = '🟢' if is_active else '🔴'
+            emoji = type_emoji.get(ann_type, '📢')
+            text += f'{status} {emoji} {title[:40]}...\n'
+            keyboard.append([{'text': f'{title[:35]}...', 'callback_data': f'view_announcement_{ann_id}'}])
+    else:
+        text += 'ℹ️ Нет объявлений'
+    
+    keyboard.append([{'text': '➕ Создать объявление', 'callback_data': 'create_announcement'}])
+    keyboard.append([{'text': '🔙 Главное меню', 'callback_data': 'main_menu'}])
+    
+    edit_message_with_keyboard(bot_token, chat_id, message_id, text, keyboard)
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+
+def handle_view_announcement(announcement_id: int, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """SELECT title, content, type, is_active, created_at
+        FROM t_p35759334_music_label_portal.news
+        WHERE id = %s""",
+        (announcement_id,)
+    )
+    
+    announcement = cur.fetchone()
+    cur.close()
+    release_db_connection(conn)
+    
+    if not announcement:
+        edit_message(bot_token, chat_id, message_id, '❌ Объявление не найдено')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    title, content, ann_type, is_active, created_at = announcement
+    
+    type_labels = {'info': 'ℹ️ Информация', 'important': '⚠️ Важное', 'urgent': '🚨 Срочное'}
+    status_label = '🟢 Активно' if is_active else '🔴 Неактивно'
+    
+    text = f'📢 <b>{title}</b>\n\n'
+    text += f'{content}\n\n'
+    text += f'🏷 Тип: {type_labels.get(ann_type, ann_type)}\n'
+    text += f'📊 Статус: {status_label}\n'
+    text += f'📅 Создано: {created_at.strftime("%d.%m.%Y %H:%M")}'
+    
+    toggle_text = '\u274c Деактивировать' if is_active else '\u2705 Активировать'
+    
+    keyboard = [
+        [{'text': toggle_text, 'callback_data': f'toggle_announcement_{announcement_id}'}],
+        [{'text': '✏️ Редактировать', 'callback_data': f'edit_announcement_{announcement_id}'}, 
+         {'text': '🗑 Удалить', 'callback_data': f'delete_announcement_{announcement_id}'}],
+        [{'text': '🔙 К списку', 'callback_data': 'announcements_menu'}]
+    ]
+    
+    edit_message_with_keyboard(bot_token, chat_id, message_id, text, keyboard)
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+
+def handle_toggle_announcement(announcement_id: int, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """UPDATE t_p35759334_music_label_portal.news 
+        SET is_active = NOT is_active, updated_at = NOW() 
+        WHERE id = %s
+        RETURNING is_active""",
+        (announcement_id,)
+    )
+    
+    result = cur.fetchone()
+    conn.commit()
+    cur.close()
+    release_db_connection(conn)
+    
+    if result:
+        status = 'активировано' if result[0] else 'деактивировано'
+        edit_message(bot_token, chat_id, message_id, f'✅ Объявление {status}')
+    
+    return handle_view_announcement(announcement_id, chat_id, message_id, bot_token, db_url, user)
+
+def handle_delete_announcement(announcement_id: int, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        "DELETE FROM t_p35759334_music_label_portal.news WHERE id = %s",
+        (announcement_id,)
+    )
+    
+    conn.commit()
+    cur.close()
+    release_db_connection(conn)
+    
+    edit_message(bot_token, chat_id, message_id, '✅ Объявление удалено')
+    return handle_announcements_menu(chat_id, message_id, bot_token, db_url, user)
+
+def handle_edit_announcement(announcement_id: int, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    edit_message(bot_token, chat_id, message_id, 
+        'ℹ️ Редактирование объявлений доступно через веб-интерфейс',
+        [[{'text': '🔙 Назад', 'callback_data': f'view_announcement_{announcement_id}'}]])
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+
 def handle_create_announcement(chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
     if not user or user.get('role') != 'director':
         send_message(bot_token, chat_id, '❌ Недостаточно прав')
         return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
     
-    user_states[chat_id] = {'state': 'announcement_title'}
+    user_states[chat_id] = {'state': 'announcement_title', 'action': 'creating_announcement'}
     edit_message(bot_token, chat_id, message_id, 
         '📢 Создание объявления\n\n✍️ Введите заголовок объявления:')
     
@@ -1183,7 +1352,7 @@ def handle_moderate_releases(chat_id: int, message_id: int, bot_token: str, db_u
         JOIN t_p35759334_music_label_portal.users u ON r.artist_id = u.id
         WHERE r.status = 'pending'
         ORDER BY r.created_at DESC
-        LIMIT 5"""
+        LIMIT 10"""
     )
     
     releases = cur.fetchall()
@@ -1195,22 +1364,97 @@ def handle_moderate_releases(chat_id: int, message_id: int, bot_token: str, db_u
             '✅ Нет релизов на модерации\n\nВсе релизы обработаны!')
         return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
     
-    text = '🎵 Релизы на модерации:\n\n'
+    text = '🎵 <b>Релизы на модерации:</b>\n\n'
     keyboard = []
     
     for idx, (rel_id, title, release_date, genre, artist_name, created_at) in enumerate(releases, 1):
         text += f'{idx}. "{title}" - {artist_name}\n'
-        text += f'   📅 Релиз: {release_date}\n'
-        text += f'   🎼 Жанр: {genre or "не указан"}\n\n'
+        text += f'   📅 {release_date} | 🎼 {genre or "не указан"}\n'
         
-        keyboard.append([
-            {'text': f'✅ {idx}. Одобрить', 'callback_data': f'approve_release_{rel_id}'},
-            {'text': f'❌ {idx}. Отклонить', 'callback_data': f'reject_release_{rel_id}'}
-        ])
+        keyboard.append([{'text': f'👁 {idx}. Подробнее', 'callback_data': f'view_release_{rel_id}'}])
     
     keyboard.append([{'text': '🔙 Главное меню', 'callback_data': 'main_menu'}])
     
     edit_message_with_keyboard(bot_token, chat_id, message_id, text, keyboard)
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+
+def handle_view_release_detail(release_id: int, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """SELECT r.title, r.release_date, r.genre, r.cover_url, 
+        r.yandex_music_url, r.vk_url, r.spotify_url, r.apple_music_url,
+        u.full_name, r.copyright, r.created_at
+        FROM t_p35759334_music_label_portal.releases r
+        JOIN t_p35759334_music_label_portal.users u ON r.artist_id = u.id
+        WHERE r.id = %s""",
+        (release_id,)
+    )
+    
+    release = cur.fetchone()
+    
+    if not release:
+        cur.close()
+        release_db_connection(conn)
+        edit_message(bot_token, chat_id, message_id, '❌ Релиз не найден')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    title, release_date, genre, cover_url, yandex_url, vk_url, spotify_url, apple_url, artist_name, copyright_info, created_at = release
+    
+    cur.execute(
+        """SELECT id, title, track_number, duration, file_url
+        FROM t_p35759334_music_label_portal.release_tracks
+        WHERE release_id = %s
+        ORDER BY track_number
+        LIMIT 10""",
+        (release_id,)
+    )
+    
+    tracks = cur.fetchall()
+    cur.close()
+    release_db_connection(conn)
+    
+    text = f'🎵 <b>{title}</b>\n\n'
+    text += f'🎤 Исполнитель: {artist_name}\n'
+    text += f'📅 Дата релиза: {release_date}\n'
+    text += f'🎼 Жанр: {genre or "не указан"}\n'
+    if copyright_info:
+        text += f'© {copyright_info}\n'
+    
+    if tracks:
+        text += f'\n🎶 <b>Треки ({len(tracks)}):</b>\n'
+        for track_id, track_title, track_num, duration, file_url in tracks:
+            duration_str = f'{duration // 60}:{duration % 60:02d}' if duration else '?:??'
+            text += f'{track_num}. {track_title} ({duration_str})\n'
+    
+    text += f'\n🎶 <b>Платформы:</b>\n'
+    if yandex_url:
+        text += f'• <a href="{yandex_url}">Яндекс.Музыка</a>\n'
+    if spotify_url:
+        text += f'• <a href="{spotify_url}">Spotify</a>\n'
+    if apple_url:
+        text += f'• <a href="{apple_url}">Apple Music</a>\n'
+    if vk_url:
+        text += f'• <a href="{vk_url}">ВКонтакте</a>\n'
+    
+    keyboard = [
+        [{'text': '✅ Одобрить', 'callback_data': f'approve_release_{release_id}'},
+         {'text': '❌ Отклонить', 'callback_data': f'reject_release_{release_id}'}],
+        [{'text': '🔙 К списку', 'callback_data': 'moderate_releases'}]
+    ]
+    
+    if cover_url:
+        send_photo_with_caption(bot_token, chat_id, cover_url, text, keyboard)
+        delete_message(bot_token, chat_id, message_id)
+    else:
+        edit_message_with_keyboard(bot_token, chat_id, message_id, text, keyboard)
+    
+    if tracks and tracks[0][4]:
+        first_track_url = tracks[0][4]
+        first_track_title = tracks[0][1]
+        send_audio(bot_token, chat_id, first_track_url, first_track_title, artist_name)
+    
     return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
 
 def handle_approve_release(release_id: int, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
@@ -1270,9 +1514,7 @@ def handle_support_threads(chat_id: int, message_id: int, bot_token: str, db_url
     cur = conn.cursor()
     
     cur.execute(
-        """SELECT st.id, st.subject, st.status, st.priority, u.full_name, st.last_message_at,
-        (SELECT COUNT(*) FROM t_p35759334_music_label_portal.messages m 
-         WHERE m.receiver_id = %s AND m.sender_id = st.artist_id AND m.is_read = false) as unread_count
+        """SELECT st.id, st.subject, st.status, st.priority, u.full_name, st.last_message_at
         FROM t_p35759334_music_label_portal.support_threads st
         JOIN t_p35759334_music_label_portal.users u ON st.artist_id = u.id
         WHERE st.is_archived = false AND st.status != 'closed'
@@ -1284,6 +1526,52 @@ def handle_support_threads(chat_id: int, message_id: int, bot_token: str, db_url
                 ELSE 4 
             END,
             st.last_message_at DESC
+        LIMIT 10"""
+    )
+    
+    threads = cur.fetchall()
+    cur.close()
+    release_db_connection(conn)
+    
+    if not threads:
+        keyboard = [[{'text': '🔙 Главное меню', 'callback_data': 'main_menu'}]]
+        edit_message_with_keyboard(bot_token, chat_id, message_id,
+            '✅ Нет открытых обращений\n\nВсе обращения закрыты!', keyboard)
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    text = '💬 <b>Обращения в техподдержку:</b>\n\n'
+    keyboard = []
+    
+    priority_emoji = {'urgent': '🚨', 'high': '⚠️', 'medium': '📌', 'low': 'ℹ️'}
+    status_emoji = {'open': '🟢', 'in_progress': '🟡', 'waiting': '🔵'}
+    
+    for idx, (thread_id, subject, status, priority, artist_name, last_msg) in enumerate(threads, 1):
+        emoji_p = priority_emoji.get(priority, 'ℹ️')
+        emoji_s = status_emoji.get(status, '⚪')
+        
+        text += f'{idx}. {emoji_p} {emoji_s} {subject}\n'
+        text += f'   👤 {artist_name}\n'
+        
+        keyboard.append([{'text': f'{idx}. {subject[:35]}...', 'callback_data': f'support_thread_{thread_id}'}])
+    
+    keyboard.append([{'text': '🔙 Главное меню', 'callback_data': 'main_menu'}])
+    
+    edit_message_with_keyboard(bot_token, chat_id, message_id, text, keyboard)
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+
+def handle_artist_support(chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    if not user or user.get('role') != 'artist':
+        send_message(bot_token, chat_id, '❌ Недостаточно прав')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """SELECT id, subject, status, priority, created_at
+        FROM t_p35759334_music_label_portal.support_threads
+        WHERE artist_id = %s AND is_archived = false
+        ORDER BY created_at DESC
         LIMIT 10""",
         (user['id'],)
     )
@@ -1292,30 +1580,28 @@ def handle_support_threads(chat_id: int, message_id: int, bot_token: str, db_url
     cur.close()
     release_db_connection(conn)
     
-    if not threads:
-        edit_message(bot_token, chat_id, message_id, 
-            '✅ Нет открытых обращений\n\nВсе обращения закрыты!')
-        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
-    
-    text = '💬 Обращения в техподдержку:\n\n'
+    text = '💬 <b>Мои обращения:</b>\n\n'
     keyboard = []
     
-    priority_emoji = {'urgent': '🚨', 'high': '⚠️', 'medium': '📌', 'low': 'ℹ️'}
-    status_emoji = {'open': '🟢', 'in_progress': '🟡', 'waiting': '🔵'}
+    if threads:
+        status_labels = {'open': '🟢 Открыто', 'in_progress': '🟡 В работе', 'waiting': '🔵 Ожидание', 'closed': '⚫ Закрыто'}
+        for thread_id, subject, status, priority, created_at in threads:
+            status_label = status_labels.get(status, status)
+            text += f'{status_label}\n{subject}\n\n'
+            keyboard.append([{'text': subject[:40], 'callback_data': f'support_thread_{thread_id}'}])
+    else:
+        text += 'ℹ️ У вас пока нет обращений'
     
-    for idx, (thread_id, subject, status, priority, artist_name, last_msg, unread) in enumerate(threads, 1):
-        emoji_p = priority_emoji.get(priority, 'ℹ️')
-        emoji_s = status_emoji.get(status, '⚪')
-        unread_badge = f' 🔴{unread}' if unread > 0 else ''
-        
-        text += f'{idx}. {emoji_p} {emoji_s} {subject}{unread_badge}\n'
-        text += f'   👤 {artist_name}\n\n'
-        
-        keyboard.append([{'text': f'{idx}. {subject[:30]}...', 'callback_data': f'support_thread_{thread_id}'}])
-    
+    keyboard.append([{'text': '➕ Создать обращение', 'callback_data': 'create_support_request'}])
     keyboard.append([{'text': '🔙 Главное меню', 'callback_data': 'main_menu'}])
     
     edit_message_with_keyboard(bot_token, chat_id, message_id, text, keyboard)
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+
+def handle_create_support_request(chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    user_states[chat_id] = {'state': 'support_subject', 'action': 'creating_support'}
+    edit_message(bot_token, chat_id, message_id, 
+        '💬 <b>Создание обращения</b>\n\n✍️ Введите тему обращения:')
     return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
 
 def handle_support_thread_detail(thread_id: int, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
@@ -1393,6 +1679,191 @@ def handle_close_thread(thread_id: int, chat_id: int, message_id: int, bot_token
         f'✅ Обращение #{thread_id} закрыто')
     
     return handle_support_threads(chat_id, message_id, bot_token, db_url, user)
+
+def handle_support_creation_step(text: str, chat_id: int, bot_token: str, db_url: str, user: Dict):
+    state_data = user_states.get(chat_id, {})
+    current_state = state_data.get('state')
+    
+    if current_state == 'support_subject':
+        state_data['subject'] = text
+        state_data['state'] = 'support_description'
+        user_states[chat_id] = state_data
+        send_message(bot_token, chat_id, 
+            f'✅ Тема: {text}\n\n✍️ Опишите вашу проблему или вопрос:')
+    
+    elif current_state == 'support_description':
+        state_data['description'] = text
+        state_data['state'] = 'support_priority'
+        user_states[chat_id] = state_data
+        
+        keyboard = [
+            [{'text': '🚨 Срочное', 'callback_data': 'support_priority_urgent'}],
+            [{'text': '⚠️ Важное', 'callback_data': 'support_priority_high'}],
+            [{'text': '📌 Обычное', 'callback_data': 'support_priority_medium'}],
+            [{'text': 'ℹ️ Низкий приоритет', 'callback_data': 'support_priority_low'}]
+        ]
+        send_message_with_keyboard(bot_token, chat_id, 
+            f'✅ Описание сохранено\n\n🎯 Выберите приоритет:', keyboard)
+
+def handle_finalize_support_creation(priority: str, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    state_data = user_states.get(chat_id, {})
+    subject = state_data.get('subject')
+    description = state_data.get('description')
+    
+    if not subject or not description:
+        edit_message(bot_token, chat_id, message_id, '❌ Ошибка создания обращения')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """INSERT INTO t_p35759334_music_label_portal.support_threads 
+        (artist_id, subject, priority, status, created_at, updated_at, last_message_at, is_archived)
+        VALUES (%s, %s, %s, 'open', NOW(), NOW(), NOW(), false)
+        RETURNING id""",
+        (user['id'], subject, priority)
+    )
+    
+    thread_id = cur.fetchone()[0]
+    
+    cur.execute(
+        """INSERT INTO t_p35759334_music_label_portal.messages 
+        (sender_id, receiver_id, message_text, sent_at, is_read)
+        VALUES (%s, NULL, %s, NOW(), false)""",
+        (user['id'], description)
+    )
+    
+    conn.commit()
+    cur.close()
+    release_db_connection(conn)
+    
+    del user_states[chat_id]
+    
+    priority_labels = {'urgent': '🚨 Срочное', 'high': '⚠️ Важное', 'medium': '📌 Обычное', 'low': 'ℹ️ Низкий'}
+    
+    edit_message(bot_token, chat_id, message_id, 
+        f'✅ Обращение #{thread_id} создано!\n\n'
+        f'💬 {subject}\n'
+        f'🎯 {priority_labels.get(priority, priority)}\n\n'
+        f'ℹ️ Мы ответим вам в ближайшее время')
+    
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+
+# ==================== РЕЛИЗЫ АРТИСТА ====================
+
+def handle_my_releases(chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    if not user or user.get('role') != 'artist':
+        send_message(bot_token, chat_id, '❌ Недостаточно прав')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """SELECT id, title, release_date, status, genre
+        FROM t_p35759334_music_label_portal.releases
+        WHERE artist_id = %s
+        ORDER BY created_at DESC
+        LIMIT 10""",
+        (user['id'],)
+    )
+    
+    releases = cur.fetchall()
+    cur.close()
+    release_db_connection(conn)
+    
+    text = '🎵 <b>Мои релизы:</b>\n\n'
+    keyboard = []
+    
+    if releases:
+        status_emoji = {'pending': '🟡 На модерации', 'approved': '🟢 Одобрен', 'rejected': '🔴 Отклонён', 'published': '✅ Опубликован'}
+        for rel_id, title, release_date, status, genre in releases:
+            status_label = status_emoji.get(status, status)
+            text += f'{status_label}\n'
+            text += f'🎶 {title}\n'
+            text += f'📅 {release_date}\n\n'
+            keyboard.append([{'text': title[:40], 'callback_data': f'artist_release_{rel_id}'}])
+    else:
+        text += 'ℹ️ У вас пока нет релизов'
+    
+    keyboard.append([{'text': '🔙 Главное меню', 'callback_data': 'main_menu'}])
+    
+    edit_message_with_keyboard(bot_token, chat_id, message_id, text, keyboard)
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+
+def handle_artist_release_detail(release_id: int, chat_id: int, message_id: int, bot_token: str, db_url: str, user: Dict) -> Dict[str, Any]:
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """SELECT r.title, r.release_date, r.genre, r.cover_url, r.status,
+        r.yandex_music_url, r.vk_url, r.spotify_url, r.apple_music_url,
+        r.review_comment
+        FROM t_p35759334_music_label_portal.releases r
+        WHERE r.id = %s AND r.artist_id = %s""",
+        (release_id, user['id'])
+    )
+    
+    release = cur.fetchone()
+    
+    if not release:
+        cur.close()
+        release_db_connection(conn)
+        edit_message(bot_token, chat_id, message_id, '❌ Релиз не найден')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    title, release_date, genre, cover_url, status, yandex_url, vk_url, spotify_url, apple_url, review_comment = release
+    
+    cur.execute(
+        """SELECT title, track_number, duration
+        FROM t_p35759334_music_label_portal.release_tracks
+        WHERE release_id = %s
+        ORDER BY track_number
+        LIMIT 10""",
+        (release_id,)
+    )
+    
+    tracks = cur.fetchall()
+    cur.close()
+    release_db_connection(conn)
+    
+    status_emoji = {'pending': '🟡 На модерации', 'approved': '🟢 Одобрен', 'rejected': '🔴 Отклонён', 'published': '✅ Опубликован'}
+    
+    text = f'🎵 <b>{title}</b>\n\n'
+    text += f'📊 Статус: {status_emoji.get(status, status)}\n'
+    text += f'📅 Дата релиза: {release_date}\n'
+    text += f'🎼 Жанр: {genre or "не указан"}\n'
+    
+    if review_comment:
+        text += f'\n💬 <b>Комментарий:</b>\n{review_comment}\n'
+    
+    if tracks:
+        text += f'\n🎶 <b>Треки ({len(tracks)}):</b>\n'
+        for track_title, track_num, duration in tracks:
+            duration_str = f'{duration // 60}:{duration % 60:02d}' if duration else '?:??'
+            text += f'{track_num}. {track_title} ({duration_str})\n'
+    
+    if status in ['approved', 'published'] and any([yandex_url, spotify_url, apple_url, vk_url]):
+        text += f'\n🎶 <b>Платформы:</b>\n'
+        if yandex_url:
+            text += f'• <a href="{yandex_url}">Яндекс.Музыка</a>\n'
+        if spotify_url:
+            text += f'• <a href="{spotify_url}">Spotify</a>\n'
+        if apple_url:
+            text += f'• <a href="{apple_url}">Apple Music</a>\n'
+        if vk_url:
+            text += f'• <a href="{vk_url}">ВКонтакте</a>\n'
+    
+    keyboard = [[{'text': '🔙 К моим релизам', 'callback_data': 'my_releases'}]]
+    
+    if cover_url:
+        send_photo_with_caption(bot_token, chat_id, cover_url, text, keyboard)
+        delete_message(bot_token, chat_id, message_id)
+    else:
+        edit_message_with_keyboard(bot_token, chat_id, message_id, text, keyboard)
+    
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
 
 # ==================== ЗАДАЧИ ====================
 
@@ -1612,6 +2083,50 @@ def send_message_with_keyboard(bot_token: str, chat_id: int, text: str, keyboard
         return json.loads(response.read().decode('utf-8'))
     except Exception as e:
         print(f'Error sending message with keyboard: {str(e)}')
+        return None
+
+def send_photo_with_caption(bot_token: str, chat_id: int, photo_url: str, caption: str, keyboard: list = None):
+    url = f'https://api.telegram.org/bot{bot_token}/sendPhoto'
+    payload = {
+        'chat_id': chat_id,
+        'photo': photo_url,
+        'caption': caption,
+        'parse_mode': 'HTML'
+    }
+    
+    if keyboard:
+        payload['reply_markup'] = {'inline_keyboard': keyboard}
+    
+    data = json.dumps(payload).encode('utf-8')
+    req = request.Request(url, data=data, method='POST', headers={'Content-Type': 'application/json'})
+    
+    try:
+        response = request.urlopen(req, timeout=10)
+        return json.loads(response.read().decode('utf-8'))
+    except Exception as e:
+        print(f'Error sending photo: {str(e)}')
+        return None
+
+def send_audio(bot_token: str, chat_id: int, audio_url: str, title: str = None, performer: str = None):
+    url = f'https://api.telegram.org/bot{bot_token}/sendAudio'
+    payload = {
+        'chat_id': chat_id,
+        'audio': audio_url
+    }
+    
+    if title:
+        payload['title'] = title
+    if performer:
+        payload['performer'] = performer
+    
+    data = json.dumps(payload).encode('utf-8')
+    req = request.Request(url, data=data, method='POST', headers={'Content-Type': 'application/json'})
+    
+    try:
+        response = request.urlopen(req, timeout=10)
+        return json.loads(response.read().decode('utf-8'))
+    except Exception as e:
+        print(f'Error sending audio: {str(e)}')
         return None
 
 def edit_message(bot_token: str, chat_id: int, message_id: int, text: str, keyboard: list = None):
