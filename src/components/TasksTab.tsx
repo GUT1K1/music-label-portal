@@ -36,6 +36,7 @@ const TasksTab = React.memo(function TasksTab({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [sortBy, setSortBy] = useState<'priority' | 'deadline' | 'created'>('priority');
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
@@ -100,11 +101,24 @@ const TasksTab = React.memo(function TasksTab({
 
   const openTickets = tickets?.filter(t => t.status !== 'closed') || [];
 
-  const filteredTasks = tasks.filter(task => {
-    if (statusFilter === 'all') return !task.is_deleted;
-    if (statusFilter === 'deleted') return task.is_deleted;
-    return task.status === statusFilter && !task.is_deleted;
-  });
+  const filteredTasks = tasks
+    .filter(task => {
+      if (statusFilter === 'all') return !task.is_deleted;
+      if (statusFilter === 'deleted') return task.is_deleted;
+      return task.status === statusFilter && !task.is_deleted;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'priority') {
+        const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
+        return priorityOrder[a.priority as keyof typeof priorityOrder] - priorityOrder[b.priority as keyof typeof priorityOrder];
+      }
+      if (sortBy === 'deadline') {
+        if (!a.deadline) return 1;
+        if (!b.deadline) return -1;
+        return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+      }
+      return b.id - a.id;
+    });
 
   const statusCounts = {
     all: tasks.filter(t => !t.is_deleted).length,
@@ -114,37 +128,28 @@ const TasksTab = React.memo(function TasksTab({
   };
 
   return (
-    <div className="space-y-4 p-3 md:p-6">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold text-primary">Все задачи</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            {statusCounts.all} активных задач
-          </p>
-        </div>
-        
-        <Button 
-          onClick={() => setShowCreateForm(!showCreateForm)}
-          className={`bg-gradient-to-r from-primary to-secondary hover:opacity-90 font-medium ${showCreateForm ? 'opacity-75' : ''}`}
-        >
-          <Icon name={showCreateForm ? "X" : "Plus"} size={18} className="mr-2" />
-          {showCreateForm ? 'Закрыть' : 'Создать задачу'}
-        </Button>
+    <div className="p-3 md:p-6">
+      <div className="mb-6">
+        <h2 className="text-xl md:text-2xl font-bold text-primary">Все задачи</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          {statusCounts.all} активных задач
+        </p>
       </div>
 
-      {showCreateForm && (
-        <Card className="p-4 md:p-6 bg-card/80 border-primary/30 animate-fadeIn">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Icon name="Plus" size={24} className="text-primary" />
-              <h3 className="text-lg font-semibold">Новая задача</h3>
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-4">
+          <Card className="p-4 md:p-6 bg-card/80 border-primary/30 sticky top-4">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="Plus" size={24} className="text-primary" />
+                <h3 className="text-lg font-semibold">Новая задача</h3>
+              </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Название задачи *</label>
+                <label className="text-sm font-medium mb-2 block">Название *</label>
                 <Input
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                  placeholder="Краткое название задачи"
+                  placeholder="Краткое название"
                 />
               </div>
 
@@ -153,48 +158,46 @@ const TasksTab = React.memo(function TasksTab({
                 <Textarea
                   value={newTask.description}
                   onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                  placeholder="Подробное описание задачи"
+                  placeholder="Подробности"
                   rows={3}
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Приоритет</label>
-                  <Select
-                    value={newTask.priority}
-                    onValueChange={(value) => setNewTask({ ...newTask, priority: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="urgent">🔴 Срочный</SelectItem>
-                      <SelectItem value="high">🟠 Высокий</SelectItem>
-                      <SelectItem value="medium">🟡 Средний</SelectItem>
-                      <SelectItem value="low">🟢 Низкий</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <label className="text-sm font-medium mb-2 block">Приоритет</label>
+                <Select
+                  value={newTask.priority}
+                  onValueChange={(value) => setNewTask({ ...newTask, priority: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="urgent">🔴 Срочный</SelectItem>
+                    <SelectItem value="high">🟠 Высокий</SelectItem>
+                    <SelectItem value="medium">🟡 Средний</SelectItem>
+                    <SelectItem value="low">🟢 Низкий</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Менеджер</label>
-                  <Select
-                    value={newTask.assigned_to?.toString() || ''}
-                    onValueChange={(value) => setNewTask({ ...newTask, assigned_to: value ? parseInt(value) : null })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Выберите менеджера" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {managers.map(manager => (
-                        <SelectItem key={manager.id} value={manager.id.toString()}>
-                          {manager.full_name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <label className="text-sm font-medium mb-2 block">Менеджер</label>
+                <Select
+                  value={newTask.assigned_to?.toString() || ''}
+                  onValueChange={(value) => setNewTask({ ...newTask, assigned_to: value ? parseInt(value) : null })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {managers.map(manager => (
+                      <SelectItem key={manager.id} value={manager.id.toString()}>
+                        {manager.full_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
@@ -206,77 +209,76 @@ const TasksTab = React.memo(function TasksTab({
                 />
               </div>
 
-            <div className="flex gap-3 pt-2">
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setShowCreateForm(false);
-                  setNewTask({
-                    title: '',
-                    description: '',
-                    priority: 'medium',
-                    assigned_to: null,
-                    deadline: '',
-                    ticket_id: null,
-                  });
-                }}
-                className="flex-1"
-              >
-                Отмена
-              </Button>
               <Button 
                 onClick={handleCreateTask} 
                 disabled={!newTask.title}
-                className="flex-1 bg-gradient-to-r from-primary to-secondary"
+                className="w-full bg-gradient-to-r from-primary to-secondary"
               >
+                <Icon name="Plus" size={16} className="mr-2" />
                 Создать задачу
               </Button>
             </div>
+          </Card>
+        </div>
+
+        <div className="lg:col-span-8 space-y-4">
+          <div className="flex flex-col sm:flex-row justify-between gap-3">
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={statusFilter === 'all' ? 'default' : 'outline'}
+                onClick={() => setStatusFilter('all')}
+                size="sm"
+                className="gap-2"
+              >
+                Все ({statusCounts.all})
+              </Button>
+            <Button
+              variant={statusFilter === 'in_progress' ? 'default' : 'outline'}
+              onClick={() => setStatusFilter('in_progress')}
+              size="sm"
+              className="gap-2"
+            >
+              <Icon name="Clock" size={14} />
+              В работе ({statusCounts.in_progress})
+            </Button>
+            <Button
+              variant={statusFilter === 'completed' ? 'default' : 'outline'}
+              onClick={() => setStatusFilter('completed')}
+              size="sm"
+              className="gap-2"
+            >
+              <Icon name="CheckCircle2" size={14} />
+              Выполнено ({statusCounts.completed})
+            </Button>
+              {statusCounts.deleted > 0 && (
+                <Button
+                  variant={statusFilter === 'deleted' ? 'default' : 'outline'}
+                  onClick={() => setStatusFilter('deleted')}
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Icon name="Trash2" size={14} />
+                  Удалённые ({statusCounts.deleted})
+                </Button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Сортировка:</span>
+              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                <SelectTrigger className="w-[140px] h-8">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="priority">По приоритету</SelectItem>
+                  <SelectItem value="deadline">По дедлайну</SelectItem>
+                  <SelectItem value="created">По дате</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </Card>
-      )}
 
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant={statusFilter === 'all' ? 'default' : 'outline'}
-          onClick={() => setStatusFilter('all')}
-          size="sm"
-          className="gap-2"
-        >
-          Все ({statusCounts.all})
-        </Button>
-        <Button
-          variant={statusFilter === 'in_progress' ? 'default' : 'outline'}
-          onClick={() => setStatusFilter('in_progress')}
-          size="sm"
-          className="gap-2"
-        >
-          <Icon name="Clock" size={14} />
-          В работе ({statusCounts.in_progress})
-        </Button>
-        <Button
-          variant={statusFilter === 'completed' ? 'default' : 'outline'}
-          onClick={() => setStatusFilter('completed')}
-          size="sm"
-          className="gap-2"
-        >
-          <Icon name="CheckCircle2" size={14} />
-          Выполнено ({statusCounts.completed})
-        </Button>
-        {statusCounts.deleted > 0 && (
-          <Button
-            variant={statusFilter === 'deleted' ? 'default' : 'outline'}
-            onClick={() => setStatusFilter('deleted')}
-            size="sm"
-            className="gap-2"
-          >
-            <Icon name="Trash2" size={14} />
-            Удалённые ({statusCounts.deleted})
-          </Button>
-        )}
-      </div>
-
-      <div className="space-y-3">
+          <div className="space-y-3">
         {filteredTasks.length === 0 ? (
           <Card className="p-8 text-center bg-card/40 border-white/10">
             <Icon name="ListTodo" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
@@ -335,7 +337,9 @@ const TasksTab = React.memo(function TasksTab({
               </div>
             </Card>
           ))
-        )}
+          )}
+          </div>
+        </div>
       </div>
 
       {selectedTask && (
