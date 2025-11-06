@@ -354,37 +354,48 @@ const TasksTab = React.memo(function TasksTab({
                     setIsDetailDialogOpen(true);
                   }}
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <span className="text-xs text-muted-foreground font-mono shrink-0">#{task.id}</span>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-sm group-hover:text-primary transition-colors truncate">
-                          {task.title}
-                        </h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="text-xs text-muted-foreground font-mono shrink-0">#{task.id}</span>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-sm group-hover:text-primary transition-colors truncate">
+                            {task.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        {task.deadline && (() => {
+                          const timeLeft = getTimeRemaining(task.deadline, task.status);
+                          if (!timeLeft) return null;
+                          return (
+                            <div className={`flex items-center gap-1 text-xs ${
+                              timeLeft.isOverdue ? 'text-red-400' : 'text-muted-foreground'
+                            }`}>
+                              <Icon name="Clock" size={12} />
+                              <span className="hidden sm:inline">{timeLeft.text}</span>
+                            </div>
+                          );
+                        })()}
+                        {getPriorityBadge(task.priority)}
+                        {getStatusBadge(task.status)}
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      {task.assigned_name && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Icon name="User" size={12} />
-                          <span className="hidden md:inline truncate max-w-[100px]">{task.assigned_name}</span>
+                    
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                      {task.created_at && (
+                        <div className="flex items-center gap-1">
+                          <Icon name="CalendarPlus" size={11} />
+                          <span>{format(new Date(task.created_at), 'd MMM, HH:mm', { locale: ru })}</span>
                         </div>
                       )}
-                      {task.deadline && (() => {
-                        const timeLeft = getTimeRemaining(task.deadline, task.status);
-                        if (!timeLeft) return null;
-                        return (
-                          <div className={`flex items-center gap-1 text-xs ${
-                            timeLeft.isOverdue ? 'text-red-400' : 'text-muted-foreground'
-                          }`}>
-                            <Icon name="Clock" size={12} />
-                            <span className="hidden sm:inline">{timeLeft.text}</span>
-                          </div>
-                        );
-                      })()}
-                      {getPriorityBadge(task.priority)}
-                      {getStatusBadge(task.status)}
+                      {task.assigned_name && (
+                        <div className="flex items-center gap-1">
+                          <Icon name="UserCheck" size={11} />
+                          <span className="truncate max-w-[120px]">{task.assigned_name}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>
