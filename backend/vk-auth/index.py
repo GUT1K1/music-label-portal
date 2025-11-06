@@ -71,17 +71,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             headers={'Content-Type': 'application/x-www-form-urlencoded'}
         )
         
-        with urllib.request.urlopen(token_req) as token_response:
-            token_result = json.loads(token_response.read().decode())
-        
-        if 'error' in token_result:
+        try:
+            with urllib.request.urlopen(token_req) as token_response:
+                token_result = json.loads(token_response.read().decode())
+        except urllib.error.HTTPError as e:
+            error_body = e.read().decode()
+            print(f"VK API error: {e.code} - {error_body}")
             return {
                 'statusCode': 400,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': token_result.get('error_description', 'Token exchange failed')}),
+                'body': json.dumps({'error': f'VK API error: {error_body}'}),
+                'isBase64Encoded': False
+            }
+        
+        if 'error' in token_result:
+            print(f"VK token error: {token_result}")
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': token_result.get('error_description', 'Token exchange failed'), 'vk_error': token_result.get('error')}),
                 'isBase64Encoded': False
             }
         
