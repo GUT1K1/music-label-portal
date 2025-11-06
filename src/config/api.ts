@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   TASK_COMMENTS: funcUrls['task-comments'],
   UPLOAD_FILE: funcUrls['upload-file'],
   UPLOAD_DIRECT: funcUrls['upload-direct'],
+  TELEGRAM_UPLOAD: funcUrls['telegram-upload'],
   SUBMISSIONS: funcUrls['submissions'],
   UPLOAD_REPORTS: funcUrls['upload-reports'],
   DEADLINE_REMINDER: funcUrls['deadline-reminder'],

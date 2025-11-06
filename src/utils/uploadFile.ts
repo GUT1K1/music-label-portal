@@ -3,6 +3,8 @@ export interface UploadFileResult {
   fileName: string;
   fileSize: number;
   s3Key?: string;
+  file_id?: string;
+  storage?: 'telegram' | 's3';
 }
 
 /**
@@ -45,68 +47,39 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       return result;
     }
     
-    // Большие файлы (>10MB) - используем presigned URL для прямой загрузки в S3
-    console.log('[Upload] 🚀 Large file detected, using direct S3 upload via presigned URL');
+    // Большие файлы (>10MB) - используем Telegram для надёжной загрузки
+    console.log('[Upload] 🚀 Large file detected, using Telegram upload');
     
-    const contentType = file.type || 'application/octet-stream';
+    // Читаем файл как бинарные данные
+    const fileBuffer = await file.arrayBuffer();
+    const fileBlob = new Blob([fileBuffer], { type: file.type || 'application/octet-stream' });
     
-    // Получаем presigned URL
-    const presignedResponse = await fetch(
-      `https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(contentType)}`,
-      { method: 'GET' }
-    );
+    console.log('[Upload] Uploading to Telegram...');
     
-    if (!presignedResponse.ok) {
-      throw new Error('Не удалось получить ссылку для загрузки');
-    }
-    
-    const { presignedUrl, url, s3Key } = await presignedResponse.json();
-    console.log('[Upload] Got presigned URL, uploading directly to S3...');
-    
-    // Загружаем файл напрямую в S3 с повторными попытками
-    let uploadResponse;
-    let lastError;
-    const maxRetries = 3;
-    
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        console.log(`[Upload] Attempt ${attempt}/${maxRetries}: Uploading to S3...`);
-        
-        uploadResponse = await fetch(presignedUrl, {
-          method: 'PUT',
-          body: file,
-          headers: {
-            'Content-Type': contentType
-          },
-          mode: 'cors'
-        });
-        
-        if (uploadResponse.ok) {
-          console.log('[Upload] ✅ File uploaded successfully to S3:', url);
-          break;
-        } else {
-          lastError = new Error(`S3 returned ${uploadResponse.status}: ${uploadResponse.statusText}`);
-          console.error(`[Upload] Attempt ${attempt} failed:`, lastError.message);
-        }
-      } catch (error) {
-        lastError = error;
-        console.error(`[Upload] Attempt ${attempt} failed with exception:`, error);
-        
-        if (attempt < maxRetries) {
-          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-        }
+    const uploadResponse = await fetch('https://functions.poehali.dev/46a53204-4754-4d80-bde1-22aafe49f088', {
+      method: 'POST',
+      body: fileBlob,
+      headers: {
+        'X-File-Name': file.name,
+        'X-Chat-Id': '420'
       }
+    });
+    
+    if (!uploadResponse.ok) {
+      const errorText = await uploadResponse.text().catch(() => 'Unknown error');
+      console.error('[Upload] Telegram upload failed:', errorText);
+      throw new Error(`Ошибка загрузки в Telegram: ${uploadResponse.status}`);
     }
     
-    if (!uploadResponse || !uploadResponse.ok) {
-      throw new Error(`Не удалось загрузить файл после ${maxRetries} попыток: ${lastError?.message || 'Unknown error'}`);
-    }
+    const result = await uploadResponse.json();
+    console.log('[Upload] ✅ File uploaded successfully to Telegram:', result);
     
     return {
-      url,
-      s3Key,
-      fileName: file.name,
-      fileSize: file.size
+      url: result.url,
+      fileName: result.file_name,
+      fileSize: result.file_size,
+      file_id: result.file_id,
+      storage: 'telegram'
     };
     
     /* СТАРАЯ ЛОГИКА ЧАНКОВ - ЗАКОММЕНТИРОВАНА

@@ -1,4 +1,6 @@
 {
+  "telegram-get-file": "https://functions.poehali.dev/c5c1d662-1a01-4da3-af71-8c62d830921e",
+  "telegram-upload": "https://functions.poehali.dev/46a53204-4754-4d80-bde1-22aafe49f088",
   "setup-telegram-webhook": "https://functions.poehali.dev/162c1916-7b4e-4269-af90-42e0c1fb6ba1",
   "generate-telegram-code": "https://functions.poehali.dev/af1a99fe-a74a-4534-9af4-6473402f98d2",
   "withdrawal": "https://functions.poehali.dev/36f7a3dc-84d1-4493-b0c5-836cf9466911",
