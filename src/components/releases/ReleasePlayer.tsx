@@ -9,6 +9,7 @@ interface Track {
   track_number: number;
   title: string;
   composer: string;
+  author_phonogram?: string;
   file_url?: string;
   language_audio: string;
 }
@@ -165,7 +166,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
             <h4 className="font-semibold text-sm md:text-base text-foreground truncate">
               {currentTrackInfo.title || releaseName}
             </h4>
-            <p className="text-xs text-foreground/70 truncate">{artistName}</p>
+            <p className="text-xs text-foreground/70 truncate">{currentTrackInfo.author_phonogram || currentTrackInfo.composer || artistName}</p>
           </div>
           <div className="text-right">
             <p className="text-xs text-yellow-500 font-medium">Трек {currentTrack + 1} из {tracks.length}</p>
@@ -244,7 +245,7 @@ export default function ReleasePlayer({ userId, releaseId }: ReleasePlayerProps)
                 {track.title || releaseName}
               </p>
               <p className="text-xs text-foreground/60 truncate">
-                {artistName}
+                {track.author_phonogram || track.composer || artistName}
               </p>
             </div>
             {currentTrack === index && (
