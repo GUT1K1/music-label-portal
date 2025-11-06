@@ -157,8 +157,8 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
               <Icon name="User" size={16} className="mr-2" />
               Профиль
             </DropdownMenuItem>
-            {userRole !== 'artist' && balance !== null && balance >= 1000 && (
-              <DropdownMenuItem>
+            {userRole === 'artist' && balance !== null && balance >= 1000 && onWithdrawalClick && (
+              <DropdownMenuItem onClick={onWithdrawalClick}>
                 <Icon name="Wallet" size={16} className="mr-2" />
                 Запрос на вывод
               </DropdownMenuItem>
