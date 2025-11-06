@@ -73,27 +73,12 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
     };
   }, [onAuth, toast]);
 
-  const handleClick = () => {
-    const iframe = containerRef.current?.querySelector('iframe');
-    if (iframe) {
-      iframe.click();
-    }
-  };
-
   return (
-    <div className="relative w-full h-[46px]">
+    <div className="relative w-full">
       <div 
         ref={containerRef}
-        className="absolute inset-0 opacity-0 pointer-events-auto"
+        className="telegram-widget-container"
       />
-      <Button
-        onClick={handleClick}
-        variant="outline"
-        className="absolute inset-0 w-full h-full bg-gradient-to-r from-yellow-500/10 to-orange-500/10 hover:from-yellow-500/20 hover:to-orange-500/20 border-yellow-500/30 hover:border-yellow-500/50 text-yellow-400 transition-all duration-300 group pointer-events-none"
-      >
-        <Icon name="Send" className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-        Telegram
-      </Button>
     </div>
   );
 }
