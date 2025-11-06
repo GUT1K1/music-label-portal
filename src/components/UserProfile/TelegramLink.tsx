@@ -39,6 +39,16 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
     return () => clearInterval(interval);
   }, [expiresAt]);
 
+  // Сбрасываем состояние при изменении статуса привязки
+  useEffect(() => {
+    if (telegramLinked) {
+      setShowCode(false);
+      setCode(null);
+      setExpiresAt(null);
+      setTimeLeft(0);
+    }
+  }, [telegramLinked]);
+
   const generateCode = async () => {
     setIsGenerating(true);
     try {
