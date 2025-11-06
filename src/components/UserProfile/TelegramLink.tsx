@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
@@ -149,42 +149,41 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
 
   if (telegramLinked) {
     return (
-      <Card className="bg-gradient-to-r from-blue-500/5 via-sky-500/5 to-blue-500/5 border-blue-500/20 backdrop-blur-sm overflow-hidden relative">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="relative px-3 py-2 md:px-4 md:py-3">
-          <div className="flex items-center justify-between gap-3">
+      <Card className="border-primary/20 shadow-lg">
+        <CardHeader className="p-4 md:p-6">
+          <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+            <Icon name="Send" size={20} className="text-primary md:size-6" />
+            Telegram
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 md:p-6 space-y-4">
+          <div className="flex items-center justify-between p-3 md:p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 md:p-2 bg-blue-500/20 rounded-lg border border-blue-500/30">
-                <Icon name="Send" className="text-blue-500" size={16} />
-              </div>
-              <h2 className="text-xs md:text-sm font-medium text-muted-foreground">Telegram</h2>
+              <Icon name="CheckCircle" className="text-green-500" size={20} />
+              <span className="text-sm md:text-base font-medium">Привязан</span>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5">
-                <Icon name="CheckCircle" className="text-blue-500" size={16} />
-                <span className="text-xs md:text-sm font-medium text-blue-500">Привязан</span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleUnlink}
-                disabled={isUnlinking}
-                className="h-6 px-2 text-xs hover:bg-red-500/10 hover:text-red-500"
-              >
-                {isUnlinking ? (
-                  <Icon name="Loader2" size={12} className="animate-spin" />
-                ) : (
-                  <Icon name="X" size={12} />
-                )}
-              </Button>
-            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleUnlink}
+              disabled={isUnlinking}
+              className="h-8 px-3 text-xs hover:bg-red-500/10 hover:text-red-500"
+            >
+              {isUnlinking ? (
+                <Icon name="Loader2" size={14} className="animate-spin" />
+              ) : (
+                <>
+                  <Icon name="X" size={14} className="mr-1" />
+                  <span>Отвязать</span>
+                </>
+              )}
+            </Button>
           </div>
-          
-          <div className="mt-2 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-1.5">
-              <div className={`w-1.5 h-1.5 rounded-full ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-              <span className="text-xs text-muted-foreground">
+
+          <div className="flex items-center justify-between p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+              <span className="text-xs md:text-sm text-muted-foreground">
                 {botActive ? 'Бот активен' : 'Бот недоступен'}
               </span>
             </div>
@@ -192,107 +191,102 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
               href={TELEGRAM_BOT_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs md:text-sm text-primary hover:text-primary/80 transition-colors font-medium"
             >
-              <Icon name="ExternalLink" size={10} />
-              <span>Открыть бот</span>
+              <Icon name="ExternalLink" size={14} />
+              <span>Открыть</span>
             </a>
           </div>
-        </div>
+        </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="bg-gradient-to-r from-blue-500/5 via-sky-500/5 to-blue-500/5 border-blue-500/20 backdrop-blur-sm overflow-hidden relative">
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      <div className="relative px-3 py-2 md:px-4 md:py-3">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 md:p-2 bg-blue-500/20 rounded-lg border border-blue-500/30">
-              <Icon name="Send" className="text-blue-500" size={16} />
+    <Card className="border-primary/20 shadow-lg">
+      <CardHeader className="p-4 md:p-6">
+        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+          <Icon name="Send" size={20} className="text-primary md:size-6" />
+          Telegram
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4">
+        {!showCode ? (
+          <Button
+            onClick={() => setShowCode(true)}
+            className="w-full h-10 md:h-12"
+          >
+            <Icon name="Link" size={16} className="mr-2" />
+            Привязать аккаунт
+          </Button>
+        ) : code ? (
+          <div className="p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs md:text-sm text-muted-foreground">Код для привязки:</span>
+              {timeLeft > 0 && (
+                <div className="flex items-center gap-1.5 text-xs text-amber-500">
+                  <Icon name="Clock" size={12} />
+                  <span>{formatTime(timeLeft)}</span>
+                </div>
+              )}
             </div>
-            <h2 className="text-xs md:text-sm font-medium text-muted-foreground">Telegram</h2>
-          </div>
-          
-          {!showCode ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowCode(true)}
-              className="h-6 px-2 md:px-3 text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-500"
-            >
-              <Icon name="Link" size={12} className="mr-1" />
-              <span className="hidden md:inline">Привязать</span>
-            </Button>
-          ) : code ? (
             <div className="flex items-center gap-2">
-              <code className="text-sm md:text-base font-bold text-blue-500 tabular-nums">
+              <code className="flex-1 text-center text-xl md:text-2xl font-bold text-primary tabular-nums bg-background p-3 rounded-lg border border-primary/20">
                 {code}
               </code>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={copyCode}
-                className="h-6 w-6 p-0 hover:bg-blue-500/20"
+                className="h-12 px-3"
               >
-                <Icon name="Copy" size={12} className="text-blue-500" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => { setShowCode(false); setCode(null); }}
-                className="h-6 w-6 p-0 hover:bg-red-500/20"
-              >
-                <Icon name="X" size={12} className="text-muted-foreground" />
+                <Icon name="Copy" size={16} className="text-primary" />
               </Button>
             </div>
-          ) : (
             <Button
               variant="ghost"
               size="sm"
-              onClick={generateCode}
-              disabled={isGenerating}
-              className="h-6 px-2 md:px-3 text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-500"
+              onClick={() => { setShowCode(false); setCode(null); }}
+              className="w-full text-xs"
             >
-              {isGenerating ? (
-                <Icon name="Loader2" size={12} className="animate-spin" />
-              ) : (
-                <>
-                  <Icon name="Key" size={12} className="mr-1" />
-                  <span className="hidden md:inline">Код</span>
-                </>
-              )}
+              Отменить
             </Button>
-          )}
-        </div>
-        
-        <div className="mt-2 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5">
-              <div className={`w-1.5 h-1.5 rounded-full ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-              <span className="text-xs text-muted-foreground">
-                {botActive ? 'Бот активен' : 'Бот недоступен'}
-              </span>
-            </div>
-            {showCode && code && timeLeft > 0 && (
-              <div className="flex items-center gap-1.5 text-xs text-amber-500">
-                <Icon name="Clock" size={10} />
-                <span>{formatTime(timeLeft)}</span>
-              </div>
+          </div>
+        ) : (
+          <Button
+            onClick={generateCode}
+            disabled={isGenerating}
+            className="w-full h-10 md:h-12"
+          >
+            {isGenerating ? (
+              <Icon name="Loader2" size={16} className="animate-spin" />
+            ) : (
+              <>
+                <Icon name="Key" size={16} className="mr-2" />
+                Получить код
+              </>
             )}
+          </Button>
+        )}
+
+        <div className="flex items-center justify-between p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10">
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+            <span className="text-xs md:text-sm text-muted-foreground">
+              {botActive ? 'Бот активен' : 'Бот недоступен'}
+            </span>
           </div>
           <a
             href={TELEGRAM_BOT_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs md:text-sm text-primary hover:text-primary/80 transition-colors font-medium"
           >
-            <Icon name="ExternalLink" size={10} />
-            <span>Открыть бот</span>
+            <Icon name="ExternalLink" size={14} />
+            <span>Открыть</span>
           </a>
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 }

@@ -232,15 +232,14 @@ const UserProfile = React.memo(function UserProfile({ user, onUpdateProfile, onC
           />
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           <ProfileStats user={user} />
+          <TelegramLink 
+            userId={user.id} 
+            telegramLinked={!!user.telegram_chat_id}
+          />
           <ProfileInfo user={user} />
         </div>
-
-        <TelegramLink 
-          userId={user.id} 
-          telegramLinked={!!user.telegram_chat_id}
-        />
 
         <PasswordChangeForm
           isChangingPassword={isChangingPassword}
