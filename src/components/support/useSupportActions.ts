@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { uploadFile } from '@/utils/uploadFile';
 
 const SUPPORT_URL = 'https://functions.poehali.dev/03b127de-537a-446c-af8d-01caba70e2e9';
-
-const UPLOAD_URL = 'https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9';
 
 export function useSupportActions(
   userId: number,
@@ -31,18 +30,8 @@ export function useSupportActions(
       let messageType = 'text';
       
       if (file) {
-        const uploadRes = await fetch(`${UPLOAD_URL}?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(file.type)}`);
-        const uploadData = await uploadRes.json();
-        
-        await fetch(uploadData.presignedUrl, {
-          method: 'PUT',
-          headers: { 
-            'Content-Type': file.type
-          },
-          body: file
-        });
-        
-        attachmentUrl = uploadData.url;
+        const uploadResult = await uploadFile(file);
+        attachmentUrl = uploadResult.url;
         attachmentName = file.name;
         messageType = file.type.startsWith('image/') ? 'image' : 'file';
       }
