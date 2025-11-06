@@ -116,14 +116,19 @@ def handle_telegram_update(update: Dict[str, Any], bot_token: str, db_url: str) 
         message = update.get('message', {})
         chat_id = message.get('chat', {}).get('id')
         text = message.get('text', '')
+        telegram_username = message.get('from', {}).get('username', '')
         
-        print(f'[DEBUG] Chat ID: {chat_id}, Text: {text}')
+        print(f'[DEBUG] Chat ID: {chat_id}, Text: {text}, TG Username: {telegram_username}')
         
         if not chat_id:
             return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
         
         user = get_user_by_chat_id(chat_id, db_url) if db_url else None
         print(f'[DEBUG] User: {user}')
+        
+        # Автоматическая привязка по Telegram username
+        if not user and telegram_username and db_url:
+            user = try_auto_link_account(chat_id, telegram_username, bot_token, db_url)
         
         if text == '/start':
             show_main_menu(bot_token, chat_id, user)
@@ -151,7 +156,7 @@ def handle_telegram_update(update: Dict[str, Any], bot_token: str, db_url: str) 
                     show_main_menu(bot_token, chat_id, user)
         else:
             send_message(bot_token, chat_id, 
-                '❌ Сначала привяжите аккаунт:\n/link ваш_username')
+                '❌ Аккаунт не найден. Обратитесь к администратору для регистрации.')
         
         return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
     except Exception as e:
@@ -182,12 +187,38 @@ def get_user_by_chat_id(chat_id: int, db_url: str) -> Optional[Dict]:
         return user
     return None
 
+def try_auto_link_account(chat_id: int, telegram_username: str, bot_token: str, db_url: str) -> Optional[Dict]:
+    conn = get_db_connection(db_url)
+    cur = conn.cursor()
+    
+    cur.execute(
+        """UPDATE t_p35759334_music_label_portal.users 
+        SET telegram_chat_id = %s 
+        WHERE username = %s AND (telegram_chat_id IS NULL OR telegram_chat_id = '')
+        RETURNING id, username, full_name, role""",
+        (str(chat_id), telegram_username)
+    )
+    
+    result = cur.fetchone()
+    conn.commit()
+    cur.close()
+    release_db_connection(conn)
+    
+    if result:
+        user = {'id': result[0], 'username': result[1], 'full_name': result[2], 'role': result[3]}
+        set_cache(f'user_{chat_id}', user)
+        
+        role_emoji = {'director': '👑', 'manager': '🎯', 'artist': '🎤'}
+        send_message(bot_token, chat_id, 
+            f'✅ Аккаунт автоматически привязан!\n👤 {result[2]}\nРоль: {role_emoji.get(result[3], "")} {result[3]}')
+        return user
+    
+    return None
+
 def show_main_menu(bot_token: str, chat_id: int, user: Optional[Dict]):
     if not user:
-        keyboard = [[{'text': '🔗 Привязать аккаунт', 'callback_data': 'link_help'}]]
-        send_message_with_keyboard(bot_token, chat_id, 
-            '👋 Добро пожаловать в 420 SMM бот!\n\nДля начала работы привяжите аккаунт:\n/link ваш_username', 
-            keyboard)
+        send_message(bot_token, chat_id, 
+            '👋 Добро пожаловать в 420 SMM бот!\n\n❌ Аккаунт не найден. Обратитесь к администратору.')
         return
     
     role = user.get('role')
