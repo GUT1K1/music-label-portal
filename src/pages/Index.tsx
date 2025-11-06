@@ -34,9 +34,9 @@ export default function Index() {
           return;
         }
         
-        // Получаем code_verifier и device_id из sessionStorage
+        // Получаем code_verifier из sessionStorage и device_id из URL (VK его возвращает!)
         const savedCodeVerifier = sessionStorage.getItem('vk_code_verifier');
-        const savedDeviceId = sessionStorage.getItem('vk_device_id');
+        const deviceIdFromUrl = urlParams.get('device_id'); // VK возвращает device_id в callback
         
         try {
           const response = await fetch('https://functions.poehali.dev/9733f2f5-a548-43c2-a405-0600fb27532e', {
@@ -45,7 +45,8 @@ export default function Index() {
             body: JSON.stringify({
               code: vkCode,
               code_verifier: savedCodeVerifier,
-              device_id: savedDeviceId,
+              device_id: deviceIdFromUrl,
+              state: vkState,
               redirect_uri: 'https://functions.poehali.dev/07be7329-c8ac-448b-99b7-930db7c3b704'
             })
           });
