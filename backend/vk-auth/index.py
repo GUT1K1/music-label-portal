@@ -57,7 +57,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'code_verifier': code_verifier,
             'client_id': vk_app_id,
             'device_id': device_id,
-            'redirect_uri': redirect_uri or 'https://420.рф/vk-callback.html'
+            'redirect_uri': redirect_uri or 'https://xn--420-43d1a.xn--p1ai/vk-callback.html'
         }
         
         token_data_encoded = urllib.parse.urlencode(token_params).encode('utf-8')
