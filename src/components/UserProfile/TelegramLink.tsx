@@ -11,6 +11,8 @@ interface TelegramLinkProps {
   onUnlink?: () => void;
 }
 
+const TELEGRAM_BOT_URL = 'https://t.me/imnothot_bot';
+
 export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkProps) {
   const { toast } = useToast();
   const [code, setCode] = useState<string | null>(null);
@@ -19,6 +21,7 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUnlinking, setIsUnlinking] = useState(false);
   const [showCode, setShowCode] = useState(false);
+  const [botActive, setBotActive] = useState(true);
 
   useEffect(() => {
     if (!expiresAt) return;
@@ -177,6 +180,24 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
               </Button>
             </div>
           </div>
+          
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5">
+              <div className={`w-1.5 h-1.5 rounded-full ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+              <span className="text-xs text-muted-foreground">
+                {botActive ? 'Бот активен' : 'Бот недоступен'}
+              </span>
+            </div>
+            <a
+              href={TELEGRAM_BOT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 transition-colors"
+            >
+              <Icon name="ExternalLink" size={10} />
+              <span>Открыть бот</span>
+            </a>
+          </div>
         </div>
       </Card>
     );
@@ -246,25 +267,31 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
           )}
         </div>
         
-        {showCode && code && (
-          <div className="mt-2 flex flex-col gap-2">
-            {timeLeft > 0 && (
+        <div className="mt-2 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5">
+              <div className={`w-1.5 h-1.5 rounded-full ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+              <span className="text-xs text-muted-foreground">
+                {botActive ? 'Бот активен' : 'Бот недоступен'}
+              </span>
+            </div>
+            {showCode && code && timeLeft > 0 && (
               <div className="flex items-center gap-1.5 text-xs text-amber-500">
                 <Icon name="Clock" size={10} />
                 <span>{formatTime(timeLeft)}</span>
               </div>
             )}
-            <a
-              href="https://t.me/imnothot_bot"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-blue-500 hover:text-blue-600 transition-colors"
-            >
-              <Icon name="ExternalLink" size={12} />
-              <span>Открыть Telegram бот</span>
-            </a>
           </div>
-        )}
+          <a
+            href={TELEGRAM_BOT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 transition-colors"
+          >
+            <Icon name="ExternalLink" size={10} />
+            <span>Открыть бот</span>
+          </a>
+        </div>
       </div>
     </Card>
   );
