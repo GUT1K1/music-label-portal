@@ -93,13 +93,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         except urllib.error.HTTPError as e:
             error_body = e.read().decode()
             print(f"VK API HTTPError: {e.code} - {error_body}")
+            # Возвращаем ПОЛНУЮ ошибку от VK для отладки
             return {
                 'statusCode': 400,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': f'VK API error ({e.code}): {error_body[:200]}'}),
+                'body': json.dumps({
+                    'error': f'VK API error ({e.code})',
+                    'vk_response': error_body,
+                    'sent_params': token_params
+                }),
                 'isBase64Encoded': False
             }
         
