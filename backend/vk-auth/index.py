@@ -54,15 +54,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Обмениваем код на токен через VK ID API
         vk_redirect_uri = os.environ.get('VK_REDIRECT_URI', 'https://420.рф/app')
         
-        # VK ID token exchange - теперь включаем device_id, который генерируется на фронте
+        # VK ID token exchange - device_id НЕ нужен при обмене кода на токен
+        # Он используется VK только для аналитики в authorize URL
         token_params = {
             'grant_type': 'authorization_code',
             'code': vk_code,
             'code_verifier': code_verifier,
             'client_id': vk_app_id,
-            'redirect_uri': redirect_uri or vk_redirect_uri,
-            'device_id': device_id,
-            'state': body.get('state', '')
+            'redirect_uri': redirect_uri or vk_redirect_uri
         }
         
         # Логируем запрос для отладки
