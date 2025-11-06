@@ -63,20 +63,44 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     const { presignedUrl, url, s3Key } = await presignedResponse.json();
     console.log('[Upload] Got presigned URL, uploading directly to S3...');
     
-    // Загружаем файл напрямую в S3
-    const uploadResponse = await fetch(presignedUrl, {
-      method: 'PUT',
-      body: file,
-      headers: {
-        'Content-Type': contentType
-      }
-    });
+    // Загружаем файл напрямую в S3 с повторными попытками
+    let uploadResponse;
+    let lastError;
+    const maxRetries = 3;
     
-    if (!uploadResponse.ok) {
-      throw new Error(`Ошибка загрузки в S3: ${uploadResponse.status}`);
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`[Upload] Attempt ${attempt}/${maxRetries}: Uploading to S3...`);
+        
+        uploadResponse = await fetch(presignedUrl, {
+          method: 'PUT',
+          body: file,
+          headers: {
+            'Content-Type': contentType
+          },
+          mode: 'cors'
+        });
+        
+        if (uploadResponse.ok) {
+          console.log('[Upload] ✅ File uploaded successfully to S3:', url);
+          break;
+        } else {
+          lastError = new Error(`S3 returned ${uploadResponse.status}: ${uploadResponse.statusText}`);
+          console.error(`[Upload] Attempt ${attempt} failed:`, lastError.message);
+        }
+      } catch (error) {
+        lastError = error;
+        console.error(`[Upload] Attempt ${attempt} failed with exception:`, error);
+        
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
     }
     
-    console.log('[Upload] ✅ File uploaded successfully to S3:', url);
+    if (!uploadResponse || !uploadResponse.ok) {
+      throw new Error(`Не удалось загрузить файл после ${maxRetries} попыток: ${lastError?.message || 'Unknown error'}`);
+    }
     
     return {
       url,
