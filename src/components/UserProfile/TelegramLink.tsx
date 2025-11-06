@@ -212,13 +212,28 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
       </CardHeader>
       <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4">
         {!showCode ? (
-          <Button
-            onClick={() => setShowCode(true)}
-            className="w-full h-10 md:h-12"
-          >
-            <Icon name="Link" size={16} className="mr-2" />
-            Привязать аккаунт
-          </Button>
+          <>
+            <div className="p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 space-y-2">
+              <div className="flex items-start gap-2">
+                <Icon name="Info" size={16} className="text-primary mt-0.5 flex-shrink-0" />
+                <div className="space-y-1.5 text-xs md:text-sm text-muted-foreground">
+                  <p>Telegram бот позволяет:</p>
+                  <ul className="space-y-1 ml-4">
+                    <li>• Получать быстрые уведомления о событиях</li>
+                    <li>• Управлять сайтом через чат</li>
+                    <li>• Отслеживать важные обновления</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <Button
+              onClick={() => setShowCode(true)}
+              className="w-full h-10 md:h-12"
+            >
+              <Icon name="Link" size={16} className="mr-2" />
+              Привязать аккаунт
+            </Button>
+          </>
         ) : code ? (
           <div className="p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 space-y-3">
             <div className="flex items-center justify-between gap-3">
