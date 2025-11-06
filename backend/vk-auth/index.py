@@ -48,7 +48,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        # Получаем настройки из переменных окружения
+        # Получаем настройки из переменных окружения (updated secret)
         vk_app_id = os.environ.get('VK_APP_ID', '54299249')
         
         # КРИТИЧНО: redirect_uri должен ТОЧНО совпадать с тем, что был в authorize!
