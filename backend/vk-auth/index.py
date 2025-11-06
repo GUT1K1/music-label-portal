@@ -54,14 +54,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Обмениваем код на токен через VK ID API
         vk_redirect_uri = os.environ.get('VK_REDIRECT_URI', 'https://420.рф/app')
         
+        # VK ID token exchange - НЕ включаем device_id, только обязательные параметры
         token_params = {
             'grant_type': 'authorization_code',
             'code': vk_code,
             'code_verifier': code_verifier,
             'client_id': vk_app_id,
-            'device_id': device_id or '',
             'redirect_uri': redirect_uri or vk_redirect_uri
         }
+        
+        # Логируем запрос для отладки
+        print(f"Token exchange params: {token_params}")
         
         token_data_encoded = urllib.parse.urlencode(token_params).encode('utf-8')
         token_req = urllib.request.Request(
@@ -73,16 +76,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         try:
             with urllib.request.urlopen(token_req) as token_response:
                 token_result = json.loads(token_response.read().decode())
+                print(f"VK token response: {token_result}")
         except urllib.error.HTTPError as e:
             error_body = e.read().decode()
-            print(f"VK API error: {e.code} - {error_body}")
+            print(f"VK API HTTPError: {e.code} - {error_body}")
             return {
                 'statusCode': 400,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': f'VK API error: {error_body}'}),
+                'body': json.dumps({'error': f'VK API error ({e.code}): {error_body[:200]}'}),
                 'isBase64Encoded': False
             }
         
