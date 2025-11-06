@@ -39,6 +39,7 @@ interface User {
   last_ip?: string;
   device_fingerprint?: string;
   telegram_chat_id?: string;
+  balance?: number;
 }
 
 interface Ticket {
@@ -162,7 +163,13 @@ export default function DirectorTabs({
       </div>
 
       <TabsContent value="news" className="animate-fadeIn">
-        <NewsView userRole="director" userId={user.id} telegramLinked={!!user.telegram_chat_id} />
+        <NewsView 
+          userRole="director" 
+          userId={user.id} 
+          telegramLinked={!!user.telegram_chat_id}
+          userBalance={user.balance}
+          onRefreshData={() => onLoadAllUsers()}
+        />
       </TabsContent>
 
       <TabsContent value="support" className="space-y-4 animate-fadeIn">

@@ -17,9 +17,10 @@ interface NewsViewProps {
   userId: number;
   telegramLinked?: boolean;
   userBalance?: number;
+  onRefreshData?: () => void;
 }
 
-export default function NewsView({ userRole, userId, telegramLinked = false, userBalance = 0 }: NewsViewProps) {
+export default function NewsView({ userRole, userId, telegramLinked = false, userBalance = 0, onRefreshData }: NewsViewProps) {
   const [selectedType, setSelectedType] = useState<string>('update');
   
   const countdown = useCountdown();
@@ -66,7 +67,7 @@ export default function NewsView({ userRole, userId, telegramLinked = false, use
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <CountdownCard countdown={countdown} />
         <BalanceCard balance={userBalance} />
-        <TelegramLink userId={userId} telegramLinked={telegramLinked} />
+        <TelegramLink userId={userId} telegramLinked={telegramLinked} onUnlink={onRefreshData} />
       </div>
 
       <div className="space-y-3 md:space-y-4">
