@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import { API_ENDPOINTS } from '@/config/api';
@@ -199,105 +200,110 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
   }
 
   return (
-    <Card className="border-primary/20 shadow-lg">
-      <CardHeader className="p-4 md:p-6">
-        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-          <Icon name="Send" size={20} className="text-primary md:size-6" />
-          Telegram
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4">
-        {!showCode ? (
-          <>
-            <div className="p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10 space-y-2">
-              <div className="flex items-start gap-2">
-                <Icon name="Info" size={16} className="text-primary mt-0.5 flex-shrink-0" />
-                <div className="space-y-1.5 text-xs md:text-sm text-muted-foreground">
-                  <p>Telegram бот позволяет:</p>
-                  <ul className="space-y-1 ml-4">
-                    <li>• Получать быстрые уведомления о событиях</li>
+    <TooltipProvider>
+      <Card className="border-primary/20 shadow-lg">
+        <CardContent className="p-4 md:p-6">
+          <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
+            <Icon name="Send" size={18} className="text-primary flex-shrink-0" />
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2 cursor-help flex-shrink-0">
+                  <Icon name="Info" size={16} className="text-primary/60 flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">Не привязан</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs">
+                <div className="space-y-1 text-xs">
+                  <p className="font-medium">Telegram бот позволяет:</p>
+                  <ul className="space-y-0.5 ml-3">
+                    <li>• Получать быстрые уведомления</li>
                     <li>• Управлять сайтом через чат</li>
-                    <li>• Отслеживать важные обновления</li>
+                    <li>• Отслеживать обновления</li>
                   </ul>
                 </div>
-              </div>
-            </div>
-            <Button
-              onClick={() => setShowCode(true)}
-              className="w-full h-10 md:h-12"
-            >
-              <Icon name="Link" size={16} className="mr-2" />
-              Привязать аккаунт
-            </Button>
-          </>
-        ) : code ? (
-          <div className="p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 space-y-3">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-xs md:text-sm text-muted-foreground">Код для привязки:</span>
-              {timeLeft > 0 && (
-                <div className="flex items-center gap-1.5 text-xs text-amber-500">
-                  <Icon name="Clock" size={12} />
-                  <span>{formatTime(timeLeft)}</span>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 text-center text-xl md:text-2xl font-bold text-primary tabular-nums bg-background p-3 rounded-lg border border-primary/20">
-                {code}
-              </code>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={copyCode}
-                className="h-12 px-3"
-              >
-                <Icon name="Copy" size={16} className="text-primary" />
-              </Button>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => { setShowCode(false); setCode(null); }}
-              className="w-full text-xs"
-            >
-              Отменить
-            </Button>
-          </div>
-        ) : (
-          <Button
-            onClick={generateCode}
-            disabled={isGenerating}
-            className="w-full h-10 md:h-12"
-          >
-            {isGenerating ? (
-              <Icon name="Loader2" size={16} className="animate-spin" />
-            ) : (
-              <>
-                <Icon name="Key" size={16} className="mr-2" />
-                Получить код
-              </>
-            )}
-          </Button>
-        )}
+              </TooltipContent>
+            </Tooltip>
 
-        <div className="flex items-center justify-between p-3 md:p-4 rounded-xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/10">
-          <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-            <span className="text-xs md:text-sm text-muted-foreground">
-              {botActive ? 'Бот активен' : 'Бот недоступен'}
-            </span>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+              <span className="text-sm text-muted-foreground whitespace-nowrap">
+                {botActive ? 'Активен' : 'Недоступен'}
+              </span>
+            </div>
+            
+            <div className="flex-1 min-w-0"></div>
+            
+            {!showCode ? (
+              <Button
+                onClick={() => setShowCode(true)}
+                size="sm"
+                className="flex-shrink-0 h-8"
+              >
+                <Icon name="Link" size={14} className="mr-1.5" />
+                <span>Привязать аккаунт</span>
+              </Button>
+            ) : code ? (
+              <>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <code className="text-lg font-bold text-primary tabular-nums bg-primary/5 px-3 py-1 rounded-lg border border-primary/20">
+                    {code}
+                  </code>
+                  {timeLeft > 0 && (
+                    <span className="text-xs text-amber-500 tabular-nums whitespace-nowrap">
+                      {formatTime(timeLeft)}
+                    </span>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={copyCode}
+                    className="h-8 w-8 p-0"
+                    title="Скопировать"
+                  >
+                    <Icon name="Copy" size={14} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { setShowCode(false); setCode(null); }}
+                    className="h-8 w-8 p-0"
+                    title="Отменить"
+                  >
+                    <Icon name="X" size={14} />
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <Button
+                onClick={generateCode}
+                disabled={isGenerating}
+                size="sm"
+                className="flex-shrink-0 h-8"
+              >
+                {isGenerating ? (
+                  <Icon name="Loader2" size={14} className="animate-spin" />
+                ) : (
+                  <>
+                    <Icon name="Key" size={14} className="mr-1.5" />
+                    Получить код
+                  </>
+                )}
+              </Button>
+            )}
+
+            <a
+              href={TELEGRAM_BOT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded-lg hover:bg-primary/10 whitespace-nowrap flex-shrink-0"
+            >
+              <span className="hidden md:inline">Открыть</span>
+              <Icon name="ArrowRight" size={16} className="flex-shrink-0" />
+            </a>
           </div>
-          <a
-            href={TELEGRAM_BOT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs md:text-sm text-primary hover:text-primary/80 transition-colors font-medium"
-          >
-            <Icon name="ExternalLink" size={14} />
-            <span>Открыть</span>
-          </a>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 }
