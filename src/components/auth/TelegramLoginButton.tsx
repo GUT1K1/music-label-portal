@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useRef } from 'react';
 import { API_ENDPOINTS } from '@/config/api';
 import { useToast } from '@/hooks/use-toast';
-import Icon from '@/components/ui/icon';
 
 interface TelegramLoginButtonProps {
   onAuth: (userData: any) => void;
@@ -19,6 +17,7 @@ const BOT_USERNAME = 'fosmmtrtrdev_bot';
 
 export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps) {
   const { toast } = useToast();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.onTelegramAuth = async (telegramUser: any) => {
@@ -56,42 +55,28 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
       }
     };
 
+    if (containerRef.current && !window.Telegram) {
+      const script = document.createElement('script');
+      script.src = 'https://telegram.org/js/telegram-widget.js?22';
+      script.async = true;
+      script.setAttribute('data-telegram-login', BOT_USERNAME);
+      script.setAttribute('data-size', 'large');
+      script.setAttribute('data-onauth', 'onTelegramAuth(user)');
+      script.setAttribute('data-request-access', 'write');
+      
+      containerRef.current.appendChild(script);
+    }
+
     return () => {
       window.onTelegramAuth = undefined;
     };
   }, [onAuth, toast]);
 
-  const handleTelegramLogin = () => {
-    const width = 600;
-    const height = 700;
-    const left = window.screen.width / 2 - width / 2;
-    const top = window.screen.height / 2 - height / 2;
-    
-    const authUrl = `https://oauth.telegram.org/auth?bot_id=8210986256&origin=${encodeURIComponent(window.location.origin)}&request_access=write&return_to=${encodeURIComponent(window.location.origin)}`;
-    
-    const popup = window.open(
-      authUrl,
-      'telegram_oauth',
-      `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no`
-    );
-
-    if (!popup) {
-      toast({
-        title: '❌ Ошибка',
-        description: 'Не удалось открыть окно авторизации. Разрешите всплывающие окна.',
-        variant: 'destructive',
-      });
-    }
-  };
-
   return (
-    <Button
-      onClick={handleTelegramLogin}
-      variant="outline"
-      className="w-full h-[46px] bg-gradient-to-r from-yellow-500/10 to-orange-500/10 hover:from-yellow-500/20 hover:to-orange-500/20 border-yellow-500/30 hover:border-yellow-500/50 text-yellow-400 transition-all duration-300 group"
-    >
-      <Icon name="Send" className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
-      Telegram
-    </Button>
+    <div 
+      ref={containerRef} 
+      className="w-full h-[46px] flex items-center justify-center bg-gradient-to-r from-yellow-500/10 to-orange-500/10 hover:from-yellow-500/20 hover:to-orange-500/20 border border-yellow-500/30 hover:border-yellow-500/50 rounded-md transition-all duration-300 [&_iframe]:!w-full [&_iframe]:!h-full [&_iframe]:!border-0 [&_iframe]:!rounded-md"
+      style={{ minHeight: '46px' }}
+    />
   );
 }
