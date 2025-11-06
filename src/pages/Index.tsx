@@ -16,9 +16,12 @@ export default function Index() {
 
   useEffect(() => {
     const handleVKCallback = async () => {
+      console.log('🔍 Checking for VK callback params...', window.location.search);
       const urlParams = new URLSearchParams(window.location.search);
       const vkCode = urlParams.get('code');
       const vkState = urlParams.get('state');
+      
+      console.log('🔍 VK params:', { vkCode, vkState });
       
       if (vkCode && vkState) {
         console.log('🟢 VK callback detected on /app page');
