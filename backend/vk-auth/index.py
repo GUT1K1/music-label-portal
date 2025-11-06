@@ -185,9 +185,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             cur.execute("""
                 UPDATE t_p35759334_music_label_portal.users
-                SET vk_photo = %s, avatar = %s
+                SET vk_photo = %s
                 WHERE vk_id = %s
-            """, (vk_photo, vk_photo, str(vk_user_id)))
+            """, (vk_photo, str(vk_user_id)))
             conn.commit()
             
             user_response = {
@@ -196,7 +196,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'role': user_row[2],
                 'full_name': user_row[3],
                 'vk_id': user_row[4],
-                'avatar': avatar_url,
                 'vk_photo': avatar_url,
                 'is_blocked': user_row[6] or False,
                 'is_frozen': user_row[7] or False
@@ -204,10 +203,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         else:
             cur.execute("""
                 INSERT INTO t_p35759334_music_label_portal.users 
-                (username, full_name, role, vk_id, vk_photo, avatar, email)
-                VALUES (%s, %s, 'artist', %s, %s, %s, %s)
+                (username, full_name, role, vk_id, vk_photo, email, password_hash)
+                VALUES (%s, %s, 'artist', %s, %s, %s, 'vk_oauth')
                 RETURNING id, username, role, full_name, vk_id, vk_photo, is_blocked, is_frozen
-            """, (username, full_name, str(vk_user_id), vk_photo, vk_photo, None))
+            """, (username, full_name, str(vk_user_id), vk_photo, None))
             
             new_user = cur.fetchone()
             conn.commit()
@@ -218,7 +217,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'role': new_user[2],
                 'full_name': new_user[3],
                 'vk_id': new_user[4],
-                'avatar': new_user[5],
                 'vk_photo': new_user[5],
                 'is_blocked': new_user[6] or False,
                 'is_frozen': new_user[7] or False
