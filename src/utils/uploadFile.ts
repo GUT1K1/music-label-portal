@@ -46,10 +46,10 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     console.log('[Upload] 🚀 Large file, using S3 multipart upload');
     
     const contentType = file.type || 'application/octet-stream';
-    const chunkSize = 3 * 1024 * 1024; // 3MB chunks (base64 = ~4MB)
+    const chunkSize = 2 * 1024 * 1024; // 2MB chunks (base64 = ~2.6MB, безопасно для Cloud Functions)
     const totalChunks = Math.ceil(file.size / chunkSize);
     
-    console.log(`[Upload] Splitting into ${totalChunks} chunks (3MB each)`);
+    console.log(`[Upload] Splitting into ${totalChunks} chunks (2MB each)`);
     
     let uploadId = '';
     let s3Key = '';
