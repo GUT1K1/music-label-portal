@@ -112,15 +112,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 
 def verify_telegram_auth(data: Dict[str, Any], bot_token: str) -> bool:
     """Проверка подлинности данных от Telegram"""
-    received_hash = data.pop('hash', '')
+    received_hash = data.get('hash', '')
     
-    data_check_arr = [f'{k}={v}' for k, v in sorted(data.items())]
+    data_copy = {k: v for k, v in data.items() if k != 'hash'}
+    data_check_arr = [f'{k}={v}' for k, v in sorted(data_copy.items())]
     data_check_string = '\n'.join(data_check_arr)
     
     secret_key = hashlib.sha256(bot_token.encode()).digest()
     calculated_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
-    
-    data['hash'] = received_hash
     
     return calculated_hash == received_hash
 
@@ -153,7 +152,7 @@ def save_or_update_user(tg_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         existing_user = cur.fetchone()
         
         if existing_user:
-            # Обновляем данные существующего пользователя
+            # Обновляем данные существующего пользователя и устанавливаем telegram_chat_id
             cur.execute("""
                 UPDATE t_p35759334_music_label_portal.users
                 SET telegram_username = %s,
@@ -161,15 +160,17 @@ def save_or_update_user(tg_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
                     telegram_last_name = %s,
                     telegram_photo_url = %s,
                     telegram_auth_date = %s,
-                    full_name = %s
+                    full_name = %s,
+                    telegram_chat_id = %s
                 WHERE telegram_id = %s
                 RETURNING id, username, role, full_name, telegram_chat_id, 
                           telegram_photo_url, is_blocked, is_frozen
-            """, (username, first_name, last_name, photo_url, auth_date, full_name, telegram_id))
+            """, (username, first_name, last_name, photo_url, auth_date, full_name, str(tg_data['id']), telegram_id))
             
             user_row = cur.fetchone()
         else:
             # Создаем нового пользователя
+            # telegram_chat_id устанавливаем как telegram_id при авторизации через Login Widget
             cur.execute("""
                 INSERT INTO t_p35759334_music_label_portal.users 
                 (username, password_hash, role, full_name, telegram_id, telegram_username,
@@ -179,7 +180,7 @@ def save_or_update_user(tg_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
                 RETURNING id, username, role, full_name, telegram_chat_id, 
                           telegram_photo_url, is_blocked, is_frozen
             """, (db_username, full_name, telegram_id, username, first_name, 
-                  last_name, photo_url, auth_date, telegram_id))
+                  last_name, photo_url, auth_date, str(tg_data['id'])))
             
             user_row = cur.fetchone()
         
