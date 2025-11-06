@@ -85,7 +85,7 @@ export default function SupportThreadList({
             <Icon name="MessageSquare" className="w-4 h-4 text-primary" />
             Диалоги
           </CardTitle>
-          <Button size="sm" onClick={onNewThreadClick} className="h-7 gap-1.5 text-xs bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-sm font-medium">
+          <Button size="sm" onClick={onNewThreadClick} variant="outline" className="h-7 gap-1.5 text-xs font-medium">
             <Icon name="Plus" className="w-3.5 h-3.5" />
             Новый
           </Button>
