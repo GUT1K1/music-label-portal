@@ -235,61 +235,63 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
             
             <div className="flex-1 min-w-0"></div>
             
-            {!showCode ? (
-              <Button
-                onClick={() => setShowCode(true)}
-                size="sm"
-                className="flex-shrink-0 h-8 text-xs px-2"
-              >
-                <Icon name="Link" size={12} className="mr-1" />
-                <span className="hidden lg:inline">Привязать</span>
-              </Button>
-            ) : code ? (
-              <>
-                <code className="text-sm font-bold text-primary tabular-nums bg-primary/5 px-2 py-1 rounded border border-primary/20 flex-shrink-0">
-                  {code}
-                </code>
-                {timeLeft > 0 && (
-                  <span className="text-xs text-amber-500 tabular-nums whitespace-nowrap flex-shrink-0">
-                    {formatTime(timeLeft)}
-                  </span>
-                )}
+            <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+              {!showCode ? (
                 <Button
-                  variant="outline"
+                  onClick={() => setShowCode(true)}
                   size="sm"
-                  onClick={copyCode}
-                  className="h-7 w-7 p-0 flex-shrink-0"
-                  title="Скопировать"
+                  className="flex-shrink-0 h-8 text-xs px-2"
                 >
-                  <Icon name="Copy" size={12} />
+                  <Icon name="Link" size={12} className="mr-1" />
+                  <span className="hidden lg:inline">Привязать</span>
                 </Button>
+              ) : code ? (
+                <>
+                  <code className="text-xs font-bold text-primary tabular-nums bg-primary/5 px-2 py-1 rounded border border-primary/20 flex-shrink-0">
+                    {code}
+                  </code>
+                  {timeLeft > 0 && (
+                    <span className="text-xs text-amber-500 tabular-nums whitespace-nowrap flex-shrink-0">
+                      {formatTime(timeLeft)}
+                    </span>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={copyCode}
+                    className="h-7 w-7 p-0 flex-shrink-0"
+                    title="Скопировать"
+                  >
+                    <Icon name="Copy" size={12} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => { setShowCode(false); setCode(null); }}
+                    className="h-7 w-7 p-0 flex-shrink-0"
+                    title="Отменить"
+                  >
+                    <Icon name="X" size={12} />
+                  </Button>
+                </>
+              ) : (
                 <Button
-                  variant="ghost"
+                  onClick={generateCode}
+                  disabled={isGenerating}
                   size="sm"
-                  onClick={() => { setShowCode(false); setCode(null); }}
-                  className="h-7 w-7 p-0 flex-shrink-0"
-                  title="Отменить"
+                  className="flex-shrink-0 h-8 text-xs px-2"
                 >
-                  <Icon name="X" size={12} />
+                  {isGenerating ? (
+                    <Icon name="Loader2" size={12} className="animate-spin" />
+                  ) : (
+                    <>
+                      <Icon name="Key" size={12} className="mr-1" />
+                      <span className="hidden lg:inline">Код</span>
+                    </>
+                  )}
                 </Button>
-              </>
-            ) : (
-              <Button
-                onClick={generateCode}
-                disabled={isGenerating}
-                size="sm"
-                className="flex-shrink-0 h-8 text-xs px-2"
-              >
-                {isGenerating ? (
-                  <Icon name="Loader2" size={12} className="animate-spin" />
-                ) : (
-                  <>
-                    <Icon name="Key" size={12} className="mr-1" />
-                    <span className="hidden lg:inline">Код</span>
-                  </>
-                )}
-              </Button>
-            )}
+              )}
+            </div>
 
             <a
               href={TELEGRAM_BOT_URL}
