@@ -151,13 +151,8 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
     return (
       <Card className="border-primary/20 shadow-lg">
         <CardContent className="p-4 md:p-6">
-          <div className="grid grid-cols-[auto_1fr_auto_auto] gap-4 md:gap-6 items-center">
-            <div className="flex items-center gap-2 min-w-[120px]">
-              <Icon name="Send" size={20} className="text-primary flex-shrink-0" />
-              <span className="text-sm md:text-base font-medium whitespace-nowrap">Telegram</span>
-            </div>
-            
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0 flex-shrink">
               <div className="flex items-center gap-2">
                 <Icon name="CheckCircle" className="text-green-500 flex-shrink-0" size={16} />
                 <span className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">Привязан</span>
@@ -166,35 +161,37 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full flex-shrink-0 ${botActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
                 <span className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">
-                  {botActive ? 'Бот активен' : 'Бот недоступен'}
+                  {botActive ? 'Активен' : 'Недоступен'}
                 </span>
               </div>
             </div>
             
-            <a
-              href={TELEGRAM_BOT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded-lg hover:bg-primary/10 whitespace-nowrap"
-            >
-              <Icon name="ExternalLink" size={16} className="flex-shrink-0" />
-              <span>Открыть Telegram</span>
-            </a>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleUnlink}
-              disabled={isUnlinking}
-              className="h-9 w-9 p-0 hover:bg-red-500/10 hover:text-red-500 flex-shrink-0"
-              title="Отвязать"
-            >
-              {isUnlinking ? (
-                <Icon name="Loader2" size={16} className="animate-spin" />
-              ) : (
-                <Icon name="X" size={16} />
-              )}
-            </Button>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <a
+                href={TELEGRAM_BOT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs md:text-sm text-primary hover:text-primary/80 transition-colors font-medium bg-primary/5 rounded-lg hover:bg-primary/10 whitespace-nowrap"
+              >
+                <Icon name="ExternalLink" size={14} className="flex-shrink-0" />
+                <span>Открыть</span>
+              </a>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleUnlink}
+                disabled={isUnlinking}
+                className="h-8 w-8 p-0 hover:bg-red-500/10 hover:text-red-500 flex-shrink-0"
+                title="Отвязать"
+              >
+                {isUnlinking ? (
+                  <Icon name="Loader2" size={14} className="animate-spin" />
+                ) : (
+                  <Icon name="X" size={14} />
+                )}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
