@@ -47,12 +47,12 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       return result;
     }
     
-    // Большие файлы (>10MB) - разбиваем на chunks по 2MB
+    // Большие файлы (>10MB) - разбиваем на chunks по 5MB
     console.log('[Upload] 📦 Large file detected, using chunked upload');
     
-    const chunkSize = 2 * 1024 * 1024; // 2MB chunks
+    const chunkSize = 5 * 1024 * 1024; // 5MB chunks
     const totalChunks = Math.ceil(file.size / chunkSize);
-    console.log(`[Upload] Splitting into ${totalChunks} chunks of ~2MB each`);
+    console.log(`[Upload] Splitting into ${totalChunks} chunks of ~5MB each`);
     
     const contentType = file.type || 'application/octet-stream';
     let s3Key = '';
