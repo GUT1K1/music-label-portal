@@ -192,29 +192,30 @@ export default function EditUserModal({
             <div className="space-y-3">
               {user.password_hash && (
                 <div className="space-y-1.5 p-2.5 sm:p-3 bg-muted/30 rounded-lg border border-yellow-500/10">
-                  <Label className="text-xs sm:text-sm flex items-center gap-1.5">
-                    <Icon name="ShieldAlert" size={12} className="sm:w-3.5 sm:h-3.5 flex-shrink-0" />
-                    Текущий пароль (SHA256)
-                  </Label>
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <Input
-                      value={user.password_hash}
-                      readOnly
-                      className="h-8 sm:h-9 font-mono text-[10px] sm:text-xs bg-background"
-                    />
+                  <div className="flex items-center justify-between gap-2">
+                    <Label className="text-xs sm:text-sm flex items-center gap-1.5">
+                      <Icon name="ShieldAlert" size={12} className="sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+                      Текущий пароль (SHA256)
+                    </Label>
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="h-8 w-8 sm:h-9 sm:w-9 p-0 flex-shrink-0 border-yellow-500/20"
+                      className="h-7 px-2 sm:h-8 sm:px-3 border-yellow-500/20 hover:bg-yellow-500/10"
                       onClick={() => {
                         navigator.clipboard.writeText(user.password_hash || '');
                       }}
                     >
-                      <Icon name="Copy" size={12} className="sm:w-3.5 sm:h-3.5" />
+                      <Icon name="Copy" size={12} className="sm:w-3.5 sm:h-3.5 mr-1" />
+                      <span className="text-[10px] sm:text-xs">Копировать</span>
                     </Button>
                   </div>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground">⚠️ Пароли зашифрованы</p>
+                  <div className="p-2 bg-background rounded border border-yellow-500/10 overflow-x-auto">
+                    <code className="font-mono text-[10px] sm:text-xs text-yellow-500 break-all whitespace-pre-wrap">
+                      {user.password_hash}
+                    </code>
+                  </div>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground">⚠️ Пароли хранятся в зашифрованном виде и не могут быть расшифрованы</p>
                 </div>
               )}
               <div className="space-y-1.5">
