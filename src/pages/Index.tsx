@@ -15,21 +15,61 @@ export default function Index() {
   const [messagesOpen, setMessagesOpen] = useState(false);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const vkCode = urlParams.get('code');
-    const vkState = urlParams.get('state');
-    
-    if (vkCode && vkState) {
-      console.log('🟢 VK callback detected on /app page');
-      window.postMessage({
-        code: vkCode,
-        state: vkState,
-        device_id: urlParams.get('device_id')
-      }, window.location.origin);
+    const handleVKCallback = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const vkCode = urlParams.get('code');
+      const vkState = urlParams.get('state');
       
-      window.history.replaceState({}, document.title, '/app');
-    }
-  }, []);
+      if (vkCode && vkState) {
+        console.log('🟢 VK callback detected on /app page');
+        
+        // Проверяем state
+        const savedState = sessionStorage.getItem('vk_state');
+        if (vkState !== savedState) {
+          console.error('🔴 State mismatch - possible CSRF attack');
+          window.history.replaceState({}, document.title, '/app');
+          return;
+        }
+        
+        // Получаем code_verifier и отправляем на бэкенд
+        const savedCodeVerifier = sessionStorage.getItem('vk_code_verifier');
+        const deviceId = urlParams.get('device_id');
+        
+        try {
+          const response = await fetch('https://functions.poehali.dev/d4e10e36-b44c-46ba-aaba-6de7c05b5c44', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              code: vkCode,
+              code_verifier: savedCodeVerifier,
+              device_id: deviceId,
+              redirect_uri: 'https://functions.poehali.dev/07be7329-c8ac-448b-99b7-930db7c3b704'
+            })
+          });
+          
+          const data = await response.json();
+          
+          if (data.user) {
+            console.log('🟢 VK auth successful:', data.user);
+            login(data.user);
+            
+            // Очищаем sessionStorage
+            sessionStorage.removeItem('vk_code_verifier');
+            sessionStorage.removeItem('vk_state');
+          } else {
+            console.error('🔴 VK auth failed:', data.error);
+          }
+        } catch (error) {
+          console.error('🔴 VK auth error:', error);
+        }
+        
+        // Убираем параметры из URL
+        window.history.replaceState({}, document.title, '/app');
+      }
+    };
+    
+    handleVKCallback();
+  }, [login]);
 
   const { managers, allUsers, loadAllUsers, createUser, updateUser } = useUsers(user);
   const { tasks, createTask, updateTaskStatus, deleteTask } = useTasks(user);
