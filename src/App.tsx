@@ -13,6 +13,7 @@ import AdminFix from "./pages/AdminFix";
 import AnimationShowcase from "./components/AnimationShowcase";
 import MenuShowcase from "./components/MenuShowcase";
 import HeaderVariants from "./components/HeaderVariants";
+import VKCallback from "./pages/VKCallback";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +38,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/app" element={<Index />} />
+              <Route path="/vk-callback.html" element={<VKCallback />} />
               <Route path="/animations" element={<AnimationShowcase />} />
               <Route path="/menus" element={<MenuShowcase />} />
               <Route path="/header-variants" element={<HeaderVariants />} />
