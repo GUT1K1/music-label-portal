@@ -128,10 +128,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         vk_token = token_result.get('access_token')
         vk_user_id_from_token = token_result.get('user_id')
         
-        # Получаем информацию о пользователе через VK ID API
+        # Получаем информацию о пользователе через VK ID API (нужен client_id!)
+        user_info_params = urllib.parse.urlencode({
+            'access_token': vk_token,
+            'client_id': vk_app_id
+        })
         user_info_req = urllib.request.Request(
             'https://id.vk.ru/oauth2/user_info',
-            data=f'access_token={vk_token}'.encode('utf-8'),
+            data=user_info_params.encode('utf-8'),
             headers={'Content-Type': 'application/x-www-form-urlencoded'}
         )
         
