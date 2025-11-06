@@ -14,7 +14,7 @@ import { ru } from 'date-fns/locale';
 
 interface TasksTabProps {
   tasks: Task[];
-  tickets: any[];
+  tickets?: any[];
   managers: any[];
   onCreateTask: (task: any) => Promise<boolean>;
   onUpdateTaskStatus: (taskId: number, status: string, completionReport?: string, completionFile?: File) => Promise<boolean>;
@@ -25,7 +25,7 @@ interface TasksTabProps {
 
 const TasksTab = React.memo(function TasksTab({
   tasks,
-  tickets,
+  tickets = [],
   managers,
   onCreateTask,
   onUpdateTaskStatus,
@@ -61,22 +61,31 @@ const TasksTab = React.memo(function TasksTab({
     }
   };
 
-  const getPriorityLabel = (priority: string) => {
+  const getPriorityBadge = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'Срочный';
-      case 'high': return 'Высокий';
-      case 'medium': return 'Средний';
-      case 'low': return 'Низкий';
-      default: return 'Средний';
+      case 'urgent':
+        return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Срочный</Badge>;
+      case 'high':
+        return <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">Высокий</Badge>;
+      case 'medium':
+        return <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Средний</Badge>;
+      case 'low':
+        return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Низкий</Badge>;
+      default:
+        return <Badge variant="outline">Средний</Badge>;
     }
   };
 
-  const getStatusLabel = (status: string) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed': return 'Выполнено';
-      case 'in_progress': return 'В работе';
-      case 'open': return 'Открыто';
-      default: return 'Открыто';
+      case 'completed':
+        return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Выполнено</Badge>;
+      case 'in_progress':
+        return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">В работе</Badge>;
+      case 'open':
+        return <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">Открыто</Badge>;
+      default:
+        return <Badge variant="outline">Открыто</Badge>;
     }
   };
 
@@ -85,9 +94,9 @@ const TasksTab = React.memo(function TasksTab({
     if (isToday(date)) return 'Сегодня';
     if (isTomorrow(date)) return 'Завтра';
     if (isThisWeek(date, { weekStartsOn: 1 })) {
-      return 'в ' + format(date, 'EEEE', { locale: ru });
+      return format(date, 'EEEE', { locale: ru });
     }
-    return format(date, 'd MMMM, HH:mm', { locale: ru });
+    return format(date, 'd MMM, HH:mm', { locale: ru });
   };
 
   const openTickets = tickets?.filter(t => t.status !== 'closed') || [];
@@ -106,62 +115,52 @@ const TasksTab = React.memo(function TasksTab({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Все задачи</h2>
+    <div className="space-y-4 p-3 md:p-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold text-primary">Все задачи</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {statusCounts.all} активных задач
+          </p>
+        </div>
+        
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium">
+            <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 font-medium">
               <Icon name="Plus" size={18} className="mr-2" />
-              Создать новую задачу
+              Создать задачу
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Новая задача</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                <Icon name="Plus" size={24} className="text-primary" />
+                Новая задача
+              </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="space-y-4 mt-4">
               <div>
-                <label className="text-sm font-medium">Тикет</label>
-                <Select
-                  value={newTask.ticket_id?.toString() || ''}
-                  onValueChange={(value) => setNewTask({ ...newTask, ticket_id: value ? parseInt(value) : null })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Выберите тикет" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {openTickets.map(ticket => (
-                      <SelectItem key={ticket.id} value={ticket.id.toString()}>
-                        #{ticket.id} {ticket.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Название задачи *</label>
+                <label className="text-sm font-medium mb-2 block">Название задачи *</label>
                 <Input
                   value={newTask.title}
                   onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                  placeholder="Введите название"
+                  placeholder="Краткое название задачи"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium">Описание</label>
+                <label className="text-sm font-medium mb-2 block">Описание</label>
                 <Textarea
                   value={newTask.description}
                   onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                  placeholder="Введите описание задачи"
+                  placeholder="Подробное описание задачи"
                   rows={3}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium">Приоритет</label>
+                  <label className="text-sm font-medium mb-2 block">Приоритет</label>
                   <Select
                     value={newTask.priority}
                     onValueChange={(value) => setNewTask({ ...newTask, priority: value })}
@@ -170,16 +169,16 @@ const TasksTab = React.memo(function TasksTab({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="urgent">Срочный</SelectItem>
-                      <SelectItem value="high">Высокий</SelectItem>
-                      <SelectItem value="medium">Средний</SelectItem>
-                      <SelectItem value="low">Низкий</SelectItem>
+                      <SelectItem value="urgent">🔴 Срочный</SelectItem>
+                      <SelectItem value="high">🟠 Высокий</SelectItem>
+                      <SelectItem value="medium">🟡 Средний</SelectItem>
+                      <SelectItem value="low">🟢 Низкий</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium">Менеджер</label>
+                  <label className="text-sm font-medium mb-2 block">Менеджер</label>
                   <Select
                     value={newTask.assigned_to?.toString() || ''}
                     onValueChange={(value) => setNewTask({ ...newTask, assigned_to: value ? parseInt(value) : null })}
@@ -199,7 +198,7 @@ const TasksTab = React.memo(function TasksTab({
               </div>
 
               <div>
-                <label className="text-sm font-medium">Дедлайн</label>
+                <label className="text-sm font-medium mb-2 block">Дедлайн</label>
                 <Input
                   type="datetime-local"
                   value={newTask.deadline}
@@ -207,11 +206,19 @@ const TasksTab = React.memo(function TasksTab({
                 />
               </div>
 
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsCreateDialogOpen(false)}
+                  className="flex-1"
+                >
                   Отмена
                 </Button>
-                <Button onClick={handleCreateTask} disabled={!newTask.title}>
+                <Button 
+                  onClick={handleCreateTask} 
+                  disabled={!newTask.title}
+                  className="flex-1 bg-gradient-to-r from-primary to-secondary"
+                >
                   Создать задачу
                 </Button>
               </div>
@@ -220,11 +227,12 @@ const TasksTab = React.memo(function TasksTab({
         </Dialog>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Button
           variant={statusFilter === 'all' ? 'default' : 'outline'}
           onClick={() => setStatusFilter('all')}
           size="sm"
+          className="gap-2"
         >
           Все ({statusCounts.all})
         </Button>
@@ -232,126 +240,92 @@ const TasksTab = React.memo(function TasksTab({
           variant={statusFilter === 'in_progress' ? 'default' : 'outline'}
           onClick={() => setStatusFilter('in_progress')}
           size="sm"
+          className="gap-2"
         >
+          <Icon name="Clock" size={14} />
           В работе ({statusCounts.in_progress})
         </Button>
         <Button
           variant={statusFilter === 'completed' ? 'default' : 'outline'}
           onClick={() => setStatusFilter('completed')}
           size="sm"
+          className="gap-2"
         >
-          Выполненные ({statusCounts.completed})
+          <Icon name="CheckCircle2" size={14} />
+          Выполнено ({statusCounts.completed})
         </Button>
-        <Button
-          variant={statusFilter === 'deleted' ? 'default' : 'outline'}
-          onClick={() => setStatusFilter('deleted')}
-          size="sm"
-        >
-          Удаленные ({statusCounts.deleted})
-        </Button>
+        {statusCounts.deleted > 0 && (
+          <Button
+            variant={statusFilter === 'deleted' ? 'default' : 'outline'}
+            onClick={() => setStatusFilter('deleted')}
+            size="sm"
+            className="gap-2"
+          >
+            <Icon name="Trash2" size={14} />
+            Удалённые ({statusCounts.deleted})
+          </Button>
+        )}
       </div>
 
       <div className="space-y-3">
         {filteredTasks.length === 0 ? (
-          <Card className="p-8 text-center text-muted-foreground">
-            <Icon name="Inbox" size={48} className="mx-auto mb-2 opacity-50" />
-            <p>Нет задач</p>
+          <Card className="p-8 text-center bg-card/40 border-white/10">
+            <Icon name="ListTodo" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
+            <p className="text-muted-foreground">
+              {statusFilter === 'all' ? 'Нет активных задач' : 'Нет задач в этой категории'}
+            </p>
           </Card>
         ) : (
-          filteredTasks.map(task => {
-            const manager = managers?.find(m => m.id === task.assigned_to);
-            const ticket = tickets?.find(t => t.id === task.ticket_id);
-            
-            return (
-              <Card
-                key={task.id}
-                className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800 hover:shadow-md transition-all"
-              >
-                <div className="p-4 bg-neutral-700">
-                  <div className="flex items-start justify-between gap-4">
+          filteredTasks.map(task => (
+            <Card 
+              key={task.id} 
+              className={`p-4 md:p-5 bg-card/60 border-border hover:bg-card/80 transition-all cursor-pointer group ${
+                task.is_deleted ? 'opacity-60' : ''
+              }`}
+              onClick={() => {
+                setSelectedTask(task);
+                setIsDetailDialogOpen(true);
+              }}
+            >
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-start gap-3">
+                    <span className="text-xs text-muted-foreground font-mono">#{task.id}</span>
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="font-mono text-sm text-muted-foreground">
-                          #{task.id}
-                        </span>
-                        <Badge 
-                          className={
-                            task.priority === 'urgent' ? 'bg-red-100 text-red-700 border-red-300' :
-                            task.priority === 'high' ? 'bg-orange-100 text-orange-700 border-orange-300' :
-                            task.priority === 'medium' ? 'bg-yellow-100 text-yellow-700 border-yellow-300' :
-                            'bg-gray-100 text-gray-700 border-gray-300'
-                          }
-                          variant="outline"
-                        >
-                          {getPriorityLabel(task.priority)}
-                        </Badge>
-                        <Badge 
-                          className={
-                            task.status === 'completed' ? 'bg-green-100 text-green-700 border-green-300' :
-                            task.status === 'in_progress' ? 'bg-blue-100 text-blue-700 border-blue-300' :
-                            'bg-gray-100 text-gray-700 border-gray-300'
-                          }
-                          variant="outline"
-                        >
-                          {getStatusLabel(task.status)}
-                        </Badge>
-                        {ticket && (
-                          <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-300">
-                            Тикет #{task.ticket_id}
-                          </Badge>
-                        )}
-                      </div>
-
-                      <h3 className="font-semibold text-base mb-2">
+                      <h3 className="font-semibold text-base md:text-lg group-hover:text-primary transition-colors">
                         {task.title}
                       </h3>
-
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        {task.deadline && (
-                          <span>
-                            {formatDeadline(task.deadline)}
-                          </span>
-                        )}
-                        {manager && (
-                          <span>
-                            {manager.full_name}
-                          </span>
-                        )}
-                        {task.created_by_name && (
-                          <span>
-                            {task.created_by_name}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setIsDetailDialogOpen(true);
-                        }}
-                      >
-                        <Icon name="Eye" size={18} />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setIsDetailDialogOpen(true);
-                        }}
-                      >
-                        <Icon name="Settings" size={18} />
-                      </Button>
+                      {task.description && (
+                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                          {task.description}
+                        </p>
+                      )}
                     </div>
                   </div>
+
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    {task.deadline && (
+                      <div className="flex items-center gap-1.5 text-muted-foreground">
+                        <Icon name="Calendar" size={14} />
+                        <span>{formatDeadline(task.deadline)}</span>
+                      </div>
+                    )}
+                    {task.assigned_name && (
+                      <div className="flex items-center gap-1.5 text-muted-foreground">
+                        <Icon name="User" size={14} />
+                        <span>{task.assigned_name}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </Card>
-            );
-          })
+
+                <div className="flex flex-wrap md:flex-col items-start gap-2">
+                  {getStatusBadge(task.status)}
+                  {getPriorityBadge(task.priority)}
+                </div>
+              </div>
+            </Card>
+          ))
         )}
       </div>
 
@@ -361,8 +335,7 @@ const TasksTab = React.memo(function TasksTab({
           open={isDetailDialogOpen}
           onOpenChange={setIsDetailDialogOpen}
           onUpdateStatus={onUpdateTaskStatus}
-          onDelete={onDeleteTask}
-          managers={managers}
+          onDeleteTask={onDeleteTask}
         />
       )}
     </div>
