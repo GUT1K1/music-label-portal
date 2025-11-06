@@ -79,8 +79,10 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
       }
 
       setCode(data.code);
-      setExpiresAt(new Date(data.expires_at));
-      setTimeLeft(data.expires_in_seconds);
+      // Устанавливаем фиксированное время жизни кода - 3 минуты
+      const expiryTime = new Date(Date.now() + 180000); // 180000 мс = 3 минуты
+      setExpiresAt(expiryTime);
+      setTimeLeft(180); // 180 секунд = 3 минуты
 
       toast({
         title: 'Код сгенерирован',
