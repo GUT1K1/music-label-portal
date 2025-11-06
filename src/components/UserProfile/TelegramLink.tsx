@@ -105,13 +105,13 @@ export function TelegramLink({ userId, telegramLinked, onUnlink }: TelegramLinkP
     
     setIsUnlinking(true);
     try {
-      const response = await fetch(`${API_ENDPOINTS.USERS}?id=${userId}`, {
+      const response = await fetch(API_ENDPOINTS.USERS, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'X-User-Id': userId.toString()
         },
-        body: JSON.stringify({ telegram_chat_id: null })
+        body: JSON.stringify({ id: userId, telegram_chat_id: null })
       });
 
       if (!response.ok) throw new Error('Failed to unlink Telegram');

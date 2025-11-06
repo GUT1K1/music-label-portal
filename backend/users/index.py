@@ -153,6 +153,10 @@ def handle_put(event: Dict[str, Any], conn) -> Dict[str, Any]:
         updates.append("tiktok_url = %s")
         params.append(body_data['tiktok_url'])
     
+    if 'telegram_chat_id' in body_data:
+        updates.append("telegram_chat_id = %s")
+        params.append(body_data['telegram_chat_id'])
+    
     if 'new_password' in body_data and body_data['new_password']:
         import hashlib
         password_hash = hashlib.sha256(body_data['new_password'].encode()).hexdigest()
