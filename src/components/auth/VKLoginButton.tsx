@@ -46,7 +46,6 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       // Генерируем PKCE параметры
       const codeVerifier = generateRandomString(64);
       const state = generateRandomString(32);
-      const deviceId = generateRandomString(32); // Генерируем device_id
       
       const hashed = await sha256(codeVerifier);
       const codeChallenge = base64urlencode(hashed);
@@ -54,9 +53,9 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       // Сохраняем в sessionStorage для использования после редиректа
       sessionStorage.setItem('vk_code_verifier', codeVerifier);
       sessionStorage.setItem('vk_state', state);
-      sessionStorage.setItem('vk_device_id', deviceId);
       
       // Формируем URL авторизации (используем прокси-функцию для VK redirect)
+      // device_id НЕ передаем - VK сам его генерирует и вернет в callback!
       const redirectUri = VK_REDIRECT_PROXY;
       const params = new URLSearchParams({
         response_type: 'code',
@@ -66,7 +65,6 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
         code_challenge: codeChallenge,
         code_challenge_method: 'S256',
         scope: 'email phone',
-        device_id: deviceId, // Добавляем device_id в URL авторизации
       });
       
       const authUrl = `https://id.vk.ru/authorize?${params.toString()}`;
