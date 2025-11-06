@@ -139,13 +139,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             user_info = json.loads(user_response.read().decode())
         
         if 'error' in user_info:
+            print(f"VK user_info error: {user_info}")
             return {
                 'statusCode': 400,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': 'Failed to get user info'}),
+                'body': json.dumps({
+                    'error': 'Failed to get user info',
+                    'vk_error': user_info.get('error'),
+                    'vk_error_description': user_info.get('error_description'),
+                    'vk_full_response': user_info
+                }),
                 'isBase64Encoded': False
             }
         
