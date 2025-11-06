@@ -45,6 +45,7 @@ const TasksTab = React.memo(function TasksTab({
     deadline: '',
     ticket_id: null as number | null,
   });
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
 
   const handleCreateTask = async () => {
     const success = await onCreateTask({ ...newTask, status: 'in_progress' });
@@ -57,6 +58,7 @@ const TasksTab = React.memo(function TasksTab({
         deadline: '',
         ticket_id: null,
       });
+      setAttachedFile(null);
       setShowCreateForm(false);
     }
   };
@@ -209,6 +211,29 @@ const TasksTab = React.memo(function TasksTab({
                 />
               </div>
 
+              <div>
+                <label className="text-sm font-medium mb-2 block">Файл (необязательно)</label>
+                <div className="flex flex-col gap-2">
+                  <Input
+                    type="file"
+                    onChange={(e) => setAttachedFile(e.target.files?.[0] || null)}
+                    className="cursor-pointer"
+                  />
+                  {attachedFile && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground bg-primary/5 p-2 rounded">
+                      <Icon name="Paperclip" size={14} />
+                      <span className="truncate">{attachedFile.name}</span>
+                      <button
+                        onClick={() => setAttachedFile(null)}
+                        className="ml-auto text-red-400 hover:text-red-300"
+                      >
+                        <Icon name="X" size={14} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <Button 
                 onClick={handleCreateTask} 
                 disabled={!newTask.title}
@@ -278,66 +303,56 @@ const TasksTab = React.memo(function TasksTab({
             </div>
           </div>
 
-          <div className="space-y-3">
-        {filteredTasks.length === 0 ? (
-          <Card className="p-8 text-center bg-card/40 border-white/10">
-            <Icon name="ListTodo" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
-            <p className="text-muted-foreground">
-              {statusFilter === 'all' ? 'Нет активных задач' : 'Нет задач в этой категории'}
-            </p>
-          </Card>
-        ) : (
-          filteredTasks.map(task => (
-            <Card 
-              key={task.id} 
-              className={`p-4 md:p-5 bg-card/60 border-border hover:bg-card/80 transition-all cursor-pointer group ${
-                task.is_deleted ? 'opacity-60' : ''
-              }`}
-              onClick={() => {
-                setSelectedTask(task);
-                setIsDetailDialogOpen(true);
-              }}
-            >
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-start gap-3">
-                    <span className="text-xs text-muted-foreground font-mono">#{task.id}</span>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-base md:text-lg group-hover:text-primary transition-colors">
-                        {task.title}
-                      </h3>
-                      {task.description && (
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                          {task.description}
-                        </p>
+          <div className="space-y-2">
+            {filteredTasks.length === 0 ? (
+              <Card className="p-8 text-center bg-card/40 border-white/10">
+                <Icon name="ListTodo" size={48} className="mx-auto mb-4 text-muted-foreground opacity-50" />
+                <p className="text-muted-foreground">
+                  {statusFilter === 'all' ? 'Нет активных задач' : 'Нет задач в этой категории'}
+                </p>
+              </Card>
+            ) : (
+              filteredTasks.map(task => (
+                <Card 
+                  key={task.id} 
+                  className={`p-3 bg-card/60 border-border hover:bg-card/80 transition-all cursor-pointer group ${
+                    task.is_deleted ? 'opacity-60' : ''
+                  }`}
+                  onClick={() => {
+                    setSelectedTask(task);
+                    setIsDetailDialogOpen(true);
+                  }}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <span className="text-xs text-muted-foreground font-mono shrink-0">#{task.id}</span>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-sm group-hover:text-primary transition-colors truncate">
+                          {task.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {task.deadline && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Icon name="Calendar" size={12} />
+                          <span className="hidden sm:inline">{formatDeadline(task.deadline)}</span>
+                        </div>
                       )}
+                      {task.assigned_name && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Icon name="User" size={12} />
+                          <span className="hidden md:inline truncate max-w-[100px]">{task.assigned_name}</span>
+                        </div>
+                      )}
+                      {getPriorityBadge(task.priority)}
+                      {getStatusBadge(task.status)}
                     </div>
                   </div>
-
-                  <div className="flex flex-wrap items-center gap-2 text-sm">
-                    {task.deadline && (
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <Icon name="Calendar" size={14} />
-                        <span>{formatDeadline(task.deadline)}</span>
-                      </div>
-                    )}
-                    {task.assigned_name && (
-                      <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <Icon name="User" size={14} />
-                        <span>{task.assigned_name}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap md:flex-col items-start gap-2">
-                  {getStatusBadge(task.status)}
-                  {getPriorityBadge(task.priority)}
-                </div>
-              </div>
-            </Card>
-          ))
-          )}
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </div>
