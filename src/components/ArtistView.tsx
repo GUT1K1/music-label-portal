@@ -117,7 +117,7 @@ export default function ArtistView({
           </div>
 
           <TabsContent value="news" className="mt-2 md:mt-6">
-            <NewsView userRole="artist" userId={user.id} />
+            <NewsView userRole="artist" userId={user.id} telegramLinked={!!user.telegram_chat_id} />
           </TabsContent>
 
           <TabsContent value="tracks" className="mt-2 md:mt-6">

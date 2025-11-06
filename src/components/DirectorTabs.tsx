@@ -38,6 +38,7 @@ interface User {
   blocked_reason?: string;
   last_ip?: string;
   device_fingerprint?: string;
+  telegram_chat_id?: string;
 }
 
 interface Ticket {
@@ -161,7 +162,7 @@ export default function DirectorTabs({
       </div>
 
       <TabsContent value="news" className="animate-fadeIn">
-        <NewsView userRole="director" userId={user.id} />
+        <NewsView userRole="director" userId={user.id} telegramLinked={!!user.telegram_chat_id} />
       </TabsContent>
 
       <TabsContent value="support" className="space-y-4 animate-fadeIn">

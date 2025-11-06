@@ -7,6 +7,7 @@ import NewsCard from '@/components/NewsCard';
 import JobCard from '@/components/JobCard';
 import NewsDialog from '@/components/NewsDialog';
 import JobDialog from '@/components/JobDialog';
+import { TelegramLink } from '@/components/UserProfile/TelegramLink';
 
 interface News {
   id: number;
@@ -37,9 +38,10 @@ interface Job {
 interface NewsViewProps {
   userRole: 'artist' | 'manager' | 'director';
   userId: number;
+  telegramLinked?: boolean;
 }
 
-export default function NewsView({ userRole, userId }: NewsViewProps) {
+export default function NewsView({ userRole, userId, telegramLinked = false }: NewsViewProps) {
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -348,6 +350,8 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
           </div>
         </div>
       </Card>
+
+      <TelegramLink userId={userId} telegramLinked={telegramLinked} />
 
       <div className="space-y-3 md:space-y-4">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">

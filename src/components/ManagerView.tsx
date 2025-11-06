@@ -117,7 +117,7 @@ export default function ManagerView({
           </div>
 
           <TabsContent value="news">
-            <NewsView userRole="manager" userId={user.id} />
+            <NewsView userRole="manager" userId={user.id} telegramLinked={!!user.telegram_chat_id} />
           </TabsContent>
 
           <TabsContent value="tasks">
