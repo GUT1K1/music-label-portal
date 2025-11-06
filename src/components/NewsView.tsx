@@ -39,9 +39,10 @@ interface NewsViewProps {
   userRole: 'artist' | 'manager' | 'director';
   userId: number;
   telegramLinked?: boolean;
+  userBalance?: number;
 }
 
-export default function NewsView({ userRole, userId, telegramLinked = false }: NewsViewProps) {
+export default function NewsView({ userRole, userId, telegramLinked = false, userBalance = 0 }: NewsViewProps) {
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -320,7 +321,7 @@ export default function NewsView({ userRole, userId, telegramLinked = false }: N
 
   return (
     <div className="space-y-4 md:space-y-6 p-3 md:p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         <Card className="bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 border-primary/20 backdrop-blur-sm overflow-hidden relative">
           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           <div className="relative px-3 py-2 md:px-4 md:py-3">
@@ -347,6 +348,27 @@ export default function NewsView({ userRole, userId, telegramLinked = false }: N
                   <span className="text-xl md:text-2xl font-bold text-primary tabular-nums">{countdown.minutes}</span>
                   <span className="text-[10px] md:text-xs text-muted-foreground">м</span>
                 </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="bg-gradient-to-r from-green-500/5 via-emerald-500/5 to-green-500/5 border-green-500/20 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          <div className="relative px-3 py-2 md:px-4 md:py-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 md:p-2 bg-green-500/20 rounded-lg border border-green-500/30">
+                  <Icon name="DollarSign" className="text-green-500" size={16} />
+                </div>
+                <h2 className="text-xs md:text-sm font-medium text-muted-foreground">Баланс</h2>
+              </div>
+              
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl md:text-2xl font-bold text-green-500 tabular-nums">
+                  {userBalance.toLocaleString('ru-RU')}
+                </span>
+                <span className="text-[10px] md:text-xs text-muted-foreground">₽</span>
               </div>
             </div>
           </div>
