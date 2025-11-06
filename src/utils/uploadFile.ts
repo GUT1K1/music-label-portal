@@ -47,45 +47,6 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       return result;
     }
     
-    // Большие файлы (>10MB) - используем Telegram для надёжной загрузки
-    console.log('[Upload] 🚀 Large file detected, using Telegram upload');
-    
-    // Читаем файл как бинарные данные
-    const fileBuffer = await file.arrayBuffer();
-    const fileBlob = new Blob([fileBuffer], { type: file.type || 'application/octet-stream' });
-    
-    console.log('[Upload] Uploading to Telegram...');
-    
-    // Кодируем имя файла в base64 для поддержки кириллицы
-    const fileNameBase64 = btoa(unescape(encodeURIComponent(file.name)));
-    
-    const uploadResponse = await fetch('https://functions.poehali.dev/46a53204-4754-4d80-bde1-22aafe49f088', {
-      method: 'POST',
-      body: fileBlob,
-      headers: {
-        'X-File-Name': fileNameBase64,
-        'X-Chat-Id': '420'
-      }
-    });
-    
-    if (!uploadResponse.ok) {
-      const errorText = await uploadResponse.text().catch(() => 'Unknown error');
-      console.error('[Upload] Telegram upload failed:', errorText);
-      throw new Error(`Ошибка загрузки в Telegram: ${uploadResponse.status}`);
-    }
-    
-    const result = await uploadResponse.json();
-    console.log('[Upload] ✅ File uploaded successfully to Telegram:', result);
-    
-    return {
-      url: result.url,
-      fileName: result.file_name,
-      fileSize: result.file_size,
-      file_id: result.file_id,
-      storage: 'telegram'
-    };
-    
-    /* СТАРАЯ ЛОГИКА ЧАНКОВ - ЗАКОММЕНТИРОВАНА
     // Большие файлы (>10MB) - разбиваем на chunks по 2MB
     console.log('[Upload] 📦 Large file detected, using chunked upload');
     
@@ -174,7 +135,6 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       fileName: file.name,
       fileSize: file.size
     };
-    */
     
   } catch (error) {
     console.error('[Upload] Fetch error:', error instanceof Error ? error.message : 'Unknown', 'for', file.name);
