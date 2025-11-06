@@ -72,7 +72,7 @@ def handle_get(event: Dict[str, Any], conn) -> Dict[str, Any]:
     query = '''
         SELECT id, username, role, full_name, revenue_share_percent, balance, created_at,
                telegram_id, telegram_chat_id, is_blocked, is_frozen, frozen_until, blocked_reason,
-               vk_photo, vk_email, vk_first_name, vk_last_name,
+               vk_photo, email, vk_email, vk_first_name, vk_last_name,
                yandex_music_url, vk_group_url, tiktok_url, social_links_filled,
                last_ip, device_fingerprint, password_hash,
                vk_photo as avatar
@@ -138,7 +138,7 @@ def handle_put(event: Dict[str, Any], conn) -> Dict[str, Any]:
         params.append(body_data['username'])
     
     if 'email' in body_data:
-        updates.append("vk_email = %s")
+        updates.append("email = %s")
         params.append(body_data['email'])
     
     if 'yandex_music_url' in body_data:
