@@ -59,9 +59,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'code': vk_code,
             'code_verifier': code_verifier,
             'client_id': vk_app_id,
-            'device_id': device_id,
             'redirect_uri': redirect_uri or vk_redirect_uri
         }
+        
+        # device_id опционален, добавляем только если есть
+        if device_id:
+            token_params['device_id'] = device_id
         
         token_data_encoded = urllib.parse.urlencode(token_params).encode('utf-8')
         token_req = urllib.request.Request(
