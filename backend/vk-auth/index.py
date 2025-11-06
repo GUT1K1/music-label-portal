@@ -116,7 +116,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': token_result.get('error_description', 'Token exchange failed'), 'vk_error': token_result.get('error')}),
+                'body': json.dumps({
+                    'error': token_result.get('error_description', 'Token exchange failed'), 
+                    'vk_error': token_result.get('error'),
+                    'vk_full_response': token_result,
+                    'sent_params': token_params
+                }),
                 'isBase64Encoded': False
             }
         
