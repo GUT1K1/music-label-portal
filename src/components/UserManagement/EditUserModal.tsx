@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Icon from '@/components/ui/icon';
 import { User } from './types';
 
@@ -22,6 +24,18 @@ export default function EditUserModal({
   onSave, 
   onClose 
 }: EditUserModalProps) {
+  const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSave = () => {
+    const dataToSave = { ...editData };
+    if (newPassword.trim()) {
+      (dataToSave as any).new_password = newPassword;
+    }
+    onEditDataChange(dataToSave);
+    onSave();
+  };
+
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-3 overflow-y-auto">
       <Card className="w-full max-w-3xl bg-card border-blue-500/30 my-4 max-h-[95vh] overflow-y-auto">
@@ -38,6 +52,33 @@ export default function EditUserModal({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 pt-4">
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+              <Icon name="Image" size={16} />
+              Аватар
+            </h3>
+            <div className="flex items-center gap-4">
+              <Avatar className="w-20 h-20 border-4 border-primary/20">
+                <AvatarImage src={editData.avatar || user.avatar || user.vk_photo || undefined} alt={user.full_name} />
+                <AvatarFallback className="bg-gradient-to-br from-primary/30 to-primary/10 text-lg font-bold">
+                  {user.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-2">
+                <Label className="text-sm">URL аватара</Label>
+                <Input
+                  value={editData.avatar || ''}
+                  onChange={(e) => onEditDataChange({ ...editData, avatar: e.target.value })}
+                  placeholder="https://example.com/avatar.jpg"
+                  className="h-10"
+                />
+                {user.vk_photo && (
+                  <p className="text-xs text-muted-foreground">VK фото: {user.vk_photo}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
               <Icon name="User" size={16} />
@@ -145,6 +186,56 @@ export default function EditUserModal({
 
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
+              <Icon name="Lock" size={16} />
+              Безопасность
+            </h3>
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <Label className="text-sm flex items-center gap-2">
+                  <Icon name="Key" size={14} />
+                  Новый пароль (оставьте пустым, чтобы не менять)
+                </Label>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Введите новый пароль"
+                    className="h-10 pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-10 w-10 p-0"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <Icon name={showPassword ? 'EyeOff' : 'Eye'} size={16} />
+                  </Button>
+                </div>
+                {user.password_hash && (
+                  <p className="text-xs text-muted-foreground font-mono truncate">Текущий хеш: {user.password_hash.slice(0, 40)}...</p>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground">Email подтверждён</p>
+                  <Badge variant={user.email_verified ? "default" : "secondary"} className="text-xs">
+                    {user.email_verified ? "✓ Да" : "✗ Нет"}
+                  </Badge>
+                </div>
+                <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
+                  <p className="text-xs text-muted-foreground">2FA</p>
+                  <Badge variant={user.two_factor_enabled ? "default" : "secondary"} className="text-xs">
+                    {user.two_factor_enabled ? "✓ Включена" : "✗ Выключена"}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
               <Icon name="Wallet" size={16} />
               Финансы
             </h3>
@@ -208,24 +299,13 @@ export default function EditUserModal({
                   </p>
                 </div>
               )}
-              <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
-                <p className="text-xs text-muted-foreground">Email подтверждён</p>
-                <Badge variant={user.email_verified ? "default" : "secondary"} className="text-xs">
-                  {user.email_verified ? "✓ Да" : "✗ Нет"}
-                </Badge>
-              </div>
-              <div className="space-y-1 p-3 bg-muted/30 rounded-lg">
-                <p className="text-xs text-muted-foreground">2FA включена</p>
-                <Badge variant={user.two_factor_enabled ? "default" : "secondary"} className="text-xs">
-                  {user.two_factor_enabled ? "✓ Да" : "✗ Нет"}
-                </Badge>
-              </div>
+
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t">
             <Button 
-              onClick={onSave} 
+              onClick={handleSave} 
               className="flex-1 bg-blue-500 hover:bg-blue-600 h-10"
             >
               <Icon name="Save" size={16} className="mr-2" />

@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import OnlineStatusBadge from '@/components/OnlineStatusBadge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User } from './types';
 
 interface UserListCardProps {
@@ -39,7 +40,14 @@ export default function UserListCard({
           {allUsers.map((u) => (
             <div key={u.id} className={`p-2 md:p-2.5 rounded-lg border transition-all ${u.is_blocked ? 'bg-red-500/10 border-red-500/30' : u.is_frozen ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-muted/30 border-border/50 hover:bg-muted/50'}`}>
               <div className="flex items-start justify-between gap-2 md:gap-3">
-                <div className="flex-1 min-w-0">
+                <div className="flex items-start gap-2 md:gap-3 flex-1 min-w-0">
+                  <Avatar className="w-9 h-9 border-2 border-primary/20 flex-shrink-0">
+                    <AvatarImage src={u.avatar || u.vk_photo || undefined} alt={u.full_name} />
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-xs font-semibold">
+                      {u.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 md:gap-2 mb-1">
                     {isUserOnline && (
                       <OnlineStatusBadge 
@@ -85,6 +93,7 @@ export default function UserListCard({
                   {u.is_frozen && u.frozen_until && (
                     <p className="text-[10px] md:text-xs text-yellow-400 mt-1">До: {new Date(u.frozen_until).toLocaleString('ru-RU')}</p>
                   )}
+                  </div>
                 </div>
                 {(onBlockUser || onFreezeUser || onEditUser) && (
                   <div className="flex items-center gap-1 flex-shrink-0">

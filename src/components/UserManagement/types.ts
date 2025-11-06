@@ -26,6 +26,9 @@ export interface User {
   vk_last_name?: string;
   email_verified?: boolean;
   two_factor_enabled?: boolean;
+  avatar?: string;
+  vk_photo?: string;
+  password_hash?: string;
 }
 
 export interface UserManagementProps {

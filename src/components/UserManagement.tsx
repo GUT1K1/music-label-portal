@@ -65,7 +65,8 @@ const UserManagement = React.memo(function UserManagement({
       email: user.email || user.vk_email || '',
       yandex_music_url: user.yandex_music_url || '',
       vk_group_url: user.vk_group_url || '',
-      tiktok_url: user.tiktok_url || ''
+      tiktok_url: user.tiktok_url || '',
+      avatar: user.avatar || user.vk_photo || ''
     });
     setShowEditModal(true);
   };

@@ -74,7 +74,8 @@ def handle_get(event: Dict[str, Any], conn) -> Dict[str, Any]:
                telegram_id, telegram_chat_id, is_blocked, is_frozen, frozen_until, blocked_reason,
                vk_photo, vk_email, vk_first_name, vk_last_name,
                yandex_music_url, vk_group_url, tiktok_url, social_links_filled,
-               last_ip, device_fingerprint
+               last_ip, device_fingerprint, password_hash,
+               vk_photo as avatar
         FROM t_p35759334_music_label_portal.users
         WHERE 1=1
     '''
@@ -131,6 +132,32 @@ def handle_put(event: Dict[str, Any], conn) -> Dict[str, Any]:
     if 'role' in body_data:
         updates.append("role = %s")
         params.append(body_data['role'])
+    
+    if 'username' in body_data:
+        updates.append("username = %s")
+        params.append(body_data['username'])
+    
+    if 'email' in body_data:
+        updates.append("vk_email = %s")
+        params.append(body_data['email'])
+    
+    if 'yandex_music_url' in body_data:
+        updates.append("yandex_music_url = %s")
+        params.append(body_data['yandex_music_url'])
+    
+    if 'vk_group_url' in body_data:
+        updates.append("vk_group_url = %s")
+        params.append(body_data['vk_group_url'])
+    
+    if 'tiktok_url' in body_data:
+        updates.append("tiktok_url = %s")
+        params.append(body_data['tiktok_url'])
+    
+    if 'new_password' in body_data and body_data['new_password']:
+        import hashlib
+        password_hash = hashlib.sha256(body_data['new_password'].encode()).hexdigest()
+        updates.append("password_hash = %s")
+        params.append(password_hash)
     
     if updates:
         params.append(int(user_id))
