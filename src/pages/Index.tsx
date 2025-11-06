@@ -61,7 +61,7 @@ export default function Index() {
             sessionStorage.removeItem('vk_state');
             sessionStorage.removeItem('vk_device_id');
           } else {
-            console.error('🔴 VK auth failed:', data.error);
+            console.error('🔴 VK auth failed - FULL ERROR:', data);
           }
         } catch (error) {
           console.error('🔴 VK auth error:', error);
