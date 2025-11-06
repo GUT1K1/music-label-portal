@@ -67,10 +67,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         print(f"Token exchange params: {token_params}")
         
         token_data_encoded = urllib.parse.urlencode(token_params).encode('utf-8')
+        # VK ID использует /oauth2/auth для token exchange (не /access_token!)
         token_req = urllib.request.Request(
             'https://id.vk.com/oauth2/auth',
             data=token_data_encoded,
-            headers={'Content-Type': 'application/x-www-form-urlencoded'}
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'User-Agent': 'MusicLabelPortal/1.0'
+            }
         )
         
         try:
