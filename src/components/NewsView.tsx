@@ -318,38 +318,31 @@ export default function NewsView({ userRole, userId }: NewsViewProps) {
 
   return (
     <div className="space-y-4 md:space-y-6 p-3 md:p-6">
-      <Card className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 border-primary/30 backdrop-blur-sm overflow-hidden relative">
+      <Card className="bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 border-primary/20 backdrop-blur-sm overflow-hidden relative">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-        <div className="relative px-3 py-3 md:px-6 md:py-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-6">
-            <div className="flex items-center gap-2 md:gap-3">
-              <div className="p-1.5 md:p-2.5 bg-primary/20 rounded-lg border border-primary/30">
-                <Icon name="Clock" className="text-primary" size={18} />
+        <div className="relative px-3 py-2 md:px-4 md:py-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 md:p-2 bg-primary/20 rounded-lg border border-primary/30">
+                <Icon name="Clock" className="text-primary" size={16} />
               </div>
-              <div>
-                <h2 className="text-xs md:text-sm font-medium text-muted-foreground">До следующего отчета</h2>
-              </div>
+              <h2 className="text-xs md:text-sm font-medium text-muted-foreground">До следующего отчета</h2>
             </div>
             
-            <div className="flex items-center justify-center gap-2 md:gap-3">
-              <div className="text-center min-w-[45px] md:min-w-[60px]">
-                <div className="text-2xl md:text-3xl font-bold text-primary leading-none">{countdown.days}</div>
-                <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">дней</div>
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <div className="flex items-baseline gap-0.5">
+                <span className="text-xl md:text-2xl font-bold text-primary tabular-nums">{countdown.days}</span>
+                <span className="text-[10px] md:text-xs text-muted-foreground">д</span>
               </div>
-              <div className="text-xl md:text-2xl text-primary/30 font-light">:</div>
-              <div className="text-center min-w-[40px] md:min-w-[50px]">
-                <div className="text-2xl md:text-3xl font-bold text-primary leading-none">{countdown.hours}</div>
-                <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">часов</div>
+              <span className="text-primary/30">•</span>
+              <div className="flex items-baseline gap-0.5">
+                <span className="text-xl md:text-2xl font-bold text-primary tabular-nums">{countdown.hours}</span>
+                <span className="text-[10px] md:text-xs text-muted-foreground">ч</span>
               </div>
-              <div className="text-xl md:text-2xl text-primary/30 font-light hidden md:block">:</div>
-              <div className="text-center min-w-[40px] md:min-w-[50px] hidden md:block">
-                <div className="text-2xl md:text-3xl font-bold text-primary leading-none">{countdown.minutes}</div>
-                <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">минут</div>
-              </div>
-              <div className="text-xl md:text-2xl text-primary/30 font-light hidden md:block">:</div>
-              <div className="text-center min-w-[40px] md:min-w-[50px] hidden md:block">
-                <div className="text-2xl md:text-3xl font-bold text-secondary leading-none animate-pulse">{countdown.seconds}</div>
-                <div className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">секунд</div>
+              <span className="text-primary/30 hidden md:inline">•</span>
+              <div className="items-baseline gap-0.5 hidden md:flex">
+                <span className="text-xl md:text-2xl font-bold text-primary tabular-nums">{countdown.minutes}</span>
+                <span className="text-[10px] md:text-xs text-muted-foreground">м</span>
               </div>
             </div>
           </div>
