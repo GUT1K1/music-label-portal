@@ -146,15 +146,144 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 total_chunks = int(total_chunks)
             
         else:
-            # JSON with base64 (supports chunked upload)
+            # JSON (multipart upload actions or legacy base64)
             body_data = json.loads(event.get('body', '{}'))
+            action = body_data.get('action')
+            
+            # Handle S3 multipart upload actions
+            if action == 'init-multipart':
+                file_name = body_data.get('fileName', 'unnamed')
+                upload_content_type = body_data.get('contentType', 'application/octet-stream')
+                
+                access_key = os.environ.get('YC_S3_ACCESS_KEY_ID')
+                secret_key = os.environ.get('YC_S3_SECRET_ACCESS_KEY')
+                bucket_name = os.environ.get('YC_S3_BUCKET_NAME')
+                
+                s3_client = boto3.client(
+                    's3',
+                    endpoint_url='https://storage.yandexcloud.net',
+                    aws_access_key_id=access_key,
+                    aws_secret_access_key=secret_key,
+                    region_name='ru-central1'
+                )
+                
+                file_ext = file_name.split('.')[-1] if '.' in file_name else ''
+                unique_filename = f"{uuid.uuid4()}.{file_ext}" if file_ext else str(uuid.uuid4())
+                s3_key = f"uploads/{datetime.now().strftime('%Y/%m/%d')}/{unique_filename}"
+                
+                response = s3_client.create_multipart_upload(
+                    Bucket=bucket_name,
+                    Key=s3_key,
+                    ContentType=upload_content_type
+                )
+                
+                upload_id = response['UploadId']
+                file_url = f"https://storage.yandexcloud.net/{bucket_name}/{s3_key}"
+                
+                print(f"Multipart upload initialized: {upload_id} for {s3_key}")
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({
+                        'uploadId': upload_id,
+                        's3Key': s3_key,
+                        'url': file_url
+                    })
+                }
+            
+            elif action == 'upload-part':
+                upload_id = body_data.get('uploadId')
+                s3_key = body_data.get('s3Key')
+                part_number = body_data.get('partNumber')
+                part_data_b64 = body_data.get('data')
+                
+                if not all([upload_id, s3_key, part_number, part_data_b64]):
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Missing upload-part parameters'})
+                    }
+                
+                access_key = os.environ.get('YC_S3_ACCESS_KEY_ID')
+                secret_key = os.environ.get('YC_S3_SECRET_ACCESS_KEY')
+                bucket_name = os.environ.get('YC_S3_BUCKET_NAME')
+                
+                s3_client = boto3.client(
+                    's3',
+                    endpoint_url='https://storage.yandexcloud.net',
+                    aws_access_key_id=access_key,
+                    aws_secret_access_key=secret_key,
+                    region_name='ru-central1'
+                )
+                
+                part_data = base64.b64decode(part_data_b64)
+                
+                response = s3_client.upload_part(
+                    Bucket=bucket_name,
+                    Key=s3_key,
+                    UploadId=upload_id,
+                    PartNumber=part_number,
+                    Body=part_data
+                )
+                
+                etag = response['ETag']
+                print(f"Part {part_number} uploaded: {len(part_data)} bytes, ETag={etag}")
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'ETag': etag})
+                }
+            
+            elif action == 'complete-multipart':
+                upload_id = body_data.get('uploadId')
+                s3_key = body_data.get('s3Key')
+                parts = body_data.get('parts', [])
+                
+                if not all([upload_id, s3_key, parts]):
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Missing complete-multipart parameters'})
+                    }
+                
+                access_key = os.environ.get('YC_S3_ACCESS_KEY_ID')
+                secret_key = os.environ.get('YC_S3_SECRET_ACCESS_KEY')
+                bucket_name = os.environ.get('YC_S3_BUCKET_NAME')
+                
+                s3_client = boto3.client(
+                    's3',
+                    endpoint_url='https://storage.yandexcloud.net',
+                    aws_access_key_id=access_key,
+                    aws_secret_access_key=secret_key,
+                    region_name='ru-central1'
+                )
+                
+                s3_client.complete_multipart_upload(
+                    Bucket=bucket_name,
+                    Key=s3_key,
+                    UploadId=upload_id,
+                    MultipartUpload={'Parts': parts}
+                )
+                
+                file_url = f"https://storage.yandexcloud.net/{bucket_name}/{s3_key}"
+                print(f"Multipart upload completed: {file_url}")
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'url': file_url, 's3Key': s3_key})
+                }
+            
+            # Legacy: JSON with base64 file data
             file_b64 = body_data.get('file', '')
             
             if not file_b64:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'No file data provided'})
+                    'body': json.dumps({'error': 'No file data or action provided'})
                 }
             
             file_name = body_data.get('fileName', 'unnamed')
