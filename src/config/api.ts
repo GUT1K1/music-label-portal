@@ -25,6 +25,7 @@ export const API_ENDPOINTS = {
   UPLOAD_REPORTS: funcUrls['upload-reports'],
   DEADLINE_REMINDER: funcUrls['deadline-reminder'],
   TELEGRAM_BOT: funcUrls['telegram-bot'],
+  GENERATE_TELEGRAM_CODE: funcUrls['generate-telegram-code'],
   USERS: funcUrls['users'],
   TICKETS: funcUrls['tickets'],
   AUTH: funcUrls['auth'],

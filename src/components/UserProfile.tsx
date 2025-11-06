@@ -5,6 +5,7 @@ import { ProfileEditForm } from './UserProfile/ProfileEditForm';
 import { ProfileStats } from './UserProfile/ProfileStats';
 import { ProfileInfo } from './UserProfile/ProfileInfo';
 import { PasswordChangeForm } from './UserProfile/PasswordChangeForm';
+import { TelegramLink } from './UserProfile/TelegramLink';
 import { useToast } from '@/hooks/use-toast';
 import { uploadFile } from '@/utils/uploadFile';
 import { API_ENDPOINTS } from '@/config/api';
@@ -235,6 +236,11 @@ const UserProfile = React.memo(function UserProfile({ user, onUpdateProfile, onC
           <ProfileStats user={user} />
           <ProfileInfo user={user} />
         </div>
+
+        <TelegramLink 
+          userId={user.id} 
+          telegramLinked={!!user.telegram_chat_id}
+        />
 
         <PasswordChangeForm
           isChangingPassword={isChangingPassword}

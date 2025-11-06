@@ -126,16 +126,9 @@ def handle_telegram_update(update: Dict[str, Any], bot_token: str, db_url: str) 
         user = get_user_by_chat_id(chat_id, db_url) if db_url else None
         print(f'[DEBUG] User: {user}')
         
-        # Автоматическая привязка по Telegram username
-        if not user and telegram_username and db_url:
-            user = try_auto_link_account(chat_id, telegram_username, bot_token, db_url)
-        
         if text == '/start':
             show_main_menu(bot_token, chat_id, user)
             return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
-        
-        if text.startswith('/link '):
-            return handle_link_account(text, chat_id, bot_token, db_url)
         
         if user:
             if text.startswith('/'):
@@ -155,8 +148,16 @@ def handle_telegram_update(update: Dict[str, Any], bot_token: str, db_url: str) 
                 else:
                     show_main_menu(bot_token, chat_id, user)
         else:
-            send_message(bot_token, chat_id, 
-                '❌ Аккаунт не найден. Обратитесь к администратору для регистрации.')
+            # Пользователь не привязан - пробуем привязать по коду
+            if text and text.isdigit() and len(text) == 6:
+                return handle_link_by_code(text, chat_id, bot_token, db_url)
+            else:
+                send_message(bot_token, chat_id, 
+                    '👋 Добро пожаловать!\n\n'
+                    'Для привязки аккаунта:\n'
+                    '1️⃣ Зайдите в личный кабинет на сайте\n'
+                    '2️⃣ Нажмите "Привязать Telegram"\n'
+                    '3️⃣ Введите полученный 6-значный код здесь')
         
         return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
     except Exception as e:
@@ -187,38 +188,76 @@ def get_user_by_chat_id(chat_id: int, db_url: str) -> Optional[Dict]:
         return user
     return None
 
-def try_auto_link_account(chat_id: int, telegram_username: str, bot_token: str, db_url: str) -> Optional[Dict]:
+def handle_link_by_code(code: str, chat_id: int, bot_token: str, db_url: str) -> Dict[str, Any]:
     conn = get_db_connection(db_url)
     cur = conn.cursor()
     
+    # Ищем пользователя с таким кодом
     cur.execute(
-        """UPDATE t_p35759334_music_label_portal.users 
-        SET telegram_chat_id = %s 
-        WHERE username = %s AND (telegram_chat_id IS NULL OR telegram_chat_id = '')
-        RETURNING id, username, full_name, role""",
-        (str(chat_id), telegram_username)
+        """SELECT id, username, full_name, role, telegram_link_code_expires_at 
+        FROM t_p35759334_music_label_portal.users 
+        WHERE telegram_link_code = %s 
+        AND (telegram_chat_id IS NULL OR telegram_chat_id = '')""",
+        (code,)
     )
     
     result = cur.fetchone()
+    
+    if not result:
+        cur.close()
+        release_db_connection(conn)
+        send_message(bot_token, chat_id, 
+            '❌ Неверный код или аккаунт уже привязан.\n\n'
+            'Попробуйте сгенерировать новый код в личном кабинете.')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    user_id, username, full_name, role, expires_at = result
+    
+    # Проверяем срок действия кода
+    if expires_at and datetime.now() > expires_at:
+        cur.close()
+        release_db_connection(conn)
+        send_message(bot_token, chat_id, 
+            '⏱ Код истёк (действует 5 минут).\n\n'
+            'Сгенерируйте новый код в личном кабинете.')
+        return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
+    
+    # Привязываем аккаунт
+    cur.execute(
+        """UPDATE t_p35759334_music_label_portal.users 
+        SET telegram_chat_id = %s, 
+            telegram_link_code = NULL, 
+            telegram_link_code_expires_at = NULL 
+        WHERE id = %s""",
+        (str(chat_id), user_id)
+    )
+    
     conn.commit()
     cur.close()
     release_db_connection(conn)
     
-    if result:
-        user = {'id': result[0], 'username': result[1], 'full_name': result[2], 'role': result[3]}
-        set_cache(f'user_{chat_id}', user)
-        
-        role_emoji = {'director': '👑', 'manager': '🎯', 'artist': '🎤'}
-        send_message(bot_token, chat_id, 
-            f'✅ Аккаунт автоматически привязан!\n👤 {result[2]}\nРоль: {role_emoji.get(result[3], "")} {result[3]}')
-        return user
+    # Создаём объект пользователя и кэшируем
+    user = {'id': user_id, 'username': username, 'full_name': full_name, 'role': role}
+    set_cache(f'user_{chat_id}', user)
     
-    return None
+    role_emoji = {'director': '👑', 'manager': '🎯', 'artist': '🎤'}
+    send_message(bot_token, chat_id, 
+        f'✅ Аккаунт успешно привязан!\n\n'
+        f'👤 {full_name}\n'
+        f'Роль: {role_emoji.get(role, "")} {role}')
+    
+    show_main_menu(bot_token, chat_id, user)
+    
+    return {'statusCode': 200, 'body': '', 'isBase64Encoded': False}
 
 def show_main_menu(bot_token: str, chat_id: int, user: Optional[Dict]):
     if not user:
         send_message(bot_token, chat_id, 
-            '👋 Добро пожаловать в 420 SMM бот!\n\n❌ Аккаунт не найден. Обратитесь к администратору.')
+            '👋 Добро пожаловать в 420 SMM бот!\n\n'
+            'Для привязки аккаунта:\n'
+            '1️⃣ Зайдите в личный кабинет на сайте\n'
+            '2️⃣ Нажмите "Привязать Telegram"\n'
+            '3️⃣ Введите полученный 6-значный код здесь')
         return
     
     role = user.get('role')
