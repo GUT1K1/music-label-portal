@@ -16,6 +16,7 @@ interface AppHeaderProps {
   onProfileClick: () => void;
   onLogout: () => void;
   onRefreshData?: () => void;
+  onWithdrawalClick?: () => void;
   userRole: 'artist' | 'manager' | 'director';
   userId: number;
   userName?: string;
@@ -23,7 +24,7 @@ interface AppHeaderProps {
   userBalance?: number;
 }
 
-export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, userRole, userId, userName = 'Пользователь', userAvatar, userBalance }: AppHeaderProps) {
+export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, onWithdrawalClick, userRole, userId, userName = 'Пользователь', userAvatar, userBalance }: AppHeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [balance, setBalance] = useState<number | null>(userBalance !== undefined ? userBalance : null);
   
@@ -234,8 +235,8 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
               <Icon name="User" size={16} className="mr-2" />
               Профиль
             </DropdownMenuItem>
-            {userRole !== 'artist' && balance !== null && balance >= 1000 && (
-              <DropdownMenuItem>
+            {userRole === 'artist' && balance !== null && balance >= 1000 && onWithdrawalClick && (
+              <DropdownMenuItem onClick={onWithdrawalClick}>
                 <Icon name="Wallet" size={16} className="mr-2" />
                 Запрос на вывод
               </DropdownMenuItem>

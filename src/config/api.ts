@@ -28,6 +28,7 @@ export const API_ENDPOINTS = {
   USERS: funcUrls['users'],
   TICKETS: funcUrls['tickets'],
   AUTH: funcUrls['auth'],
+  WITHDRAWAL: funcUrls['withdrawal'],
 } as const;
 
 // Оптимизированная функция для fetch с retry и timeout

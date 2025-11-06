@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "name": "GET withdrawal requests - unauthorized",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST create withdrawal - missing user header",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "amount": 1500,
+        "payment_method": "card",
+        "payment_details": "1234567890123456"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

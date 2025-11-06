@@ -6,7 +6,7 @@ import SupportChat from '@/components/SupportChat';
 import UserManagement from '@/components/UserManagement';
 import ReminderSetup from '@/components/ReminderSetup';
 import TelegramBotSettings from '@/components/TelegramBotSettings';
-
+import WithdrawalList from '@/components/WithdrawalList';
 import UserActivityMonitor from '@/components/UserActivityMonitor';
 import UserActivityStats from '@/components/UserActivityStats';
 import HomePage from '@/components/HomePage';
@@ -149,6 +149,10 @@ export default function DirectorTabs({
             <Icon name="FolderOpen" className="w-4 h-4 text-orange-500" />
             <span>Отчёты</span>
           </TabsTrigger>
+          <TabsTrigger value="withdrawals" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="Wallet" className="w-4 h-4 text-green-500" />
+            <span>Выплаты</span>
+          </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
             <Icon name="Settings" className="w-4 h-4 text-gray-500" />
             <span>Настройки</span>
@@ -205,6 +209,10 @@ export default function DirectorTabs({
             <ReportsUploader userId={user.id} />
           </TabsContent>
         </Tabs>
+      </TabsContent>
+
+      <TabsContent value="withdrawals" className="animate-fadeIn">
+        <WithdrawalList userId={user.id} userRole="director" />
       </TabsContent>
 
       <TabsContent value="settings" className="animate-fadeIn">

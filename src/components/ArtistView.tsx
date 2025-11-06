@@ -6,6 +6,7 @@ import SupportChat from '@/components/SupportChat';
 import AppHeader from '@/components/AppHeader';
 import UserProfile from '@/components/UserProfile';
 import NewsView from '@/components/NewsView';
+import WithdrawalDialog from '@/components/WithdrawalDialog';
 import { User, Ticket, NewTicket } from '@/types';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -52,6 +53,7 @@ export default function ArtistView({
     return localStorage.getItem('artist_active_tab') || 'news';
   });
   const [showProfile, setShowProfile] = useState(false);
+  const [showWithdrawal, setShowWithdrawal] = useState(false);
 
   const { unreadCounts } = useNotifications();
   useOnlineStatus(user.id);
@@ -77,6 +79,7 @@ export default function ArtistView({
             onProfileClick={() => setShowProfile(true)}
             onLogout={onLogout}
             onRefreshData={onRefreshData}
+            onWithdrawalClick={() => setShowWithdrawal(true)}
             userRole="artist"
             userId={user.id}
             userName={user.full_name}
@@ -155,6 +158,14 @@ export default function ArtistView({
             </div>
           </div>
         )}
+
+        <WithdrawalDialog
+          open={showWithdrawal}
+          onOpenChange={setShowWithdrawal}
+          userId={user.id}
+          currentBalance={user.balance}
+          onSuccess={onRefreshData}
+        />
       </div>
 
 
