@@ -13,6 +13,7 @@ export interface Task {
   status: string;
   created_by: number;
   assigned_to: number | null;
+  assigned_name?: string;
   deadline: string;
   ticket_id: number | null;
   created_at: string;
@@ -27,6 +28,7 @@ export interface Task {
   completion_attachment_url?: string;
   completion_attachment_name?: string;
   completion_attachment_size?: number;
+  is_deleted?: boolean;
 }
 
 export interface CreateTaskData {

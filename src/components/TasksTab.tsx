@@ -101,6 +101,30 @@ const TasksTab = React.memo(function TasksTab({
     return format(date, 'd MMM, HH:mm', { locale: ru });
   };
 
+  const getTimeRemaining = (deadline: string, status: string) => {
+    if (status === 'completed') return null;
+    
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    const diff = deadlineDate.getTime() - now.getTime();
+    
+    if (diff < 0) {
+      const absDiff = Math.abs(diff);
+      const hours = Math.floor(absDiff / (1000 * 60 * 60));
+      const days = Math.floor(hours / 24);
+      
+      if (days > 0) return { text: `Просрочено ${days}д`, isOverdue: true };
+      return { text: `Просрочено ${hours}ч`, isOverdue: true };
+    }
+    
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) return { text: `${days}д ${hours % 24}ч`, isOverdue: false };
+    if (hours > 0) return { text: `${hours}ч`, isOverdue: false };
+    return { text: `<1ч`, isOverdue: false };
+  };
+
   const openTickets = tickets?.filter(t => t.status !== 'closed') || [];
 
   const filteredTasks = tasks
@@ -110,6 +134,13 @@ const TasksTab = React.memo(function TasksTab({
       return task.status === statusFilter && !task.is_deleted;
     })
     .sort((a, b) => {
+      const aCompleted = a.status === 'completed';
+      const bCompleted = b.status === 'completed';
+      
+      if (aCompleted !== bCompleted) {
+        return aCompleted ? 1 : -1;
+      }
+      
       if (sortBy === 'priority') {
         const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 };
         return priorityOrder[a.priority as keyof typeof priorityOrder] - priorityOrder[b.priority as keyof typeof priorityOrder];
@@ -334,18 +365,24 @@ const TasksTab = React.memo(function TasksTab({
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      {task.deadline && (
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Icon name="Calendar" size={12} />
-                          <span className="hidden sm:inline">{formatDeadline(task.deadline)}</span>
-                        </div>
-                      )}
                       {task.assigned_name && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           <Icon name="User" size={12} />
                           <span className="hidden md:inline truncate max-w-[100px]">{task.assigned_name}</span>
                         </div>
                       )}
+                      {task.deadline && (() => {
+                        const timeLeft = getTimeRemaining(task.deadline, task.status);
+                        if (!timeLeft) return null;
+                        return (
+                          <div className={`flex items-center gap-1 text-xs ${
+                            timeLeft.isOverdue ? 'text-red-400' : 'text-muted-foreground'
+                          }`}>
+                            <Icon name="Clock" size={12} />
+                            <span className="hidden sm:inline">{timeLeft.text}</span>
+                          </div>
+                        );
+                      })()}
                       {getPriorityBadge(task.priority)}
                       {getStatusBadge(task.status)}
                     </div>
@@ -364,6 +401,7 @@ const TasksTab = React.memo(function TasksTab({
           onOpenChange={setIsDetailDialogOpen}
           onUpdateStatus={onUpdateTaskStatus}
           onDeleteTask={onDeleteTask}
+          userRole="director"
         />
       )}
     </div>

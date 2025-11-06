@@ -97,7 +97,10 @@ export default function TaskDetailDialog({ task, open, onOpenChange, onUpdateSta
   const [timeRemaining, setTimeRemaining] = useState<{ text: string; isOverdue: boolean } | null>(null);
 
   useEffect(() => {
-    if (!task?.deadline) return;
+    if (!task?.deadline || task.status === 'completed') {
+      setTimeRemaining(null);
+      return;
+    }
     
     const updateTimer = () => {
       setTimeRemaining(getTimeRemaining(task.deadline));
@@ -107,7 +110,7 @@ export default function TaskDetailDialog({ task, open, onOpenChange, onUpdateSta
     const interval = setInterval(updateTimer, 60000);
     
     return () => clearInterval(interval);
-  }, [task?.deadline]);
+  }, [task?.deadline, task?.status]);
 
   if (!task) return null;
 
