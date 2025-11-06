@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { API_ENDPOINTS } from '@/config/api';
 import { useToast } from '@/hooks/use-toast';
+import Icon from '@/components/ui/icon';
 
 interface TelegramLoginButtonProps {
   onAuth: (userData: any) => void;
@@ -10,12 +11,14 @@ interface TelegramLoginButtonProps {
 declare global {
   interface Window {
     onTelegramAuth?: (user: any) => void;
+    Telegram?: any;
   }
 }
 
+const BOT_USERNAME = 'fosmmtrtrdev_bot';
+
 export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps) {
   const { toast } = useToast();
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.onTelegramAuth = async (telegramUser: any) => {
@@ -28,8 +31,6 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
           },
           body: JSON.stringify(telegramUser),
         });
-
-        console.log('🔵 Backend response status:', response.status);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -55,52 +56,42 @@ export default function TelegramLoginButton({ onAuth }: TelegramLoginButtonProps
       }
     };
 
-    if (containerRef.current && containerRef.current.children.length === 0) {
-      const script = document.createElement('script');
-      script.src = 'https://telegram.org/js/telegram-widget.js?22';
-      script.async = true;
-      script.setAttribute('data-telegram-login', 'fosmmtrtrdev_bot');
-      script.setAttribute('data-size', 'large');
-      script.setAttribute('data-radius', '8');
-      script.setAttribute('data-onauth', 'onTelegramAuth(user)');
-      script.setAttribute('data-request-access', 'write');
-      
-      script.onerror = () => {
-        console.error('🔴 Telegram widget script failed to load');
-        toast({
-          title: '❌ Ошибка загрузки',
-          description: 'Не удалось загрузить виджет Telegram. Проверьте подключение к интернету.',
-          variant: 'destructive',
-        });
-      };
-      
-      script.onload = () => {
-        console.log('✅ Telegram widget loaded successfully');
-        // Проверяем наличие ошибок в iframe через небольшую задержку
-        setTimeout(() => {
-          const iframe = containerRef.current?.querySelector('iframe');
-          if (iframe) {
-            console.log('✅ Telegram iframe found');
-          } else {
-            console.warn('⚠️ Telegram iframe not found - возможно бот не настроен');
-          }
-        }, 1000);
-      };
-      
-      containerRef.current.appendChild(script);
-    }
-
     return () => {
       window.onTelegramAuth = undefined;
     };
   }, [onAuth, toast]);
 
+  const handleTelegramLogin = () => {
+    const width = 600;
+    const height = 700;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+    
+    const authUrl = `https://oauth.telegram.org/auth?bot_id=8210986256&origin=${encodeURIComponent(window.location.origin)}&request_access=write&return_to=${encodeURIComponent(window.location.origin)}`;
+    
+    const popup = window.open(
+      authUrl,
+      'telegram_oauth',
+      `width=${width},height=${height},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no`
+    );
+
+    if (!popup) {
+      toast({
+        title: '❌ Ошибка',
+        description: 'Не удалось открыть окно авторизации. Разрешите всплывающие окна.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
-    <div className="w-full h-[46px]">
-      <div 
-        ref={containerRef} 
-        className="flex justify-center w-full h-full [&_iframe]:!w-full [&_iframe]:!h-full [&_iframe]:rounded-lg overflow-hidden"
-      />
-    </div>
+    <Button
+      onClick={handleTelegramLogin}
+      variant="outline"
+      className="w-full h-[46px] bg-gradient-to-r from-yellow-500/10 to-orange-500/10 hover:from-yellow-500/20 hover:to-orange-500/20 border-yellow-500/30 hover:border-yellow-500/50 text-yellow-400 transition-all duration-300 group"
+    >
+      <Icon name="Send" className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+      Telegram
+    </Button>
   );
 }
