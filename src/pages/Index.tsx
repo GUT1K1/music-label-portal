@@ -34,9 +34,9 @@ export default function Index() {
           return;
         }
         
-        // Получаем code_verifier и отправляем на бэкенд
+        // Получаем code_verifier и device_id из sessionStorage
         const savedCodeVerifier = sessionStorage.getItem('vk_code_verifier');
-        const deviceId = urlParams.get('device_id');
+        const savedDeviceId = sessionStorage.getItem('vk_device_id');
         
         try {
           const response = await fetch('https://functions.poehali.dev/9733f2f5-a548-43c2-a405-0600fb27532e', {
@@ -45,7 +45,7 @@ export default function Index() {
             body: JSON.stringify({
               code: vkCode,
               code_verifier: savedCodeVerifier,
-              device_id: deviceId,
+              device_id: savedDeviceId,
               redirect_uri: 'https://functions.poehali.dev/07be7329-c8ac-448b-99b7-930db7c3b704'
             })
           });
@@ -59,6 +59,7 @@ export default function Index() {
             // Очищаем sessionStorage
             sessionStorage.removeItem('vk_code_verifier');
             sessionStorage.removeItem('vk_state');
+            sessionStorage.removeItem('vk_device_id');
           } else {
             console.error('🔴 VK auth failed:', data.error);
           }
