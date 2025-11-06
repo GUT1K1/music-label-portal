@@ -3,7 +3,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const SUPPORT_URL = 'https://functions.poehali.dev/03b127de-537a-446c-af8d-01caba70e2e9';
 
-const UPLOAD_URL = 'https://functions.poehali.dev/4a51bf1f-9fb3-4d61-b2d4-e3c42bcb2dda';
+const UPLOAD_URL = 'https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9';
 
 export function useSupportActions(
   userId: number,
