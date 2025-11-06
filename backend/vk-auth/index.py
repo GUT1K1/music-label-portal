@@ -66,7 +66,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         token_data_encoded = urllib.parse.urlencode(token_params).encode('utf-8')
         token_req = urllib.request.Request(
-            'https://id.vk.ru/oauth2/auth',
+            'https://id.vk.ru/oauth2/token',
             data=token_data_encoded,
             headers={'Content-Type': 'application/x-www-form-urlencoded'}
         )
