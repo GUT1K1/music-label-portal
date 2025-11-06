@@ -54,7 +54,17 @@ export default function Index() {
           
           if (data.user) {
             console.log('🟢 VK auth successful:', data.user);
-            login(data.user);
+            
+            // Сохраняем пользователя напрямую (VK уже вернул полные данные)
+            const userData = data.user;
+            if (userData.full_name) {
+              userData.fullName = userData.full_name;
+            }
+            if (userData.vk_photo) {
+              userData.avatar = userData.vk_photo;
+            }
+            
+            login('', '', undefined, userData); // Передаём как telegramData (4й параметр)
             
             // Очищаем sessionStorage
             sessionStorage.removeItem('vk_code_verifier');
