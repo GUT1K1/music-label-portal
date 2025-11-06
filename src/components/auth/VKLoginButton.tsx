@@ -9,7 +9,7 @@ interface VKLoginButtonProps {
 }
 
 const VK_APP_ID = '54299249';
-const VK_REDIRECT_URI = 'https://p35759334.poehali.dev/app';
+const VK_REDIRECT_URI = 'https://420.рф/app';
 
 export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
   const { toast } = useToast();
