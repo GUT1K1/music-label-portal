@@ -57,7 +57,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 Params={
                     'Bucket': bucket_name,
                     'Key': s3_key,
-                    'ContentType': content_type
+                    'ContentType': content_type,
+                    'ACL': 'public-read'
                 },
                 ExpiresIn=3600
             )
