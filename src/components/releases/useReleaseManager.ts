@@ -187,11 +187,10 @@ export const useReleaseManager = (userId: number) => {
 
     const newTracks = audioFiles.map((file, i) => {
       const trackNumber = tracks.length + i + 1;
-      const fileName = file.name.replace(/\.[^/.]+$/, '');
       
       const track: Track = {
         track_number: trackNumber,
-        title: fileName,
+        title: '',
         composer: '',
         language_audio: 'Русский',
         explicit_content: false,
