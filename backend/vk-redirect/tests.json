@@ -1,0 +1,16 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "GET redirect with code",
+      "method": "GET",
+      "path": "/?code=test123&state=abc&device_id=xyz",
+      "expectedStatus": 302
+    }
+  ]
+}

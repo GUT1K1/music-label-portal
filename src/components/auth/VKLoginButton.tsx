@@ -9,6 +9,7 @@ interface VKLoginButtonProps {
 }
 
 const VK_APP_ID = '54299249';
+const VK_REDIRECT_PROXY = 'https://functions.poehali.dev/07be7329-c8ac-448b-99b7-930db7c3b704';
 
 export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
   const { toast } = useToast();
@@ -59,8 +60,8 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       sessionStorage.setItem('vk_code_verifier', codeVerifier);
       sessionStorage.setItem('vk_state', state);
       
-      // Формируем URL авторизации (используем текущий домен)
-      const redirectUri = `${window.location.origin}/app`;
+      // Формируем URL авторизации (используем прокси-функцию для VK redirect)
+      const redirectUri = VK_REDIRECT_PROXY;
       const params = new URLSearchParams({
         response_type: 'code',
         client_id: VK_APP_ID,
@@ -116,7 +117,7 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
             code,
             code_verifier: savedCodeVerifier,
             device_id,
-            redirect_uri: `${window.location.origin}/app`
+            redirect_uri: VK_REDIRECT_PROXY
           })
         });
         
