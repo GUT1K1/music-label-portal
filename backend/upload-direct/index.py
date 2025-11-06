@@ -134,6 +134,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             file_data = file_item.file.read()
             file_name = form.getvalue('fileName', file_item.filename)
             
+            # Check for chunked upload parameters in multipart
+            chunk_index = form.getvalue('chunkIndex')
+            total_chunks = form.getvalue('totalChunks')
+            existing_s3_key = form.getvalue('s3Key')
+            upload_content_type = form.getvalue('contentType', 'application/octet-stream')
+            
+            if chunk_index is not None:
+                chunk_index = int(chunk_index)
+            if total_chunks is not None:
+                total_chunks = int(total_chunks)
+            
         else:
             # JSON with base64 (supports chunked upload)
             body_data = json.loads(event.get('body', '{}'))
