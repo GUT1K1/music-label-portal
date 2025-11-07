@@ -234,8 +234,8 @@ export default function WizardStepContract({
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Лицензионный договор</h2>
+      <div className="text-center space-y-2 bg-transparent">
+        <h2 className="text-2xl font-bold text-primary">Лицензионный договор</h2>
         <p className="text-sm text-muted-foreground">
           Ознакомьтесь с договором и поставьте электронную подпись
         </p>
