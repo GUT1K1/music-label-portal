@@ -258,13 +258,22 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 price_cat = sql_escape(body_data.get('price_category'))
                 title_lang = sql_escape(body_data.get('title_language'))
                 
+                # Contract data
+                contract_pdf_url = sql_escape(body_data.get('contract_pdf_url'))
+                contract_requisites = body_data.get('contract_requisites')
+                if contract_requisites:
+                    contract_requisites_json = sql_escape(json.dumps(contract_requisites, ensure_ascii=False))
+                else:
+                    contract_requisites_json = 'NULL'
+                
                 insert_sql = f"""
                     INSERT INTO {schema}.releases 
                     (artist_id, title, release_name, cover_url, release_date, preorder_date, 
-                     sales_start_date, genre, copyright, price_category, title_language, status)
+                     sales_start_date, genre, copyright, price_category, title_language, status,
+                     contract_pdf_url, contract_requisites)
                     VALUES ({user_id}, {release_name}, {release_name}, {cover_url}, {release_date}, 
                             {preorder_date}, {sales_start}, {genre_val}, {copyright_val}, {price_cat}, 
-                            {title_lang}, 'pending')
+                            {title_lang}, 'pending', {contract_pdf_url}, {contract_requisites_json})
                     RETURNING id, created_at
                 """
                 print(f"[POST] Executing SQL: {insert_sql}")
