@@ -173,7 +173,7 @@ export default function ReleaseWizard({
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-6 bg-transparent">
+        <CardContent className="space-y-6">
           {/* Step content */}
           {currentStep === 1 && (
             <WizardStepReleaseType
