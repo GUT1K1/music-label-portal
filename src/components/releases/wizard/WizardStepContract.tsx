@@ -176,7 +176,7 @@ export default function WizardStepContract({
         );
         
         const canvas = await html2canvas(sectionContainer, {
-          scale: 3,
+          scale: 2,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
@@ -193,7 +193,7 @@ export default function WizardStepContract({
         const imgWidth = 210;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         const pageHeight = 297;
-        const imageData = canvas.toDataURL('image/jpeg', 0.95);
+        const imageData = canvas.toDataURL('image/jpeg', 0.8);
         
         if (imgHeight <= pageHeight) {
           // Контент помещается на одну страницу

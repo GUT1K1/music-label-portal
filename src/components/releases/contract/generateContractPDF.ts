@@ -46,39 +46,16 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
     .replace(/border-bottom: 2px solid hsl\(45, 100%, 60%\)/g, 'border-bottom: 2px solid #000')
     .replace(/filter: brightness\(0\) saturate\(100%\) invert\(83%\) sepia\(49%\) saturate\(1053%\) hue-rotate\(0deg\) brightness\(102%\) contrast\(101%\);/g, 'filter: none;');
 
-  // Создаем временный контейнер для рендеринга
+  // Создаем временный контейнер для парсинга HTML
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
   tempContainer.style.left = '-9999px';
   tempContainer.style.top = '0';
-  tempContainer.style.width = '210mm';
-  tempContainer.style.padding = '15mm';
-  tempContainer.style.background = '#fff';
-  tempContainer.style.color = '#000';
   tempContainer.innerHTML = pdfHtml;
   document.body.appendChild(tempContainer);
 
-  // Даем время на загрузку изображений
+  // Ждем загрузки изображений
   await new Promise(resolve => setTimeout(resolve, 500));
-
-  // Создаем canvas из HTML
-  const canvas = await html2canvas(tempContainer, {
-    scale: 2,
-    useCORS: true,
-    logging: false,
-    backgroundColor: '#ffffff'
-  });
-
-  // Удаляем временный контейнер
-  document.body.removeChild(tempContainer);
-
-  // Размеры A4 в мм
-  const pdfWidth = 210;
-  const pdfHeight = 297;
-  
-  // Размеры с учетом полей
-  const contentWidth = pdfWidth - 30; // 15mm с каждой стороны
-  const contentHeight = pdfHeight - 30;
 
   // Создаем PDF
   const pdf = new jsPDF({
@@ -87,48 +64,102 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
     format: 'a4'
   });
 
-  // Вычисляем размеры для вставки canvas
-  const imgWidth = contentWidth;
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  
-  if (imgHeight <= contentHeight) {
-    // Контент помещается на одну страницу
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-    pdf.addImage(imgData, 'JPEG', 15, 15, imgWidth, imgHeight);
-  } else {
-    // Контент не помещается - разбиваем на страницы
-    const totalPages = Math.ceil(imgHeight / contentHeight);
-
-    for (let page = 0; page < totalPages; page++) {
-      if (page > 0) {
-        pdf.addPage();
-      }
-
-      // Создаем отдельный canvas для каждой страницы
-      const pageCanvas = document.createElement('canvas');
-      pageCanvas.width = canvas.width;
-      pageCanvas.height = (canvas.width * contentHeight) / imgWidth;
-
-      const ctx = pageCanvas.getContext('2d');
-      if (!ctx) continue;
-
-      // Копируем нужную часть исходного canvas
-      const sourceY = page * pageCanvas.height;
-      const sourceHeight = Math.min(pageCanvas.height, canvas.height - sourceY);
-      
-      ctx.drawImage(
-        canvas,
-        0, sourceY,
-        canvas.width, sourceHeight,
-        0, 0,
-        pageCanvas.width, sourceHeight
-      );
-
-      // Добавляем изображение в PDF
-      const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
-      pdf.addImage(pageImgData, 'JPEG', 15, 15, imgWidth, contentHeight);
-    }
+  // Получаем body из шаблона
+  let bodyContent = tempContainer.querySelector('body');
+  if (!bodyContent) {
+    bodyContent = tempContainer;
   }
+
+  // Функция рендера секции (та же логика что в WizardStepContract)
+  const renderSection = async (content: string, isFirst: boolean) => {
+    const sectionContainer = document.createElement('div');
+    sectionContainer.style.position = 'absolute';
+    sectionContainer.style.left = '-9999px';
+    sectionContainer.style.width = '794px';
+    sectionContainer.style.padding = '50px';
+    sectionContainer.style.background = '#fff';
+    sectionContainer.style.fontFamily = 'Times New Roman, serif';
+    sectionContainer.style.fontSize = '10pt';
+    sectionContainer.style.lineHeight = '1.35';
+    sectionContainer.style.color = '#000';
+    sectionContainer.style.boxSizing = 'border-box';
+    sectionContainer.innerHTML = content;
+    
+    document.body.appendChild(sectionContainer);
+    
+    // Ждем загрузки изображений в секции
+    const sectionImages = sectionContainer.querySelectorAll('img');
+    await Promise.all(
+      Array.from(sectionImages).map(img => {
+        if ((img as HTMLImageElement).complete) return Promise.resolve();
+        return new Promise(resolve => {
+          (img as HTMLImageElement).onload = () => resolve(null);
+          (img as HTMLImageElement).onerror = () => resolve(null);
+        });
+      })
+    );
+    
+    const canvas = await html2canvas(sectionContainer, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: '#ffffff',
+      width: 794,
+      windowWidth: 794
+    });
+    
+    document.body.removeChild(sectionContainer);
+    
+    if (!isFirst) {
+      pdf.addPage();
+    }
+    
+    const imgWidth = 210;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const pageHeight = 297;
+    const imageData = canvas.toDataURL('image/jpeg', 0.8);
+    
+    if (imgHeight <= pageHeight) {
+      pdf.addImage(imageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+    } else {
+      let position = 0;
+      let heightLeft = imgHeight;
+      
+      pdf.addImage(imageData, 'JPEG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      
+      while (heightLeft > 0) {
+        position -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(imageData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+    }
+  };
+
+  // Рендерим все секции по очереди
+  const contractHeader = bodyContent.querySelector('.contract-header');
+  const articlesSection = bodyContent.querySelector('.articles-section');
+  const article8Section = bodyContent.querySelector('.article-8');
+  const appendixes = bodyContent.querySelectorAll('.appendix');
+  
+  if (contractHeader) {
+    await renderSection((contractHeader as HTMLElement).outerHTML, true);
+  }
+  
+  if (articlesSection) {
+    await renderSection((articlesSection as HTMLElement).outerHTML, false);
+  }
+  
+  if (article8Section) {
+    await renderSection((article8Section as HTMLElement).outerHTML, false);
+  }
+  
+  for (const appendix of Array.from(appendixes)) {
+    await renderSection((appendix as HTMLElement).outerHTML, false);
+  }
+
+  document.body.removeChild(tempContainer);
 
   // Возвращаем PDF как Blob
   return pdf.output('blob');
