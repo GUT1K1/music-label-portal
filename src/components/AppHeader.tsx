@@ -118,7 +118,7 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
           <div className="hidden md:block absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-0 group-hover:opacity-75 transition-opacity duration-300 -z-10" />
         </div>
         <div>
-          <h1 className="text-2xl md:text-4xl font-black animate-shimmer">420</h1>
+          <h1 className="text-2xl md:text-4xl font-black text-primary">420</h1>
           <p className="text-xs text-primary/60 tracking-wider">Музыкальный лейбл</p>
         </div>
       </div>

@@ -233,16 +233,16 @@ export default function WizardStepContract({
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       {/* Предпросмотр договора */}
-      <div className="relative">
+      <div className="relative flex-1">
         <div className="absolute top-4 right-4 z-10">
           <Button
             onClick={downloadContractAsPDF}
             disabled={isGeneratingPDF}
             variant="outline"
             size="sm"
-            className="gap-2"
+            className="gap-2 bg-white/90 hover:bg-white shadow-md"
           >
             {isGeneratingPDF ? (
               <>
@@ -257,9 +257,9 @@ export default function WizardStepContract({
             )}
           </Button>
         </div>
-        <div className="max-h-[600px] overflow-y-auto">
+        <div className="h-[600px] overflow-y-auto">
           <div 
-            className="contract-preview bg-white p-6"
+            className="contract-preview bg-white p-6 min-h-full"
             style={{
               fontFamily: "'Times New Roman', serif",
               fontSize: '10pt',
@@ -273,7 +273,7 @@ export default function WizardStepContract({
       </div>
 
       {/* Нижние элементы с паддингом */}
-      <div className="p-6 space-y-6">
+      <div className="p-6 pt-4 space-y-6 bg-background">
         {/* Блок подписи */}
         {!signatureDataUrl ? (
           <Card className="p-6 bg-blue-500/5 border-2 border-blue-500/20">
