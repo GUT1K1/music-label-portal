@@ -45,8 +45,8 @@ export const CONTRACT_TEMPLATE = `
       break-after: page;
     }
     .articles-section {
-      page-break-before: always;
-      break-before: page;
+      page-break-after: avoid;
+      break-after: avoid;
     }
     .article-8 {
       page-break-before: always;

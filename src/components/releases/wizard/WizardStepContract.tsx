@@ -223,19 +223,17 @@ export default function WizardStepContract({
       const article8Section = bodyContent.querySelector('.article-8');
       const appendixes = bodyContent.querySelectorAll('.appendix');
       
-      // Страница 1-2: Шапка договора + Статьи (объединяем в одну секцию)
-      let mainContent = '';
+      // Страница 1: Шапка договора с терминами и подписями
       if (contractHeader) {
-        mainContent += (contractHeader as HTMLElement).outerHTML;
-      }
-      if (articlesSection) {
-        mainContent += (articlesSection as HTMLElement).outerHTML;
-      }
-      if (mainContent) {
-        await renderSection(mainContent, true);
+        await renderSection((contractHeader as HTMLElement).outerHTML, true);
       }
       
-      // Следующая страница: Статья 8 (реквизиты и подписи)
+      // Страница 2: Статьи 1-6
+      if (articlesSection) {
+        await renderSection((articlesSection as HTMLElement).outerHTML, false);
+      }
+      
+      // Страница 3: Статья 7 (реквизиты и подписи)
       if (article8Section) {
         await renderSection((article8Section as HTMLElement).outerHTML, false);
       }
