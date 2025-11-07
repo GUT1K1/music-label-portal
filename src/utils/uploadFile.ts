@@ -46,10 +46,10 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     console.log('[Upload] 🚀 Large file, using S3 multipart upload');
     
     const contentType = file.type || 'application/octet-stream';
-    const chunkSize = 5 * 1024 * 1024; // 5MB chunks (минимум для S3 multipart)
+    const chunkSize = 2.5 * 1024 * 1024; // 2.5MB chunks (баланс между Cloud Functions лимитом и S3 минимумом)
     const totalChunks = Math.ceil(file.size / chunkSize);
     
-    console.log(`[Upload] Splitting into ${totalChunks} chunks (5MB each)`);
+    console.log(`[Upload] Splitting into ${totalChunks} chunks (2.5MB each)`);
     
     let uploadId = '';
     let s3Key = '';
@@ -77,7 +77,7 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     
     console.log('[Upload] ✅ Multipart upload initialized:', uploadId);
     
-    // Шаг 2: Загружаем части
+    // Шаг 2: Загружаем части с повторными попытками
     const parts: { PartNumber: number; ETag: string }[] = [];
     
     for (let i = 0; i < totalChunks; i++) {
@@ -87,25 +87,44 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       
       console.log(`[Upload] 📤 Part ${i + 1}/${totalChunks}: ${(chunk.size / 1024 / 1024).toFixed(2)}MB`);
       
-      // Отправляем часть через FormData (бинарные данные, не base64)
-      const formData = new FormData();
-      formData.append('action', 'upload-part');
-      formData.append('uploadId', uploadId);
-      formData.append('s3Key', s3Key);
-      formData.append('partNumber', (i + 1).toString());
-      formData.append('part', chunk, 'part.bin');
+      let retries = 3;
+      let partData = null;
       
-      const uploadPartResponse = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
-        method: 'POST',
-        body: formData
-      });
-      
-      if (!uploadPartResponse.ok) {
-        throw new Error(`Ошибка загрузки части ${i + 1}: ${uploadPartResponse.status}`);
+      while (retries > 0) {
+        try {
+          // Отправляем часть через FormData (бинарные данные, не base64)
+          const formData = new FormData();
+          formData.append('action', 'upload-part');
+          formData.append('uploadId', uploadId);
+          formData.append('s3Key', s3Key);
+          formData.append('partNumber', (i + 1).toString());
+          formData.append('part', chunk, 'part.bin');
+          
+          const uploadPartResponse = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
+            method: 'POST',
+            body: formData
+          });
+          
+          if (!uploadPartResponse.ok) {
+            throw new Error(`HTTP ${uploadPartResponse.status}`);
+          }
+          
+          partData = await uploadPartResponse.json();
+          console.log(`[Upload] ✅ Part ${i + 1} uploaded`);
+          break;
+        } catch (error) {
+          retries--;
+          console.log(`[Upload] ⚠️ Part ${i + 1} failed, retries left: ${retries}`);
+          if (retries === 0) {
+            throw new Error(`Не удалось загрузить часть ${i + 1} после 3 попыток`);
+          }
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
       }
       
-      const partData = await uploadPartResponse.json();
-      parts.push({ PartNumber: i + 1, ETag: partData.ETag });
+      if (partData) {
+        parts.push({ PartNumber: i + 1, ETag: partData.ETag });
+      }
     }
     
     console.log('[Upload] ✅ All parts uploaded, completing...');
