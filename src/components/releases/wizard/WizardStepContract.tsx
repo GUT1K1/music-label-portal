@@ -112,31 +112,47 @@ export default function WizardStepContract({
         })
       );
 
-      // Получаем все секции с классом appendix + основной договор
-      const mainContract = tempContainer.querySelector('body');
-      const appendixes = tempContainer.querySelectorAll('.appendix');
+      // Получаем body из шаблона
+      const bodyContent = tempContainer.querySelector('body');
+      if (!bodyContent) {
+        throw new Error('Не найден body в шаблоне договора');
+      }
 
-      // Функция рендера секции на отдельную страницу
-      const renderSection = async (element: Element, isFirst: boolean) => {
+      // Функция рендера секции
+      const renderSection = async (content: string, isFirst: boolean) => {
         const sectionContainer = document.createElement('div');
-        sectionContainer.style.width = '210mm';
-        sectionContainer.style.padding = '15mm';
+        sectionContainer.style.position = 'absolute';
+        sectionContainer.style.left = '-9999px';
+        sectionContainer.style.width = '794px'; // 210mm
+        sectionContainer.style.padding = '60px'; // 15mm margins
         sectionContainer.style.background = '#fff';
         sectionContainer.style.fontFamily = 'Times New Roman, serif';
         sectionContainer.style.fontSize = '11pt';
         sectionContainer.style.lineHeight = '1.4';
         sectionContainer.style.color = '#000';
         sectionContainer.style.boxSizing = 'border-box';
-        sectionContainer.appendChild(element.cloneNode(true));
+        sectionContainer.innerHTML = content;
         
         document.body.appendChild(sectionContainer);
+        
+        // Ждем загрузки изображений в секции
+        const sectionImages = sectionContainer.querySelectorAll('img');
+        await Promise.all(
+          Array.from(sectionImages).map(img => {
+            if ((img as HTMLImageElement).complete) return Promise.resolve();
+            return new Promise(resolve => {
+              (img as HTMLImageElement).onload = () => resolve(null);
+              (img as HTMLImageElement).onerror = () => resolve(null);
+            });
+          })
+        );
         
         const canvas = await html2canvas(sectionContainer, {
           scale: 2,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
-          width: 794, // 210mm в пикселях
+          width: 794,
           windowWidth: 794
         });
         
@@ -151,10 +167,8 @@ export default function WizardStepContract({
         const pageHeight = 297;
         
         if (imgHeight <= pageHeight) {
-          // Секция помещается на одну страницу
           pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, imgWidth, imgHeight);
         } else {
-          // Секция занимает несколько страниц
           let heightLeft = imgHeight;
           let position = 0;
           
@@ -170,27 +184,22 @@ export default function WizardStepContract({
         }
       };
 
-      // Создаем контейнер для основного договора (всё до первого appendix)
-      const mainContent = document.createElement('div');
-      if (mainContract) {
-        const children = Array.from(mainContract.children);
-        for (const child of children) {
-          if (!(child as HTMLElement).classList.contains('appendix')) {
-            mainContent.appendChild(child.cloneNode(true));
-          } else {
-            break;
-          }
-        }
-      }
-
+      // Разделяем контент на основной договор и приложения
+      const fullHTML = bodyContent.innerHTML;
+      const appendixMatch = fullHTML.split(/<div class="appendix">/i);
+      
+      // Основной договор (всё до первого appendix)
+      const mainContractHTML = appendixMatch[0];
+      
       // Рендерим основной договор
-      if (mainContent.children.length > 0) {
-        await renderSection(mainContent, true);
+      if (mainContractHTML.trim()) {
+        await renderSection(mainContractHTML, true);
       }
 
-      // Рендерим каждое приложение на отдельной странице
-      for (const appendix of Array.from(appendixes)) {
-        await renderSection(appendix, false);
+      // Рендерим каждое приложение отдельно
+      for (let i = 1; i < appendixMatch.length; i++) {
+        const appendixHTML = '<div class="appendix">' + appendixMatch[i].split('</div>')[0] + '</div>';
+        await renderSection(appendixHTML, false);
       }
 
       document.body.removeChild(tempContainer);
@@ -216,7 +225,7 @@ export default function WizardStepContract({
       </div>
 
       {/* Предпросмотр договора */}
-      <Card className="relative">
+      <Card className="relative bg-card">
         <div className="absolute top-4 right-4 z-10">
           <Button
             onClick={downloadContractAsPDF}
