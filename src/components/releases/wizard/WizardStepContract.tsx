@@ -205,14 +205,15 @@ export default function WizardStepContract({
             )}
           </Button>
         </div>
-        <div className="p-6 max-h-[600px] overflow-y-auto">
+        <div className="p-6 max-h-[600px] overflow-y-auto bg-white">
           <div 
             className="contract-preview"
             style={{
               fontFamily: "'Times New Roman', serif",
               fontSize: '10pt',
               lineHeight: '1.5',
-              color: '#000'
+              color: '#000',
+              backgroundColor: '#fff'
             }}
             dangerouslySetInnerHTML={{ __html: contractHtml }}
           />
