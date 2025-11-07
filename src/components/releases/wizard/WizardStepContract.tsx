@@ -172,12 +172,14 @@ export default function WizardStepContract({
         } else {
           let heightLeft = imgHeight;
           let position = 0;
+          let page = 0;
           
           pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
           
           while (heightLeft > 0) {
-            position = heightLeft - imgHeight;
+            page++;
+            position = -pageHeight * page;
             pdf.addPage();
             pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
@@ -232,7 +234,7 @@ export default function WizardStepContract({
       </div>
 
       {/* Предпросмотр договора */}
-      <div className="relative border rounded-lg bg-card">
+      <div className="relative border rounded-lg bg-background">
         <div className="absolute top-4 right-4 z-10">
           <Button
             onClick={downloadContractAsPDF}
