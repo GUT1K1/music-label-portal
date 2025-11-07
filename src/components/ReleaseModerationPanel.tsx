@@ -56,6 +56,15 @@ export default function ReleaseModerationPanel({ userId, userRole = 'manager' }:
       });
       const data = await response.json();
       
+      console.log('[ReleaseModerationPanel] Loaded release details:', {
+        id: data.id,
+        name: data.release_name,
+        has_contract_pdf: !!data.contract_pdf_url,
+        has_contract_requisites: !!data.contract_requisites,
+        contract_pdf_url: data.contract_pdf_url,
+        contract_requisites: data.contract_requisites
+      });
+      
       try {
         const pitchingResponse = await fetch(`${PITCHING_API_URL}?release_id=${releaseId}`, {
           headers: { 'X-User-Id': userId.toString() }

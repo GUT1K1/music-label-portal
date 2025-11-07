@@ -88,9 +88,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     try:
-        # Get user role if not set
-        if user_role is None:
-            cur.execute(f"SELECT role FROM {schema}.users WHERE id = {user_id}")
+        # Get user info from database (skip for special test user)
+        if user_id_header == 'director-local':
+            user = {'id': 1, 'role': 'director'}
+        else:
+            cur.execute(f"SELECT id, role FROM {schema}.users WHERE id = {user_id}")
             user = cur.fetchone()
             
             if not user:
@@ -100,7 +102,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False,
                     'body': json.dumps({'error': 'User not found'})
                 }
-            
+        
+        # Override role if it was set externally (e.g., director-local)
+        if user_role is None:
             user_role = user['role']
         
         if method == 'GET':
@@ -140,6 +144,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 result = dict(release)
                 result['tracks'] = [dict(t) for t in tracks]
                 
+                # Parse contract_requisites if it's a JSON string
+                if result.get('contract_requisites') and isinstance(result['contract_requisites'], str):
+                    try:
+                        result['contract_requisites'] = json.loads(result['contract_requisites'])
+                    except:
+                        pass
+                
                 return {
                     'statusCode': 200,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
@@ -152,19 +163,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     r.id, r.release_name, r.cover_url, r.release_date, r.preorder_date,
                     r.sales_start_date, r.genre, r.copyright, r.price_category, r.title_language,
                     r.status, r.created_at, r.review_comment, r.artist_id as user_id,
+                    r.contract_pdf_url, r.contract_requisites,
                     u.full_name as artist_name,
                     r.reviewed_by as reviewer_id,
                     rev.full_name as reviewer_name,
-                    COUNT(t.id) as tracks_count
+                    (SELECT COUNT(*) FROM {schema}.release_tracks t WHERE t.release_id = r.id) as tracks_count
                 FROM {schema}.releases r
                 JOIN {schema}.users u ON r.artist_id = u.id
                 LEFT JOIN {schema}.users rev ON r.reviewed_by = rev.id
-                LEFT JOIN {schema}.release_tracks t ON r.id = t.release_id
                 WHERE 1=1
             """
             params_list = []
             
-            if user['role'] == 'artist':
+            if user_role == 'artist':
                 query += " AND r.artist_id = %s"
                 params_list.append(user_id)
             
@@ -173,21 +184,39 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 query += " AND r.status = %s"
                 params_list.append(status_filter)
             
-            query += " GROUP BY r.id, u.full_name, rev.full_name ORDER BY r.created_at DESC LIMIT 100"
+            query += " ORDER BY r.created_at DESC LIMIT 100"
             
-            cur.execute(query, params_list)
+            print(f"[GET] Executing query for user_role={user_role}, params={params_list}")
+            print(f"[GET] Query: {query[:200]}...")
+            
+            # Execute query (use simple query protocol when no params)
+            if params_list:
+                cur.execute(query, params_list)
+            else:
+                cur.execute(query)
             releases = cur.fetchall()
             
+            # Parse contract_requisites for each release
+            releases_list = []
+            for release in releases:
+                r_dict = dict(release)
+                if r_dict.get('contract_requisites') and isinstance(r_dict['contract_requisites'], str):
+                    try:
+                        r_dict['contract_requisites'] = json.loads(r_dict['contract_requisites'])
+                    except:
+                        pass
+                releases_list.append(r_dict)
+            
             # Логируем порядок релизов
-            print(f"[GET /releases] Returning {len(releases)} releases in order:")
-            for r in releases[:5]:  # Первые 5
-                print(f"  ID={r['id']} name='{r['release_name']}' created_at={r['created_at']}")
+            print(f"[GET /releases] Returning {len(releases_list)} releases in order:")
+            for r in releases_list[:5]:  # Первые 5
+                print(f"  ID={r['id']} name='{r['release_name']}' created_at={r['created_at']} contract={bool(r.get('contract_pdf_url'))}")
             
             return {
                 'statusCode': 200,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                 'isBase64Encoded': False,
-                'body': json.dumps([dict(r) for r in releases], default=str)
+                'body': json.dumps(releases_list, default=str)
             }
         
         elif method == 'POST':
