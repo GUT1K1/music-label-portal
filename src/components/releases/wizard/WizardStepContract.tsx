@@ -205,9 +205,9 @@ export default function WizardStepContract({
             )}
           </Button>
         </div>
-        <div className="p-6 max-h-[600px] overflow-y-auto bg-white">
+        <div className="p-6 max-h-[600px] overflow-y-auto">
           <div 
-            className="contract-preview"
+            className="contract-preview bg-white rounded-lg p-6"
             style={{
               fontFamily: "'Times New Roman', serif",
               fontSize: '10pt',
