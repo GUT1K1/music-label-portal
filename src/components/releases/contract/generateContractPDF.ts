@@ -172,8 +172,7 @@ export async function uploadContractPDF(pdfBlob: Blob): Promise<string> {
 
   const response = await fetch(API_ENDPOINTS.UPLOAD_DIRECT, {
     method: 'POST',
-    body: formData,
-    credentials: 'include'
+    body: formData
   });
 
   if (!response.ok) {
