@@ -108,7 +108,7 @@ export default function ReleaseManagerView({
   }, [onCancelForm]);
 
   return (
-    <div className="space-y-2 md:space-y-4 px-2 md:px-0 min-h-screen">
+    <div className="space-y-2 md:space-y-4 container mx-auto px-2 md:px-4 min-h-screen">
       {!showForm && (
         <>
           <div className="flex justify-between items-center gap-2">

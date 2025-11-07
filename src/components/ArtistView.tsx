@@ -72,8 +72,8 @@ export default function ArtistView({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-yellow-950/30 to-black bg-grid-pattern">
-      <div className="container mx-auto px-0 md:p-4 animate-fadeIn">
-        <div className="sticky top-0 z-30 mb-2 md:mb-0 px-2 md:px-0">
+      <div className="w-full animate-fadeIn">
+        <div className="sticky top-0 z-30 mb-2 md:mb-0 container mx-auto px-2 md:px-4">
           <AppHeader 
             onMessagesClick={() => {}}
             onProfileClick={() => setShowProfile(true)}
@@ -95,7 +95,7 @@ export default function ArtistView({
             localStorage.setItem('artist_active_tab', value);
           }}
           className="w-full mt-2 md:mt-4">
-          <div className="w-full px-2 md:px-0">
+          <div className="w-full container mx-auto px-2 md:px-4">
             <TabsList className="grid w-full grid-cols-4 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-0.5 md:p-1">
               <TabsTrigger value="news" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
                 <Icon name="Newspaper" className="w-3.5 h-3.5 md:w-5 md:h-5 text-yellow-500 shrink-0" />
@@ -116,7 +116,7 @@ export default function ArtistView({
             </TabsList>
           </div>
 
-          <TabsContent value="news" className="mt-2 md:mt-6">
+          <TabsContent value="news" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
             <NewsView 
               userRole="artist" 
               userId={user.id} 
@@ -130,11 +130,11 @@ export default function ArtistView({
             <ReleaseManager userId={user.id} userRole="artist" />
           </TabsContent>
 
-          <TabsContent value="support" className="mt-2 md:mt-6 px-2 md:px-0">
+          <TabsContent value="support" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
             <SupportChat userId={user.id} userRole="artist" />
           </TabsContent>
 
-          <TabsContent value="reports" className="mt-2 md:mt-6 px-2 md:px-0">
+          <TabsContent value="reports" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
             <div className="flex items-center justify-center min-h-[250px] md:min-h-[400px]">
               <div className="text-center space-y-2 md:space-y-4 p-4">
                 <div className="text-4xl md:text-6xl">📊</div>
