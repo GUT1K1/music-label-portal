@@ -7,6 +7,7 @@ import WizardStepBasicInfo from './wizard/WizardStepBasicInfo';
 import WizardStepRequisites from './wizard/WizardStepRequisites';
 import WizardStepTracks from './wizard/WizardStepTracks';
 import WizardStepReview from './wizard/WizardStepReview';
+import WizardStepContract from './wizard/WizardStepContract';
 import { Track, ContractRequisites } from './types';
 
 interface ReleaseWizardProps {
@@ -41,7 +42,8 @@ const STEPS = [
   { id: 2, title: 'Информация', icon: 'Info' },
   { id: 3, title: 'Реквизиты', icon: 'FileText' },
   { id: 4, title: 'Треки', icon: 'ListMusic' },
-  { id: 5, title: 'Проверка', icon: 'CheckCircle' }
+  { id: 5, title: 'Проверка', icon: 'CheckCircle' },
+  { id: 6, title: 'Договор', icon: 'FileSignature' }
 ];
 
 export default function ReleaseWizard({
@@ -72,6 +74,7 @@ export default function ReleaseWizard({
     stage_name: '',
     email: ''
   });
+  const [contractSignature, setContractSignature] = useState<string | null>(null);
 
   const canGoNext = () => {
     switch (currentStep) {
@@ -110,7 +113,7 @@ export default function ReleaseWizard({
   };
 
   const handleNext = () => {
-    if (canGoNext() && currentStep < 5) {
+    if (canGoNext() && currentStep < 6) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -132,7 +135,7 @@ export default function ReleaseWizard({
           <div className="flex justify-between items-center mb-4">
             <div>
               <CardTitle className="text-xl">Создать релиз</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Шаг {currentStep} из 5</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Шаг {currentStep} из 6</p>
             </div>
             <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8" disabled={uploading}>
               <Icon name="X" size={18} />
@@ -217,42 +220,58 @@ export default function ReleaseWizard({
             />
           )}
 
-          {/* Navigation */}
-          <div className="flex gap-2 pt-4 border-t">
-            {currentStep > 1 && (
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                disabled={uploading}
-                className="gap-2"
-              >
-                <Icon name="ChevronLeft" size={16} />
-                Назад
-              </Button>
-            )}
-            
-            <div className="flex-1" />
+          {currentStep === 6 && (
+            <WizardStepContract
+              requisites={requisites}
+              releaseDate={newRelease.release_date}
+              tracks={tracks}
+              coverUrl={coverPreview || ''}
+              onSignatureComplete={(signature) => {
+                setContractSignature(signature);
+                handleSubmit();
+              }}
+              onBack={() => setCurrentStep(5)}
+            />
+          )}
 
-            {currentStep < 5 ? (
-              <Button
-                onClick={handleNext}
-                disabled={!canGoNext() || uploading}
-                className="gap-2"
-              >
-                Далее
-                <Icon name="ChevronRight" size={16} />
-              </Button>
-            ) : (
-              <Button
-                onClick={handleFinish}
-                disabled={uploading || !canGoNext()}
-                className="gap-2"
-              >
-                <Icon name={uploading ? 'Loader2' : 'Send'} size={16} className={uploading ? 'animate-spin' : ''} />
-                {uploading ? 'Отправка...' : 'Отправить на модерацию'}
-              </Button>
-            )}
-          </div>
+          {/* Navigation - скрыта на шаге договора (шаг 6) */}
+          {currentStep !== 6 && (
+            <div className="flex gap-2 pt-4 border-t">
+              {currentStep > 1 && (
+                <Button
+                  variant="outline"
+                  onClick={handleBack}
+                  disabled={uploading}
+                  className="gap-2"
+                >
+                  <Icon name="ChevronLeft" size={16} />
+                  Назад
+                </Button>
+              )}
+              
+              <div className="flex-1" />
+
+              {currentStep < 5 ? (
+                <Button
+                  onClick={handleNext}
+                  disabled={!canGoNext() || uploading}
+                  className="gap-2"
+                >
+                  Далее
+                  <Icon name="ChevronRight" size={16} />
+                </Button>
+              ) : currentStep === 5 ? (
+                <Button
+                  onClick={handleNext}
+                  disabled={!canGoNext() || uploading}
+                  className="gap-2"
+                >
+                  Перейти к договору
+                  <Icon name="ChevronRight" size={16} />
+                </Button>
+              ) : null}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
