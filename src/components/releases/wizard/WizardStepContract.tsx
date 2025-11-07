@@ -233,7 +233,7 @@ export default function WizardStepContract({
   };
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Предпросмотр договора */}
       <div className="relative">
         <div className="absolute top-4 right-4 z-10">
@@ -259,7 +259,7 @@ export default function WizardStepContract({
         </div>
         <div className="max-h-[600px] overflow-y-auto">
           <div 
-            className="contract-preview bg-white rounded-lg p-6"
+            className="contract-preview bg-white p-6"
             style={{
               fontFamily: "'Times New Roman', serif",
               fontSize: '10pt',
@@ -272,9 +272,11 @@ export default function WizardStepContract({
         </div>
       </div>
 
-      {/* Блок подписи */}
-      {!signatureDataUrl ? (
-        <Card className="p-6 bg-blue-500/5 border-2 border-blue-500/20">
+      {/* Нижние элементы с паддингом */}
+      <div className="p-6 space-y-6">
+        {/* Блок подписи */}
+        {!signatureDataUrl ? (
+          <Card className="p-6 bg-blue-500/5 border-2 border-blue-500/20">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Icon name="PenTool" size={24} className="text-blue-500" />
@@ -355,37 +357,38 @@ export default function WizardStepContract({
         </div>
       </div>
 
-      {/* Кнопки навигации */}
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          onClick={onBack}
-          className="gap-2"
-        >
-          <Icon name="ChevronLeft" size={16} />
-          Назад к проверке
-        </Button>
-        
-        <div className="flex-1" />
+        {/* Кнопки навигации */}
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={onBack}
+            className="gap-2"
+          >
+            <Icon name="ChevronLeft" size={16} />
+            Назад к проверке
+          </Button>
+          
+          <div className="flex-1" />
 
-        <Button
-          onClick={handleApproveContract}
-          disabled={!signatureDataUrl || isGeneratingPDF}
-          className="gap-2"
-          size="lg"
-        >
-          {isGeneratingPDF ? (
-            <>
-              <Icon name="Loader2" size={16} className="animate-spin" />
-              Создание договора...
-            </>
-          ) : (
-            <>
-              <Icon name="Check" size={16} />
-              Подтвердить и продолжить
-            </>
-          )}
-        </Button>
+          <Button
+            onClick={handleApproveContract}
+            disabled={!signatureDataUrl || isGeneratingPDF}
+            className="gap-2"
+            size="lg"
+          >
+            {isGeneratingPDF ? (
+              <>
+                <Icon name="Loader2" size={16} className="animate-spin" />
+                Создание договора...
+              </>
+            ) : (
+              <>
+                <Icon name="Check" size={16} />
+                Подтвердить и продолжить
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

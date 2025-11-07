@@ -173,7 +173,7 @@ export default function ReleaseWizard({
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+        <CardContent className={currentStep === 6 ? "p-0 space-y-6" : "space-y-6"}>
           {/* Step content */}
           {currentStep === 1 && (
             <WizardStepReleaseType
