@@ -118,7 +118,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         r.artist_id as user_id,
                         u.full_name as artist_name,
                         r.reviewed_by as reviewer_id,
-                        rev.full_name as reviewer_name
+                        rev.full_name as reviewer_name,
+                        r.contract_signature
                     FROM {schema}.releases r
                     JOIN {schema}.users u ON r.artist_id = u.id
                     LEFT JOIN {schema}.users rev ON r.reviewed_by = rev.id
@@ -163,7 +164,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     r.id, r.release_name, r.cover_url, r.release_date, r.preorder_date,
                     r.sales_start_date, r.genre, r.copyright, r.price_category, r.title_language,
                     r.status, r.created_at, r.review_comment, r.artist_id as user_id,
-                    r.contract_pdf_url, r.contract_requisites,
+                    r.contract_pdf_url, r.contract_requisites, r.contract_signature,
                     u.full_name as artist_name,
                     r.reviewed_by as reviewer_id,
                     rev.full_name as reviewer_name,
