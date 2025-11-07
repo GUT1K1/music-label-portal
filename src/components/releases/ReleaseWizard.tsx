@@ -130,8 +130,8 @@ export default function ReleaseWizard({
   };
 
   return (
-    <div className={`w-full max-w-4xl mx-auto ${currentStep === 6 ? 'px-0' : 'px-2 md:px-0'}`}>
-      <Card className={`!bg-background !border-border/30 ${currentStep === 6 ? 'rounded-none md:rounded-lg' : ''}`}>
+    <div className="w-full max-w-4xl mx-auto px-2 md:px-0">
+      <Card className="!bg-background !border-border/30">
         <CardHeader className="pb-4 !bg-background border-b border-border/30">
           <div className="flex justify-between items-center mb-4">
             <div>
@@ -173,7 +173,7 @@ export default function ReleaseWizard({
           </div>
         </CardHeader>
 
-        <CardContent className={currentStep === 6 ? "p-0" : "space-y-6"}>
+        <CardContent className="space-y-6">
           {/* Step content */}
           {currentStep === 1 && (
             <WizardStepReleaseType

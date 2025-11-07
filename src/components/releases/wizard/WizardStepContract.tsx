@@ -233,139 +233,156 @@ export default function WizardStepContract({
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Предпросмотр договора */}
-      <div className="relative flex-1">
-        <div className="absolute top-4 right-4 z-10">
-          <Button
-            onClick={downloadContractAsPDF}
-            disabled={isGeneratingPDF}
-            variant="outline"
-            size="sm"
-            className="gap-2 bg-white/90 hover:bg-white shadow-md"
-          >
-            {isGeneratingPDF ? (
-              <>
-                <Icon name="Loader2" size={14} className="animate-spin" />
-                Создание PDF...
-              </>
-            ) : (
-              <>
-                <Icon name="Download" size={14} />
-                Скачать PDF
-              </>
-            )}
-          </Button>
-        </div>
-        <div className="h-[600px] overflow-y-auto">
-          <div 
-            className="contract-preview bg-white p-6 min-h-full"
-            style={{
-              fontFamily: "'Times New Roman', serif",
-              fontSize: '10pt',
-              lineHeight: '1.5',
-              color: '#000',
-              backgroundColor: '#fff'
-            }}
-            dangerouslySetInnerHTML={{ __html: contractHtml }}
-          />
-        </div>
+    <div className="p-6 space-y-6">
+      {/* Заголовок шага */}
+      <div className="space-y-2">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          Договор о дистрибуции
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Ознакомьтесь с условиями договора и поставьте электронную подпись
+        </p>
       </div>
 
-      {/* Нижние элементы с паддингом */}
-      <div className="p-6 pt-4 space-y-6 bg-background">
-        {/* Блок подписи */}
-        {!signatureDataUrl ? (
-          <Card className="p-6 bg-blue-500/5 border-2 border-blue-500/20">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Icon name="PenTool" size={24} className="text-blue-500" />
-              <div>
-                <h3 className="font-semibold">Электронная подпись</h3>
-                <p className="text-sm text-muted-foreground">
-                  Нарисуйте вашу подпись для подтверждения договора
-                </p>
-              </div>
-            </div>
-
-            {!showSignaturePad ? (
-              <Button 
-                onClick={() => setShowSignaturePad(true)}
-                className="w-full"
-                size="lg"
-              >
-                <Icon name="PenTool" size={18} className="mr-2" />
-                Поставить подпись
-              </Button>
-            ) : (
-              <SignaturePad onSave={handleSaveSignature} />
-            )}
-          </div>
-        </Card>
-      ) : (
-        <Card className="p-6 bg-green-500/5 border-2 border-green-500/20">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                <Icon name="Check" size={24} className="text-green-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold">Подпись поставлена</h3>
-                <p className="text-sm text-muted-foreground">
-                  Договор готов к отправке на модерацию
-                </p>
-              </div>
-            </div>
-            <Button 
-              onClick={() => {
-                setSignatureDataUrl(null);
-                setShowSignaturePad(true);
-              }}
+      {/* Предпросмотр договора в стильной карточке */}
+      <Card className="overflow-hidden border-primary/20 bg-card/50 backdrop-blur-sm">
+        <div className="relative">
+          {/* Кнопка скачивания */}
+          <div className="absolute top-4 right-4 z-10">
+            <Button
+              onClick={downloadContractAsPDF}
+              disabled={isGeneratingPDF}
               variant="outline"
               size="sm"
-              className="gap-2"
+              className="gap-2 bg-card/90 hover:bg-card backdrop-blur-sm border-primary/30"
             >
-              <Icon name="Edit" size={14} />
-              Изменить
+              {isGeneratingPDF ? (
+                <>
+                  <Icon name="Loader2" size={14} className="animate-spin" />
+                  Создание PDF...
+                </>
+              ) : (
+                <>
+                  <Icon name="Download" size={14} />
+                  Скачать PDF
+                </>
+              )}
             </Button>
           </div>
-          
-          <div className="mt-4 p-4 bg-card/50 rounded-lg border-2 border-border">
-            <p className="text-sm font-medium mb-3">Предпросмотр подписи:</p>
-            <div className="flex items-center justify-center bg-background rounded p-4 border-b-2 border-primary/30">
-              <img 
-                src={signatureDataUrl} 
-                alt="Подпись" 
-                className="max-h-16 max-w-full object-contain"
-              />
+
+          {/* Контейнер с договором */}
+          <div className="h-[500px] overflow-y-auto bg-card/30 border border-border/30 rounded-lg m-4">
+            <div 
+              className="contract-preview p-6 text-foreground"
+              style={{
+                fontFamily: "'Times New Roman', serif",
+                fontSize: '11pt',
+                lineHeight: '1.6'
+              }}
+              dangerouslySetInnerHTML={{ __html: contractHtml }}
+            />
+          </div>
+        </div>
+      </Card>
+
+      {/* Блоки подписи и действий */}
+      <div className="space-y-4">
+        {/* Блок подписи */}
+        {!signatureDataUrl ? (
+          <Card className="p-6 bg-primary/5 border-2 border-primary/20 backdrop-blur-sm">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Icon name="PenTool" size={24} className="text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Электронная подпись</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Нарисуйте вашу подпись для подтверждения договора
+                  </p>
+                </div>
+              </div>
+
+              {!showSignaturePad ? (
+                <Button 
+                  onClick={() => setShowSignaturePad(true)}
+                  className="w-full bg-primary hover:bg-primary/90"
+                  size="lg"
+                >
+                  <Icon name="PenTool" size={18} className="mr-2" />
+                  Поставить подпись
+                </Button>
+              ) : (
+                <SignaturePad onSave={handleSaveSignature} />
+              )}
+            </div>
+          </Card>
+        ) : (
+          <Card className="p-6 bg-primary/10 border-2 border-primary/30 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-primary/30 flex items-center justify-center">
+                  <Icon name="Check" size={24} className="text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Подпись поставлена</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Договор готов к отправке на модерацию
+                  </p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => {
+                  setSignatureDataUrl(null);
+                  setShowSignaturePad(true);
+                }}
+                variant="outline"
+                size="sm"
+                className="gap-2 border-primary/30"
+              >
+                <Icon name="Edit" size={14} />
+                Изменить
+              </Button>
+            </div>
+            
+            <div className="p-4 bg-card/50 rounded-lg border border-primary/20">
+              <p className="text-sm font-medium mb-3 text-primary">Предпросмотр подписи:</p>
+              <div className="flex items-center justify-center bg-card rounded-lg p-4 border-b-2 border-primary/30">
+                <img 
+                  src={signatureDataUrl} 
+                  alt="Подпись" 
+                  className="max-h-20 max-w-full object-contain"
+                />
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Информационный блок */}
+        <Card className="p-4 bg-secondary/10 border-2 border-secondary/20 backdrop-blur-sm">
+          <div className="flex gap-3">
+            <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+              <Icon name="AlertTriangle" size={20} className="text-secondary" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-secondary">Важная информация</p>
+              <p className="text-xs text-muted-foreground">
+                Поставив электронную подпись, вы подтверждаете, что ознакомились с условиями договора 
+                и согласны с ними. Электронная подпись имеет юридическую силу.
+              </p>
             </div>
           </div>
         </Card>
-      )}
-
-      {/* Информационный блок */}
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
-        <div className="flex gap-3">
-          <Icon name="AlertTriangle" size={20} className="text-amber-500 flex-shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <p className="text-sm font-medium">Важно!</p>
-            <p className="text-xs text-muted-foreground">
-              Поставив электронную подпись, вы подтверждаете, что ознакомились с условиями договора 
-              и согласны с ними. Электронная подпись имеет юридическую силу.
-            </p>
-          </div>
-        </div>
-      </div>
 
         {/* Кнопки навигации */}
-        <div className="flex gap-2">
+        <div className="flex gap-3 pt-2">
           <Button
             variant="outline"
             onClick={onBack}
-            className="gap-2"
+            className="gap-2 border-border/50"
           >
             <Icon name="ChevronLeft" size={16} />
-            Назад к проверке
+            Назад
           </Button>
           
           <div className="flex-1" />
@@ -373,18 +390,18 @@ export default function WizardStepContract({
           <Button
             onClick={handleApproveContract}
             disabled={!signatureDataUrl || isGeneratingPDF}
-            className="gap-2"
+            className="gap-2 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
             size="lg"
           >
             {isGeneratingPDF ? (
               <>
-                <Icon name="Loader2" size={16} className="animate-spin" />
+                <Icon name="Loader2" size={18} className="animate-spin" />
                 Создание договора...
               </>
             ) : (
               <>
-                <Icon name="Check" size={16} />
-                Подтвердить и продолжить
+                <Icon name="Check" size={18} />
+                Подтвердить и отправить
               </>
             )}
           </Button>
