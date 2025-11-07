@@ -10,7 +10,7 @@ export interface UploadFileResult {
 export type UploadProgressCallback = (progress: number) => void;
 
 /**
- * Загрузка файла: маленькие через FormData, большие через chunked upload
+ * Загрузка файла: маленькие через FormData, средние через presigned URL, большие через chunked upload
  */
 export async function uploadFile(file: File, onProgress?: UploadProgressCallback): Promise<UploadFileResult> {
   const maxSize = 100 * 1024 * 1024;
@@ -23,8 +23,8 @@ export async function uploadFile(file: File, onProgress?: UploadProgressCallback
   }
   
   try {
-    // Маленькие файлы (<10MB) через прямой FormData
-    if (file.size < 10 * 1024 * 1024) {
+    // Маленькие файлы (<5MB) через прямой FormData
+    if (file.size < 5 * 1024 * 1024) {
       console.log('[Upload] Using direct FormData upload');
       onProgress?.(30);
       
@@ -49,6 +49,53 @@ export async function uploadFile(file: File, onProgress?: UploadProgressCallback
       
       console.log(`[Upload] ✅ Uploaded: ${result.url}`);
       return result;
+    }
+    
+    // Средние файлы (5-30MB) через presigned URL (прямая загрузка в S3)
+    if (file.size < 30 * 1024 * 1024) {
+      console.log('[Upload] 🎯 Using presigned URL for direct S3 upload');
+      onProgress?.(10);
+      
+      // Получаем presigned POST от бэкенда
+      const presignedResponse = await fetch(
+        `https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(file.type || 'application/octet-stream')}`,
+        { method: 'GET' }
+      );
+      
+      if (!presignedResponse.ok) {
+        throw new Error(`Не удалось получить presigned URL: ${presignedResponse.status}`);
+      }
+      
+      const { presignedPost, url } = await presignedResponse.json();
+      onProgress?.(20);
+      
+      // Загружаем файл напрямую в S3
+      const formData = new FormData();
+      Object.keys(presignedPost.fields).forEach(key => {
+        formData.append(key, presignedPost.fields[key]);
+      });
+      formData.append('file', file);
+      
+      onProgress?.(40);
+      
+      const uploadResponse = await fetch(presignedPost.url, {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!uploadResponse.ok) {
+        throw new Error(`Ошибка загрузки в S3: ${uploadResponse.status}`);
+      }
+      
+      onProgress?.(100);
+      console.log(`[Upload] ✅ Uploaded via presigned URL: ${url}`);
+      
+      return {
+        url,
+        fileName: file.name,
+        fileSize: file.size,
+        storage: 's3' as const
+      };
     }
     
     // Большие файлы (>10MB) - chunked upload (бэкенд собирает из temp chunks)
