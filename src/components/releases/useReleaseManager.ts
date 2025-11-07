@@ -94,12 +94,12 @@ export const useReleaseManager = (userId: number) => {
     }
 
     setCurrentUploadFile(file.name);
-    setUploadProgress(10);
+    setUploadProgress(0);
     
     try {
-      setUploadProgress(50);
-      const result = await uploadFileUtil(file);
-      setUploadProgress(100);
+      const result = await uploadFileUtil(file, (progress) => {
+        setUploadProgress(progress);
+      });
       
       return {
         url: result.url,
@@ -257,7 +257,6 @@ export const useReleaseManager = (userId: number) => {
       } catch (coverError: any) {
         throw new Error(`Ошибка загрузки обложки: ${coverError.message || 'неизвестная ошибка'}`);
       }
-      setUploadProgress(0);
 
       const uploadedTracks = [];
       

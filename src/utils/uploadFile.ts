@@ -7,10 +7,12 @@ export interface UploadFileResult {
   storage?: 'telegram' | 's3';
 }
 
+export type UploadProgressCallback = (progress: number) => void;
+
 /**
- * Загрузка файла: маленькие через FormData, большие через presigned S3 URL
+ * Загрузка файла: маленькие через FormData, большие через chunked upload
  */
-export async function uploadFile(file: File): Promise<UploadFileResult> {
+export async function uploadFile(file: File, onProgress?: UploadProgressCallback): Promise<UploadFileResult> {
   const maxSize = 100 * 1024 * 1024;
   const fileSizeMB = (file.size / 1024 / 1024).toFixed(2);
   
@@ -24,9 +26,13 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     // Маленькие файлы (<10MB) через прямой FormData
     if (file.size < 10 * 1024 * 1024) {
       console.log('[Upload] Using direct FormData upload');
+      onProgress?.(30);
+      
       const formData = new FormData();
       formData.append('file', file);
       formData.append('fileName', file.name);
+      
+      onProgress?.(50);
       
       const response = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
         method: 'POST',
@@ -37,7 +43,10 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
         throw new Error(`Ошибка загрузки: ${response.status}`);
       }
       
+      onProgress?.(90);
       const result = await response.json();
+      onProgress?.(100);
+      
       console.log(`[Upload] ✅ Uploaded: ${result.url}`);
       return result;
     }
@@ -59,6 +68,10 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       const start = i * chunkSize;
       const end = Math.min(start + chunkSize, file.size);
       const chunk = file.slice(start, end);
+      
+      // Прогресс: от 0 до 95% (оставляем 5% на финализацию)
+      const progress = Math.floor((i / totalChunks) * 95);
+      onProgress?.(progress);
       
       console.log(`[Upload] 📤 Chunk ${i + 1}/${totalChunks}: ${(chunk.size / 1024 / 1024).toFixed(2)}MB`);
       
@@ -95,6 +108,7 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       // Последний chunk - бэкенд вернёт финальный URL
       if (i === totalChunks - 1) {
         finalUrl = result.url;
+        onProgress?.(100);
         console.log('[Upload] ✅ File uploaded:', finalUrl);
       }
     }

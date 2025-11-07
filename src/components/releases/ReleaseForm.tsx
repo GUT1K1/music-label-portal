@@ -320,25 +320,20 @@ export default function ReleaseForm({
 
           <div className="border-t pt-4 space-y-3">
             {uploading && (
-              <div className="space-y-2 p-3 bg-primary/5 rounded-lg border border-primary/20">
-                <div className="flex items-center gap-2">
-                  <Icon name="Loader2" size={14} className="animate-spin text-primary flex-shrink-0" />
-                  <span className="text-xs font-medium truncate">{currentUploadFile || 'Загрузка...'}</span>
+              <div className="space-y-2.5 p-3.5 bg-primary/5 rounded-lg border border-primary/20">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <Icon name="Loader2" size={16} className="animate-spin text-primary flex-shrink-0" />
+                    <span className="text-sm font-medium truncate">{currentUploadFile || 'Загрузка...'}</span>
+                  </div>
+                  <span className="text-sm font-semibold text-primary tabular-nums">{uploadProgress}%</span>
                 </div>
-                {uploadProgress > 0 && (
-                  <>
-                    <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-primary transition-all duration-300 ease-out"
-                        style={{ width: `${uploadProgress}%` }}
-                      />
-                    </div>
-                    <p className="text-[10px] text-muted-foreground text-right">{uploadProgress}%</p>
-                  </>
-                )}
-                <p className="text-[10px] text-muted-foreground italic">
-                  ⚠️ Не закрывайте страницу во время загрузки
-                </p>
+                <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-300 ease-out"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
               </div>
             )}
             
