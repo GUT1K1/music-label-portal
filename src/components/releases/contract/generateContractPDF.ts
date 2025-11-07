@@ -75,7 +75,7 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
     const sectionContainer = document.createElement('div');
     sectionContainer.style.position = 'absolute';
     sectionContainer.style.left = '-9999px';
-    sectionContainer.style.width = '794px';
+    sectionContainer.style.width = '700px';
     sectionContainer.style.padding = '50px';
     sectionContainer.style.background = '#fff';
     sectionContainer.style.fontFamily = 'Times New Roman, serif';
@@ -100,12 +100,12 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
     );
     
     const canvas = await html2canvas(sectionContainer, {
-      scale: 2,
+      scale: 1.5,
       useCORS: true,
       logging: false,
       backgroundColor: '#ffffff',
-      width: 794,
-      windowWidth: 794
+      width: 700,
+      windowWidth: 700
     });
     
     document.body.removeChild(sectionContainer);
@@ -117,7 +117,7 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
     const imgWidth = 210;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
     const pageHeight = 297;
-    const imageData = canvas.toDataURL('image/jpeg', 0.8);
+    const imageData = canvas.toDataURL('image/jpeg', 0.6);
     
     if (imgHeight <= pageHeight) {
       pdf.addImage(imageData, 'JPEG', 0, 0, imgWidth, imgHeight);
@@ -170,7 +170,7 @@ export async function uploadContractPDF(pdfBlob: Blob): Promise<string> {
   const formData = new FormData();
   formData.append('file', pdfBlob, `Договор_${contractNumber}.pdf`);
 
-  const response = await fetch(API_ENDPOINTS.UPLOAD_FILE, {
+  const response = await fetch(API_ENDPOINTS.UPLOAD_DIRECT, {
     method: 'POST',
     body: formData,
     credentials: 'include'

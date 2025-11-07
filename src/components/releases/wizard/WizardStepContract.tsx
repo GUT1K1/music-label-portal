@@ -151,7 +151,7 @@ export default function WizardStepContract({
         const sectionContainer = document.createElement('div');
         sectionContainer.style.position = 'absolute';
         sectionContainer.style.left = '-9999px';
-        sectionContainer.style.width = '794px';
+        sectionContainer.style.width = '700px';
         sectionContainer.style.padding = '50px';
         sectionContainer.style.background = '#fff';
         sectionContainer.style.fontFamily = 'Times New Roman, serif';
@@ -176,12 +176,12 @@ export default function WizardStepContract({
         );
         
         const canvas = await html2canvas(sectionContainer, {
-          scale: 2,
+          scale: 1.5,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
-          width: 794,
-          windowWidth: 794
+          width: 700,
+          windowWidth: 700
         });
         
         document.body.removeChild(sectionContainer);
@@ -193,7 +193,7 @@ export default function WizardStepContract({
         const imgWidth = 210;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         const pageHeight = 297;
-        const imageData = canvas.toDataURL('image/jpeg', 0.8);
+        const imageData = canvas.toDataURL('image/jpeg', 0.6);
         
         if (imgHeight <= pageHeight) {
           // Контент помещается на одну страницу
