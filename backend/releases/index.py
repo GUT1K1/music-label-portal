@@ -261,6 +261,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 # Contract data
                 contract_pdf_url = sql_escape(body_data.get('contract_pdf_url'))
                 contract_requisites = body_data.get('contract_requisites')
+                print(f"[POST] Contract PDF URL: {contract_pdf_url}")
+                print(f"[POST] Contract requisites present: {bool(contract_requisites)}")
                 if contract_requisites:
                     contract_requisites_json = sql_escape(json.dumps(contract_requisites, ensure_ascii=False))
                 else:
