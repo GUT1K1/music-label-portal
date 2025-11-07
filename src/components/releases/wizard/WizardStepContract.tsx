@@ -81,29 +81,22 @@ export default function WizardStepContract({
       const { default: jsPDF } = await import('jspdf');
       const html2canvas = (await import('html2canvas')).default;
 
-      // Создаем временный контейнер с точной шириной A4
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Создаем временный контейнер
       const tempContainer = document.createElement('div');
       tempContainer.style.position = 'absolute';
       tempContainer.style.left = '-9999px';
       tempContainer.style.top = '0';
-      tempContainer.style.width = '794px'; // A4 width in pixels at 96 DPI
-      tempContainer.style.padding = '60px'; // 15mm margins
+      tempContainer.style.width = '210mm';
       tempContainer.style.background = '#fff';
       tempContainer.style.fontFamily = 'Times New Roman, serif';
-      tempContainer.style.fontSize = '12pt';
-      tempContainer.style.lineHeight = '1.5';
       tempContainer.style.color = '#000';
       tempContainer.innerHTML = contractHtml;
-      
-      // Ограничиваем размер изображений
-      const images = tempContainer.querySelectorAll('img');
-      images.forEach(img => {
-        if ((img as HTMLElement).classList.contains('cover-image')) {
-          (img as HTMLElement).style.maxWidth = '250px';
-          (img as HTMLElement).style.maxHeight = '250px';
-        }
-      });
-      
       document.body.appendChild(tempContainer);
 
       // Ждем загрузки изображений
@@ -119,42 +112,88 @@ export default function WizardStepContract({
         })
       );
 
-      // Рендерим в canvas с высоким качеством
-      const canvas = await html2canvas(tempContainer, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        width: 794,
-        windowWidth: 794
-      });
+      // Получаем все секции с классом appendix + основной договор
+      const mainContract = tempContainer.querySelector('body');
+      const appendixes = tempContainer.querySelectorAll('.appendix');
+
+      // Функция рендера секции на отдельную страницу
+      const renderSection = async (element: Element, isFirst: boolean) => {
+        const sectionContainer = document.createElement('div');
+        sectionContainer.style.width = '210mm';
+        sectionContainer.style.padding = '15mm';
+        sectionContainer.style.background = '#fff';
+        sectionContainer.style.fontFamily = 'Times New Roman, serif';
+        sectionContainer.style.fontSize = '11pt';
+        sectionContainer.style.lineHeight = '1.4';
+        sectionContainer.style.color = '#000';
+        sectionContainer.style.boxSizing = 'border-box';
+        sectionContainer.appendChild(element.cloneNode(true));
+        
+        document.body.appendChild(sectionContainer);
+        
+        const canvas = await html2canvas(sectionContainer, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          width: 794, // 210mm в пикселях
+          windowWidth: 794
+        });
+        
+        document.body.removeChild(sectionContainer);
+        
+        if (!isFirst) {
+          pdf.addPage();
+        }
+        
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pageHeight = 297;
+        
+        if (imgHeight <= pageHeight) {
+          // Секция помещается на одну страницу
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, imgWidth, imgHeight);
+        } else {
+          // Секция занимает несколько страниц
+          let heightLeft = imgHeight;
+          let position = 0;
+          
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+          
+          while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
+        }
+      };
+
+      // Создаем контейнер для основного договора (всё до первого appendix)
+      const mainContent = document.createElement('div');
+      if (mainContract) {
+        const children = Array.from(mainContract.children);
+        for (const child of children) {
+          if (!(child as HTMLElement).classList.contains('appendix')) {
+            mainContent.appendChild(child.cloneNode(true));
+          } else {
+            break;
+          }
+        }
+      }
+
+      // Рендерим основной договор
+      if (mainContent.children.length > 0) {
+        await renderSection(mainContent, true);
+      }
+
+      // Рендерим каждое приложение на отдельной странице
+      for (const appendix of Array.from(appendixes)) {
+        await renderSection(appendix, false);
+      }
 
       document.body.removeChild(tempContainer);
-
-      // Создаем PDF
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
-
-      // Добавляем первую страницу
-      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      // Добавляем остальные страницы
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
 
       const contractNumber = `420-${Date.now().toString().slice(-6)}`;
       pdf.save(`Договор_${contractNumber}.pdf`);
@@ -177,7 +216,7 @@ export default function WizardStepContract({
       </div>
 
       {/* Предпросмотр договора */}
-      <Card className="relative bg-card">
+      <Card className="relative">
         <div className="absolute top-4 right-4 z-10">
           <Button
             onClick={downloadContractAsPDF}
