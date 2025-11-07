@@ -109,7 +109,14 @@ export default function ModerationPanel({ releases, userId, onReview, loadTracks
                         <Button
                           variant="default"
                           size="sm"
-                          onClick={() => setContractDialogRelease(release)}
+                          onClick={async () => {
+                            setContractDialogRelease(release);
+                            if (expandedRelease !== release.id) {
+                              setExpandedRelease(release.id);
+                              const releaseTracks = await loadTracks(release.id);
+                              setTracks(releaseTracks);
+                            }
+                          }}
                           className="gap-2"
                         >
                           <Icon name="Eye" size={14} />
@@ -197,10 +204,15 @@ export default function ModerationPanel({ releases, userId, onReview, loadTracks
       {contractDialogRelease?.contract_pdf_url && (
         <ContractViewDialog
           open={contractDialogRelease !== null}
-          onOpenChange={(open) => !open && setContractDialogRelease(null)}
+          onOpenChange={(open) => {
+            if (!open) setContractDialogRelease(null);
+          }}
           contractPdfUrl={contractDialogRelease.contract_pdf_url}
           requisites={contractDialogRelease.contract_requisites}
-          releaseTitle={contractDialogRelease.name}
+          releaseTitle={contractDialogRelease.release_name}
+          releaseDate={contractDialogRelease.release_date}
+          tracks={tracks}
+          coverUrl={contractDialogRelease.cover_url}
         />
       )}
     </div>

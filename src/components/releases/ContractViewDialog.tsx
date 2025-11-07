@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
-import { ContractRequisites } from './types';
+import { ContractRequisites, Track } from './types';
+import { generateContract } from './contract/generateContract';
 
 interface ContractViewDialogProps {
   open: boolean;
@@ -9,6 +11,9 @@ interface ContractViewDialogProps {
   contractPdfUrl: string;
   requisites?: ContractRequisites;
   releaseTitle?: string;
+  releaseDate?: string;
+  tracks?: Track[];
+  coverUrl?: string;
 }
 
 export default function ContractViewDialog({
@@ -16,13 +21,29 @@ export default function ContractViewDialog({
   onOpenChange,
   contractPdfUrl,
   requisites,
-  releaseTitle
+  releaseTitle,
+  releaseDate,
+  tracks = [],
+  coverUrl = ''
 }: ContractViewDialogProps) {
+  const [contractHtml, setContractHtml] = useState<string>('');
+
+  useEffect(() => {
+    if (open && requisites && releaseDate && tracks.length > 0) {
+      const html = generateContract({
+        requisites,
+        releaseDate,
+        tracks,
+        coverUrl,
+        signatureDataUrl: undefined
+      });
+      setContractHtml(html);
+    }
+  }, [open, requisites, releaseDate, tracks, coverUrl]);
+
   const handleDownload = () => {
     window.open(contractPdfUrl, '_blank');
   };
-
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -51,52 +72,20 @@ export default function ContractViewDialog({
           </div>
         </DialogHeader>
 
-        {/* Реквизиты (опционально) */}
-        {requisites && (
-          <div className="px-6 py-3 bg-muted/30 border-b">
-            <details className="group">
-              <summary className="cursor-pointer text-sm font-medium flex items-center gap-2 hover:text-primary transition-colors">
-                <Icon name="ChevronRight" size={14} className="group-open:rotate-90 transition-transform" />
-                Реквизиты артиста
-              </summary>
-              <div className="mt-3 space-y-1 text-xs text-muted-foreground bg-background/50 p-3 rounded-lg">
-                <p><strong>ФИО:</strong> {requisites.full_name}</p>
-                <p><strong>Псевдоним:</strong> {requisites.stage_name}</p>
-                <p><strong>Гражданство:</strong> {requisites.citizenship}</p>
-                <p><strong>Паспорт:</strong> {requisites.passport_data}</p>
-                <p><strong>ИНН/SWIFT:</strong> {requisites.inn_swift}</p>
-                <p><strong>Email:</strong> {requisites.email}</p>
-                <p><strong>Банковские реквизиты:</strong></p>
-                <pre className="whitespace-pre-wrap font-mono text-xs ml-4">{requisites.bank_requisites}</pre>
-              </div>
-            </details>
-          </div>
-        )}
-
-        {/* PDF Viewer */}
-        <div className="flex-1 overflow-hidden bg-muted/20 relative">
-          {isMobile ? (
-            <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center">
+        {/* HTML-версия договора (как на шаге 6) */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 bg-background">
+          {contractHtml ? (
+            <div 
+              className="contract-preview"
+              dangerouslySetInnerHTML={{ __html: contractHtml }}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
               <Icon name="FileText" size={48} className="text-muted-foreground" />
               <p className="text-sm text-muted-foreground max-w-md">
-                На мобильных устройствах просмотр PDF возможен только через открытие в новой вкладке
+                Загрузка договора...
               </p>
-              <Button
-                onClick={handleDownload}
-                variant="default"
-                size="lg"
-                className="gap-2"
-              >
-                <Icon name="ExternalLink" size={18} />
-                Открыть договор
-              </Button>
             </div>
-          ) : (
-            <iframe
-              src={`${contractPdfUrl}#view=FitH`}
-              className="w-full h-full border-0"
-              title="Предпросмотр договора"
-            />
           )}
         </div>
 
@@ -105,10 +94,7 @@ export default function ContractViewDialog({
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Icon name="Info" size={14} />
             <span>
-              {isMobile 
-                ? 'Для просмотра договора нажмите кнопку "Открыть договор" выше'
-                : 'Если документ не отображается, используйте кнопку "Скачать PDF" выше'
-              }
+              Для сохранения договора в PDF используйте кнопку "Скачать PDF" выше
             </span>
           </div>
         </div>

@@ -330,7 +330,10 @@ export default function ReleaseViewDialog({
           onOpenChange={setShowContractDialog}
           contractPdfUrl={release.contract_pdf_url}
           requisites={release.contract_requisites}
-          releaseTitle={release.name}
+          releaseTitle={release.release_name}
+          releaseDate={release.release_date}
+          tracks={tracks}
+          coverUrl={release.cover_url}
         />
       )}
     </Dialog>

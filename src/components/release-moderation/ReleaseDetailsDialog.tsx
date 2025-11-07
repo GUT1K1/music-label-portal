@@ -296,6 +296,9 @@ export default function ReleaseDetailsDialog({
           contractPdfUrl={release.contract_pdf_url}
           requisites={release.contract_requisites}
           releaseTitle={release.release_name}
+          releaseDate={release.release_date}
+          tracks={release.tracks}
+          coverUrl={release.cover_url}
         />
       )}
     </Dialog>

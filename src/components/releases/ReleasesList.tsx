@@ -29,6 +29,7 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
   const [pitchingRelease, setPitchingRelease] = useState<Release | null>(null);
   const [detailsRelease, setDetailsRelease] = useState<Release | null>(null);
   const [contractDialogRelease, setContractDialogRelease] = useState<Release | null>(null);
+  const [contractTracks, setContractTracks] = useState<any[]>([]);
   
   const formatDate = useMemo(() => (dateStr?: string) => {
     if (!dateStr) return null;
@@ -100,7 +101,13 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setContractDialogRelease(release)}
+                    onClick={async () => {
+                      setContractDialogRelease(release);
+                      if (loadTracks) {
+                        const tracks = await loadTracks(release.id);
+                        setContractTracks(tracks || []);
+                      }
+                    }}
                     className="gap-1 h-7 md:h-7 -ml-1.5 md:ml-0 text-[10px] px-2 justify-start md:justify-center md:flex-1"
                   >
                     <Icon name="FileText" size={12} className="flex-shrink-0" />
@@ -254,7 +261,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
           onOpenChange={(open) => !open && setContractDialogRelease(null)}
           contractPdfUrl={contractDialogRelease.contract_pdf_url}
           requisites={contractDialogRelease.contract_requisites}
-          releaseTitle={contractDialogRelease.name}
+          releaseTitle={contractDialogRelease.release_name}
+          releaseDate={contractDialogRelease.release_date}
+          tracks={contractTracks}
+          coverUrl={contractDialogRelease.cover_url}
         />
       )}
     </div>
