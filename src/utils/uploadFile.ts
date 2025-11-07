@@ -87,9 +87,9 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     }
     
     console.log('[Upload] ✅ All chunks uploaded to S3');
-    console.log('[Upload] Step 2/2: Assembling and uploading to Telegram...');
+    console.log('[Upload] Step 2/2: Assembling chunks in S3...');
     
-    // Шаг 2: Вызываем бэкенд для сборки и загрузки в Telegram
+    // Шаг 2: Вызываем бэкенд для сборки chunks в один файл (через S3 multipart copy, без памяти)
     const assembleResponse = await fetch('https://functions.poehali.dev/086992a2-98d4-4646-9483-14be7b0c5208', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -106,14 +106,14 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     
     const result = await assembleResponse.json();
     
-    console.log('[Upload] ✅ File uploaded to Telegram:', result.file_id);
+    console.log('[Upload] ✅ File assembled in S3:', result.url);
     
     return {
       url: result.url,
+      s3Key: result.s3Key,
       fileName: file.name,
-      fileSize: file.size,
-      file_id: result.file_id,
-      storage: 'telegram' as const
+      fileSize: result.file_size,
+      storage: 's3' as const
     };
     
   } catch (error) {

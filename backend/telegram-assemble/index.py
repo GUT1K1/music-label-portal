@@ -62,121 +62,71 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             region_name='ru-central1'
         )
         
-        assembled_data = bytearray()
+        # Use S3 CopyObject to assemble chunks efficiently (no memory overhead)
+        import uuid
+        from datetime import datetime
         
+        file_ext = file_name.split('.')[-1] if '.' in file_name else ''
+        unique_filename = f"{uuid.uuid4()}.{file_ext}" if file_ext else str(uuid.uuid4())
+        final_key = f"uploads/{datetime.now().strftime('%Y/%m/%d')}/{unique_filename}"
+        
+        print(f'[Assemble] Using S3 multipart copy to {final_key}')
+        
+        # Create multipart upload
+        mpu = s3_client.create_multipart_upload(
+            Bucket=bucket_name,
+            Key=final_key,
+            ContentType=content_type
+        )
+        
+        upload_id = mpu['UploadId']
+        parts = []
+        
+        # Copy each chunk as a part
         for i, chunk_key in enumerate(chunk_keys):
-            print(f'[Assemble] Downloading chunk {i + 1}/{len(chunk_keys)}: {chunk_key}')
-            chunk_obj = s3_client.get_object(Bucket=bucket_name, Key=chunk_key)
-            chunk_data = chunk_obj['Body'].read()
-            assembled_data.extend(chunk_data)
+            part_number = i + 1
+            print(f'[Assemble] Copying chunk {part_number}/{len(chunk_keys)}: {chunk_key}')
             
-            # Clean up chunk after download
+            copy_response = s3_client.upload_part_copy(
+                Bucket=bucket_name,
+                Key=final_key,
+                PartNumber=part_number,
+                UploadId=upload_id,
+                CopySource={'Bucket': bucket_name, 'Key': chunk_key}
+            )
+            
+            parts.append({
+                'PartNumber': part_number,
+                'ETag': copy_response['CopyPartResult']['ETag']
+            })
+            
+            # Clean up chunk
             s3_client.delete_object(Bucket=bucket_name, Key=chunk_key)
         
-        total_size = len(assembled_data)
-        print(f'[Assemble] Assembled {total_size} bytes ({total_size / 1024 / 1024:.2f}MB)')
-        
-        # Upload to Telegram
-        bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
-        if not bot_token:
-            raise ValueError('TELEGRAM_BOT_TOKEN not configured')
-        
-        file_ext = file_name.lower().split('.')[-1]
-        
-        if file_ext in ['mp3', 'wav', 'flac', 'm4a', 'ogg']:
-            telegram_url = f'https://api.telegram.org/bot{bot_token}/sendAudio'
-            file_field = 'audio'
-            mime_type = f'audio/{file_ext}'
-        else:
-            telegram_url = f'https://api.telegram.org/bot{bot_token}/sendDocument'
-            file_field = 'document'
-            mime_type = content_type
-        
-        print(f'[Assemble] Uploading to Telegram as {file_field}...')
-        
-        files = {
-            file_field: (file_name, BytesIO(bytes(assembled_data)), mime_type)
-        }
-        
-        data = {
-            'chat_id': '@music_label_storage',  # Канал для хранения файлов
-            'title': file_name.rsplit('.', 1)[0]
-        }
-        
-        response = requests.post(
-            telegram_url,
-            files=files,
-            data=data,
-            timeout=600
+        # Complete multipart upload
+        s3_client.complete_multipart_upload(
+            Bucket=bucket_name,
+            Key=final_key,
+            UploadId=upload_id,
+            MultipartUpload={'Parts': parts}
         )
         
-        if not response.ok:
-            error_data = response.json() if response.headers.get('content-type') == 'application/json' else {'status': response.status_code}
-            print(f'[Assemble] Telegram error: {error_data}')
-            return {
-                'statusCode': response.status_code,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({
-                    'error': 'Telegram upload failed',
-                    'details': error_data
-                })
-            }
+        # Get final file info
+        head_response = s3_client.head_object(Bucket=bucket_name, Key=final_key)
+        total_size = head_response['ContentLength']
+        file_url = f"https://storage.yandexcloud.net/{bucket_name}/{final_key}"
         
-        result = response.json()
-        
-        if not result.get('ok'):
-            return {
-                'statusCode': 500,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({
-                    'error': 'Telegram API error',
-                    'details': result
-                })
-            }
-        
-        message_result = result['result']
-        
-        file_info = None
-        if 'audio' in message_result:
-            file_info = message_result['audio']
-        elif 'document' in message_result:
-            file_info = message_result['document']
-        
-        if not file_info:
-            return {
-                'statusCode': 500,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': 'No file info in Telegram response'})
-            }
-        
-        file_id = file_info['file_id']
-        file_unique_id = file_info['file_unique_id']
-        duration = file_info.get('duration', 0)
-        
-        # Получаем публичную ссылку на файл
-        get_file_response = requests.get(
-            f'https://api.telegram.org/bot{bot_token}/getFile?file_id={file_id}'
-        )
-        
-        if get_file_response.ok:
-            file_path = get_file_response.json()['result']['file_path']
-            file_url = f'https://api.telegram.org/file/bot{bot_token}/{file_path}'
-        else:
-            file_url = f'tg://file?file_id={file_id}'
-        
-        print(f'[Assemble] ✅ Success! file_id={file_id}, size={total_size}')
+        print(f'[Assemble] ✅ Success! Assembled {total_size} bytes ({total_size / 1024 / 1024:.2f}MB) at {file_url}')
         
         return {
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'body': json.dumps({
-                'file_id': file_id,
-                'file_unique_id': file_unique_id,
-                'duration': duration,
+                's3Key': final_key,
                 'file_size': total_size,
                 'file_name': file_name,
                 'url': file_url,
-                'storage': 'telegram'
+                'storage': 's3'
             })
         }
         
