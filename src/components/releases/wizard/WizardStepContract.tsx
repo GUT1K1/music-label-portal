@@ -68,17 +68,26 @@ export default function WizardStepContract({
       tempDiv.innerHTML = contractHtml;
       tempDiv.style.position = 'absolute';
       tempDiv.style.left = '-9999px';
-      tempDiv.style.width = '210mm'; // A4 width
-      tempDiv.style.padding = '20px';
+      tempDiv.style.top = '0';
+      tempDiv.style.width = '794px'; // A4 width в пикселях (210mm * 96dpi / 25.4)
+      tempDiv.style.padding = '40px';
       tempDiv.style.background = '#fff';
+      tempDiv.style.fontFamily = "'Times New Roman', serif";
+      tempDiv.style.fontSize = '10pt';
+      tempDiv.style.lineHeight = '1.4';
       document.body.appendChild(tempDiv);
 
-      // Генерируем canvas из HTML
+      // Небольшая задержка для рендеринга
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Генерируем canvas из HTML с высоким качеством
       const canvas = await html2canvas(tempDiv, {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        windowWidth: 794,
+        width: 794
       });
 
       // Удаляем временный контейнер
@@ -88,26 +97,31 @@ export default function WizardStepContract({
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
+        unit: 'px',
+        format: 'a4',
+        compress: true
       });
 
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 297; // A4 height in mm
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      // Вычисляем высоту изображения на одной странице
+      const imgWidth = pdfWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
       let heightLeft = imgHeight;
       let position = 0;
 
       // Добавляем первую страницу
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+      heightLeft -= pdfHeight;
 
-      // Добавляем остальные страницы если контент не влезает
+      // Добавляем остальные страницы
       while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
+        position = -pdfHeight * Math.floor((imgHeight - heightLeft) / pdfHeight);
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+        heightLeft -= pdfHeight;
       }
 
       // Скачиваем PDF
