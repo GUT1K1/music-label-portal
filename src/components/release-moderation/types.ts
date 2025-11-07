@@ -29,6 +29,16 @@ export interface Pitching {
   created_at: string;
 }
 
+export interface ContractRequisites {
+  full_name: string;
+  stage_name: string;
+  citizenship: string;
+  passport_data: string;
+  inn_swift: string;
+  email: string;
+  bank_requisites: string;
+}
+
 export interface Release {
   id: number;
   release_name: string;
@@ -50,4 +60,6 @@ export interface Release {
   reviewer_id?: number;
   reviewer_name?: string;
   pitching?: Pitching | null;
+  contract_pdf_url?: string;
+  contract_requisites?: ContractRequisites;
 }

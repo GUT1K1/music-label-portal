@@ -8,6 +8,7 @@ import PitchingSection from './PitchingSection';
 import ReleaseMetadataSection from './ReleaseMetadataSection';
 import TracksOverview from './TracksOverview';
 import CopyReleaseButton from './CopyReleaseButton';
+import ContractViewDialog from '../releases/ContractViewDialog';
 import type { Release } from './types';
 
 interface ReleaseDetailsDialogProps {
@@ -85,6 +86,7 @@ export default function ReleaseDetailsDialog({
   if (!release) return null;
 
   const [rejectionType, setRejectionType] = useState<'rejected_fixable' | 'rejected_final'>('rejected_fixable');
+  const [showContractDialog, setShowContractDialog] = useState(false);
 
   useEffect(() => {
     if (reviewAction === 'rejected_fixable' || reviewAction === 'rejected_final') {
@@ -152,6 +154,48 @@ export default function ReleaseDetailsDialog({
 
           {release.pitching && (
             <PitchingSection pitching={release.pitching} />
+          )}
+
+          {/* Договор - доступен для менеджеров и директоров */}
+          {release.contract_pdf_url && (
+            <div className="border-t pt-4">
+              <div className="bg-blue-500/5 border border-blue-500/20 p-4 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <Icon name="FileText" size={20} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium mb-2">Лицензионный договор</p>
+                    {release.contract_requisites && (
+                      <div className="space-y-1 text-xs text-muted-foreground mb-3">
+                        <p><strong>ФИО:</strong> {release.contract_requisites.full_name}</p>
+                        <p><strong>Псевдоним:</strong> {release.contract_requisites.stage_name}</p>
+                        <p><strong>Гражданство:</strong> {release.contract_requisites.citizenship}</p>
+                        <p><strong>Email:</strong> {release.contract_requisites.email}</p>
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => setShowContractDialog(true)}
+                        className="gap-2"
+                      >
+                        <Icon name="Eye" size={14} />
+                        Просмотреть договор
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(release.contract_pdf_url, '_blank')}
+                        className="gap-2"
+                      >
+                        <Icon name="Download" size={14} />
+                        Скачать
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
           {reviewAction && (
@@ -243,6 +287,17 @@ export default function ReleaseDetailsDialog({
           )}
         </DialogFooter>
       </DialogContent>
+
+      {/* Диалог просмотра договора */}
+      {release.contract_pdf_url && (
+        <ContractViewDialog
+          open={showContractDialog}
+          onOpenChange={setShowContractDialog}
+          contractPdfUrl={release.contract_pdf_url}
+          requisites={release.contract_requisites}
+          releaseTitle={release.release_name}
+        />
+      )}
     </Dialog>
   );
 }
