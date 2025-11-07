@@ -14,6 +14,7 @@ interface ContractViewDialogProps {
   releaseDate?: string;
   tracks?: Track[];
   coverUrl?: string;
+  signatureDataUrl?: string;
 }
 
 export default function ContractViewDialog({
@@ -24,7 +25,8 @@ export default function ContractViewDialog({
   releaseTitle,
   releaseDate,
   tracks = [],
-  coverUrl = ''
+  coverUrl = '',
+  signatureDataUrl
 }: ContractViewDialogProps) {
   const [contractHtml, setContractHtml] = useState<string>('');
 
@@ -35,11 +37,11 @@ export default function ContractViewDialog({
         releaseDate,
         tracks,
         coverUrl,
-        signatureDataUrl: undefined
+        signatureDataUrl
       });
       setContractHtml(html);
     }
-  }, [open, requisites, releaseDate, tracks, coverUrl]);
+  }, [open, requisites, releaseDate, tracks, coverUrl, signatureDataUrl]);
 
   const handleDownload = () => {
     window.open(contractPdfUrl, '_blank');

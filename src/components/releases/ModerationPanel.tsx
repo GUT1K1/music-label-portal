@@ -213,6 +213,7 @@ export default function ModerationPanel({ releases, userId, onReview, loadTracks
           releaseDate={contractDialogRelease.release_date}
           tracks={tracks}
           coverUrl={contractDialogRelease.cover_url}
+          signatureDataUrl={contractDialogRelease.contract_signature}
         />
       )}
     </div>
