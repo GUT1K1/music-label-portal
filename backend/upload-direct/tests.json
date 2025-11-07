@@ -7,12 +7,12 @@
       "expectedStatus": 200
     },
     {
-      "name": "GET presigned URL for large file",
+      "name": "GET presigned POST for large file",
       "method": "GET",
       "path": "/?fileName=track.wav&contentType=audio/wav",
       "expectedStatus": 200,
       "expectedBody": {
-        "presignedUrl": "string",
+        "presignedPost": "object",
         "url": "string",
         "s3Key": "string",
         "fileName": "track.wav"

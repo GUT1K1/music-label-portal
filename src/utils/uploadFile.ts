@@ -42,113 +42,50 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       return result;
     }
     
-    // Большие файлы (>10MB) - S3 multipart upload через бэкенд
-    console.log('[Upload] 🚀 Large file, using S3 multipart upload');
+    // Большие файлы (>10MB) - прямая загрузка в S3 через presigned POST (без Cloud Functions лимитов)
+    console.log('[Upload] 🚀 Large file, using direct S3 upload via presigned POST');
     
     const contentType = file.type || 'application/octet-stream';
-    const chunkSize = 2.5 * 1024 * 1024; // 2.5MB chunks (баланс между Cloud Functions лимитом и S3 минимумом)
-    const totalChunks = Math.ceil(file.size / chunkSize);
     
-    console.log(`[Upload] Splitting into ${totalChunks} chunks (2.5MB each)`);
+    // Получаем presigned POST от бэкенда
+    const response = await fetch(
+      `https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(contentType)}`
+    );
     
-    let uploadId = '';
-    let s3Key = '';
-    let finalUrl = '';
+    if (!response.ok) {
+      throw new Error(`Ошибка получения presigned POST: ${response.status}`);
+    }
     
-    // Шаг 1: Инициализация multipart upload
-    const initResponse = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'init-multipart',
-        fileName: file.name,
-        contentType
-      })
+    const { presignedPost, url: fileUrl, s3Key } = await response.json();
+    
+    console.log('[Upload] ✅ Got presigned POST, uploading directly to S3...');
+    
+    // Загружаем файл напрямую в S3 через presigned POST
+    const formData = new FormData();
+    
+    // Добавляем поля из presigned POST (в правильном порядке!)
+    Object.keys(presignedPost.fields).forEach(key => {
+      formData.append(key, presignedPost.fields[key]);
     });
     
-    if (!initResponse.ok) {
-      throw new Error(`Ошибка инициализации: ${initResponse.status}`);
-    }
+    // Файл должен быть последним
+    formData.append('file', file);
     
-    const initData = await initResponse.json();
-    uploadId = initData.uploadId;
-    s3Key = initData.s3Key;
-    finalUrl = initData.url;
-    
-    console.log('[Upload] ✅ Multipart upload initialized:', uploadId);
-    
-    // Шаг 2: Загружаем части с повторными попытками
-    const parts: { PartNumber: number; ETag: string }[] = [];
-    
-    for (let i = 0; i < totalChunks; i++) {
-      const start = i * chunkSize;
-      const end = Math.min(start + chunkSize, file.size);
-      const chunk = file.slice(start, end);
-      
-      console.log(`[Upload] 📤 Part ${i + 1}/${totalChunks}: ${(chunk.size / 1024 / 1024).toFixed(2)}MB`);
-      
-      let retries = 3;
-      let partData = null;
-      
-      while (retries > 0) {
-        try {
-          // Отправляем часть через FormData (бинарные данные, не base64)
-          const formData = new FormData();
-          formData.append('action', 'upload-part');
-          formData.append('uploadId', uploadId);
-          formData.append('s3Key', s3Key);
-          formData.append('partNumber', (i + 1).toString());
-          formData.append('part', chunk, 'part.bin');
-          
-          const uploadPartResponse = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
-            method: 'POST',
-            body: formData
-          });
-          
-          if (!uploadPartResponse.ok) {
-            throw new Error(`HTTP ${uploadPartResponse.status}`);
-          }
-          
-          partData = await uploadPartResponse.json();
-          console.log(`[Upload] ✅ Part ${i + 1} uploaded`);
-          break;
-        } catch (error) {
-          retries--;
-          console.log(`[Upload] ⚠️ Part ${i + 1} failed, retries left: ${retries}`);
-          if (retries === 0) {
-            throw new Error(`Не удалось загрузить часть ${i + 1} после 3 попыток`);
-          }
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-      }
-      
-      if (partData) {
-        parts.push({ PartNumber: i + 1, ETag: partData.ETag });
-      }
-    }
-    
-    console.log('[Upload] ✅ All parts uploaded, completing...');
-    
-    // Шаг 3: Завершение multipart upload
-    const completeResponse = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
+    const uploadResponse = await fetch(presignedPost.url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'complete-multipart',
-        uploadId,
-        s3Key,
-        parts
-      })
+      body: formData
     });
     
-    if (!completeResponse.ok) {
-      throw new Error(`Ошибка завершения: ${completeResponse.status}`);
+    if (!uploadResponse.ok) {
+      const errorText = await uploadResponse.text();
+      console.error('[Upload] S3 upload error:', errorText);
+      throw new Error(`Ошибка загрузки в S3: ${uploadResponse.status}`);
     }
     
-    console.log('[Upload] ✅ File uploaded to S3:', finalUrl);
+    console.log('[Upload] ✅ File uploaded to S3:', fileUrl);
     
     return {
-      url: finalUrl,
+      url: fileUrl,
       s3Key,
       fileName: file.name,
       fileSize: file.size,

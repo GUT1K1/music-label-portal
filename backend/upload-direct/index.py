@@ -29,7 +29,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': ''
         }
     
-    # GET: Generate presigned URL for direct S3 upload
+    # GET: Generate presigned POST for direct S3 upload (bypasses Cloud Functions size limits)
     if method == 'GET':
         try:
             params = event.get('queryStringParameters', {}) or {}
@@ -52,38 +52,40 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             unique_filename = f"{uuid.uuid4()}.{file_ext}" if file_ext else str(uuid.uuid4())
             s3_key = f"uploads/{datetime.now().strftime('%Y/%m/%d')}/{unique_filename}"
             
-            presigned_url = s3_client.generate_presigned_url(
-                'put_object',
-                Params={
-                    'Bucket': bucket_name,
-                    'Key': s3_key,
-                    'ContentType': content_type
-                },
+            # Generate presigned POST (browser can upload directly to S3)
+            presigned_post = s3_client.generate_presigned_post(
+                Bucket=bucket_name,
+                Key=s3_key,
+                Fields={'Content-Type': content_type},
+                Conditions=[
+                    {'Content-Type': content_type},
+                    ['content-length-range', 1, 100 * 1024 * 1024]  # 1 byte to 100MB
+                ],
                 ExpiresIn=3600
             )
             
             file_url = f"https://storage.yandexcloud.net/{bucket_name}/{s3_key}"
             
-            print(f"Presigned URL generated: {s3_key}")
+            print(f"Presigned POST generated: {s3_key}")
             
             return {
                 'statusCode': 200,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                 'body': json.dumps({
-                    'presignedUrl': presigned_url,
+                    'presignedPost': presigned_post,
                     'url': file_url,
                     's3Key': s3_key,
                     'fileName': file_name
                 })
             }
         except Exception as e:
-            print(f"Presigned URL error: {e}")
+            print(f"Presigned POST error: {e}")
             import traceback
             traceback.print_exc()
             return {
                 'statusCode': 500,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': f'Presigned URL failed: {str(e)}'})
+                'body': json.dumps({'error': f'Presigned POST failed: {str(e)}'})
             }
     
     if method != 'POST':
