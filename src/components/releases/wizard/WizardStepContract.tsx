@@ -234,13 +234,6 @@ export default function WizardStepContract({
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-2 -mx-6 -mt-6 px-6 py-4 bg-background rounded-t-lg border-b border-border/30">
-        <h2 className="text-2xl font-bold text-primary">Лицензионный договор</h2>
-        <p className="text-sm text-muted-foreground">
-          Ознакомьтесь с договором и поставьте электронную подпись
-        </p>
-      </div>
-
       {/* Предпросмотр договора */}
       <div className="relative border border-border/50 rounded-lg bg-card">
         <div className="absolute top-4 right-4 z-10">
