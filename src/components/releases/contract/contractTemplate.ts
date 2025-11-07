@@ -31,6 +31,8 @@ export const CONTRACT_TEMPLATE = `
     p {
       text-align: justify;
       margin: 6px 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .header {
       display: flex;
@@ -47,10 +49,14 @@ export const CONTRACT_TEMPLATE = `
     .signature-block {
       flex: 1;
       font-size: 9pt;
+      min-width: 0;
     }
     .signature-block p {
       margin: 3px 0;
       text-align: left;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      font-size: 8pt;
     }
     .signature-line {
       border-bottom: 2px solid #000;
@@ -70,11 +76,15 @@ export const CONTRACT_TEMPLATE = `
       border-collapse: collapse;
       margin: 15px 0;
       font-size: 9pt;
+      table-layout: fixed;
     }
     table td, table th {
       border: 1px solid #000;
       padding: 6px;
       text-align: left;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
     }
     table th {
       font-weight: bold;
@@ -86,8 +96,8 @@ export const CONTRACT_TEMPLATE = `
       border-top: 2px solid #ddd;
     }
     .cover-image {
-      max-width: 350px;
-      max-height: 350px;
+      max-width: 250px;
+      max-height: 250px;
       margin: 15px auto;
       display: block;
       border: 1px solid #ddd;

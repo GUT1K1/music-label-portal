@@ -78,44 +78,75 @@ export default function WizardStepContract({
   const downloadContractAsPDF = async () => {
     setIsGeneratingPDF(true);
     try {
-      // Динамическая загрузка библиотек
       const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
         import('html2canvas'),
         import('jspdf')
       ]);
 
-      // Создаем временный контейнер для рендеринга
+      // A4 размеры: 210mm x 297mm = 794px x 1123px (96 DPI)
+      const a4Width = 794;
+      const a4Height = 1123;
+      const padding = 60; // 15mm в пикселях
+      const contentWidth = a4Width - (padding * 2);
+
+      // Создаем временный контейнер
       const tempContainer = document.createElement('div');
       tempContainer.style.position = 'absolute';
       tempContainer.style.left = '-9999px';
       tempContainer.style.top = '0';
-      tempContainer.style.width = '210mm';
-      tempContainer.style.padding = '15mm';
+      tempContainer.style.width = `${contentWidth}px`;
+      tempContainer.style.padding = '0';
       tempContainer.style.background = '#fff';
-      tempContainer.innerHTML = contractHtml;
+      tempContainer.style.fontSize = '12px';
+      tempContainer.style.lineHeight = '1.5';
+      
+      // Создаем обертку для контента с правильными стилями
+      const wrapper = document.createElement('div');
+      wrapper.style.maxWidth = `${contentWidth}px`;
+      wrapper.style.wordWrap = 'break-word';
+      wrapper.style.overflowWrap = 'break-word';
+      wrapper.innerHTML = contractHtml;
+      
+      // Ограничиваем размер изображений
+      const images = wrapper.querySelectorAll('img');
+      images.forEach(img => {
+        if (img.classList.contains('cover-image')) {
+          (img as HTMLElement).style.maxWidth = '250px';
+          (img as HTMLElement).style.maxHeight = '250px';
+          (img as HTMLElement).style.display = 'block';
+          (img as HTMLElement).style.margin = '15px auto';
+        }
+        if (img.classList.contains('signature-image')) {
+          (img as HTMLElement).style.maxWidth = '150px';
+          (img as HTMLElement).style.maxHeight = '40px';
+        }
+      });
+      
+      // Ограничиваем ширину таблиц
+      const tables = wrapper.querySelectorAll('table');
+      tables.forEach(table => {
+        (table as HTMLElement).style.width = '100%';
+        (table as HTMLElement).style.tableLayout = 'fixed';
+        (table as HTMLElement).style.wordWrap = 'break-word';
+      });
+      
+      tempContainer.appendChild(wrapper);
       document.body.appendChild(tempContainer);
 
-      // Даем время на загрузку изображений
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Ждем загрузки изображений
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      // Создаем canvas из HTML
+      // Создаем canvas
       const canvas = await html2canvas(tempContainer, {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        width: contentWidth,
+        windowWidth: contentWidth
       });
 
-      // Удаляем временный контейнер
       document.body.removeChild(tempContainer);
-
-      // Размеры A4 в мм
-      const pdfWidth = 210;
-      const pdfHeight = 297;
-      
-      // Размеры с учетом полей
-      const contentWidth = pdfWidth - 30; // 15mm с каждой стороны
-      const contentHeight = pdfHeight - 30;
 
       // Создаем PDF
       const pdf = new jsPDF({
@@ -124,11 +155,13 @@ export default function WizardStepContract({
         format: 'a4'
       });
 
-      // Вычисляем размеры для вставки canvas
-      const imgWidth = contentWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Размеры контента в PDF (с учетом полей 15mm)
+      const pdfContentWidth = 180; // 210 - 30
+      const pdfContentHeight = 267; // 297 - 30
       
-      const totalPages = Math.ceil(imgHeight / contentHeight);
+      // Вычисляем высоту изображения в PDF
+      const imgHeight = (canvas.height * pdfContentWidth) / canvas.width;
+      const totalPages = Math.ceil(imgHeight / pdfContentHeight);
 
       // Разбиваем на страницы
       for (let page = 0; page < totalPages; page++) {
@@ -136,17 +169,21 @@ export default function WizardStepContract({
           pdf.addPage();
         }
 
-        // Создаем отдельный canvas для каждой страницы
         const pageCanvas = document.createElement('canvas');
+        const scale = canvas.width / pdfContentWidth;
+        const pageHeightInPixels = pdfContentHeight * scale;
+        
         pageCanvas.width = canvas.width;
-        pageCanvas.height = (canvas.width * contentHeight) / imgWidth;
+        pageCanvas.height = Math.min(pageHeightInPixels, canvas.height - (page * pageHeightInPixels));
 
         const ctx = pageCanvas.getContext('2d');
         if (!ctx) continue;
 
-        // Копируем нужную часть исходного canvas
-        const sourceY = page * pageCanvas.height;
-        const sourceHeight = Math.min(pageCanvas.height, canvas.height - sourceY);
+        const sourceY = page * pageHeightInPixels;
+        const sourceHeight = Math.min(pageHeightInPixels, canvas.height - sourceY);
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
         
         ctx.drawImage(
           canvas,
@@ -156,12 +193,11 @@ export default function WizardStepContract({
           pageCanvas.width, sourceHeight
         );
 
-        // Добавляем изображение в PDF
-        const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
-        pdf.addImage(pageImgData, 'JPEG', 15, 15, imgWidth, contentHeight);
+        const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.92);
+        const actualHeight = (sourceHeight * pdfContentWidth) / canvas.width;
+        pdf.addImage(pageImgData, 'JPEG', 15, 15, pdfContentWidth, actualHeight);
       }
 
-      // Скачиваем PDF
       const contractNumber = `420-${Date.now().toString().slice(-6)}`;
       pdf.save(`Договор_${contractNumber}.pdf`);
 
