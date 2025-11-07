@@ -278,14 +278,24 @@ export const CONTRACT_TEMPLATE = `
       <div class="signature-line">
         {{SIGNATURE_LICENSOR}}
       </div>
-      <p>___________/ {{ФИО_ИП_кратко}} /</p>
+      <p style="text-align: center; margin-top: 5px;">{{ФИО_ИП_кратко}}</p>
     </div>
     
     <div class="signature-block">
       <p><strong>Лицензиат</strong></p>
-      <p>ИП Костырев Виктор Николаевич</p>
-      <div class="signature-line"></div>
-      <p>_____________/ В.Н. Костырев /</p>
+      <p>Индивидуальный предприниматель<br>Костырев Виктор Николаевич</p>
+      <p>ИНН 463407305547<br>ОГРНИП 324460000036131</p>
+      <p>Адрес: Россия, курская обл, курчатовский р-н, с. успенка, село успенка, -, д 57</p>
+      <p>Банковские реквизиты:<br>
+      Расчетный счет 40802810900006611334<br>
+      Банк АО «ТБанк»<br>
+      ИНН банка 7710140679<br>
+      БИК банка 044525974<br>
+      Корреспондентский счет банка 30101810145250000974</p>
+      <div class="signature-line">
+        <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
+      </div>
+      <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
     </div>
   </div>
 </div>
@@ -319,14 +329,24 @@ export const CONTRACT_TEMPLATE = `
       <div class="signature-line">
         {{SIGNATURE_LICENSOR}}
       </div>
-      <p>_______________/ {{ФИО_ИП_кратко}} /</p>
+      <p style="text-align: center; margin-top: 5px;">{{ФИО_ИП_кратко}}</p>
     </div>
     
     <div class="signature-block">
       <p><strong>Лицензиат</strong></p>
-      <p>ИП Костырев Виктор Николаевич</p>
-      <div class="signature-line"></div>
-      <p>______________/ В.Н. Костырев /</p>
+      <p>Индивидуальный предприниматель<br>Костырев Виктор Николаевич</p>
+      <p>ИНН 463407305547<br>ОГРНИП 324460000036131</p>
+      <p>Адрес: Россия, курская обл, курчатовский р-н, с. успенка, село успенка, -, д 57</p>
+      <p>Банковские реквизиты:<br>
+      Расчетный счет 40802810900006611334<br>
+      Банк АО «ТБанк»<br>
+      ИНН банка 7710140679<br>
+      БИК банка 044525974<br>
+      Корреспондентский счет банка 30101810145250000974</p>
+      <div class="signature-line">
+        <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
+      </div>
+      <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
     </div>
   </div>
 </div>

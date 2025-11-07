@@ -31,9 +31,8 @@ export default function SignaturePad({ onSave }: SignaturePadProps) {
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    // Заливка белым фоном
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Прозрачный фон (без заливки)
+    // ctx.clearRect используется вместо fillRect для прозрачности
   }, []);
 
   const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
@@ -99,8 +98,8 @@ export default function SignaturePad({ onSave }: SignaturePadProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Очистка с прозрачным фоном
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     setIsEmpty(true);
   };
 

@@ -5,8 +5,6 @@ import Icon from '@/components/ui/icon';
 import SignaturePad from './SignaturePad';
 import { generateContract } from '../contract/generateContract';
 import { ContractRequisites, Track } from '../types';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 interface WizardStepContractProps {
   requisites: ContractRequisites;
@@ -59,6 +57,12 @@ export default function WizardStepContract({
   const downloadContractAsPDF = async () => {
     setIsGeneratingPDF(true);
     try {
+      // Динамический импорт библиотек для избежания проблем с загрузкой
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf')
+      ]);
+
       // Создаём временный контейнер для рендеринга
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = contractHtml;
