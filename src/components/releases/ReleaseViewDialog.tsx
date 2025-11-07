@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 import { Release } from './types';
+import ContractViewDialog from './ContractViewDialog';
 
 const ReleasePlayer = lazy(() => import('./ReleasePlayer'));
 
@@ -29,6 +30,7 @@ export default function ReleaseViewDialog({
   const [reviewAction, setReviewAction] = useState<'pending' | 'approved' | 'rejected_fixable' | 'rejected_final' | null>(null);
   const [reviewComment, setReviewComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showContractDialog, setShowContractDialog] = useState(false);
 
   useEffect(() => {
     if (release && loadTracks) {
@@ -146,15 +148,26 @@ export default function ReleaseViewDialog({
                         <p><strong>Email:</strong> {release.contract_requisites.email}</p>
                       </div>
                     )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.open(release.contract_pdf_url, '_blank')}
-                      className="gap-2"
-                    >
-                      <Icon name="Download" size={14} />
-                      Скачать договор PDF
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => setShowContractDialog(true)}
+                        className="gap-2"
+                      >
+                        <Icon name="Eye" size={14} />
+                        Просмотреть договор
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(release.contract_pdf_url, '_blank')}
+                        className="gap-2"
+                      >
+                        <Icon name="Download" size={14} />
+                        Скачать
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -309,6 +322,17 @@ export default function ReleaseViewDialog({
           )}
         </DialogFooter>
       </DialogContent>
+
+      {/* Диалог просмотра договора */}
+      {release.contract_pdf_url && (
+        <ContractViewDialog
+          open={showContractDialog}
+          onOpenChange={setShowContractDialog}
+          contractPdfUrl={release.contract_pdf_url}
+          requisites={release.contract_requisites}
+          releaseTitle={release.name}
+        />
+      )}
     </Dialog>
   );
 }

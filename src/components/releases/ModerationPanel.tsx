@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { Release, Track } from './types';
+import ContractViewDialog from './ContractViewDialog';
 
 interface ModerationPanelProps {
   releases: Release[];
@@ -18,6 +19,7 @@ export default function ModerationPanel({ releases, userId, onReview, loadTracks
   const [tracks, setTracks] = useState<Track[]>([]);
   const [reviewComment, setReviewComment] = useState('');
   const [reviewing, setReviewing] = useState(false);
+  const [contractDialogRelease, setContractDialogRelease] = useState<Release | null>(null);
 
   const pendingReleases = releases
     .filter((r) => r.status === 'pending')
@@ -103,15 +105,26 @@ export default function ModerationPanel({ releases, userId, onReview, loadTracks
                           </details>
                         </div>
                       )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => window.open(release.contract_pdf_url, '_blank')}
-                        className="gap-2"
-                      >
-                        <Icon name="Download" size={14} />
-                        Скачать договор PDF
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => setContractDialogRelease(release)}
+                          className="gap-2"
+                        >
+                          <Icon name="Eye" size={14} />
+                          Просмотреть договор
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.open(release.contract_pdf_url, '_blank')}
+                          className="gap-2"
+                        >
+                          <Icon name="Download" size={14} />
+                          Скачать
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -178,6 +191,17 @@ export default function ModerationPanel({ releases, userId, onReview, loadTracks
         <div className="text-center py-12 text-muted-foreground">
           Нет релизов на модерации
         </div>
+      )}
+
+      {/* Диалог просмотра договора */}
+      {contractDialogRelease?.contract_pdf_url && (
+        <ContractViewDialog
+          open={contractDialogRelease !== null}
+          onOpenChange={(open) => !open && setContractDialogRelease(null)}
+          contractPdfUrl={contractDialogRelease.contract_pdf_url}
+          requisites={contractDialogRelease.contract_requisites}
+          releaseTitle={contractDialogRelease.name}
+        />
       )}
     </div>
   );

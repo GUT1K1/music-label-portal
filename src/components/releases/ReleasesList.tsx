@@ -7,6 +7,7 @@ import { LazyImage } from '@/components/ui/image-lazy';
 import { Release, Pitching } from './types';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReleaseViewDialog from './ReleaseViewDialog';
+import ContractViewDialog from './ContractViewDialog';
 
 const ReleasePlayer = lazy(() => import('./ReleasePlayer'));
 const PitchingForm = lazy(() => import('./PitchingForm'));
@@ -27,6 +28,7 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
   const [expandedRelease, setExpandedRelease] = useState<number | null>(null);
   const [pitchingRelease, setPitchingRelease] = useState<Release | null>(null);
   const [detailsRelease, setDetailsRelease] = useState<Release | null>(null);
+  const [contractDialogRelease, setContractDialogRelease] = useState<Release | null>(null);
   
   const formatDate = useMemo(() => (dateStr?: string) => {
     if (!dateStr) return null;
@@ -98,7 +100,7 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(release.contract_pdf_url, '_blank')}
+                    onClick={() => setContractDialogRelease(release)}
                     className="gap-1 h-7 md:h-7 -ml-1.5 md:ml-0 text-[10px] px-2 justify-start md:justify-center md:flex-1"
                   >
                     <Icon name="FileText" size={12} className="flex-shrink-0" />
@@ -178,7 +180,7 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                   <Button
                     variant="default"
                     size="sm"
-                    onClick={() => window.open(release.contract_pdf_url, '_blank')}
+                    onClick={() => setContractDialogRelease(release)}
                     className="gap-1 h-7 md:h-7 -ml-1.5 md:ml-0 text-[10px] px-2 justify-start md:justify-center md:flex-1"
                   >
                     <Icon name="FileText" size={12} className="flex-shrink-0" />
@@ -242,6 +244,17 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
           onClose={() => setDetailsRelease(null)}
           onStatusChange={onStatusChange}
           loadTracks={loadTracks}
+        />
+      )}
+
+      {/* Диалог просмотра договора */}
+      {contractDialogRelease?.contract_pdf_url && (
+        <ContractViewDialog
+          open={contractDialogRelease !== null}
+          onOpenChange={(open) => !open && setContractDialogRelease(null)}
+          contractPdfUrl={contractDialogRelease.contract_pdf_url}
+          requisites={contractDialogRelease.contract_requisites}
+          releaseTitle={contractDialogRelease.name}
         />
       )}
     </div>
