@@ -42,18 +42,19 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       return result;
     }
     
-    // Большие файлы (>10MB) - загружаем через Telegram Bot API
-    console.log('[Upload] 🚀 Large file, uploading via Telegram (supports up to 2GB)');
+    // Большие файлы (>10MB) - chunked upload (бэкенд собирает из temp chunks)
+    console.log('[Upload] 🚀 Large file, using chunked upload');
     
     const contentType = file.type || 'application/octet-stream';
     const chunkSize = 2 * 1024 * 1024; // 2MB chunks
     const totalChunks = Math.ceil(file.size / chunkSize);
     
-    console.log(`[Upload] Step 1/2: Uploading ${totalChunks} chunks to S3...`);
+    console.log(`[Upload] Uploading ${totalChunks} chunks...`);
     
-    const chunkKeys: string[] = [];
+    let s3Key = '';
+    let finalUrl = '';
     
-    // Шаг 1: Загружаем chunks в S3 (это работает, т.к. <3MB)
+    // Загружаем chunks последовательно (бэкенд сохраняет в temp и собирает в конце)
     for (let i = 0; i < totalChunks; i++) {
       const start = i * chunkSize;
       const end = Math.min(start + chunkSize, file.size);
@@ -73,8 +74,11 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           file: base64Chunk,
-          fileName: `${file.name}.chunk${i}`,
-          contentType: 'application/octet-stream'
+          fileName: file.name,
+          contentType,
+          chunkIndex: i,
+          totalChunks,
+          s3Key: i > 0 ? s3Key : undefined
         })
       });
       
@@ -83,36 +87,23 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       }
       
       const result = await response.json();
-      chunkKeys.push(result.s3Key);
+      
+      if (i === 0) {
+        s3Key = result.s3Key;
+      }
+      
+      // Последний chunk - бэкенд вернёт финальный URL
+      if (i === totalChunks - 1) {
+        finalUrl = result.url;
+        console.log('[Upload] ✅ File uploaded:', finalUrl);
+      }
     }
-    
-    console.log('[Upload] ✅ All chunks uploaded to S3');
-    console.log('[Upload] Step 2/2: Assembling chunks in S3...');
-    
-    // Шаг 2: Вызываем бэкенд для сборки chunks в один файл (через S3 multipart copy, без памяти)
-    const assembleResponse = await fetch('https://functions.poehali.dev/086992a2-98d4-4646-9483-14be7b0c5208', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chunkKeys,
-        fileName: file.name,
-        contentType
-      })
-    });
-    
-    if (!assembleResponse.ok) {
-      throw new Error(`Ошибка сборки файла: ${assembleResponse.status}`);
-    }
-    
-    const result = await assembleResponse.json();
-    
-    console.log('[Upload] ✅ File assembled in S3:', result.url);
     
     return {
-      url: result.url,
-      s3Key: result.s3Key,
+      url: finalUrl,
+      s3Key,
       fileName: file.name,
-      fileSize: result.file_size,
+      fileSize: file.size,
       storage: 's3' as const
     };
     
