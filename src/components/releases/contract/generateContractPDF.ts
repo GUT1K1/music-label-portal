@@ -91,37 +91,43 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
   const imgWidth = contentWidth;
   const imgHeight = (canvas.height * imgWidth) / canvas.width;
   
-  const totalPages = Math.ceil(imgHeight / contentHeight);
+  if (imgHeight <= contentHeight) {
+    // Контент помещается на одну страницу
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    pdf.addImage(imgData, 'JPEG', 15, 15, imgWidth, imgHeight);
+  } else {
+    // Контент не помещается - разбиваем на страницы
+    const totalPages = Math.ceil(imgHeight / contentHeight);
 
-  // Разбиваем на страницы
-  for (let page = 0; page < totalPages; page++) {
-    if (page > 0) {
-      pdf.addPage();
+    for (let page = 0; page < totalPages; page++) {
+      if (page > 0) {
+        pdf.addPage();
+      }
+
+      // Создаем отдельный canvas для каждой страницы
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = (canvas.width * contentHeight) / imgWidth;
+
+      const ctx = pageCanvas.getContext('2d');
+      if (!ctx) continue;
+
+      // Копируем нужную часть исходного canvas
+      const sourceY = page * pageCanvas.height;
+      const sourceHeight = Math.min(pageCanvas.height, canvas.height - sourceY);
+      
+      ctx.drawImage(
+        canvas,
+        0, sourceY,
+        canvas.width, sourceHeight,
+        0, 0,
+        pageCanvas.width, sourceHeight
+      );
+
+      // Добавляем изображение в PDF
+      const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
+      pdf.addImage(pageImgData, 'JPEG', 15, 15, imgWidth, contentHeight);
     }
-
-    // Создаем отдельный canvas для каждой страницы
-    const pageCanvas = document.createElement('canvas');
-    pageCanvas.width = canvas.width;
-    pageCanvas.height = (canvas.width * contentHeight) / imgWidth;
-
-    const ctx = pageCanvas.getContext('2d');
-    if (!ctx) continue;
-
-    // Копируем нужную часть исходного canvas
-    const sourceY = page * pageCanvas.height;
-    const sourceHeight = Math.min(pageCanvas.height, canvas.height - sourceY);
-    
-    ctx.drawImage(
-      canvas,
-      0, sourceY,
-      canvas.width, sourceHeight,
-      0, 0,
-      pageCanvas.width, sourceHeight
-    );
-
-    // Добавляем изображение в PDF
-    const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
-    pdf.addImage(pageImgData, 'JPEG', 15, 15, imgWidth, contentHeight);
   }
 
   // Возвращаем PDF как Blob

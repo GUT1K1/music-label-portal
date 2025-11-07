@@ -202,20 +202,22 @@ export default function WizardStepContract({
         const pageHeight = 297;
         
         if (imgHeight <= pageHeight) {
+          // Контент помещается на одну страницу - просто добавляем
           pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, imgWidth, imgHeight);
         } else {
-          let heightLeft = imgHeight;
+          // Контент не помещается - разбиваем на несколько страниц
+          const imageData = canvas.toDataURL('image/jpeg', 0.95);
           let position = 0;
-          let page = 0;
           
-          pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
+          // Добавляем первую страницу на уже открытую страницу PDF
+          pdf.addImage(imageData, 'JPEG', 0, position, imgWidth, imgHeight);
+          let heightLeft = imgHeight - pageHeight;
           
+          // Добавляем остальные страницы
           while (heightLeft > 0) {
-            page++;
-            position = -pageHeight * page;
+            position = position - pageHeight;
             pdf.addPage();
-            pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, position, imgWidth, imgHeight);
+            pdf.addImage(imageData, 'JPEG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
           }
         }
