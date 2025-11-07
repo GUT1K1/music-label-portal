@@ -3,11 +3,12 @@ import os
 from typing import Dict, Any
 import boto3
 from collections import defaultdict
+from datetime import datetime, timedelta
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Cleanup S3 storage - remove duplicates and specific files
-    Args: event - dict with httpMethod, queryStringParameters
+    Business: Aggressive cleanup - remove old files, duplicates, and specific patterns
+    Args: event - dict with httpMethod, body with {"mode": "aggressive" or "normal"}
           context - object with request_id
     Returns: HTTP response with cleanup stats
     '''
@@ -33,6 +34,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     try:
+        body_str = event.get('body') or '{}'
+        body = json.loads(body_str) if body_str else {}
+        mode = body.get('mode', 'aggressive')
+        days_to_keep = 3 if mode == 'aggressive' else 30
+        cutoff_date = datetime.now() - timedelta(days=days_to_keep)
+        
+        print(f"Cleanup mode: {mode}, keeping files newer than {cutoff_date.isoformat()}")
+        
         access_key = os.environ.get('YC_S3_ACCESS_KEY_ID')
         secret_key = os.environ.get('YC_S3_SECRET_ACCESS_KEY')
         bucket_name = os.environ.get('YC_S3_BUCKET_NAME')
@@ -45,17 +54,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             region_name='ru-central1'
         )
         
-        # Получаем список всех файлов
         paginator = s3_client.get_paginator('list_objects_v2')
         pages = paginator.paginate(Bucket=bucket_name, Prefix='uploads/')
         
-        # Группируем файлы по размеру для поиска дубликатов
         files_by_size = defaultdict(list)
         files_with_rastvoritель = []
+        old_files = []
         total_files = 0
         total_size = 0
         
-        print("Scanning bucket for files...")
+        print("Scanning bucket...")
         
         for page in pages:
             if 'Contents' not in page:
@@ -64,75 +72,89 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             for obj in page['Contents']:
                 key = obj['Key']
                 size = obj['Size']
+                last_modified = obj['LastModified'].replace(tzinfo=None)
                 total_files += 1
                 total_size += size
                 
-                # Ищем файлы с "Rasтворитель" в названии
                 if 'Rasтворитель' in key or 'rastvoritель' in key.lower():
                     files_with_rastvoritель.append({
                         'key': key,
                         'size': size,
-                        'last_modified': obj['LastModified'].isoformat()
+                        'last_modified': last_modified.isoformat()
                     })
                 
-                # Группируем по размеру для поиска дубликатов
+                if last_modified < cutoff_date:
+                    old_files.append({
+                        'key': key,
+                        'size': size,
+                        'last_modified': last_modified.isoformat()
+                    })
+                
                 files_by_size[size].append({
                     'key': key,
-                    'last_modified': obj['LastModified']
+                    'last_modified': last_modified
                 })
         
-        print(f"Total files: {total_files}, Total size: {total_size / (1024**3):.2f} GB")
-        print(f"Files with 'Rasтворитель': {len(files_with_rastvoritель)}")
+        print(f"Total: {total_files} files, {total_size / (1024**3):.2f} GB")
+        print(f"Rastvoritель files: {len(files_with_rastvoritель)}")
+        print(f"Old files (>{days_to_keep} days): {len(old_files)}")
         
-        # Удаляем файлы с "Rasтворитель"
         deleted_rastvoritель = []
         for file_info in files_with_rastvoritель:
             try:
                 s3_client.delete_object(Bucket=bucket_name, Key=file_info['key'])
                 deleted_rastvoritель.append(file_info)
-                print(f"Deleted Rasтворitель file: {file_info['key']}, size: {file_info['size']} bytes")
+                print(f"Deleted Rastvoritель: {file_info['key']}")
             except Exception as e:
-                print(f"Failed to delete {file_info['key']}: {e}")
+                print(f"Failed: {e}")
         
-        # Находим и удаляем дубликаты (оставляем только самый новый файл)
+        deleted_old = []
+        for file_info in old_files:
+            try:
+                s3_client.delete_object(Bucket=bucket_name, Key=file_info['key'])
+                deleted_old.append(file_info)
+                if len(deleted_old) % 50 == 0:
+                    print(f"Deleted {len(deleted_old)} old files...")
+            except Exception as e:
+                print(f"Failed old: {e}")
+        
         deleted_duplicates = []
-        freed_size = 0
+        dup_freed_size = 0
         
         for size, files in files_by_size.items():
             if len(files) > 1:
-                # Сортируем по дате, оставляем самый новый
                 files_sorted = sorted(files, key=lambda x: x['last_modified'], reverse=True)
-                files_to_delete = files_sorted[1:]  # Удаляем все кроме первого (самого нового)
+                files_to_delete = files_sorted[1:]
                 
                 for file_info in files_to_delete:
                     try:
                         s3_client.delete_object(Bucket=bucket_name, Key=file_info['key'])
-                        deleted_duplicates.append({
-                            'key': file_info['key'],
-                            'size': size
-                        })
-                        freed_size += size
-                        print(f"Deleted duplicate: {file_info['key']}, size: {size} bytes")
+                        deleted_duplicates.append({'key': file_info['key'], 'size': size})
+                        dup_freed_size += size
                     except Exception as e:
-                        print(f"Failed to delete duplicate {file_info['key']}: {e}")
+                        pass
         
         rastvoritель_size = sum(f['size'] for f in deleted_rastvoritель)
-        total_freed = freed_size + rastvoritель_size
+        old_files_size = sum(f['size'] for f in deleted_old)
+        total_freed = rastvoritель_size + old_files_size + dup_freed_size
         
         result = {
             'success': True,
+            'mode': mode,
             'stats': {
                 'total_files_scanned': total_files,
                 'total_size_gb': round(total_size / (1024**3), 2),
                 'deleted_rastvoritель_count': len(deleted_rastvoritель),
                 'deleted_rastvoritель_size_mb': round(rastvoritель_size / (1024**2), 2),
+                'deleted_old_files_count': len(deleted_old),
+                'deleted_old_files_size_mb': round(old_files_size / (1024**2), 2),
                 'deleted_duplicates_count': len(deleted_duplicates),
-                'deleted_duplicates_size_mb': round(freed_size / (1024**2), 2),
+                'deleted_duplicates_size_mb': round(dup_freed_size / (1024**2), 2),
                 'total_freed_mb': round(total_freed / (1024**2), 2),
-                'total_freed_gb': round(total_freed / (1024**3), 2)
-            },
-            'deleted_rastvoritель_files': [f['key'] for f in deleted_rastvoritель[:10]],  # Показываем первые 10
-            'deleted_duplicates_sample': [f['key'] for f in deleted_duplicates[:10]]  # Показываем первые 10
+                'total_freed_gb': round(total_freed / (1024**3), 2),
+                'remaining_files': total_files - len(deleted_rastvoritель) - len(deleted_old) - len(deleted_duplicates),
+                'remaining_size_gb': round((total_size - total_freed) / (1024**3), 2)
+            }
         }
         
         print(f"Cleanup complete: freed {total_freed / (1024**3):.2f} GB")
