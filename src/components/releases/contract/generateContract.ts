@@ -13,15 +13,6 @@ interface ContractData {
 export function generateContract(data: ContractData): string {
   const {  requisites, releaseDate, tracks, coverUrl, signatureDataUrl } = data;
   
-  console.log('🔍 generateContract called with:', {
-    has_requisites: !!requisites,
-    releaseDate,
-    tracks_count: tracks.length,
-    has_coverUrl: !!coverUrl,
-    signatureDataUrl_length: signatureDataUrl?.length,
-    signatureDataUrl_preview: signatureDataUrl?.substring(0, 50)
-  });
-  
   // Номер договора (уникальный)
   const contractNumber = `420-${Date.now().toString().slice(-6)}`;
   
