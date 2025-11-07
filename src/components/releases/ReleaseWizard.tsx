@@ -131,8 +131,8 @@ export default function ReleaseWizard({
 
   return (
     <div className="max-w-4xl mx-auto">
-      <Card className="bg-background">
-        <CardHeader className="pb-4">
+      <Card className="!bg-background">
+        <CardHeader className="pb-4 !bg-transparent">
           <div className="flex justify-between items-center mb-4">
             <div>
               <CardTitle className="text-xl">Создать релиз</CardTitle>
