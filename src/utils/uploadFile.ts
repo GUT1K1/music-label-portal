@@ -46,10 +46,10 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
     console.log('[Upload] 🚀 Large file, using S3 multipart upload');
     
     const contentType = file.type || 'application/octet-stream';
-    const chunkSize = 2 * 1024 * 1024; // 2MB chunks (base64 = ~2.6MB, безопасно для Cloud Functions)
+    const chunkSize = 5 * 1024 * 1024; // 5MB chunks (минимум для S3 multipart)
     const totalChunks = Math.ceil(file.size / chunkSize);
     
-    console.log(`[Upload] Splitting into ${totalChunks} chunks (2MB each)`);
+    console.log(`[Upload] Splitting into ${totalChunks} chunks (5MB each)`);
     
     let uploadId = '';
     let s3Key = '';
@@ -87,26 +87,17 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       
       console.log(`[Upload] 📤 Part ${i + 1}/${totalChunks}: ${(chunk.size / 1024 / 1024).toFixed(2)}MB`);
       
-      const reader = new FileReader();
-      const base64Chunk = await new Promise<string>((resolve, reject) => {
-        reader.onload = () => {
-          const result = reader.result as string;
-          resolve(result.split(',')[1]);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(chunk);
-      });
+      // Отправляем часть через FormData (бинарные данные, не base64)
+      const formData = new FormData();
+      formData.append('action', 'upload-part');
+      formData.append('uploadId', uploadId);
+      formData.append('s3Key', s3Key);
+      formData.append('partNumber', (i + 1).toString());
+      formData.append('part', chunk, 'part.bin');
       
       const uploadPartResponse = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'upload-part',
-          uploadId,
-          s3Key,
-          partNumber: i + 1,
-          data: base64Chunk
-        })
+        body: formData
       });
       
       if (!uploadPartResponse.ok) {

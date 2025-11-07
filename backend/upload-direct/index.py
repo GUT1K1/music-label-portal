@@ -123,6 +123,62 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             fp = BytesIO(body_bytes)
             form = cgi.FieldStorage(fp=fp, environ=environ, headers={'content-type': content_type})
             
+            # Check if this is S3 multipart upload action
+            action = form.getvalue('action')
+            
+            if action == 'upload-part':
+                # S3 multipart upload part
+                upload_id = form.getvalue('uploadId')
+                s3_key = form.getvalue('s3Key')
+                part_number = form.getvalue('partNumber')
+                
+                if not all([upload_id, s3_key, part_number]):
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Missing upload-part parameters'})
+                    }
+                
+                if 'part' not in form:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'No part file provided'})
+                    }
+                
+                part_item = form['part']
+                part_data = part_item.file.read()
+                
+                access_key = os.environ.get('YC_S3_ACCESS_KEY_ID')
+                secret_key = os.environ.get('YC_S3_SECRET_ACCESS_KEY')
+                bucket_name = os.environ.get('YC_S3_BUCKET_NAME')
+                
+                s3_client = boto3.client(
+                    's3',
+                    endpoint_url='https://storage.yandexcloud.net',
+                    aws_access_key_id=access_key,
+                    aws_secret_access_key=secret_key,
+                    region_name='ru-central1'
+                )
+                
+                response = s3_client.upload_part(
+                    Bucket=bucket_name,
+                    Key=s3_key,
+                    UploadId=upload_id,
+                    PartNumber=int(part_number),
+                    Body=part_data
+                )
+                
+                etag = response['ETag']
+                print(f"Part {part_number} uploaded: {len(part_data)} bytes, ETag={etag}")
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'ETag': etag})
+                }
+            
+            # Regular file upload
             if 'file' not in form:
                 return {
                     'statusCode': 400,
