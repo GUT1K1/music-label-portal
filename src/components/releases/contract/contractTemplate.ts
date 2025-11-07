@@ -151,7 +151,6 @@ export const CONTRACT_TEMPLATE = `
     .appendix {
       margin-top: 40px;
       padding-top: 30px;
-      border-top: 2px solid #ddd;
       page-break-before: always;
       break-before: page;
     }
@@ -302,9 +301,7 @@ export const CONTRACT_TEMPLATE = `
     ИНН банка 7710140679<br>
     БИК банка 044525974<br>
     Корреспондентский счет банка 30101810145250000974</p>
-    <div class="signature-line">
-      <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
-    </div>
+    <div class="signature-line"></div>
     <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
   </div>
 </div>
@@ -353,9 +350,7 @@ export const CONTRACT_TEMPLATE = `
       ИНН банка 7710140679<br>
       БИК банка 044525974<br>
       Корреспондентский счет банка 30101810145250000974</p>
-      <div class="signature-line">
-        <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
-      </div>
+      <div class="signature-line"></div>
       <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
     </div>
   </div>
@@ -394,9 +389,7 @@ export const CONTRACT_TEMPLATE = `
       ИНН банка 7710140679<br>
       БИК банка 044525974<br>
       Корреспондентский счет банка 30101810145250000974</p>
-      <div class="signature-line">
-        <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
-      </div>
+      <div class="signature-line"></div>
       <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
     </div>
   </div>
@@ -445,9 +438,7 @@ export const CONTRACT_TEMPLATE = `
       ИНН банка 7710140679<br>
       БИК банка 044525974<br>
       Корреспондентский счет банка 30101810145250000974</p>
-      <div class="signature-line">
-        <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
-      </div>
+      <div class="signature-line"></div>
       <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
     </div>
   </div>
@@ -497,9 +488,7 @@ export const CONTRACT_TEMPLATE = `
       ИНН банка 7710140679<br>
       БИК банка 044525974<br>
       Корреспондентский счет банка 30101810145250000974</p>
-      <div class="signature-line">
-        <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
-      </div>
+      <div class="signature-line"></div>
       <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
     </div>
   </div>
