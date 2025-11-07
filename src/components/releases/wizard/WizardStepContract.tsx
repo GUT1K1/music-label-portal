@@ -78,133 +78,99 @@ export default function WizardStepContract({
   const downloadContractAsPDF = async () => {
     setIsGeneratingPDF(true);
     try {
-      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import('html2canvas'),
-        import('jspdf')
-      ]);
-
-      // A4 размеры: 210mm x 297mm = 794px x 1123px (96 DPI)
-      const a4Width = 794;
-      const a4Height = 1123;
-      const padding = 60; // 15mm в пикселях
-      const contentWidth = a4Width - (padding * 2);
+      const { default: jsPDF } = await import('jspdf');
+      await import('jspdf-autotable');
 
       // Создаем временный контейнер
       const tempContainer = document.createElement('div');
       tempContainer.style.position = 'absolute';
       tempContainer.style.left = '-9999px';
       tempContainer.style.top = '0';
-      tempContainer.style.width = `${contentWidth}px`;
+      tempContainer.style.width = '180mm';
       tempContainer.style.padding = '0';
       tempContainer.style.background = '#fff';
-      tempContainer.style.fontSize = '12px';
-      tempContainer.style.lineHeight = '1.5';
+      tempContainer.style.fontFamily = 'Times New Roman, serif';
+      tempContainer.style.fontSize = '11pt';
+      tempContainer.style.lineHeight = '1.4';
+      tempContainer.style.color = '#000';
       
-      // Создаем обертку для контента с правильными стилями
       const wrapper = document.createElement('div');
-      wrapper.style.maxWidth = `${contentWidth}px`;
-      wrapper.style.wordWrap = 'break-word';
-      wrapper.style.overflowWrap = 'break-word';
       wrapper.innerHTML = contractHtml;
       
-      // Ограничиваем размер изображений
+      // Добавляем page-break перед каждым приложением
+      const appendixes = wrapper.querySelectorAll('.appendix');
+      appendixes.forEach(appendix => {
+        (appendix as HTMLElement).style.pageBreakBefore = 'always';
+        (appendix as HTMLElement).style.breakBefore = 'page';
+      });
+      
+      // Ограничиваем размер обложки
       const images = wrapper.querySelectorAll('img');
       images.forEach(img => {
         if (img.classList.contains('cover-image')) {
-          (img as HTMLElement).style.maxWidth = '250px';
-          (img as HTMLElement).style.maxHeight = '250px';
+          (img as HTMLElement).style.maxWidth = '200px';
+          (img as HTMLElement).style.maxHeight = '200px';
           (img as HTMLElement).style.display = 'block';
-          (img as HTMLElement).style.margin = '15px auto';
+          (img as HTMLElement).style.margin = '10px auto';
         }
         if (img.classList.contains('signature-image')) {
-          (img as HTMLElement).style.maxWidth = '150px';
-          (img as HTMLElement).style.maxHeight = '40px';
+          (img as HTMLElement).style.maxWidth = '120px';
+          (img as HTMLElement).style.maxHeight = '35px';
         }
       });
       
-      // Ограничиваем ширину таблиц
+      // Настраиваем таблицы
       const tables = wrapper.querySelectorAll('table');
       tables.forEach(table => {
         (table as HTMLElement).style.width = '100%';
-        (table as HTMLElement).style.tableLayout = 'fixed';
-        (table as HTMLElement).style.wordWrap = 'break-word';
+        (table as HTMLElement).style.fontSize = '9pt';
       });
+      
+      // Добавляем разрывы страниц перед блоком подписей если нужно
+      const signatures = wrapper.querySelector('.signatures');
+      if (signatures) {
+        (signatures as HTMLElement).style.pageBreakInside = 'avoid';
+        (signatures as HTMLElement).style.breakInside = 'avoid';
+      }
       
       tempContainer.appendChild(wrapper);
       document.body.appendChild(tempContainer);
 
       // Ждем загрузки изображений
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Создаем canvas
-      const canvas = await html2canvas(tempContainer, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        width: contentWidth,
-        windowWidth: contentWidth
-      });
-
-      document.body.removeChild(tempContainer);
-
-      // Создаем PDF
+      // Создаем PDF с правильным разбиением на страницы
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
-        format: 'a4'
+        format: 'a4',
+        compress: true
       });
 
-      // Размеры контента в PDF (с учетом полей 15mm)
-      const pdfContentWidth = 180; // 210 - 30
-      const pdfContentHeight = 267; // 297 - 30
-      
-      // Вычисляем высоту изображения в PDF
-      const imgHeight = (canvas.height * pdfContentWidth) / canvas.width;
-      const totalPages = Math.ceil(imgHeight / pdfContentHeight);
-
-      // Разбиваем на страницы
-      for (let page = 0; page < totalPages; page++) {
-        if (page > 0) {
-          pdf.addPage();
+      // Используем html() метод для правильного разбиения
+      await pdf.html(tempContainer, {
+        callback: function (doc) {
+          const contractNumber = `420-${Date.now().toString().slice(-6)}`;
+          doc.save(`Договор_${contractNumber}.pdf`);
+          document.body.removeChild(tempContainer);
+        },
+        x: 15,
+        y: 15,
+        width: 180,
+        windowWidth: 680,
+        margin: [15, 15, 15, 15],
+        autoPaging: 'text',
+        html2canvas: {
+          scale: 0.264,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff'
         }
-
-        const pageCanvas = document.createElement('canvas');
-        const scale = canvas.width / pdfContentWidth;
-        const pageHeightInPixels = pdfContentHeight * scale;
-        
-        pageCanvas.width = canvas.width;
-        pageCanvas.height = Math.min(pageHeightInPixels, canvas.height - (page * pageHeightInPixels));
-
-        const ctx = pageCanvas.getContext('2d');
-        if (!ctx) continue;
-
-        const sourceY = page * pageHeightInPixels;
-        const sourceHeight = Math.min(pageHeightInPixels, canvas.height - sourceY);
-        
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-        
-        ctx.drawImage(
-          canvas,
-          0, sourceY,
-          canvas.width, sourceHeight,
-          0, 0,
-          pageCanvas.width, sourceHeight
-        );
-
-        const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.92);
-        const actualHeight = (sourceHeight * pdfContentWidth) / canvas.width;
-        pdf.addImage(pageImgData, 'JPEG', 15, 15, pdfContentWidth, actualHeight);
-      }
-
-      const contractNumber = `420-${Date.now().toString().slice(-6)}`;
-      pdf.save(`Договор_${contractNumber}.pdf`);
+      });
 
     } catch (error) {
       console.error('Ошибка генерации PDF:', error);
       alert('Не удалось создать PDF. Попробуйте ещё раз.');
-    } finally {
       setIsGeneratingPDF(false);
     }
   };

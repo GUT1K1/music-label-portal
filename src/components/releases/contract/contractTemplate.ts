@@ -22,11 +22,15 @@ export const CONTRACT_TEMPLATE = `
       font-weight: bold;
       margin: 15px 0;
       text-transform: uppercase;
+      page-break-after: avoid;
+      break-after: avoid;
     }
     h2 {
       font-size: 11pt;
       font-weight: bold;
       margin: 12px 0 8px 0;
+      page-break-after: avoid;
+      break-after: avoid;
     }
     p {
       text-align: justify;
@@ -45,6 +49,8 @@ export const CONTRACT_TEMPLATE = `
       justify-content: space-between;
       margin-top: 30px;
       gap: 20px;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
     .signature-block {
       flex: 1;
@@ -77,6 +83,11 @@ export const CONTRACT_TEMPLATE = `
       margin: 15px 0;
       font-size: 9pt;
       table-layout: fixed;
+      page-break-inside: auto;
+    }
+    table tr {
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
     table td, table th {
       border: 1px solid #000;
@@ -94,6 +105,8 @@ export const CONTRACT_TEMPLATE = `
       margin-top: 40px;
       padding-top: 30px;
       border-top: 2px solid #ddd;
+      page-break-before: always;
+      break-before: page;
     }
     .cover-image {
       max-width: 250px;
