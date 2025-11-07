@@ -126,7 +126,7 @@ export default function WizardStepBasicInfo({
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-2 block">Жанр</label>
+              <label className="text-sm font-medium mb-2 block">Жанр *</label>
               <Select value={newRelease.genre} onValueChange={(value) => setNewRelease({ ...newRelease, genre: value })}>
                 <SelectTrigger className="h-11">
                   <SelectValue placeholder="Выберите жанр" />
@@ -142,10 +142,10 @@ export default function WizardStepBasicInfo({
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Язык названия</label>
+              <label className="text-sm font-medium mb-2 block">Язык названия *</label>
               <Select value={newRelease.title_language} onValueChange={(value) => setNewRelease({ ...newRelease, title_language: value })}>
                 <SelectTrigger className="h-11">
-                  <SelectValue />
+                  <SelectValue placeholder="Выберите язык" />
                 </SelectTrigger>
                 <SelectContent>
                   {LANGUAGES.map((lang) => (
@@ -158,10 +158,9 @@ export default function WizardStepBasicInfo({
             <div>
               <label className="text-sm font-medium mb-2 block">Копирайт</label>
               <Input
-                placeholder="© 2024 Artist Name"
-                value={newRelease.copyright}
-                onChange={(e) => setNewRelease({ ...newRelease, copyright: e.target.value })}
-                className="h-11"
+                value="420smm"
+                disabled
+                className="h-11 bg-muted cursor-not-allowed"
               />
             </div>
           </div>

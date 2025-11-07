@@ -5,12 +5,13 @@ export interface Track {
   file_name?: string;
   file_size?: number;
   composer: string;
-  author_lyrics?: string;
-  author_phonogram?: string;
+  author_music: string;
+  author_lyrics: string;
+  author_phonogram: string;
   language_audio: string;
-  explicit_content: boolean;
-  lyrics_text?: string;
-  tiktok_preview_start?: number;
+  explicit_content: boolean | null;
+  lyrics_text: string;
+  tiktok_preview_start: number;
   file?: File;
   preview_url?: string;
 }

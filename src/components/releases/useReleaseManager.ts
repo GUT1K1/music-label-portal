@@ -132,8 +132,13 @@ export const useReleaseManager = (userId: number) => {
       track_number: tracks.length + 1,
       title: '',
       composer: '',
-      language_audio: 'Русский',
-      explicit_content: false
+      author_music: '',
+      author_lyrics: '',
+      author_phonogram: '',
+      language_audio: '',
+      explicit_content: null,
+      lyrics_text: '',
+      tiktok_preview_start: 0
     }]);
   }, [tracks]);
 
@@ -192,8 +197,13 @@ export const useReleaseManager = (userId: number) => {
         track_number: trackNumber,
         title: '',
         composer: '',
-        language_audio: 'Русский',
-        explicit_content: false,
+        author_music: '',
+        author_lyrics: '',
+        author_phonogram: '',
+        language_audio: '',
+        explicit_content: null,
+        lyrics_text: '',
+        tiktok_preview_start: 0,
         file: file
       };
 

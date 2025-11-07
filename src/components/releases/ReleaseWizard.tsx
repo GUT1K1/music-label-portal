@@ -67,9 +67,24 @@ export default function ReleaseWizard({
       case 1:
         return releaseType !== null;
       case 2:
-        return newRelease.release_name && coverPreview && newRelease.release_date;
+        return newRelease.release_name && 
+               coverPreview && 
+               newRelease.release_date && 
+               newRelease.genre && 
+               newRelease.title_language;
       case 3:
-        return tracks.length > 0 && tracks.every(t => t.file && t.title);
+        return tracks.length > 0 && tracks.every(t => 
+          t.file && 
+          t.title && 
+          t.composer &&
+          t.author_music &&
+          t.author_lyrics &&
+          t.author_phonogram &&
+          t.language_audio &&
+          t.explicit_content !== null &&
+          t.lyrics_text &&
+          t.tiktok_preview_start !== undefined
+        );
       default:
         return true;
     }

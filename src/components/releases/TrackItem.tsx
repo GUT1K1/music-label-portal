@@ -100,7 +100,16 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             />
           </div>
           <div>
-            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Автор текста</label>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Автор музыки *</label>
+            <Input
+              placeholder="Автор музыки"
+              value={track.author_music || ''}
+              onChange={(e) => updateTrack(index, 'author_music', e.target.value)}
+              className="text-sm"
+            />
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Автор текста *</label>
             <Input
               placeholder="Автор текста"
               value={track.author_lyrics || ''}
@@ -109,7 +118,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             />
           </div>
           <div>
-            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Автор фонограммы</label>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Автор фонограммы *</label>
             <Input
               placeholder="Автор фонограммы"
               value={track.author_phonogram || ''}
@@ -118,15 +127,30 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             />
           </div>
           <div>
-            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Язык Аудио *</label>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Язык аудио *</label>
             <Select value={track.language_audio} onValueChange={(value) => updateTrack(index, 'language_audio', value)}>
               <SelectTrigger className="text-sm">
-                <SelectValue />
+                <SelectValue placeholder="Выберите язык" />
               </SelectTrigger>
               <SelectContent>
                 {LANGUAGES.map((l) => (
                   <SelectItem key={l} value={l}>{l}</SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Наличие мата *</label>
+            <Select 
+              value={track.explicit_content === null ? '' : track.explicit_content ? 'true' : 'false'} 
+              onValueChange={(value) => updateTrack(index, 'explicit_content', value === 'true')}
+            >
+              <SelectTrigger className="text-sm">
+                <SelectValue placeholder="Выберите" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="false">Нет</SelectItem>
+                <SelectItem value="true">Да</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -170,27 +194,27 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             )}
           </div>
 
-          <div>
-            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Текст песни</label>
+          <div className="sm:col-span-2">
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">Текст песни *</label>
             <Textarea
               placeholder="Введите текст песни..."
               value={track.lyrics_text || ''}
               onChange={(e) => updateTrack(index, 'lyrics_text', e.target.value)}
-              rows={3}
+              rows={4}
               className="resize-none text-sm"
             />
           </div>
           <div>
-            <label className="text-xs sm:text-sm font-medium mb-1.5 block">TikTok превью</label>
+            <label className="text-xs sm:text-sm font-medium mb-1.5 block">TikTok превью (секунды) *</label>
             <Input
               type="number"
-              placeholder="Время начала (в секундах)"
-              value={track.tiktok_preview_start || ''}
+              placeholder="0"
+              value={track.tiktok_preview_start ?? ''}
               onChange={(e) => updateTrack(index, 'tiktok_preview_start', parseInt(e.target.value) || 0)}
               className="text-sm"
             />
             <p className="text-xs text-muted-foreground mt-1.5">
-              Укажите время начала фрагмента для TikTok
+              Время начала фрагмента для TikTok
             </p>
           </div>
         </div>
