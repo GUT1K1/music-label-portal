@@ -4,73 +4,98 @@ export const CONTRACT_TEMPLATE = `
 <head>
   <meta charset="UTF-8">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Times New Roman', serif;
-      font-size: 12pt;
-      line-height: 1.5;
-      margin: 40px;
+      font-size: 10pt;
+      line-height: 1.4;
+      margin: 0;
+      padding: 20px;
       color: #000;
+      background: #fff;
     }
     h1 {
       text-align: center;
-      font-size: 14pt;
+      font-size: 13pt;
       font-weight: bold;
-      margin: 20px 0;
+      margin: 15px 0;
+      text-transform: uppercase;
     }
     h2 {
-      font-size: 12pt;
+      font-size: 11pt;
       font-weight: bold;
-      margin: 15px 0 10px 0;
+      margin: 12px 0 8px 0;
     }
     p {
       text-align: justify;
-      margin: 10px 0;
+      margin: 6px 0;
     }
     .header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+      font-size: 10pt;
     }
     .signatures {
       display: flex;
       justify-content: space-between;
-      margin-top: 40px;
+      margin-top: 30px;
+      gap: 20px;
     }
     .signature-block {
-      width: 45%;
+      flex: 1;
+      font-size: 9pt;
+    }
+    .signature-block p {
+      margin: 3px 0;
+      text-align: left;
     }
     .signature-line {
-      border-bottom: 1px solid #000;
-      margin: 20px 0 5px 0;
-      min-height: 60px;
+      border-bottom: 2px solid #000;
+      margin: 15px 0 5px 0;
+      min-height: 50px;
       display: flex;
       align-items: flex-end;
+      justify-content: center;
     }
     .signature-image {
-      max-width: 200px;
-      max-height: 50px;
+      max-width: 180px;
+      max-height: 45px;
+      object-fit: contain;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 15px 0;
+      font-size: 9pt;
     }
     table td, table th {
       border: 1px solid #000;
-      padding: 8px;
+      padding: 6px;
       text-align: left;
     }
     table th {
       font-weight: bold;
-      background: #f0f0f0;
+      background: #f5f5f5;
     }
     .appendix {
-      page-break-before: always;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 2px solid #ddd;
     }
     .cover-image {
-      max-width: 400px;
-      margin: 20px auto;
+      max-width: 350px;
+      max-height: 350px;
+      margin: 15px auto;
       display: block;
+      border: 1px solid #ddd;
+      object-fit: contain;
+    }
+    i {
+      color: #666;
+      font-style: italic;
     }
   </style>
 </head>

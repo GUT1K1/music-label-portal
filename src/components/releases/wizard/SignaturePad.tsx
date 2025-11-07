@@ -1,26 +1,33 @@
 import { useRef, useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import Icon from '@/components/ui/icon';
 
 interface SignaturePadProps {
   onSave: (dataUrl: string) => void;
-  width?: number;
-  height?: number;
 }
 
-export default function SignaturePad({ onSave, width = 600, height = 160 }: SignaturePadProps) {
+export default function SignaturePad({ onSave }: SignaturePadProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+
+    // Устанавливаем размер canvas по размеру контейнера
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = 200;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     // Настройка стиля линии
     ctx.strokeStyle = '#000';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
@@ -29,7 +36,29 @@ export default function SignaturePad({ onSave, width = 600, height = 160 }: Sign
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
+  const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    if ('touches' in e) {
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY
+      };
+    }
+
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
+  };
+
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -39,15 +68,13 @@ export default function SignaturePad({ onSave, width = 600, height = 160 }: Sign
     setIsDrawing(true);
     setIsEmpty(false);
 
-    const rect = canvas.getBoundingClientRect();
-    const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-    const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
-
+    const { x, y } = getCoordinates(e);
     ctx.beginPath();
     ctx.moveTo(x, y);
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
     if (!isDrawing) return;
 
     const canvas = canvasRef.current;
@@ -56,10 +83,7 @@ export default function SignaturePad({ onSave, width = 600, height = 160 }: Sign
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-    const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
-
+    const { x, y } = getCoordinates(e);
     ctx.lineTo(x, y);
     ctx.stroke();
   };
@@ -95,12 +119,17 @@ export default function SignaturePad({ onSave, width = 600, height = 160 }: Sign
 
   return (
     <div className="space-y-3">
-      <div className="border-2 border-dashed border-gray-300 rounded-lg bg-white overflow-hidden">
+      <div className="text-center mb-2">
+        <p className="text-sm text-muted-foreground">Нарисуйте вашу подпись ниже</p>
+      </div>
+      <div 
+        ref={containerRef}
+        className="border-2 border-gray-300 rounded-lg bg-white shadow-sm overflow-hidden"
+      >
         <canvas
           ref={canvasRef}
-          width={width}
-          height={height}
-          className="cursor-crosshair touch-none w-full"
+          className="cursor-crosshair touch-none w-full block"
+          style={{ height: '200px' }}
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
@@ -111,20 +140,23 @@ export default function SignaturePad({ onSave, width = 600, height = 160 }: Sign
         />
       </div>
       <div className="flex gap-2">
-        <button
+        <Button
           type="button"
           onClick={clear}
-          className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50 transition-colors"
+          variant="outline"
+          className="flex-1 gap-2"
         >
+          <Icon name="RotateCcw" size={16} />
           Очистить
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={save}
-          className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+          className="flex-1 gap-2"
         >
+          <Icon name="Check" size={16} />
           Сохранить подпись
-        </button>
+        </Button>
       </div>
     </div>
   );

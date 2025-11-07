@@ -52,6 +52,18 @@ export default function WizardStepContract({
     onSignatureComplete(signatureDataUrl);
   };
 
+  const downloadContract = () => {
+    const blob = new Blob([contractHtml], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Договор_420smm.html';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -62,11 +74,30 @@ export default function WizardStepContract({
       </div>
 
       {/* Предпросмотр договора */}
-      <Card className="p-4 max-h-[500px] overflow-y-auto">
-        <div 
-          className="prose prose-sm max-w-none"
-          dangerouslySetInnerHTML={{ __html: contractHtml }}
-        />
+      <Card className="relative">
+        <div className="absolute top-4 right-4 z-10">
+          <Button
+            onClick={downloadContract}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
+            <Icon name="Download" size={14} />
+            Скачать договор
+          </Button>
+        </div>
+        <div className="p-6 max-h-[600px] overflow-y-auto bg-gradient-to-b from-white to-gray-50">
+          <div 
+            className="contract-preview"
+            style={{
+              fontFamily: "'Times New Roman', serif",
+              fontSize: '10pt',
+              lineHeight: '1.5',
+              color: '#000'
+            }}
+            dangerouslySetInnerHTML={{ __html: contractHtml }}
+          />
+        </div>
       </Card>
 
       {/* Блок подписи */}
@@ -111,24 +142,29 @@ export default function WizardStepContract({
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button 
-                onClick={() => setSignatureDataUrl(null)}
-                variant="outline"
-                size="sm"
-              >
-                Изменить
-              </Button>
-            </div>
+            <Button 
+              onClick={() => {
+                setSignatureDataUrl(null);
+                setShowSignaturePad(true);
+              }}
+              variant="outline"
+              size="sm"
+              className="gap-2"
+            >
+              <Icon name="Edit" size={14} />
+              Изменить
+            </Button>
           </div>
           
-          <div className="mt-4 p-3 bg-white rounded border">
-            <p className="text-xs text-muted-foreground mb-2">Ваша подпись:</p>
-            <img 
-              src={signatureDataUrl} 
-              alt="Подпись" 
-              className="max-h-20 border-b"
-            />
+          <div className="mt-4 p-4 bg-white rounded-lg border-2 border-gray-200">
+            <p className="text-sm font-medium mb-3">Предпросмотр подписи:</p>
+            <div className="flex items-center justify-center bg-gray-50 rounded p-4 border-b-2 border-gray-300">
+              <img 
+                src={signatureDataUrl} 
+                alt="Подпись" 
+                className="max-h-16 max-w-full object-contain"
+              />
+            </div>
           </div>
         </Card>
       )}
