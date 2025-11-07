@@ -18,25 +18,41 @@ export const CONTRACT_TEMPLATE = `
     }
     h1 {
       text-align: center;
-      font-size: 13pt;
+      font-size: 14pt;
       font-weight: bold;
-      margin: 15px 0;
+      margin: 20px 0;
       text-transform: uppercase;
       page-break-after: avoid;
       break-after: avoid;
+      letter-spacing: 0.5px;
+      border-bottom: 3px double #000;
+      padding-bottom: 10px;
     }
     h2 {
       font-size: 11pt;
       font-weight: bold;
-      margin: 12px 0 8px 0;
+      margin: 16px 0 10px 0;
       page-break-after: avoid;
       break-after: avoid;
+      padding: 8px 12px;
+      background: linear-gradient(to right, #f8f8f8 0%, #fff 100%);
+      border-left: 4px solid #333;
+    }
+    .article-8 {
+      page-break-before: always;
+      break-before: page;
+      margin-top: 40px;
+      padding-top: 20px;
     }
     p {
       text-align: justify;
       margin: 6px 0;
       word-wrap: break-word;
       overflow-wrap: break-word;
+    }
+    p strong {
+      color: #222;
+      font-weight: bold;
     }
     .header {
       display: flex;
@@ -51,11 +67,18 @@ export const CONTRACT_TEMPLATE = `
       gap: 20px;
       page-break-inside: avoid;
       break-inside: avoid;
+      padding: 20px;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
     }
     .signature-block {
       flex: 1;
       font-size: 9pt;
       min-width: 0;
+      padding: 10px;
+      background: #fff;
+      border-radius: 4px;
     }
     .signature-block p {
       margin: 3px 0;
@@ -206,6 +229,7 @@ export const CONTRACT_TEMPLATE = `
 <p>7.1.2. Приложение № 2 – Дизайн-макеты;</p>
 <p>7.1.3. Приложение № 3 - Финансовые условия</p>
 
+<div class="article-8">
 <h2>Статья 8. Реквизиты и подписи Сторон</h2>
 
 <div class="signatures">
@@ -237,6 +261,7 @@ export const CONTRACT_TEMPLATE = `
     </div>
     <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
   </div>
+</div>
 </div>
 
 <!-- Приложение 1 -->

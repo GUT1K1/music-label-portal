@@ -207,34 +207,32 @@ export default function WizardStepContract({
         mainContractDiv.appendChild(child.cloneNode(true));
       }
       
-      // Разбиваем основной договор на секции по статьям (h2)
+      // Разбиваем основной договор на: статьи 1-7 + статья 8 отдельно
       if (mainContractDiv.children.length > 0) {
         const mainContractHTML = mainContractDiv.innerHTML;
-        const sections: string[] = [];
         
-        // Разбиваем по <h2> (статьи)
-        const h2Matches = mainContractHTML.split(/(<h2>)/gi);
+        // Ищем статью 8 (с классом article-8)
+        const article8Match = mainContractHTML.split(/(<div class="article-8">)/i);
         
-        if (h2Matches.length > 1) {
-          // Первая часть до первой статьи (заголовок договора, преамбула)
-          sections.push(h2Matches[0]);
+        if (article8Match.length > 1) {
+          // Часть 1: всё до статьи 8 (статьи 1-7)
+          const articles1to7 = article8Match[0];
           
-          // Собираем каждую статью
-          for (let i = 1; i < h2Matches.length; i += 2) {
-            if (i + 1 < h2Matches.length) {
-              sections.push(h2Matches[i] + h2Matches[i + 1]);
-            }
+          // Часть 2: статья 8 и всё после
+          const article8 = article8Match[1] + article8Match[2];
+          
+          // Рендерим статьи 1-7
+          if (articles1to7.trim()) {
+            await renderSection(articles1to7, true);
+          }
+          
+          // Рендерим статью 8 на новой странице
+          if (article8.trim()) {
+            await renderSection(article8, false);
           }
         } else {
-          // Если нет статей, рендерим как есть
-          sections.push(mainContractHTML);
-        }
-        
-        // Рендерим каждую секцию
-        for (let i = 0; i < sections.length; i++) {
-          if (sections[i].trim()) {
-            await renderSection(sections[i], i === 0);
-          }
+          // Если разделения нет, рендерим всё вместе
+          await renderSection(mainContractHTML, true);
         }
       }
 
