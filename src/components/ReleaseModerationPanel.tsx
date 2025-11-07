@@ -35,12 +35,24 @@ export default function ReleaseModerationPanel({ userId, userRole = 'manager' }:
       const response = await fetch(API_URL, {
         headers: { 'X-User-Id': userId.toString() }
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('[ReleaseModerationPanel] Load releases error:', {
+          status: response.status,
+          error: errorData
+        });
+        throw new Error(errorData.error || `HTTP ${response.status}`);
+      }
+      
       const data = await response.json();
+      console.log('[ReleaseModerationPanel] Loaded releases:', data.length, 'releases');
       setReleases(Array.isArray(data) ? data : []);
     } catch (error) {
+      console.error('[ReleaseModerationPanel] Exception:', error);
       toast({
         title: 'Ошибка',
-        description: 'Не удалось загрузить релизы',
+        description: error instanceof Error ? error.message : 'Не удалось загрузить релизы',
         variant: 'destructive'
       });
       setReleases([]);
