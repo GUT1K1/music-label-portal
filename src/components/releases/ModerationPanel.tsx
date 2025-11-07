@@ -82,6 +82,41 @@ export default function ModerationPanel({ releases, userId, onReview, loadTracks
 
           {expandedRelease === release.id && (
             <CardContent className="space-y-4">
+              {/* Договор */}
+              {release.contract_pdf_url && (
+                <div className="bg-blue-500/5 border border-blue-500/20 p-4 rounded-lg mb-4">
+                  <div className="flex items-start gap-3">
+                    <Icon name="FileText" size={20} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium mb-2">Лицензионный договор</p>
+                      {release.contract_requisites && (
+                        <div className="space-y-1 text-xs text-muted-foreground mb-3 bg-white/50 p-2 rounded">
+                          <p><strong>ФИО:</strong> {release.contract_requisites.full_name}</p>
+                          <p><strong>Псевдоним:</strong> {release.contract_requisites.stage_name}</p>
+                          <p><strong>Гражданство:</strong> {release.contract_requisites.citizenship}</p>
+                          <p><strong>Паспорт:</strong> {release.contract_requisites.passport_data}</p>
+                          <p><strong>ИНН/SWIFT:</strong> {release.contract_requisites.inn_swift}</p>
+                          <p><strong>Email:</strong> {release.contract_requisites.email}</p>
+                          <details className="mt-2">
+                            <summary className="cursor-pointer hover:text-foreground">Банковские реквизиты</summary>
+                            <p className="mt-1 whitespace-pre-wrap">{release.contract_requisites.bank_requisites}</p>
+                          </details>
+                        </div>
+                      )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(release.contract_pdf_url, '_blank')}
+                        className="gap-2"
+                      >
+                        <Icon name="Download" size={14} />
+                        Скачать договор PDF
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-3">
                 {tracks.map((track) => (
                   <div key={track.track_number} className="border rounded-lg p-3">

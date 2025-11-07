@@ -130,6 +130,37 @@ export default function ReleaseViewDialog({
             )}
           </div>
 
+          {/* Договор - доступен для менеджеров и руководителей */}
+          {isManager && release.contract_pdf_url && (
+            <div className="border-t pt-4">
+              <div className="bg-blue-500/5 border border-blue-500/20 p-4 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <Icon name="FileText" size={20} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium mb-2">Лицензионный договор</p>
+                    {release.contract_requisites && (
+                      <div className="space-y-1 text-xs text-muted-foreground mb-3">
+                        <p><strong>ФИО:</strong> {release.contract_requisites.full_name}</p>
+                        <p><strong>Псевдоним:</strong> {release.contract_requisites.stage_name}</p>
+                        <p><strong>Гражданство:</strong> {release.contract_requisites.citizenship}</p>
+                        <p><strong>Email:</strong> {release.contract_requisites.email}</p>
+                      </div>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(release.contract_pdf_url, '_blank')}
+                      className="gap-2"
+                    >
+                      <Icon name="Download" size={14} />
+                      Скачать договор PDF
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {tracks.length > 0 && (
             <div>
               <h4 className="font-semibold mb-3 text-sm md:text-base flex items-center gap-2">
