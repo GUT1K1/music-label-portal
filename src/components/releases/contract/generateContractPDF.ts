@@ -28,6 +28,23 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
     signatureDataUrl
   });
 
+  // Заменяем тёмные стили на светлые для PDF
+  const pdfHtml = contractHtml
+    .replace(/color: hsl\(45, 95%, 90%\)/g, 'color: #000')
+    .replace(/color: hsl\(45, 100%, 60%\)/g, 'color: #000')
+    .replace(/color: hsl\(45, 100%, 70%\)/g, 'color: #222')
+    .replace(/color: hsl\(45, 30%, 50%\)/g, 'color: #666')
+    .replace(/background: transparent/g, 'background: #fff')
+    .replace(/background: hsl\(0, 0%, 8%\)/g, 'background: #fafafa')
+    .replace(/background: hsl\(0, 0%, 5%\)/g, 'background: #fff')
+    .replace(/background: linear-gradient\(to right, hsl\(45, 30%, 20%\) 0%, transparent 100%\)/g, 'background: linear-gradient(to right, #f8f8f8 0%, #fff 100%)')
+    .replace(/background: hsl\(45, 30%, 15%\)/g, 'background: #f5f5f5')
+    .replace(/border: 1px solid hsl\(45, 30%, 20%\)/g, 'border: 1px solid #ddd')
+    .replace(/border-bottom: 3px double hsl\(45, 100%, 60%\)/g, 'border-bottom: 3px double #000')
+    .replace(/border-left: 4px solid hsl\(45, 100%, 60%\)/g, 'border-left: 4px solid #333')
+    .replace(/border-bottom: 1px solid hsl\(45, 100%, 60%\)/g, 'border-bottom: 1px solid #000')
+    .replace(/border-bottom: 2px solid hsl\(45, 100%, 60%\)/g, 'border-bottom: 2px solid #000');
+
   // Создаем временный контейнер для рендеринга
   const tempContainer = document.createElement('div');
   tempContainer.style.position = 'absolute';
@@ -36,7 +53,8 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
   tempContainer.style.width = '210mm';
   tempContainer.style.padding = '15mm';
   tempContainer.style.background = '#fff';
-  tempContainer.innerHTML = contractHtml;
+  tempContainer.style.color = '#000';
+  tempContainer.innerHTML = pdfHtml;
   document.body.appendChild(tempContainer);
 
   // Даем время на загрузку изображений
