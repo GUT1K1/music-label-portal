@@ -93,8 +93,16 @@ export const CONTRACT_TEMPLATE = `
     .mini-signature-line {
       border-bottom: 1px solid #000;
       width: 150px;
-      height: 1px;
+      min-height: 30px;
       margin: 5px auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .mini-signature-image {
+      max-width: 140px;
+      max-height: 25px;
+      object-fit: contain;
     }
     .signature-block {
       flex: 1;
@@ -263,7 +271,7 @@ export const CONTRACT_TEMPLATE = `
 <div class="mini-signatures">
   <div class="mini-signature">
     <p>Лицензиар</p>
-    <div class="mini-signature-line"></div>
+    <div class="mini-signature-line">{{SIGNATURE_LICENSOR_MINI}}</div>
     <p>{{ФИО_ИП_кратко}}</p>
   </div>
   <div class="mini-signature">
