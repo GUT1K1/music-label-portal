@@ -22,6 +22,8 @@ export default function ContractViewDialog({
     window.open(contractPdfUrl, '_blank');
   };
 
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0">
@@ -73,16 +75,11 @@ export default function ContractViewDialog({
 
         {/* PDF Viewer */}
         <div className="flex-1 overflow-hidden bg-muted/20 relative">
-          <object
-            data={contractPdfUrl}
-            type="application/pdf"
-            className="w-full h-full border-0"
-            title="Предпросмотр договора"
-          >
+          {isMobile ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center">
               <Icon name="FileText" size={48} className="text-muted-foreground" />
               <p className="text-sm text-muted-foreground max-w-md">
-                Ваш браузер не поддерживает встроенный просмотр PDF-файлов.
+                На мобильных устройствах просмотр PDF возможен только через открытие в новой вкладке
               </p>
               <Button
                 onClick={handleDownload}
@@ -91,10 +88,16 @@ export default function ContractViewDialog({
                 className="gap-2"
               >
                 <Icon name="ExternalLink" size={18} />
-                Открыть в новой вкладке
+                Открыть договор
               </Button>
             </div>
-          </object>
+          ) : (
+            <iframe
+              src={`${contractPdfUrl}#view=FitH`}
+              className="w-full h-full border-0"
+              title="Предпросмотр договора"
+            />
+          )}
         </div>
 
         {/* Footer с подсказкой */}
@@ -102,7 +105,10 @@ export default function ContractViewDialog({
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Icon name="Info" size={14} />
             <span>
-              Если документ не отображается, используйте кнопку "Скачать PDF" выше
+              {isMobile 
+                ? 'Для просмотра договора нажмите кнопку "Открыть договор" выше'
+                : 'Если документ не отображается, используйте кнопку "Скачать PDF" выше'
+              }
             </span>
           </div>
         </div>
