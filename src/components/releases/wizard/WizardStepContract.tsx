@@ -149,12 +149,18 @@ export default function WizardStepContract({
         );
         
         const canvas = await html2canvas(sectionContainer, {
-          scale: 2,
+          scale: 3,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
           width: 794,
-          windowWidth: 794
+          windowWidth: 794,
+          onclone: (clonedDoc) => {
+            const clonedContainer = clonedDoc.querySelector('div');
+            if (clonedContainer) {
+              (clonedContainer as HTMLElement).style.width = '794px';
+            }
+          }
         });
         
         document.body.removeChild(sectionContainer);
@@ -201,9 +207,35 @@ export default function WizardStepContract({
         mainContractDiv.appendChild(child.cloneNode(true));
       }
       
-      // Рендерим основной договор
+      // Разбиваем основной договор на секции по статьям (h2)
       if (mainContractDiv.children.length > 0) {
-        await renderSection(mainContractDiv.innerHTML, true);
+        const mainContractHTML = mainContractDiv.innerHTML;
+        const sections: string[] = [];
+        
+        // Разбиваем по <h2> (статьи)
+        const h2Matches = mainContractHTML.split(/(<h2>)/gi);
+        
+        if (h2Matches.length > 1) {
+          // Первая часть до первой статьи (заголовок договора, преамбула)
+          sections.push(h2Matches[0]);
+          
+          // Собираем каждую статью
+          for (let i = 1; i < h2Matches.length; i += 2) {
+            if (i + 1 < h2Matches.length) {
+              sections.push(h2Matches[i] + h2Matches[i + 1]);
+            }
+          }
+        } else {
+          // Если нет статей, рендерим как есть
+          sections.push(mainContractHTML);
+        }
+        
+        // Рендерим каждую секцию
+        for (let i = 0; i < sections.length; i++) {
+          if (sections[i].trim()) {
+            await renderSection(sections[i], i === 0);
+          }
+        }
       }
 
       // Рендерим каждое приложение отдельно
