@@ -166,6 +166,30 @@ export const CONTRACT_TEMPLATE = `
       padding-top: 10px;
       page-break-before: always;
       break-before: page;
+      position: relative;
+    }
+    .page-signature {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 8pt;
+    }
+    .page-signature-line {
+      border-bottom: 1px solid hsl(45, 100%, 60%);
+      width: 100px;
+      min-height: 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .page-signature-image {
+      max-width: 90px;
+      max-height: 18px;
+      object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(83%) sepia(49%) saturate(1053%) hue-rotate(0deg) brightness(102%) contrast(101%);
     }
     .cover-image {
       max-width: 250px;
@@ -318,6 +342,10 @@ export const CONTRACT_TEMPLATE = `
 
 <!-- Приложение 1 -->
 <div class="appendix">
+  <div class="page-signature">
+    <span>Лицензиар:</span>
+    <div class="page-signature-line">{{SIGNATURE_LICENSOR_PAGE}}</div>
+  </div>
   <h1>Приложение №1</h1>
   <p style="text-align: center;">к Лицензионному договору № {{номер_договора}}<br>от {{дата_заключения_договора}}</p>
   
@@ -367,6 +395,10 @@ export const CONTRACT_TEMPLATE = `
 
 <!-- Приложение 2 -->
 <div class="appendix">
+  <div class="page-signature">
+    <span>Лицензиар:</span>
+    <div class="page-signature-line">{{SIGNATURE_LICENSOR_PAGE}}</div>
+  </div>
   <h1>Приложение № 2</h1>
   <p style="text-align: center;">к Лицензионному договору № {{номер_договора}}<br>от {{дата_заключения_договора}}</p>
   
@@ -406,6 +438,10 @@ export const CONTRACT_TEMPLATE = `
 
 <!-- Приложение 3 -->
 <div class="appendix">
+  <div class="page-signature">
+    <span>Лицензиар:</span>
+    <div class="page-signature-line">{{SIGNATURE_LICENSOR_PAGE}}</div>
+  </div>
   <h1>Приложение № 3</h1>
   <p style="text-align: center;">к Лицензионному договору № {{номер_договора}}<br>от {{дата_заключения_договора}}</p>
   
@@ -455,6 +491,10 @@ export const CONTRACT_TEMPLATE = `
 
 <!-- Акт приема-передачи -->
 <div class="appendix">
+  <div class="page-signature">
+    <span>Лицензиар:</span>
+    <div class="page-signature-line">{{SIGNATURE_LICENSOR_PAGE}}</div>
+  </div>
   <h1>Акт приема-передачи</h1>
   <p style="text-align: center;">к Лицензионному договору № {{номер_договора}}<br>от {{дата_заключения_договора}}</p>
   

@@ -56,6 +56,11 @@ export function generateContract(data: ContractData): string {
     ? `<img src="${signatureDataUrl}" alt="Подпись" class="mini-signature-image" />`
     : '';
   
+  // Подпись для приложений (в правом верхнем углу)
+  const pageSignatureHtml = signatureDataUrl
+    ? `<img src="${signatureDataUrl}" alt="Подпись" class="page-signature-image" />`
+    : '';
+  
   // Замена всех переменных в шаблоне
   const contract = CONTRACT_TEMPLATE
     .replace(/{{номер_договора}}/g, contractNumber)
@@ -72,7 +77,8 @@ export function generateContract(data: ContractData): string {
     .replace(/{{img}}/g, coverUrl)
     .replace(/{{TRACKS_TABLE}}/g, tracksTableRows)
     .replace(/{{SIGNATURE_LICENSOR}}/g, signatureHtml)
-    .replace(/{{SIGNATURE_LICENSOR_MINI}}/g, miniSignatureHtml);
+    .replace(/{{SIGNATURE_LICENSOR_MINI}}/g, miniSignatureHtml)
+    .replace(/{{SIGNATURE_LICENSOR_PAGE}}/g, pageSignatureHtml);
   
   return contract;
 }
