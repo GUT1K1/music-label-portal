@@ -57,71 +57,106 @@ export default function WizardStepContract({
   const downloadContractAsPDF = async () => {
     setIsGeneratingPDF(true);
     try {
-      // Динамический импорт библиотек для избежания проблем с загрузкой
+      // Динамический импорт библиотек
       const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
         import('html2canvas'),
         import('jspdf')
       ]);
 
-      // Создаём временный контейнер для рендеринга
+      // Создаём PDF документ
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pageWidth = 210; // A4 width в мм
+      const pageHeight = 297; // A4 height в мм
+      const margin = 10; // Отступы
+      const contentWidth = pageWidth - 2 * margin;
+
+      // Создаём временный контейнер
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = contractHtml;
-      tempDiv.style.position = 'absolute';
+      tempDiv.style.position = 'fixed';
       tempDiv.style.left = '-9999px';
       tempDiv.style.top = '0';
-      tempDiv.style.width = '794px'; // A4 width в пикселях (210mm * 96dpi / 25.4)
-      tempDiv.style.padding = '40px';
+      tempDiv.style.width = `${contentWidth * 3.78}px`; // Конвертация мм в пиксели (1мм ≈ 3.78px)
+      tempDiv.style.padding = '20px';
       tempDiv.style.background = '#fff';
       tempDiv.style.fontFamily = "'Times New Roman', serif";
       tempDiv.style.fontSize = '10pt';
       tempDiv.style.lineHeight = '1.4';
+      tempDiv.style.color = '#000';
       document.body.appendChild(tempDiv);
 
-      // Небольшая задержка для рендеринга
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Ждём рендеринга
+      await new Promise(resolve => setTimeout(resolve, 300));
 
-      // Генерируем canvas из HTML с высоким качеством
+      // Получаем высоту контента
+      const contentHeight = tempDiv.scrollHeight;
+
+      // Генерируем canvas
       const canvas = await html2canvas(tempDiv, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
-        windowWidth: 794,
-        width: 794
+        width: tempDiv.scrollWidth,
+        height: contentHeight
       });
 
       // Удаляем временный контейнер
       document.body.removeChild(tempDiv);
 
-      // Создаём PDF
+      // Конвертируем canvas в изображение
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: 'a4',
-        compress: true
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      // Вычисляем высоту изображения на одной странице
-      const imgWidth = pdfWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      
-      let heightLeft = imgHeight;
-      let position = 0;
+      // Рассчитываем размеры для PDF
+      const imgWidthInMM = contentWidth;
+      const imgHeightInMM = (canvas.height * imgWidthInMM) / canvas.width;
+      const pageContentHeight = pageHeight - 2 * margin;
 
-      // Добавляем первую страницу
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
-      heightLeft -= pdfHeight;
+      let yOffset = 0;
+      let pageNumber = 0;
 
-      // Добавляем остальные страницы
-      while (heightLeft > 0) {
-        position = -pdfHeight * Math.floor((imgHeight - heightLeft) / pdfHeight);
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
-        heightLeft -= pdfHeight;
+      // Разбиваем на страницы
+      while (yOffset < imgHeightInMM) {
+        if (pageNumber > 0) {
+          pdf.addPage();
+        }
+
+        // Вычисляем какую часть изображения показывать
+        const sourceY = (yOffset / imgHeightInMM) * canvas.height;
+        const sourceHeight = Math.min(
+          (pageContentHeight / imgHeightInMM) * canvas.height,
+          canvas.height - sourceY
+        );
+
+        // Создаём временный canvas для текущей страницы
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = sourceHeight;
+        const pageCtx = pageCanvas.getContext('2d');
+        
+        if (pageCtx) {
+          // Копируем нужную часть оригинального изображения
+          pageCtx.drawImage(
+            canvas,
+            0, sourceY, // Источник X, Y
+            canvas.width, sourceHeight, // Ширина и высота источника
+            0, 0, // Назначение X, Y
+            canvas.width, sourceHeight // Ширина и высота назначения
+          );
+
+          // Добавляем в PDF
+          const pageImgData = pageCanvas.toDataURL('image/png');
+          const heightInMM = (sourceHeight / canvas.height) * imgHeightInMM;
+          pdf.addImage(pageImgData, 'PNG', margin, margin, imgWidthInMM, heightInMM);
+        }
+
+        yOffset += pageContentHeight;
+        pageNumber++;
       }
 
       // Скачиваем PDF
