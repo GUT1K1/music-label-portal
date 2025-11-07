@@ -193,50 +193,28 @@ export default function WizardStepContract({
         }
       };
 
-      // Получаем все элементы appendix
+      // Получаем все основные разделы
+      const contractHeader = bodyContent.querySelector('.contract-header');
+      const articlesSection = bodyContent.querySelector('.articles-section');
+      const article8Section = bodyContent.querySelector('.article-8');
       const appendixes = bodyContent.querySelectorAll('.appendix');
       
-      // Создаем контейнер для основного договора (всё до первого appendix)
-      const mainContractDiv = document.createElement('div');
-      const bodyChildren = Array.from(bodyContent.children);
-      
-      for (const child of bodyChildren) {
-        if ((child as HTMLElement).classList?.contains('appendix')) {
-          break;
-        }
-        mainContractDiv.appendChild(child.cloneNode(true));
+      // Страница 1: Шапка договора (заголовок и преамбула)
+      if (contractHeader) {
+        await renderSection((contractHeader as HTMLElement).outerHTML, true);
       }
       
-      // Разбиваем основной договор на: статьи 1-7 + статья 8 отдельно
-      if (mainContractDiv.children.length > 0) {
-        const mainContractHTML = mainContractDiv.innerHTML;
-        
-        // Ищем статью 8 (с классом article-8)
-        const article8Match = mainContractHTML.split(/(<div class="article-8">)/i);
-        
-        if (article8Match.length > 1) {
-          // Часть 1: всё до статьи 8 (статьи 1-7)
-          const articles1to7 = article8Match[0];
-          
-          // Часть 2: статья 8 и всё после
-          const article8 = article8Match[1] + article8Match[2];
-          
-          // Рендерим статьи 1-7
-          if (articles1to7.trim()) {
-            await renderSection(articles1to7, true);
-          }
-          
-          // Рендерим статью 8 на новой странице
-          if (article8.trim()) {
-            await renderSection(article8, false);
-          }
-        } else {
-          // Если разделения нет, рендерим всё вместе
-          await renderSection(mainContractHTML, true);
-        }
+      // Страница 2-N: Статьи 1-7 (термины и определения + все статьи до 8-й)
+      if (articlesSection) {
+        await renderSection((articlesSection as HTMLElement).outerHTML, false);
       }
-
-      // Рендерим каждое приложение отдельно
+      
+      // Страница N+1: Статья 8 (реквизиты и подписи)
+      if (article8Section) {
+        await renderSection((article8Section as HTMLElement).outerHTML, false);
+      }
+      
+      // Страницы N+2 и далее: Приложения (каждое на отдельной странице)
       for (const appendix of Array.from(appendixes)) {
         await renderSection((appendix as HTMLElement).outerHTML, false);
       }
