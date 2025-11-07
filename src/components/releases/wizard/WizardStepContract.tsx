@@ -140,46 +140,112 @@ export default function WizardStepContract({
         })
       );
 
+      // Получаем body из шаблона
+      let bodyContent = tempContainer.querySelector('body');
+      if (!bodyContent) {
+        bodyContent = tempContainer;
+      }
 
-
-      // Рендерим весь документ целиком одним canvas
-      const canvas = await html2canvas(tempContainer, {
-        scale: 3,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        width: 794,
-        windowWidth: 794
-      });
-
-      document.body.removeChild(tempContainer);
-
-      // Разбиваем canvas на страницы A4
-      const imgWidth = 210;
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      const imageData = canvas.toDataURL('image/jpeg', 0.95);
-
-      if (imgHeight <= pageHeight) {
-        // Весь документ помещается на одну страницу
-        pdf.addImage(imageData, 'JPEG', 0, 0, imgWidth, imgHeight);
-      } else {
-        // Документ занимает несколько страниц
-        let position = 0;
-        let heightLeft = imgHeight;
-
-        // Первая страница (уже создана при инициализации pdf)
-        pdf.addImage(imageData, 'JPEG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        // Остальные страницы
-        while (heightLeft > 0) {
-          position -= pageHeight;
+      // Функция рендера секции
+      const renderSection = async (content: string, isFirst: boolean) => {
+        const sectionContainer = document.createElement('div');
+        sectionContainer.style.position = 'absolute';
+        sectionContainer.style.left = '-9999px';
+        sectionContainer.style.width = '794px';
+        sectionContainer.style.padding = '60px';
+        sectionContainer.style.background = '#fff';
+        sectionContainer.style.fontFamily = 'Times New Roman, serif';
+        sectionContainer.style.fontSize = '11pt';
+        sectionContainer.style.lineHeight = '1.4';
+        sectionContainer.style.color = '#000';
+        sectionContainer.style.boxSizing = 'border-box';
+        sectionContainer.innerHTML = content;
+        
+        document.body.appendChild(sectionContainer);
+        
+        // Ждем загрузки изображений в секции
+        const sectionImages = sectionContainer.querySelectorAll('img');
+        await Promise.all(
+          Array.from(sectionImages).map(img => {
+            if ((img as HTMLImageElement).complete) return Promise.resolve();
+            return new Promise(resolve => {
+              (img as HTMLImageElement).onload = () => resolve(null);
+              (img as HTMLImageElement).onerror = () => resolve(null);
+            });
+          })
+        );
+        
+        const canvas = await html2canvas(sectionContainer, {
+          scale: 3,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          width: 794,
+          windowWidth: 794
+        });
+        
+        document.body.removeChild(sectionContainer);
+        
+        if (!isFirst) {
           pdf.addPage();
+        }
+        
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pageHeight = 297;
+        const imageData = canvas.toDataURL('image/jpeg', 0.95);
+        
+        if (imgHeight <= pageHeight) {
+          // Контент помещается на одну страницу
+          pdf.addImage(imageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        } else {
+          // Контент занимает несколько страниц - разбиваем
+          let position = 0;
+          let heightLeft = imgHeight;
+
+          // Первая часть на текущей странице
           pdf.addImage(imageData, 'JPEG', 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
+
+          // Продолжение на следующих страницах
+          while (heightLeft > 0) {
+            position -= pageHeight;
+            pdf.addPage();
+            pdf.addImage(imageData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
         }
+      };
+
+      // Получаем все основные разделы
+      const contractHeader = bodyContent.querySelector('.contract-header');
+      const articlesSection = bodyContent.querySelector('.articles-section');
+      const article8Section = bodyContent.querySelector('.article-8');
+      const appendixes = bodyContent.querySelectorAll('.appendix');
+      
+      // Страница 1-2: Шапка договора + Статьи (объединяем в одну секцию)
+      let mainContent = '';
+      if (contractHeader) {
+        mainContent += (contractHeader as HTMLElement).outerHTML;
       }
+      if (articlesSection) {
+        mainContent += (articlesSection as HTMLElement).outerHTML;
+      }
+      if (mainContent) {
+        await renderSection(mainContent, true);
+      }
+      
+      // Следующая страница: Статья 8 (реквизиты и подписи)
+      if (article8Section) {
+        await renderSection((article8Section as HTMLElement).outerHTML, false);
+      }
+      
+      // Остальные страницы: Приложения
+      for (const appendix of Array.from(appendixes)) {
+        await renderSection((appendix as HTMLElement).outerHTML, false);
+      }
+
+      document.body.removeChild(tempContainer);
 
       const contractNumber = `420-${Date.now().toString().slice(-6)}`;
       pdf.save(`Договор_${contractNumber}.pdf`);
