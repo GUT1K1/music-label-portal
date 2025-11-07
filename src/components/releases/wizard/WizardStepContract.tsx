@@ -152,11 +152,11 @@ export default function WizardStepContract({
         sectionContainer.style.position = 'absolute';
         sectionContainer.style.left = '-9999px';
         sectionContainer.style.width = '794px';
-        sectionContainer.style.padding = '60px';
+        sectionContainer.style.padding = '50px';
         sectionContainer.style.background = '#fff';
         sectionContainer.style.fontFamily = 'Times New Roman, serif';
-        sectionContainer.style.fontSize = '11pt';
-        sectionContainer.style.lineHeight = '1.4';
+        sectionContainer.style.fontSize = '10pt';
+        sectionContainer.style.lineHeight = '1.35';
         sectionContainer.style.color = '#000';
         sectionContainer.style.boxSizing = 'border-box';
         sectionContainer.innerHTML = content;

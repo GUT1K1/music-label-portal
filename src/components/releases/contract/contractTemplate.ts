@@ -10,7 +10,7 @@ export const CONTRACT_TEMPLATE = `
     body {
       font-family: 'Times New Roman', serif;
       font-size: 10pt;
-      line-height: 1.4;
+      line-height: 1.35;
       margin: 0;
       padding: 20px;
       color: hsl(45, 95%, 90%);
@@ -32,10 +32,10 @@ export const CONTRACT_TEMPLATE = `
     h2 {
       font-size: 11pt;
       font-weight: bold;
-      margin: 16px 0 10px 0;
+      margin: 12px 0 8px 0;
       page-break-after: avoid;
       break-after: avoid;
-      padding: 8px 12px;
+      padding: 6px 10px;
       background: linear-gradient(to right, hsl(45, 30%, 20%) 0%, transparent 100%);
       border-left: 4px solid hsl(45, 100%, 60%);
       color: hsl(45, 95%, 90%);
@@ -56,7 +56,7 @@ export const CONTRACT_TEMPLATE = `
     }
     p {
       text-align: justify;
-      margin: 6px 0;
+      margin: 5px 0;
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
@@ -85,7 +85,7 @@ export const CONTRACT_TEMPLATE = `
     .mini-signatures {
       display: flex;
       justify-content: space-between;
-      margin-top: 40px;
+      margin-top: 30px;
       gap: 30px;
       font-size: 9pt;
     }
@@ -240,15 +240,11 @@ export const CONTRACT_TEMPLATE = `
 
 <p>1.2. Лицензиар разрешает Лицензиату предоставлять иным лицам на Территории в течение Срока Право на использование Объектов способами, предусмотренными настоящим Договором (заключение сублицензионных договоров), без предварительного согласия Лицензиара.</p>
 
-
-
 <h2>Статья 2. Гарантии Сторон</h2>
 
 <p><strong>2.1. Гарантии и обязанности Лицензиара:</strong></p>
 
 <p>2.1.1. Лицензиар гарантирует, что он вправе распоряжаться Правом на использование Объектов, а именно предоставлять исключительную лицензию на использование Произведений, Исполнений, Фонограмм, Видеоклипов и неисключительную лицензию на использование Дизайн-макетов и иные права, предусмотренные настоящим Договором.</p>
-
-
 
 <h2>Статья 3. Вознаграждение</h2>
 
