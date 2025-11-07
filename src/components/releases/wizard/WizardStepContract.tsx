@@ -235,7 +235,7 @@ export default function WizardStepContract({
   return (
     <div className="space-y-6">
       {/* Предпросмотр договора */}
-      <div className="relative border border-border/30 rounded-lg bg-background">
+      <div className="relative">
         <div className="absolute top-4 right-4 z-10">
           <Button
             onClick={downloadContractAsPDF}
@@ -257,9 +257,9 @@ export default function WizardStepContract({
             )}
           </Button>
         </div>
-        <div className="p-2 max-h-[600px] overflow-y-auto bg-background">
+        <div className="max-h-[600px] overflow-y-auto">
           <div 
-            className="contract-preview bg-white rounded p-6"
+            className="contract-preview bg-white rounded-lg p-6"
             style={{
               fontFamily: "'Times New Roman', serif",
               fontSize: '10pt',
