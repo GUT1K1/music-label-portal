@@ -13,8 +13,8 @@ export const CONTRACT_TEMPLATE = `
       line-height: 1.4;
       margin: 0;
       padding: 20px;
-      color: #000;
-      background: #fff;
+      color: hsl(45, 95%, 90%);
+      background: transparent;
     }
     h1 {
       text-align: center;
@@ -25,8 +25,9 @@ export const CONTRACT_TEMPLATE = `
       page-break-after: avoid;
       break-after: avoid;
       letter-spacing: 0.5px;
-      border-bottom: 3px double #000;
+      border-bottom: 3px double hsl(45, 100%, 60%);
       padding-bottom: 10px;
+      color: hsl(45, 100%, 60%);
     }
     h2 {
       font-size: 11pt;
@@ -35,8 +36,9 @@ export const CONTRACT_TEMPLATE = `
       page-break-after: avoid;
       break-after: avoid;
       padding: 8px 12px;
-      background: linear-gradient(to right, #f8f8f8 0%, #fff 100%);
-      border-left: 4px solid #333;
+      background: linear-gradient(to right, hsl(45, 30%, 20%) 0%, transparent 100%);
+      border-left: 4px solid hsl(45, 100%, 60%);
+      color: hsl(45, 95%, 90%);
     }
     .contract-header {
       page-break-after: always;
@@ -59,7 +61,7 @@ export const CONTRACT_TEMPLATE = `
       overflow-wrap: break-word;
     }
     p strong {
-      color: #222;
+      color: hsl(45, 100%, 70%);
       font-weight: bold;
     }
     .header {
@@ -76,8 +78,8 @@ export const CONTRACT_TEMPLATE = `
       page-break-inside: avoid;
       break-inside: avoid;
       padding: 20px;
-      background: #fafafa;
-      border: 1px solid #ddd;
+      background: hsl(0, 0%, 8%);
+      border: 1px solid hsl(45, 30%, 20%);
       border-radius: 8px;
     }
     .mini-signatures {
@@ -91,7 +93,7 @@ export const CONTRACT_TEMPLATE = `
       text-align: center;
     }
     .mini-signature-line {
-      border-bottom: 1px solid #000;
+      border-bottom: 1px solid hsl(45, 100%, 60%);
       width: 150px;
       min-height: 30px;
       margin: 5px auto;
@@ -109,7 +111,7 @@ export const CONTRACT_TEMPLATE = `
       font-size: 9pt;
       min-width: 0;
       padding: 10px;
-      background: #fff;
+      background: hsl(0, 0%, 5%);
       border-radius: 4px;
     }
     .signature-block p {
@@ -120,7 +122,7 @@ export const CONTRACT_TEMPLATE = `
       font-size: 8pt;
     }
     .signature-line {
-      border-bottom: 2px solid #000;
+      border-bottom: 2px solid hsl(45, 100%, 60%);
       margin: 15px 0 5px 0;
       min-height: 50px;
       display: flex;
@@ -145,7 +147,7 @@ export const CONTRACT_TEMPLATE = `
       break-inside: avoid;
     }
     table td, table th {
-      border: 1px solid #000;
+      border: 1px solid hsl(45, 30%, 20%);
       padding: 6px;
       text-align: left;
       word-wrap: break-word;
@@ -154,7 +156,8 @@ export const CONTRACT_TEMPLATE = `
     }
     table th {
       font-weight: bold;
-      background: #f5f5f5;
+      background: hsl(45, 30%, 15%);
+      color: hsl(45, 100%, 60%);
     }
     .appendix {
       margin-top: 40px;
@@ -167,11 +170,11 @@ export const CONTRACT_TEMPLATE = `
       max-height: 250px;
       margin: 15px auto;
       display: block;
-      border: 1px solid #ddd;
+      border: 1px solid hsl(45, 30%, 20%);
       object-fit: contain;
     }
     i {
-      color: #666;
+      color: hsl(45, 30%, 50%);
       font-style: italic;
     }
   </style>

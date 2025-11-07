@@ -233,7 +233,7 @@ export default function WizardStepContract({
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 pt-0 space-y-6">
       {/* Заголовок шага */}
       <div className="space-y-2">
         <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -271,14 +271,9 @@ export default function WizardStepContract({
           </div>
 
           {/* Контейнер с договором */}
-          <div className="h-[500px] overflow-y-auto bg-card/30 border border-border/30 rounded-lg m-4">
+          <div className="h-[500px] overflow-y-auto bg-background/50 border border-border/30 rounded-lg m-4">
             <div 
-              className="contract-preview p-6 text-foreground"
-              style={{
-                fontFamily: "'Times New Roman', serif",
-                fontSize: '11pt',
-                lineHeight: '1.6'
-              }}
+              className="contract-preview p-6"
               dangerouslySetInnerHTML={{ __html: contractHtml }}
             />
           </div>
