@@ -2,7 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
-import ReleaseForm from './ReleaseForm';
+import ReleaseWizard from './ReleaseWizard';
 import ReleasesList from './ReleasesList';
 import ReleaseStatusTabs from './ReleaseStatusTabs';
 import { Release, Pitching } from './types';
@@ -129,7 +129,7 @@ export default function ReleaseManagerView({
       )}
 
       {showForm && (
-        <ReleaseForm
+        <ReleaseWizard
           newRelease={newRelease}
           setNewRelease={setNewRelease}
           coverPreview={coverPreview}
