@@ -32,7 +32,6 @@ export default function ContractViewDialog({
 
   useEffect(() => {
     if (open && requisites && releaseDate && tracks.length > 0) {
-      console.log('🔍 ContractViewDialog signatureDataUrl:', signatureDataUrl);
       const html = generateContract({
         requisites,
         releaseDate,

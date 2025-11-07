@@ -62,4 +62,5 @@ export interface Release {
   pitching?: Pitching | null;
   contract_pdf_url?: string;
   contract_requisites?: ContractRequisites;
+  contract_signature?: string;
 }

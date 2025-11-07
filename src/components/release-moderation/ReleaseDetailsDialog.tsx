@@ -299,6 +299,7 @@ export default function ReleaseDetailsDialog({
           releaseDate={release.release_date}
           tracks={release.tracks}
           coverUrl={release.cover_url}
+          signatureDataUrl={release.contract_signature}
         />
       )}
     </Dialog>

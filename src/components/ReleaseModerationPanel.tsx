@@ -73,8 +73,10 @@ export default function ReleaseModerationPanel({ userId, userRole = 'manager' }:
         name: data.release_name,
         has_contract_pdf: !!data.contract_pdf_url,
         has_contract_requisites: !!data.contract_requisites,
+        has_contract_signature: !!data.contract_signature,
         contract_pdf_url: data.contract_pdf_url,
-        contract_requisites: data.contract_requisites
+        contract_requisites: data.contract_requisites,
+        contract_signature: data.contract_signature
       });
       
       try {
