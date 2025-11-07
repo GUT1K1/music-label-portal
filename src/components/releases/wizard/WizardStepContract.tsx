@@ -184,22 +184,28 @@ export default function WizardStepContract({
         }
       };
 
-      // Разделяем контент на основной договор и приложения
-      const fullHTML = bodyContent.innerHTML;
-      const appendixMatch = fullHTML.split(/<div class="appendix">/i);
+      // Получаем все элементы appendix
+      const appendixes = bodyContent.querySelectorAll('.appendix');
       
-      // Основной договор (всё до первого appendix)
-      const mainContractHTML = appendixMatch[0];
+      // Создаем контейнер для основного договора (всё до первого appendix)
+      const mainContractDiv = document.createElement('div');
+      const bodyChildren = Array.from(bodyContent.children);
+      
+      for (const child of bodyChildren) {
+        if ((child as HTMLElement).classList?.contains('appendix')) {
+          break;
+        }
+        mainContractDiv.appendChild(child.cloneNode(true));
+      }
       
       // Рендерим основной договор
-      if (mainContractHTML.trim()) {
-        await renderSection(mainContractHTML, true);
+      if (mainContractDiv.children.length > 0) {
+        await renderSection(mainContractDiv.innerHTML, true);
       }
 
       // Рендерим каждое приложение отдельно
-      for (let i = 1; i < appendixMatch.length; i++) {
-        const appendixHTML = '<div class="appendix">' + appendixMatch[i].split('</div>')[0] + '</div>';
-        await renderSection(appendixHTML, false);
+      for (const appendix of Array.from(appendixes)) {
+        await renderSection((appendix as HTMLElement).outerHTML, false);
       }
 
       document.body.removeChild(tempContainer);
@@ -225,7 +231,7 @@ export default function WizardStepContract({
       </div>
 
       {/* Предпросмотр договора */}
-      <Card className="relative bg-card">
+      <div className="relative border rounded-lg bg-card">
         <div className="absolute top-4 right-4 z-10">
           <Button
             onClick={downloadContractAsPDF}
@@ -260,7 +266,7 @@ export default function WizardStepContract({
             dangerouslySetInnerHTML={{ __html: contractHtml }}
           />
         </div>
-      </Card>
+      </div>
 
       {/* Блок подписи */}
       {!signatureDataUrl ? (
