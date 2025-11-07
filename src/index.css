@@ -88,11 +88,19 @@
     @apply border-border;
   }
 
+  html {
+    @apply bg-background;
+  }
+
   body {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
+  }
+
+  #root {
+    @apply bg-background min-h-screen;
   }
 
   /* Стилизованный скролл для всего сайта */
