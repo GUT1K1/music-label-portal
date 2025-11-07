@@ -105,6 +105,7 @@ export const CONTRACT_TEMPLATE = `
       max-width: 140px;
       max-height: 25px;
       object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(83%) sepia(49%) saturate(1053%) hue-rotate(0deg) brightness(102%) contrast(101%);
     }
     .signature-block {
       flex: 1;
@@ -133,6 +134,7 @@ export const CONTRACT_TEMPLATE = `
       max-width: 180px;
       max-height: 45px;
       object-fit: contain;
+      filter: brightness(0) saturate(100%) invert(83%) sepia(49%) saturate(1053%) hue-rotate(0deg) brightness(102%) contrast(101%);
     }
     table {
       width: 100%;

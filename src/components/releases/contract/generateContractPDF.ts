@@ -43,7 +43,8 @@ export async function generateContractPDF(options: GeneratePDFOptions): Promise<
     .replace(/border-bottom: 3px double hsl\(45, 100%, 60%\)/g, 'border-bottom: 3px double #000')
     .replace(/border-left: 4px solid hsl\(45, 100%, 60%\)/g, 'border-left: 4px solid #333')
     .replace(/border-bottom: 1px solid hsl\(45, 100%, 60%\)/g, 'border-bottom: 1px solid #000')
-    .replace(/border-bottom: 2px solid hsl\(45, 100%, 60%\)/g, 'border-bottom: 2px solid #000');
+    .replace(/border-bottom: 2px solid hsl\(45, 100%, 60%\)/g, 'border-bottom: 2px solid #000')
+    .replace(/filter: brightness\(0\) saturate\(100%\) invert\(83%\) sepia\(49%\) saturate\(1053%\) hue-rotate\(0deg\) brightness\(102%\) contrast\(101%\);/g, 'filter: none;');
 
   // Создаем временный контейнер для рендеринга
   const tempContainer = document.createElement('div');
