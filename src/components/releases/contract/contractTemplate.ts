@@ -166,30 +166,6 @@ export const CONTRACT_TEMPLATE = `
       padding-top: 10px;
       page-break-before: always;
       break-before: page;
-      position: relative;
-    }
-    .page-signature {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 8pt;
-    }
-    .page-signature-line {
-      border-bottom: 1px solid hsl(45, 100%, 60%);
-      width: 100px;
-      min-height: 20px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-    }
-    .page-signature-image {
-      max-width: 90px;
-      max-height: 18px;
-      object-fit: contain;
-      filter: brightness(0) saturate(100%) invert(83%) sepia(49%) saturate(1053%) hue-rotate(0deg) brightness(102%) contrast(101%);
     }
     .cover-image {
       max-width: 250px;
@@ -342,10 +318,6 @@ export const CONTRACT_TEMPLATE = `
 
 <!-- Приложение 1 -->
 <div class="appendix">
-  <div class="page-signature">
-    <span>Лицензиар:</span>
-    <div class="page-signature-line">{{SIGNATURE_LICENSOR_PAGE}}</div>
-  </div>
   <h1>Приложение №1</h1>
   <p style="text-align: center;">к Лицензионному договору № {{номер_договора}}<br>от {{дата_заключения_договора}}</p>
   
@@ -363,7 +335,113 @@ export const CONTRACT_TEMPLATE = `
     {{TRACKS_TABLE}}
   </table>
   
-  <div class="signatures">
+  <div class="mini-signatures">
+    <div class="mini-signature">
+      <p>Лицензиар</p>
+      <div class="mini-signature-line">{{SIGNATURE_LICENSOR_MINI}}</div>
+      <p>{{ФИО_ИП_кратко}}</p>
+    </div>
+    <div class="mini-signature">
+      <p>Лицензиат</p>
+      <div class="mini-signature-line"></div>
+      <p>В.Н. Костырев</p>
+    </div>
+  </div>
+</div>
+
+<!-- Приложение 2 -->
+<div class="appendix">
+  <h1>Приложение № 2</h1>
+  <p style="text-align: center;">к Лицензионному договору № {{номер_договора}}<br>от {{дата_заключения_договора}}</p>
+  
+  <h2>Дизайн-макеты</h2>
+  
+  <img src="{{img}}" alt="Обложка релиза" class="cover-image">
+  
+  <div class="mini-signatures">
+    <div class="mini-signature">
+      <p>Лицензиар</p>
+      <div class="mini-signature-line">{{SIGNATURE_LICENSOR_MINI}}</div>
+      <p>{{ФИО_ИП_кратко}}</p>
+    </div>
+    <div class="mini-signature">
+      <p>Лицензиат</p>
+      <div class="mini-signature-line"></div>
+      <p>В.Н. Костырев</p>
+    </div>
+  </div>
+</div>
+
+<!-- Приложение 3 -->
+<div class="appendix">
+  <h1>Приложение № 3</h1>
+  <p style="text-align: center;">к Лицензионному договору № {{номер_договора}}<br>от {{дата_заключения_договора}}</p>
+  
+  <h2>Финансовые условия</h2>
+  
+  <p>1. Лицензиат выплачивает вознаграждение Лицензиару (далее – Роялти):</p>
+  
+  <p>1.1. За предоставление Права на использование Произведений, Исполнений, Фонограмм и Видеоклипов, указанных в Приложении №2 к настоящему Договору, в размере:</p>
+  
+  <p>- {{procc}} от дохода, полученного Лицензиатом от использования Объектов способами, предусмотренными настоящим Договором. При этом под доходом Лицензиата Стороны понимают совокупность денежных средств, поступивших на расчетный счет Лицензиата от использования Объектов, указанными выше способами (без НДС).</p>
+  
+  <p>1.2. За Монетизацию контента: {{procc}} от дохода, полученного Лицензиатом (без НДС).</p>
+  
+  <p>2. Размер вознаграждения, подлежащего выплате за текущий Отчетный период, определяется на основании Отчетов Лицензиата, составленных в соответствии со ст. 4 настоящего Договора.</p>
+  
+  <p>3. Вознаграждение выплачивается Лицензиару путем перечисления денежных средств на лицевой счет Лицензиару, указанный в ст.8 настоящего Договора, в течение 10 (Десяти) рабочих дней с момента получения Лицензиатом утвержденного и подписанного Лицензиаром отчётов.</p>
+  
+  <div class="mini-signatures">
+    <div class="mini-signature">
+      <p>Лицензиар</p>
+      <div class="mini-signature-line">{{SIGNATURE_LICENSOR_MINI}}</div>
+      <p>{{ФИО_ИП_кратко}}</p>
+    </div>
+    <div class="mini-signature">
+      <p>Лицензиат</p>
+      <div class="mini-signature-line"></div>
+      <p>В.Н. Костырев</p>
+    </div>
+  </div>
+</div>
+
+<!-- Акт приема-передачи -->
+<div class="appendix">
+  <h1>Акт приема-передачи</h1>
+  <p style="text-align: center;">к Лицензионному договору № {{номер_договора}}<br>от {{дата_заключения_договора}}</p>
+  
+  <div class="header">
+    <span>г. Москва</span>
+    <span>{{дата_заключения_договора}}</span>
+  </div>
+  
+  <p>Гражданин {{graj}} {{ФИО_ИП_полностью_кого}} паспорт {{PAS}} (творческий псевдоним - «{{NIK}}»), действующий от своего имени, именуемый в дальнейшем «Лицензиар» с одной стороны Индивидуальный предприниматель Костырев Виктор Николаевич, действующий на основании свидетельства ОГРНИП 324460000036131, именуемый в дальнейшем «Лицензиат» с другой стороны, вместе именуемые «Стороны», составили настоящий Акт приема-передачи Объектов к Лицензионному договору № {{номер_договора}} (далее по тексту – «Договор») о нижеследующем:</p>
+  
+  <p>1. В соответствии с Договором Лицензиар выполнил свои обязательства, а именно:</p>
+  
+  <p>1.1. передал Лицензиату в собственность носитель звукозаписи, содержащий Фонограммы с записями Исполнений\Произведений оригинального звучания надлежащего технического качества:<br>
+  тип носителя – компакт-диск формата CD-R;<br>
+  количество носителей – 1 (Один) экземпляр;</p>
+  
+  <p>2. Носитель звукозаписи Лицензиатом проверен. Каких-либо претензий, связанных с качеством записи на носитель Лицензиат не имеет.</p>
+  
+  <div class="mini-signatures">
+    <div class="mini-signature">
+      <p>Лицензиар</p>
+      <div class="mini-signature-line">{{SIGNATURE_LICENSOR_MINI}}</div>
+      <p>{{ФИО_ИП_кратко}}</p>
+    </div>
+    <div class="mini-signature">
+      <p>Лицензиат</p>
+      <div class="mini-signature-line"></div>
+      <p>В.Н. Костырев</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+`;
     <div class="signature-block">
       <p><strong>Лицензиар</strong></p>
       <p>Творческий псевдоним: {{NIK}}</p>
