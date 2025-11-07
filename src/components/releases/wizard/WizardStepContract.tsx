@@ -242,7 +242,7 @@ export default function WizardStepContract({
       </div>
 
       {/* Предпросмотр договора */}
-      <div className="relative border rounded-lg bg-card">
+      <div className="relative border border-border/50 rounded-lg bg-card">
         <div className="absolute top-4 right-4 z-10">
           <Button
             onClick={downloadContractAsPDF}
