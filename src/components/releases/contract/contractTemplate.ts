@@ -195,7 +195,7 @@ export const CONTRACT_TEMPLATE = `
     <div class="signature-line">
       {{SIGNATURE_LICENSOR}}
     </div>
-    <p>_______________/ {{ФИО_ИП_кратко}} /</p>
+    <p style="text-align: center; margin-top: 5px;">{{ФИО_ИП_кратко}}</p>
   </div>
   
   <div class="signature-block">
@@ -209,8 +209,10 @@ export const CONTRACT_TEMPLATE = `
     ИНН банка 7710140679<br>
     БИК банка 044525974<br>
     Корреспондентский счет банка 30101810145250000974</p>
-    <div class="signature-line"></div>
-    <p>________________/ В.Н. Костырев /</p>
+    <div class="signature-line">
+      <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
+    </div>
+    <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
   </div>
 </div>
 
@@ -243,14 +245,16 @@ export const CONTRACT_TEMPLATE = `
       <div class="signature-line">
         {{SIGNATURE_LICENSOR}}
       </div>
-      <p>_____________/ {{ФИО_ИП_кратко}} /</p>
+      <p style="text-align: center; margin-top: 5px;">{{ФИО_ИП_кратко}}</p>
     </div>
     
     <div class="signature-block">
       <p><strong>Лицензиат</strong></p>
       <p>ИП Костырев Виктор Николаевич</p>
-      <div class="signature-line"></div>
-      <p>________________/ В.Н. Костырев /</p>
+      <div class="signature-line">
+        <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
+      </div>
+      <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
     </div>
   </div>
 </div>
@@ -357,14 +361,16 @@ export const CONTRACT_TEMPLATE = `
       <div class="signature-line">
         {{SIGNATURE_LICENSOR}}
       </div>
-      <p>______________/ {{ФИО_ИП_кратко}} /</p>
+      <p style="text-align: center; margin-top: 5px;">{{ФИО_ИП_кратко}}</p>
     </div>
     
     <div class="signature-block">
       <p><strong>Лицензиат</strong></p>
       <p>ИП Костырев Виктор Николаевич</p>
-      <div class="signature-line"></div>
-      <p>______________/ В.Н. Костырев /</p>
+      <div class="signature-line">
+        <p style="font-style: italic; color: #666; font-size: 9pt;">(Подпись лицензиата)</p>
+      </div>
+      <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
     </div>
   </div>
 </div>

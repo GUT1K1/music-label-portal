@@ -5,6 +5,8 @@ import Icon from '@/components/ui/icon';
 import SignaturePad from './SignaturePad';
 import { generateContract } from '../contract/generateContract';
 import { ContractRequisites, Track } from '../types';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface WizardStepContractProps {
   requisites: ContractRequisites;
@@ -52,16 +54,66 @@ export default function WizardStepContract({
     onSignatureComplete(signatureDataUrl);
   };
 
-  const downloadContract = () => {
-    const blob = new Blob([contractHtml], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'Договор_420smm.html';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  const downloadContractAsPDF = async () => {
+    setIsGeneratingPDF(true);
+    try {
+      // Создаём временный контейнер для рендеринга
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = contractHtml;
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.width = '210mm'; // A4 width
+      tempDiv.style.padding = '20px';
+      tempDiv.style.background = '#fff';
+      document.body.appendChild(tempDiv);
+
+      // Генерируем canvas из HTML
+      const canvas = await html2canvas(tempDiv, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      // Удаляем временный контейнер
+      document.body.removeChild(tempDiv);
+
+      // Создаём PDF
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // Добавляем первую страницу
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // Добавляем остальные страницы если контент не влезает
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // Скачиваем PDF
+      pdf.save('Договор_420smm.pdf');
+    } catch (error) {
+      console.error('Ошибка генерации PDF:', error);
+      alert('Не удалось создать PDF. Попробуйте ещё раз.');
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   return (
@@ -77,13 +129,23 @@ export default function WizardStepContract({
       <Card className="relative">
         <div className="absolute top-4 right-4 z-10">
           <Button
-            onClick={downloadContract}
+            onClick={downloadContractAsPDF}
+            disabled={isGeneratingPDF}
             variant="outline"
             size="sm"
             className="gap-2"
           >
-            <Icon name="Download" size={14} />
-            Скачать договор
+            {isGeneratingPDF ? (
+              <>
+                <Icon name="Loader2" size={14} className="animate-spin" />
+                Создание PDF...
+              </>
+            ) : (
+              <>
+                <Icon name="Download" size={14} />
+                Скачать PDF
+              </>
+            )}
           </Button>
         </div>
         <div className="p-6 max-h-[600px] overflow-y-auto bg-gradient-to-b from-white to-gray-50">
