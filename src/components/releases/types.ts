@@ -44,6 +44,8 @@ export interface Release {
   review_comment?: string;
   reviewer_name?: string;
   contract_requisites?: ContractRequisites;
+  contract_pdf_url?: string;
+  contract_signature?: string;
 }
 
 import { API_ENDPOINTS } from '@/config/api';

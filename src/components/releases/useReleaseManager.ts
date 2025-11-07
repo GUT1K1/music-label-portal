@@ -223,7 +223,7 @@ export const useReleaseManager = (userId: number) => {
     });
   };
 
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = useCallback(async (contractData?: { signature: string; pdfUrl: string; requisites: any }) => {
     if (!newRelease.release_name || !coverFile || !newRelease.release_date) {
       toast({
         title: 'Ошибка',
@@ -331,7 +331,12 @@ export const useReleaseManager = (userId: number) => {
           body: JSON.stringify({
             ...newRelease,
             cover_url: coverData.url,
-            tracks: uploadedTracks
+            tracks: uploadedTracks,
+            ...(contractData && {
+              contract_signature: contractData.signature,
+              contract_pdf_url: contractData.pdfUrl,
+              contract_requisites: contractData.requisites
+            })
           }),
           signal: controller.signal
         });

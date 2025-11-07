@@ -94,6 +94,17 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
               </div>
 
               <div className="flex flex-col md:flex-row items-stretch md:items-center gap-1">
+                {release.contract_pdf_url && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(release.contract_pdf_url, '_blank')}
+                    className="gap-1 h-7 md:h-7 -ml-1.5 md:ml-0 text-[10px] px-2 justify-start md:justify-center md:flex-1"
+                  >
+                    <Icon name="FileText" size={12} className="flex-shrink-0" />
+                    Договор
+                  </Button>
+                )}
                 {release.tracks_count > 0 && (
                   <Button
                     variant="ghost"

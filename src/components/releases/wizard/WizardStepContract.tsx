@@ -11,7 +11,7 @@ interface WizardStepContractProps {
   releaseDate: string;
   tracks: Track[];
   coverUrl: string;
-  onSignatureComplete: (signatureDataUrl: string) => void;
+  onSignatureComplete: (signatureDataUrl: string, contractPdfUrl: string) => void;
   onBack: () => void;
 }
 
@@ -44,12 +44,33 @@ export default function WizardStepContract({
     setShowSignaturePad(false);
   };
 
-  const handleApproveContract = () => {
+  const handleApproveContract = async () => {
     if (!signatureDataUrl) {
       alert('Сначала поставьте подпись');
       return;
     }
-    onSignatureComplete(signatureDataUrl);
+    
+    setIsGeneratingPDF(true);
+    try {
+      // Генерируем и загружаем PDF договора
+      const { generateContractPDF, uploadContractPDF } = await import('../contract/generateContractPDF');
+      
+      const pdfBlob = await generateContractPDF({
+        requisites,
+        releaseDate,
+        tracks,
+        coverUrl,
+        signatureDataUrl
+      });
+      
+      const pdfUrl = await uploadContractPDF(pdfBlob);
+      
+      onSignatureComplete(signatureDataUrl, pdfUrl);
+    } catch (error) {
+      console.error('Ошибка при создании договора:', error);
+      alert('Не удалось создать договор. Попробуйте ещё раз.');
+      setIsGeneratingPDF(false);
+    }
   };
 
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
@@ -296,12 +317,21 @@ export default function WizardStepContract({
 
         <Button
           onClick={handleApproveContract}
-          disabled={!signatureDataUrl}
+          disabled={!signatureDataUrl || isGeneratingPDF}
           className="gap-2"
           size="lg"
         >
-          <Icon name="Check" size={16} />
-          Подтвердить и продолжить
+          {isGeneratingPDF ? (
+            <>
+              <Icon name="Loader2" size={16} className="animate-spin" />
+              Создание договора...
+            </>
+          ) : (
+            <>
+              <Icon name="Check" size={16} />
+              Подтвердить и продолжить
+            </>
+          )}
         </Button>
       </div>
     </div>

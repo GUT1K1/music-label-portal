@@ -30,7 +30,7 @@ interface ReleaseWizardProps {
   updateTrack: (index: number, field: keyof Track, value: any) => void;
   moveTrack: (index: number, direction: 'up' | 'down') => void;
   handleBatchUpload: (files: FileList) => void;
-  handleSubmit: () => void;
+  handleSubmit: (contractData?: { signature: string; pdfUrl: string; requisites: ContractRequisites }) => void;
   uploading: boolean;
   uploadProgress: number;
   currentUploadFile: string;
@@ -75,6 +75,7 @@ export default function ReleaseWizard({
     email: ''
   });
   const [contractSignature, setContractSignature] = useState<string | null>(null);
+  const [contractPdfUrl, setContractPdfUrl] = useState<string | null>(null);
 
   const canGoNext = () => {
     switch (currentStep) {
@@ -226,9 +227,14 @@ export default function ReleaseWizard({
               releaseDate={newRelease.release_date}
               tracks={tracks}
               coverUrl={coverPreview || ''}
-              onSignatureComplete={(signature) => {
+              onSignatureComplete={(signature, pdfUrl) => {
                 setContractSignature(signature);
-                handleSubmit();
+                setContractPdfUrl(pdfUrl);
+                handleSubmit({
+                  signature,
+                  pdfUrl,
+                  requisites
+                });
               }}
               onBack={() => setCurrentStep(5)}
             />
