@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import WizardStepReleaseType from './wizard/WizardStepReleaseType';
 import WizardStepBasicInfo from './wizard/WizardStepBasicInfo';
+import WizardStepRequisites from './wizard/WizardStepRequisites';
 import WizardStepTracks from './wizard/WizardStepTracks';
 import WizardStepReview from './wizard/WizardStepReview';
-import { Track } from './types';
+import { Track, ContractRequisites } from './types';
 
 interface ReleaseWizardProps {
   newRelease: {
@@ -38,8 +39,9 @@ interface ReleaseWizardProps {
 const STEPS = [
   { id: 1, title: 'Тип релиза', icon: 'Music' },
   { id: 2, title: 'Информация', icon: 'Info' },
-  { id: 3, title: 'Треки', icon: 'ListMusic' },
-  { id: 4, title: 'Проверка', icon: 'CheckCircle' }
+  { id: 3, title: 'Реквизиты', icon: 'FileText' },
+  { id: 4, title: 'Треки', icon: 'ListMusic' },
+  { id: 5, title: 'Проверка', icon: 'CheckCircle' }
 ];
 
 export default function ReleaseWizard({
@@ -61,6 +63,15 @@ export default function ReleaseWizard({
 }: ReleaseWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [releaseType, setReleaseType] = useState<'single' | 'album' | 'ep' | null>(null);
+  const [requisites, setRequisites] = useState<ContractRequisites>({
+    full_name: '',
+    citizenship: '',
+    passport_data: '',
+    inn_swift: '',
+    bank_requisites: '',
+    stage_name: '',
+    email: ''
+  });
 
   const canGoNext = () => {
     switch (currentStep) {
@@ -73,6 +84,14 @@ export default function ReleaseWizard({
                newRelease.genre && 
                newRelease.title_language;
       case 3:
+        return requisites.full_name &&
+               requisites.citizenship &&
+               requisites.passport_data &&
+               requisites.inn_swift &&
+               requisites.bank_requisites &&
+               requisites.stage_name &&
+               requisites.email;
+      case 4:
         return tracks.length > 0 && tracks.every(t => 
           t.file && 
           t.title && 
@@ -91,7 +110,7 @@ export default function ReleaseWizard({
   };
 
   const handleNext = () => {
-    if (canGoNext() && currentStep < 4) {
+    if (canGoNext() && currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -113,7 +132,7 @@ export default function ReleaseWizard({
           <div className="flex justify-between items-center mb-4">
             <div>
               <CardTitle className="text-xl">Создать релиз</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Шаг {currentStep} из 4</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Шаг {currentStep} из 5</p>
             </div>
             <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8" disabled={uploading}>
               <Icon name="X" size={18} />
@@ -169,6 +188,13 @@ export default function ReleaseWizard({
           )}
 
           {currentStep === 3 && (
+            <WizardStepRequisites
+              requisites={requisites}
+              onChange={(field, value) => setRequisites({ ...requisites, [field]: value })}
+            />
+          )}
+
+          {currentStep === 4 && (
             <WizardStepTracks
               tracks={tracks}
               addTrack={addTrack}
@@ -179,7 +205,7 @@ export default function ReleaseWizard({
             />
           )}
 
-          {currentStep === 4 && (
+          {currentStep === 5 && (
             <WizardStepReview
               newRelease={newRelease}
               coverPreview={coverPreview}
@@ -207,7 +233,7 @@ export default function ReleaseWizard({
             
             <div className="flex-1" />
 
-            {currentStep < 4 ? (
+            {currentStep < 5 ? (
               <Button
                 onClick={handleNext}
                 disabled={!canGoNext() || uploading}

@@ -16,6 +16,16 @@ export interface Track {
   preview_url?: string;
 }
 
+export interface ContractRequisites {
+  full_name: string;
+  citizenship: string;
+  passport_data: string;
+  inn_swift: string;
+  bank_requisites: string;
+  stage_name: string;
+  email: string;
+}
+
 export interface Release {
   id: number;
   release_name: string;
@@ -33,6 +43,7 @@ export interface Release {
   created_at: string;
   review_comment?: string;
   reviewer_name?: string;
+  contract_requisites?: ContractRequisites;
 }
 
 import { API_ENDPOINTS } from '@/config/api';
