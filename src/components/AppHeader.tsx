@@ -128,28 +128,28 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
         <NotificationBell userId={userId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-2 px-3 py-2 hover:bg-primary/10 transition-colors">
+            <Button variant="outline" className="flex items-center gap-2 px-3 py-2 hover:bg-primary/10 transition-colors min-w-0">
               {userAvatar ? (
                 <img 
                   src={userAvatar} 
                   alt={userName}
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                     e.currentTarget.nextElementSibling?.classList.remove('hidden');
                   }}
                 />
               ) : null}
-              <div className={`w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold ${userAvatar ? 'hidden' : ''}`}>
+              <div className={`w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold flex-shrink-0 ${userAvatar ? 'hidden' : ''}`}>
                 {userName.charAt(0).toUpperCase()}
               </div>
               {balance !== null && (
-                <div className="flex items-center gap-1.5">
-                  <Icon name="Wallet" size={16} className="text-primary" />
-                  <span className="font-semibold text-sm">{Number(balance || 0).toFixed(2)} ₽</span>
+                <div className="flex items-center gap-1 min-w-0">
+                  <Icon name="Wallet" size={16} className="text-primary flex-shrink-0" />
+                  <span className="font-semibold text-sm whitespace-nowrap">{Number(balance || 0).toFixed(2)} ₽</span>
                 </div>
               )}
-              <Icon name="ChevronDown" size={16} />
+              <Icon name="ChevronDown" size={16} className="flex-shrink-0" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
@@ -209,25 +209,25 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
         )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="flex items-center gap-1.5 px-2 py-1.5">
+            <Button variant="outline" size="sm" className="flex items-center gap-1.5 px-2 py-1.5 min-w-0">
               {userAvatar ? (
                 <img 
                   src={userAvatar} 
                   alt={userName}
-                  className="w-6 h-6 rounded-full object-cover"
+                  className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                     e.currentTarget.nextElementSibling?.classList.remove('hidden');
                   }}
                 />
               ) : null}
-              <div className={`w-6 h-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xs font-bold ${userAvatar ? 'hidden' : ''}`}>
+              <div className={`w-6 h-6 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-xs font-bold flex-shrink-0 ${userAvatar ? 'hidden' : ''}`}>
                 {userName.charAt(0).toUpperCase()}
               </div>
               {balance !== null && (
-                <span className="font-semibold text-xs">{Number(balance || 0).toFixed(2)} ₽</span>
+                <span className="font-semibold text-xs whitespace-nowrap">{Number(balance || 0).toFixed(2)} ₽</span>
               )}
-              <Icon name="ChevronDown" size={14} />
+              <Icon name="ChevronDown" size={14} className="flex-shrink-0" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
