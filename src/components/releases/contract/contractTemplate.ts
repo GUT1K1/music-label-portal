@@ -162,8 +162,8 @@ export const CONTRACT_TEMPLATE = `
       color: hsl(45, 100%, 60%);
     }
     .appendix {
-      margin-top: 40px;
-      padding-top: 30px;
+      margin-top: 10px;
+      padding-top: 10px;
       page-break-before: always;
       break-before: page;
     }
