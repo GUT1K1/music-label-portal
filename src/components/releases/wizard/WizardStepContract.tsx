@@ -57,110 +57,161 @@ export default function WizardStepContract({
   const downloadContractAsPDF = async () => {
     setIsGeneratingPDF(true);
     try {
-      // Динамический импорт библиотек
-      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import('html2canvas'),
-        import('jspdf')
-      ]);
+      // Создаём iframe для печати
+      const printFrame = document.createElement('iframe');
+      printFrame.style.position = 'absolute';
+      printFrame.style.left = '-9999px';
+      printFrame.style.width = '210mm';
+      printFrame.style.height = '297mm';
+      document.body.appendChild(printFrame);
 
-      // Создаём PDF документ
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      const pageWidth = 210; // A4 width в мм
-      const pageHeight = 297; // A4 height в мм
-      const margin = 10; // Отступы
-      const contentWidth = pageWidth - 2 * margin;
-
-      // Создаём временный контейнер
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = contractHtml;
-      tempDiv.style.position = 'fixed';
-      tempDiv.style.left = '-9999px';
-      tempDiv.style.top = '0';
-      tempDiv.style.width = `${contentWidth * 3.78}px`; // Конвертация мм в пиксели (1мм ≈ 3.78px)
-      tempDiv.style.padding = '20px';
-      tempDiv.style.background = '#fff';
-      tempDiv.style.fontFamily = "'Times New Roman', serif";
-      tempDiv.style.fontSize = '10pt';
-      tempDiv.style.lineHeight = '1.4';
-      tempDiv.style.color = '#000';
-      document.body.appendChild(tempDiv);
-
-      // Ждём рендеринга
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      // Получаем высоту контента
-      const contentHeight = tempDiv.scrollHeight;
-
-      // Генерируем canvas
-      const canvas = await html2canvas(tempDiv, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        width: tempDiv.scrollWidth,
-        height: contentHeight
-      });
-
-      // Удаляем временный контейнер
-      document.body.removeChild(tempDiv);
-
-      // Конвертируем canvas в изображение
-      const imgData = canvas.toDataURL('image/png');
-      
-      // Рассчитываем размеры для PDF
-      const imgWidthInMM = contentWidth;
-      const imgHeightInMM = (canvas.height * imgWidthInMM) / canvas.width;
-      const pageContentHeight = pageHeight - 2 * margin;
-
-      let yOffset = 0;
-      let pageNumber = 0;
-
-      // Разбиваем на страницы
-      while (yOffset < imgHeightInMM) {
-        if (pageNumber > 0) {
-          pdf.addPage();
-        }
-
-        // Вычисляем какую часть изображения показывать
-        const sourceY = (yOffset / imgHeightInMM) * canvas.height;
-        const sourceHeight = Math.min(
-          (pageContentHeight / imgHeightInMM) * canvas.height,
-          canvas.height - sourceY
-        );
-
-        // Создаём временный canvas для текущей страницы
-        const pageCanvas = document.createElement('canvas');
-        pageCanvas.width = canvas.width;
-        pageCanvas.height = sourceHeight;
-        const pageCtx = pageCanvas.getContext('2d');
-        
-        if (pageCtx) {
-          // Копируем нужную часть оригинального изображения
-          pageCtx.drawImage(
-            canvas,
-            0, sourceY, // Источник X, Y
-            canvas.width, sourceHeight, // Ширина и высота источника
-            0, 0, // Назначение X, Y
-            canvas.width, sourceHeight // Ширина и высота назначения
-          );
-
-          // Добавляем в PDF
-          const pageImgData = pageCanvas.toDataURL('image/png');
-          const heightInMM = (sourceHeight / canvas.height) * imgHeightInMM;
-          pdf.addImage(pageImgData, 'PNG', margin, margin, imgWidthInMM, heightInMM);
-        }
-
-        yOffset += pageContentHeight;
-        pageNumber++;
+      const frameDoc = printFrame.contentWindow?.document;
+      if (!frameDoc) {
+        throw new Error('Не удалось создать iframe');
       }
 
-      // Скачиваем PDF
-      pdf.save('Договор_420smm.pdf');
+      // Добавляем стили для печати
+      frameDoc.open();
+      frameDoc.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            @page {
+              size: A4;
+              margin: 15mm;
+            }
+            * {
+              box-sizing: border-box;
+            }
+            body {
+              font-family: 'Times New Roman', serif;
+              font-size: 10pt;
+              line-height: 1.4;
+              margin: 0;
+              padding: 0;
+              color: #000;
+              background: #fff;
+            }
+            h1 {
+              text-align: center;
+              font-size: 13pt;
+              font-weight: bold;
+              margin: 15px 0;
+              text-transform: uppercase;
+              page-break-after: avoid;
+            }
+            h2 {
+              font-size: 11pt;
+              font-weight: bold;
+              margin: 12px 0 8px 0;
+              page-break-after: avoid;
+            }
+            p {
+              text-align: justify;
+              margin: 6px 0;
+            }
+            .header {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 15px;
+              font-size: 10pt;
+            }
+            .signatures {
+              display: flex;
+              justify-content: space-between;
+              margin-top: 30px;
+              gap: 20px;
+              page-break-inside: avoid;
+            }
+            .signature-block {
+              flex: 1;
+              font-size: 9pt;
+              page-break-inside: avoid;
+            }
+            .signature-block p {
+              margin: 3px 0;
+              text-align: left;
+            }
+            .signature-line {
+              border-bottom: 2px solid #000;
+              margin: 15px 0 5px 0;
+              min-height: 50px;
+              display: flex;
+              align-items: flex-end;
+              justify-content: center;
+            }
+            .signature-image {
+              max-width: 180px;
+              max-height: 45px;
+              object-fit: contain;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 15px 0;
+              font-size: 9pt;
+              page-break-inside: auto;
+            }
+            table td, table th {
+              border: 1px solid #000;
+              padding: 6px;
+              text-align: left;
+            }
+            table th {
+              font-weight: bold;
+              background: #f5f5f5;
+            }
+            table tr {
+              page-break-inside: avoid;
+              page-break-after: auto;
+            }
+            .appendix {
+              margin-top: 40px;
+              padding-top: 30px;
+              border-top: 2px solid #ddd;
+              page-break-before: always;
+            }
+            .cover-image {
+              max-width: 350px;
+              max-height: 350px;
+              margin: 15px auto;
+              display: block;
+              border: 1px solid #ddd;
+              object-fit: contain;
+              page-break-inside: avoid;
+            }
+            i {
+              color: #666;
+              font-style: italic;
+            }
+            @media print {
+              body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          ${contractHtml}
+        </body>
+        </html>
+      `);
+      frameDoc.close();
+
+      // Ждём загрузки контента
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Открываем диалог печати браузера
+      printFrame.contentWindow?.print();
+
+      // Удаляем iframe после небольшой задержки
+      setTimeout(() => {
+        document.body.removeChild(printFrame);
+      }, 1000);
+
     } catch (error) {
       console.error('Ошибка генерации PDF:', error);
       alert('Не удалось создать PDF. Попробуйте ещё раз.');
