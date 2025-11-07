@@ -72,12 +72,29 @@ export default function ContractViewDialog({
         )}
 
         {/* PDF Viewer */}
-        <div className="flex-1 overflow-hidden bg-muted/20">
-          <iframe
-            src={contractPdfUrl}
+        <div className="flex-1 overflow-hidden bg-muted/20 relative">
+          <object
+            data={contractPdfUrl}
+            type="application/pdf"
             className="w-full h-full border-0"
             title="Предпросмотр договора"
-          />
+          >
+            <div className="flex flex-col items-center justify-center h-full gap-4 p-8 text-center">
+              <Icon name="FileText" size={48} className="text-muted-foreground" />
+              <p className="text-sm text-muted-foreground max-w-md">
+                Ваш браузер не поддерживает встроенный просмотр PDF-файлов.
+              </p>
+              <Button
+                onClick={handleDownload}
+                variant="default"
+                size="lg"
+                className="gap-2"
+              >
+                <Icon name="ExternalLink" size={18} />
+                Открыть в новой вкладке
+              </Button>
+            </div>
+          </object>
         </div>
 
         {/* Footer с подсказкой */}
