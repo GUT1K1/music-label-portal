@@ -264,7 +264,7 @@ export default function WizardStepContract({
             )}
           </Button>
         </div>
-        <div className="p-6 max-h-[600px] overflow-y-auto">
+        <div className="p-6 max-h-[600px] overflow-y-auto bg-background">
           <div 
             className="contract-preview bg-white rounded-lg p-6"
             style={{
@@ -335,9 +335,9 @@ export default function WizardStepContract({
             </Button>
           </div>
           
-          <div className="mt-4 p-4 bg-white rounded-lg border-2 border-gray-200">
+          <div className="mt-4 p-4 bg-card/50 rounded-lg border-2 border-border">
             <p className="text-sm font-medium mb-3">Предпросмотр подписи:</p>
-            <div className="flex items-center justify-center bg-gray-50 rounded p-4 border-b-2 border-gray-300">
+            <div className="flex items-center justify-center bg-background rounded p-4 border-b-2 border-primary/30">
               <img 
                 src={signatureDataUrl} 
                 alt="Подпись" 
