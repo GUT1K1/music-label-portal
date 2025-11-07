@@ -262,8 +262,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 # Contract data
                 contract_pdf_url = sql_escape(body_data.get('contract_pdf_url'))
                 contract_requisites = body_data.get('contract_requisites')
+                contract_signature = sql_escape(body_data.get('contract_signature'))
                 print(f"[POST] Contract PDF URL: {contract_pdf_url}")
                 print(f"[POST] Contract requisites present: {bool(contract_requisites)}")
+                print(f"[POST] Contract signature present: {bool(body_data.get('contract_signature'))}")
                 if contract_requisites:
                     contract_requisites_json = sql_escape(json.dumps(contract_requisites, ensure_ascii=False))
                 else:
@@ -273,10 +275,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     INSERT INTO {schema}.releases 
                     (artist_id, title, release_name, cover_url, release_date, preorder_date, 
                      sales_start_date, genre, copyright, price_category, title_language, status,
-                     contract_pdf_url, contract_requisites)
+                     contract_pdf_url, contract_requisites, contract_signature)
                     VALUES ({user_id}, {release_name}, {release_name}, {cover_url}, {release_date}, 
                             {preorder_date}, {sales_start}, {genre_val}, {copyright_val}, {price_cat}, 
-                            {title_lang}, 'pending', {contract_pdf_url}, {contract_requisites_json})
+                            {title_lang}, 'pending', {contract_pdf_url}, {contract_requisites_json}, {contract_signature})
                     RETURNING id, created_at
                 """
                 print(f"[POST] Executing SQL: {insert_sql}")

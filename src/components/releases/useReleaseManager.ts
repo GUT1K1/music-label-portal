@@ -224,6 +224,13 @@ export const useReleaseManager = (userId: number) => {
   };
 
   const handleSubmit = useCallback(async (contractData?: { signature: string; pdfUrl: string; requisites: any }) => {
+    console.log('🔍 handleSubmit called with contractData:', {
+      has_contractData: !!contractData,
+      has_signature: !!contractData?.signature,
+      signature_length: contractData?.signature?.length,
+      signature_preview: contractData?.signature?.substring(0, 50)
+    });
+    
     if (!newRelease.release_name || !coverFile || !newRelease.release_date) {
       toast({
         title: 'Ошибка',
