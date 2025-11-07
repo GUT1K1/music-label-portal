@@ -42,50 +42,65 @@ export async function uploadFile(file: File): Promise<UploadFileResult> {
       return result;
     }
     
-    // Большие файлы (>10MB) - прямая загрузка в S3 через presigned POST (без Cloud Functions лимитов)
-    console.log('[Upload] 🚀 Large file, using direct S3 upload via presigned POST');
+    // Большие файлы (>10MB) - загружаем через бэкенд с base64, но кусками по 8MB
+    console.log('[Upload] 🚀 Large file, uploading in chunks via backend');
     
     const contentType = file.type || 'application/octet-stream';
+    const chunkSize = 8 * 1024 * 1024; // 8MB per chunk (raw file size)
+    const totalChunks = Math.ceil(file.size / chunkSize);
     
-    // Получаем presigned POST от бэкенда
-    const response = await fetch(
-      `https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(contentType)}`
-    );
+    console.log(`[Upload] Splitting into ${totalChunks} chunks (8MB raw each)`);
     
-    if (!response.ok) {
-      throw new Error(`Ошибка получения presigned POST: ${response.status}`);
+    let s3Key = '';
+    let finalUrl = '';
+    
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(start + chunkSize, file.size);
+      const chunk = file.slice(start, end);
+      
+      console.log(`[Upload] 📤 Chunk ${i + 1}/${totalChunks}: ${(chunk.size / 1024 / 1024).toFixed(2)}MB`);
+      
+      // Читаем chunk как base64
+      const base64Chunk = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(chunk);
+      });
+      
+      // Отправляем chunk через JSON
+      const response = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          file: base64Chunk,
+          fileName: file.name,
+          contentType,
+          chunkIndex: i,
+          totalChunks,
+          s3Key: i > 0 ? s3Key : undefined
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Ошибка загрузки chunk ${i + 1}: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      if (i === 0) {
+        s3Key = result.s3Key;
+      }
+      
+      if (i === totalChunks - 1) {
+        finalUrl = result.url;
+        console.log('[Upload] ✅ File uploaded to S3:', finalUrl);
+      }
     }
-    
-    const { presignedPost, url: fileUrl, s3Key } = await response.json();
-    
-    console.log('[Upload] ✅ Got presigned POST, uploading directly to S3...');
-    
-    // Загружаем файл напрямую в S3 через presigned POST
-    const formData = new FormData();
-    
-    // Добавляем поля из presigned POST (в правильном порядке!)
-    Object.keys(presignedPost.fields).forEach(key => {
-      formData.append(key, presignedPost.fields[key]);
-    });
-    
-    // Файл должен быть последним
-    formData.append('file', file);
-    
-    const uploadResponse = await fetch(presignedPost.url, {
-      method: 'POST',
-      body: formData
-    });
-    
-    if (!uploadResponse.ok) {
-      const errorText = await uploadResponse.text();
-      console.error('[Upload] S3 upload error:', errorText);
-      throw new Error(`Ошибка загрузки в S3: ${uploadResponse.status}`);
-    }
-    
-    console.log('[Upload] ✅ File uploaded to S3:', fileUrl);
     
     return {
-      url: fileUrl,
+      url: finalUrl,
       s3Key,
       fileName: file.name,
       fileSize: file.size,
