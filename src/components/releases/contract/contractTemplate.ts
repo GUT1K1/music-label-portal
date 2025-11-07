@@ -314,6 +314,19 @@ export const CONTRACT_TEMPLATE = `
     <p style="text-align: center; margin-top: 5px;">В.Н. Костырев</p>
   </div>
 </div>
+
+<div class="mini-signatures">
+  <div class="mini-signature">
+    <p>Лицензиар</p>
+    <div class="mini-signature-line">{{SIGNATURE_LICENSOR_MINI}}</div>
+    <p>{{ФИО_ИП_кратко}}</p>
+  </div>
+  <div class="mini-signature">
+    <p>Лицензиат</p>
+    <div class="mini-signature-line"></div>
+    <p>В.Н. Костырев</p>
+  </div>
+</div>
 </div>
 
 <!-- Приложение 1 -->
