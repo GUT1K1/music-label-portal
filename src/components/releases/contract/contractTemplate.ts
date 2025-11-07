@@ -39,12 +39,12 @@ export const CONTRACT_TEMPLATE = `
       border-left: 4px solid #333;
     }
     .contract-header {
-      page-break-after: avoid;
-      break-after: avoid;
+      page-break-after: always;
+      break-after: page;
     }
     .articles-section {
-      page-break-before: always;
-      break-before: page;
+      page-break-after: avoid;
+      break-after: avoid;
     }
     .article-8 {
       page-break-before: always;
@@ -217,7 +217,7 @@ export const CONTRACT_TEMPLATE = `
 <div class="mini-signatures">
   <div class="mini-signature">
     <p>Лицензиар</p>
-    <div class="mini-signature-line"></div>
+    <div class="mini-signature-line">{{SIGNATURE_LICENSOR_MINI}}</div>
     <p>{{ФИО_ИП_кратко}}</p>
   </div>
   <div class="mini-signature">
