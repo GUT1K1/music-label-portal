@@ -85,6 +85,15 @@ export default function ReleaseDetailsDialog({
 }: ReleaseDetailsDialogProps) {
   if (!release) return null;
 
+  console.log('🔍 ReleaseDetailsDialog render:', {
+    release_id: release.id,
+    release_name: release.release_name,
+    has_contract_pdf: !!release.contract_pdf_url,
+    has_contract_signature: !!release.contract_signature,
+    contract_signature_length: release.contract_signature?.length,
+    contract_signature_preview: release.contract_signature?.substring(0, 50)
+  });
+
   const [rejectionType, setRejectionType] = useState<'rejected_fixable' | 'rejected_final'>('rejected_fixable');
   const [showContractDialog, setShowContractDialog] = useState(false);
 

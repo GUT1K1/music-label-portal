@@ -31,6 +31,16 @@ export default function ContractViewDialog({
   const [contractHtml, setContractHtml] = useState<string>('');
 
   useEffect(() => {
+    console.log('🔍 ContractViewDialog useEffect:', {
+      open,
+      has_requisites: !!requisites,
+      releaseDate,
+      tracks_length: tracks.length,
+      coverUrl_length: coverUrl?.length,
+      signatureDataUrl_length: signatureDataUrl?.length,
+      signatureDataUrl_preview: signatureDataUrl?.substring(0, 50)
+    });
+    
     if (open && requisites && releaseDate && tracks.length > 0) {
       const html = generateContract({
         requisites,
