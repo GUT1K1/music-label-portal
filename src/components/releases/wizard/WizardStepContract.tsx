@@ -112,10 +112,11 @@ export default function WizardStepContract({
         })
       );
 
-      // Получаем body из шаблона
-      const bodyContent = tempContainer.querySelector('body');
+      // Получаем body из шаблона (может быть как <body>, так и прямо содержимое в div)
+      let bodyContent = tempContainer.querySelector('body');
       if (!bodyContent) {
-        throw new Error('Не найден body в шаблоне договора');
+        // Если body не найден, значит браузер распарсил HTML и содержимое лежит прямо в tempContainer
+        bodyContent = tempContainer;
       }
 
       // Функция рендера секции
