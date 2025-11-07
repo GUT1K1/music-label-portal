@@ -252,7 +252,7 @@ export default function WizardStepContract({
             )}
           </Button>
         </div>
-        <div className="p-6 max-h-[600px] overflow-y-auto bg-gradient-to-b from-white to-gray-50">
+        <div className="p-6 max-h-[600px] overflow-y-auto bg-white">
           <div 
             className="contract-preview"
             style={{
