@@ -20,6 +20,9 @@ interface UploadJob {
   created_at: string;
   started_at?: string;
   completed_at?: string;
+  total_chunks?: number;
+  completed_chunks?: number;
+  progress?: number;
 }
 
 export default function FinancialReportsUpload({ userId }: FinancialReportsUploadProps) {
@@ -28,6 +31,7 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
   const [uploading, setUploading] = useState(false);
   const [jobs, setJobs] = useState<UploadJob[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [runningWorker, setRunningWorker] = useState<number | null>(null);
 
   const periods = [
     '1 квартал 2024',
@@ -151,6 +155,23 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
     }
   };
 
+  const runWorker = async (jobId: number) => {
+    try {
+      setRunningWorker(jobId);
+      const response = await fetch(API_ENDPOINTS.PROCESS_FINANCIAL_JOBS, {
+        method: 'GET'
+      });
+      const data = await response.json();
+      console.log('Worker result:', data);
+      
+      setTimeout(() => loadJobs(), 1000);
+    } catch (err) {
+      console.error('Worker error:', err);
+    } finally {
+      setRunningWorker(null);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fadeIn">
       <div className="bg-card/60 backdrop-blur-sm rounded-xl border border-border p-6">
@@ -263,16 +284,59 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
                       {job.status === 'processing' && (
                         <div className="mt-2">
                           <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
-                            <span>Обработано строк</span>
-                            <span>{job.processed_rows.toLocaleString()}</span>
+                            <span>Чанки</span>
+                            <span>{job.completed_chunks || 0} / {job.total_chunks || 0}</span>
                           </div>
                           <div className="w-full bg-background/80 rounded-full h-2 overflow-hidden">
                             <div 
                               className="h-full bg-gradient-to-r from-blue-500 to-primary transition-all duration-300"
-                              style={{ width: job.total_rows > 0 ? `${(job.processed_rows / job.total_rows) * 100}%` : '0%' }}
+                              style={{ width: job.progress ? `${job.progress}%` : '0%' }}
                             />
                           </div>
                         </div>
+                      )}
+                      
+                      {job.status === 'pending' && (
+                        <Button
+                          onClick={() => runWorker(job.id)}
+                          disabled={runningWorker === job.id}
+                          size="sm"
+                          className="mt-2 bg-blue-500 hover:bg-blue-600"
+                        >
+                          {runningWorker === job.id ? (
+                            <>
+                              <Icon name="Loader2" className="w-3 h-3 mr-1 animate-spin" />
+                              Запуск...
+                            </>
+                          ) : (
+                            <>
+                              <Icon name="Play" className="w-3 h-3 mr-1" />
+                              Запустить обработку
+                            </>
+                          )}
+                        </Button>
+                      )}
+
+                      {(job.status === 'processing' && job.total_chunks && job.total_chunks > 0) && (
+                        <Button
+                          onClick={() => runWorker(job.id)}
+                          disabled={runningWorker === job.id}
+                          size="sm"
+                          variant="outline"
+                          className="mt-2"
+                        >
+                          {runningWorker === job.id ? (
+                            <>
+                              <Icon name="Loader2" className="w-3 h-3 mr-1 animate-spin" />
+                              Обработка...
+                            </>
+                          ) : (
+                            <>
+                              <Icon name="RefreshCw" className="w-3 h-3 mr-1" />
+                              Обработать ещё чанки
+                            </>
+                          )}
+                        </Button>
                       )}
 
                       {job.status === 'completed' && (

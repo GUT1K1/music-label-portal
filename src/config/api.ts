@@ -33,6 +33,7 @@ export const API_ENDPOINTS = {
   WITHDRAWAL: funcUrls['withdrawal'],
   ARTIST_FINANCIAL_REPORTS: funcUrls['artist-financial-reports'],
   UPLOAD_FINANCIAL_REPORT: funcUrls['upload-financial-report'],
+  PROCESS_FINANCIAL_JOBS: funcUrls['process-financial-jobs'],
 } as const;
 
 // Оптимизированная функция для fetch с retry и timeout
