@@ -7,30 +7,26 @@ interface FinancialReportsUploadProps {
   userId: number;
 }
 
-interface UploadResult {
-  success: boolean;
+interface UploadJob {
+  id: number;
+  period: string;
+  filename: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
   total_rows: number;
+  processed_rows: number;
   matched_count: number;
   unmatched_count: number;
-  unmatched_rows: Array<{
-    row_number: number;
-    artist_name: string;
-    album_name: string;
-    amount: number;
-  }>;
-  artist_summary: Array<{
-    artist_name: string;
-    count: number;
-    total: number;
-  }>;
-  period: string;
+  error_message?: string;
+  created_at: string;
+  started_at?: string;
+  completed_at?: string;
 }
 
 export default function FinancialReportsUpload({ userId }: FinancialReportsUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState('3 квартал 2024');
   const [uploading, setUploading] = useState(false);
-  const [result, setResult] = useState<UploadResult | null>(null);
+  const [jobs, setJobs] = useState<UploadJob[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const periods = [
@@ -40,11 +36,37 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
     '4 квартал 2024',
   ];
 
+  const loadJobs = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.UPLOAD_FINANCIAL_REPORT, {
+        method: 'GET',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-User-Id': userId.toString()
+        }
+      });
+      const data = await response.json();
+      if (data.jobs) {
+        setJobs(data.jobs);
+      }
+    } catch (err) {
+      console.error('Failed to load jobs:', err);
+    }
+  };
+
   useEffect(() => {
-    console.log('🔄 FinancialReportsUpload mounted, clearing old result');
-    setResult(null);
-    setError(null);
-  }, []);
+    console.log('🔄 FinancialReportsUpload mounted');
+    loadJobs();
+    
+    const interval = setInterval(() => {
+      const hasActiveJobs = jobs.some(j => j.status === 'pending' || j.status === 'processing');
+      if (hasActiveJobs) {
+        loadJobs();
+      }
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [jobs]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,7 +74,6 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
       if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
         setSelectedFile(file);
         setError(null);
-        setResult(null);
       } else {
         setError('Пожалуйста, выберите файл Excel (.xlsx или .xls)');
         setSelectedFile(null);
@@ -66,64 +87,67 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
       return;
     }
 
-    const uploadTime = new Date().toISOString();
-    const fileSizeMB = (selectedFile.size / 1024 / 1024).toFixed(2);
-    console.log(`📤 [${uploadTime}] Starting file upload:`, { 
-      file: selectedFile.name, 
-      size: `${fileSizeMB} MB`,
-      period: selectedPeriod, 
-      userId 
-    });
-
     try {
       setUploading(true);
       setError(null);
-      setResult(null); // Очистить старый результат
 
       const reader = new FileReader();
       
-      reader.onerror = (err) => {
-        console.error('❌ FileReader error:', err);
+      reader.onerror = () => {
         setError('Ошибка чтения файла');
         setUploading(false);
       };
       
       reader.onload = async (e) => {
-        console.log('✅ File reader loaded successfully');
         const base64 = e.target?.result?.toString().split(',')[1];
-        console.log('📦 File converted to base64, length:', base64?.length);
-        
-        const requestBody = {
-          file: base64,
-          period: selectedPeriod,
-          adminUserId: userId
-        };
-        console.log('🚀 Sending request to:', API_ENDPOINTS.UPLOAD_FINANCIAL_REPORT);
         
         const response = await fetch(API_ENDPOINTS.UPLOAD_FINANCIAL_REPORT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify({
+            file: base64,
+            period: selectedPeriod,
+            adminUserId: userId,
+            filename: selectedFile.name
+          })
         });
 
-        console.log('📥 Response status:', response.status);
         const data = await response.json();
-        console.log('📊 Response data:', data);
 
-        if (!response.ok) {
+        if (response.status === 202) {
+          setSelectedFile(null);
+          loadJobs();
+        } else if (!response.ok) {
           throw new Error(data.error || 'Ошибка при загрузке отчёта');
         }
-
-        setResult(data);
-        setSelectedFile(null);
       };
 
       reader.readAsDataURL(selectedFile);
     } catch (err) {
-      console.error('❌ Upload error:', err);
+      console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : 'Произошла ошибка при загрузке');
     } finally {
       setUploading(false);
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending': return <Icon name="Clock" className="w-5 h-5 text-gray-400" />;
+      case 'processing': return <Icon name="Loader2" className="w-5 h-5 text-blue-400 animate-spin" />;
+      case 'completed': return <Icon name="CheckCircle2" className="w-5 h-5 text-green-500" />;
+      case 'failed': return <Icon name="XCircle" className="w-5 h-5 text-red-500" />;
+      default: return <Icon name="HelpCircle" className="w-5 h-5 text-gray-400" />;
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'pending': return 'В очереди';
+      case 'processing': return 'Обрабатывается';
+      case 'completed': return 'Завершено';
+      case 'failed': return 'Ошибка';
+      default: return status;
     }
   };
 
@@ -197,7 +221,7 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
             {uploading ? (
               <>
                 <Icon name="Loader2" className="w-4 h-4 mr-2 animate-spin" />
-                Обработка файла...
+                Загрузка файла...
               </>
             ) : (
               <>
@@ -209,92 +233,81 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
         </div>
       </div>
 
-      {result && (
+      {jobs.length > 0 && (
         <div className="bg-card/60 backdrop-blur-sm rounded-xl border border-border p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Icon name="CheckCircle2" className="w-6 h-6 text-green-500" />
-            <h3 className="text-xl font-bold text-white">Результаты загрузки</h3>
+            <Icon name="History" className="w-6 h-6 text-blue-500" />
+            <h3 className="text-xl font-bold text-white">История загрузок</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-background/50 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-white mb-1">{result.total_rows}</div>
-              <div className="text-sm text-gray-400">Всего записей</div>
-            </div>
-            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-green-400 mb-1">{result.matched_count}</div>
-              <div className="text-sm text-gray-400">Найдено в базе</div>
-            </div>
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-blue-400 mb-1">{result.artist_summary?.length || 0}</div>
-              <div className="text-sm text-gray-400">Исполнителей</div>
-            </div>
-          </div>
+          <div className="space-y-3">
+            {jobs.map((job) => (
+              <div 
+                key={job.id}
+                className="bg-background/50 rounded-lg p-4 border border-border/30"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3 flex-1">
+                    {getStatusIcon(job.status)}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-white">{job.period}</span>
+                        <span className="text-xs px-2 py-1 rounded-full bg-primary/20 text-primary">
+                          {getStatusText(job.status)}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-400 mb-2">
+                        {job.filename}
+                      </div>
+                      
+                      {job.status === 'processing' && (
+                        <div className="mt-2">
+                          <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+                            <span>Обработано строк</span>
+                            <span>{job.processed_rows.toLocaleString()}</span>
+                          </div>
+                          <div className="w-full bg-background/80 rounded-full h-2 overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-blue-500 to-primary transition-all duration-300"
+                              style={{ width: job.total_rows > 0 ? `${(job.processed_rows / job.total_rows) * 100}%` : '0%' }}
+                            />
+                          </div>
+                        </div>
+                      )}
 
-          <div className="mb-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-start gap-2">
-            <Icon name="CheckCircle" className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm text-green-300 font-medium mb-1">
-                Отчёт успешно загружен за период: {result.period}
-              </p>
-              <p className="text-xs text-gray-400">
-                Баланс артистов автоматически обновлён
-              </p>
-            </div>
-          </div>
+                      {job.status === 'completed' && (
+                        <div className="grid grid-cols-2 gap-3 mt-2">
+                          <div className="bg-green-500/10 border border-green-500/30 rounded px-3 py-2">
+                            <div className="text-xs text-gray-400">Найдено</div>
+                            <div className="text-lg font-bold text-green-400">{job.matched_count}</div>
+                          </div>
+                          <div className="bg-orange-500/10 border border-orange-500/30 rounded px-3 py-2">
+                            <div className="text-xs text-gray-400">Не найдено</div>
+                            <div className="text-lg font-bold text-orange-400">{job.unmatched_count}</div>
+                          </div>
+                        </div>
+                      )}
 
-          {result.artist_summary && result.artist_summary.length > 0 && (
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Users" className="w-5 h-5 text-green-500" />
-                <h4 className="text-lg font-semibold text-white">
-                  Найдено в базе данных:
-                </h4>
-              </div>
-              <div className="bg-background/50 rounded-lg overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-background/70">
-                    <tr>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Исполнитель</th>
-                      <th className="text-center py-3 px-4 text-sm font-medium text-gray-400">Записей</th>
-                      <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">Сумма</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.artist_summary.map((artist, idx) => (
-                      <tr key={idx} className="border-t border-border/30">
-                        <td className="py-3 px-4 text-sm text-white">{artist.artist_name}</td>
-                        <td className="py-3 px-4 text-sm text-gray-400 text-center">{artist.count}</td>
-                        <td className="py-3 px-4 text-sm text-green-400 text-right font-semibold">
-                          {artist.total.toLocaleString()} ₽
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="text-xs text-gray-400 mt-3">
-                <Icon name="CheckCircle" className="w-3 h-3 inline mr-1" />
-                Баланс этих исполнителей автоматически обновлён
-              </p>
-            </div>
-          )}
-
-          {result.unmatched_count > 0 && (
-            <div className="p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
-              <div className="flex items-start gap-3">
-                <Icon name="Info" className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-medium text-white mb-1">
-                    Не найдено в базе: {result.unmatched_count} записей
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    Эти исполнители и релизы отсутствуют в базе данных. Платежи для них не были начислены.
-                  </p>
+                      {job.status === 'failed' && job.error_message && (
+                        <div className="mt-2 text-xs text-red-400">
+                          Ошибка: {job.error_message}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="text-xs text-gray-500 text-right whitespace-nowrap">
+                    {new Date(job.created_at).toLocaleString('ru-RU', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            ))}
+          </div>
         </div>
       )}
 
@@ -302,13 +315,12 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
         <div className="flex items-start gap-3">
           <Icon name="Info" className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-gray-300 space-y-2">
-            <p className="font-medium text-white">Требования к файлу Excel:</p>
+            <p className="font-medium text-white">Как работает загрузка:</p>
             <ul className="list-disc list-inside space-y-1 text-gray-400">
-              <li>Колонка G - имя исполнителя (сценическое имя)</li>
-              <li>Колонка I - название альбома/релиза</li>
-              <li>Колонка N - сумма вознаграждения</li>
-              <li>Система автоматически сопоставит данные с релизами в базе</li>
-              <li>При успешном сопоставлении баланс артиста обновится автоматически</li>
+              <li>Файл обрабатывается в фоновом режиме — это займёт несколько минут</li>
+              <li>Вы можете закрыть страницу, обработка продолжится</li>
+              <li>Статус обновляется автоматически каждые 3 секунды</li>
+              <li>После завершения баланс артистов обновится автоматически</li>
             </ul>
           </div>
         </div>
