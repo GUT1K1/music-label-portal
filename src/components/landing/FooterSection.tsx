@@ -73,8 +73,8 @@ export default function FooterSection() {
                     name="MessageCircle"
                     className="w-3 h-3 md:w-4 md:h-4 text-yellow-500"
                   />
-                  <a href="https://t.me/label420inbox" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-500 transition-colors">
-                    @label420inbox
+                  <a href="https://t.me/Label420" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-500 transition-colors">
+                    @Label420
                   </a>
                 </li>
               </ul>
