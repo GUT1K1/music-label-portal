@@ -63,18 +63,21 @@ export default function FooterSection() {
               </h4>
               <ul className="space-y-2 text-xs md:text-sm text-gray-400">
                 <li className="flex items-center gap-2">
-                  <Icon name="Mail" className="w-3 h-3 md:w-4 md:h-4 text-yellow-500" />
-                  <a href="mailto:label420.inbox@yandex.ru" className="hover:text-yellow-500 transition-colors">
-                    label420.inbox@yandex.ru
-                  </a>
-                </li>
-                <li className="flex items-center gap-2">
                   <Icon
                     name="MessageCircle"
                     className="w-3 h-3 md:w-4 md:h-4 text-yellow-500"
                   />
                   <a href="https://t.me/Label420" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-500 transition-colors">
                     @Label420
+                  </a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Icon
+                    name="Music"
+                    className="w-3 h-3 md:w-4 md:h-4 text-yellow-500"
+                  />
+                  <a href="https://vk.com/smm420" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-500 transition-colors">
+                    vk.com/smm420
                   </a>
                 </li>
               </ul>
