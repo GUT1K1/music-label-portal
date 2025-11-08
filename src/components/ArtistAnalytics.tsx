@@ -270,14 +270,10 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
               onClick={() => setShowPeriodSelector(!showPeriodSelector)}
               className="w-full bg-card/60 border border-border rounded-xl px-4 py-3 text-left flex items-center justify-between hover:border-primary/50 transition-all group"
             >
-              {currentPeriodOption ? (
-                <div className="flex items-center gap-3">
-                  <Icon name={currentPeriodOption.icon} className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-medium text-white">{currentPeriodOption.label}</span>
-                </div>
-              ) : (
-                <span className="text-gray-400">Выберите период</span>
-              )}
+              <div className="flex items-center gap-3">
+                <Icon name={currentPeriodOption?.icon || 'Calendar'} className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium text-white">{currentPeriodOption?.label || 'За неделю'}</span>
+              </div>
               <Icon
                 name={showPeriodSelector ? 'ChevronUp' : 'ChevronDown'}
                 className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors"
