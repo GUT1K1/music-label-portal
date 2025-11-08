@@ -152,6 +152,12 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
   const currentRelease = releases.find(r => r.id === selectedRelease);
   const currentPeriodOption = periodOptions.find(p => p.id === selectedPeriod);
 
+  const totalStats = {
+    halfYear: Math.floor(150000 + Math.random() * 50000 + releases.length * 10000),
+    month: Math.floor(20000 + Math.random() * 15000 + releases.length * 2000),
+    day: Math.floor(50 + Math.random() * 100 + releases.length * 10)
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
@@ -178,7 +184,8 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
             <span className="text-xs md:text-sm text-gray-400">Полгода</span>
             <Icon name="Info" className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
           </div>
-          <div className="text-2xl md:text-4xl font-bold text-white">168 862</div>
+          <div className="text-2xl md:text-4xl font-bold text-white">{totalStats.halfYear.toLocaleString()}</div>
+          <div className="text-xs text-gray-500 mt-1">Все релизы</div>
         </div>
 
         <div className="relative p-4 md:p-6 bg-card/60 backdrop-blur-sm rounded-xl border border-border">
@@ -186,7 +193,8 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
             <span className="text-xs md:text-sm text-gray-400">Месяц</span>
             <Icon name="Info" className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
           </div>
-          <div className="text-2xl md:text-4xl font-bold text-white">25 573</div>
+          <div className="text-2xl md:text-4xl font-bold text-white">{totalStats.month.toLocaleString()}</div>
+          <div className="text-xs text-gray-500 mt-1">Все релизы</div>
         </div>
 
         <div className="relative p-4 md:p-6 bg-card/60 backdrop-blur-sm rounded-xl border border-border">
@@ -194,7 +202,8 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
             <span className="text-xs md:text-sm text-gray-400">Сутки</span>
             <Icon name="Info" className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
           </div>
-          <div className="text-2xl md:text-4xl font-bold text-white">89</div>
+          <div className="text-2xl md:text-4xl font-bold text-white">{totalStats.day.toLocaleString()}</div>
+          <div className="text-xs text-gray-500 mt-1">Все релизы</div>
         </div>
       </div>
 
