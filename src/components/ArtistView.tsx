@@ -150,7 +150,7 @@ export default function ArtistView({
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
-            <ArtistAnalytics />
+            <ArtistAnalytics userId={user.id} />
           </TabsContent>
         </Tabs>
 
