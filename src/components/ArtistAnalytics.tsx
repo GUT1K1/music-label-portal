@@ -100,6 +100,7 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
     shares: true,
     favorites: true,
   });
+  const [cachedData, setCachedData] = useState<Record<string, any[]>>({});
 
   useEffect(() => {
     const loadReleases = async () => {
@@ -136,7 +137,17 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showReleaseSelector, showPeriodSelector]);
 
-  const currentData = generatePlatformData(selectedPeriod, selectedPlatform);
+  const getCachedData = (period: Period, platform: Platform) => {
+    const key = `${period}-${platform}`;
+    if (!cachedData[key]) {
+      const newData = generatePlatformData(period, platform);
+      setCachedData(prev => ({ ...prev, [key]: newData }));
+      return newData;
+    }
+    return cachedData[key];
+  };
+
+  const currentData = getCachedData(selectedPeriod, selectedPlatform);
   const isTikTok = selectedPlatform === 'tiktok';
   const currentRelease = releases.find(r => r.id === selectedRelease);
   const currentPeriodOption = periodOptions.find(p => p.id === selectedPeriod);
