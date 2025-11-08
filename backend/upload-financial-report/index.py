@@ -99,7 +99,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 album_name = str(row[8]) if row[8] else ""
                 amount_str = str(row[13]) if row[13] else "0"
                 
-                if not artist_name or not album_name:
+                if not artist_name:
                     continue
                 
                 try:
