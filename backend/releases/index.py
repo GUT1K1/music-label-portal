@@ -116,7 +116,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     SELECT 
                         r.*,
                         r.artist_id as user_id,
-                        u.full_name as artist_name,
+                        COALESCE(r.artist_name, u.full_name) as artist_name,
                         r.reviewed_by as reviewer_id,
                         rev.full_name as reviewer_name,
                         r.contract_signature
@@ -165,7 +165,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     r.sales_start_date, r.genre, r.copyright, r.price_category, r.title_language,
                     r.status, r.created_at, r.review_comment, r.artist_id as user_id,
                     r.contract_pdf_url, r.contract_requisites, r.contract_signature,
-                    u.full_name as artist_name,
+                    COALESCE(r.artist_name, u.full_name) as artist_name,
                     r.reviewed_by as reviewer_id,
                     rev.full_name as reviewer_name,
                     (SELECT COUNT(*) FROM {schema}.release_tracks t WHERE t.release_id = r.id) as tracks_count
