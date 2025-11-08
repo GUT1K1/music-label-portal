@@ -23,14 +23,38 @@ export default function Marketing() {
           </h1>
 
           <div className="space-y-6 text-gray-300">
+            <section className="bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-6 mb-6">
+              <h3 className="text-xl font-semibold text-primary mb-4">Отправитель рассылок</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-gray-400">Индивидуальный предприниматель</p>
+                  <p className="text-white font-semibold">Костырев Виктор Николаевич</p>
+                </div>
+                <div>
+                  <p className="text-gray-400">ИНН</p>
+                  <p className="text-white font-semibold">463407305547</p>
+                </div>
+                <div>
+                  <p className="text-gray-400">ОГРНИП</p>
+                  <p className="text-white font-semibold">324460000036131</p>
+                </div>
+                <div>
+                  <p className="text-gray-400">Бренд</p>
+                  <p className="text-white">Музыкальный лейбл «420»</p>
+                </div>
+              </div>
+            </section>
+
             <section>
               <h2 className="text-2xl font-semibold text-white mb-4">1. Общие положения</h2>
               <p>
                 Настоящее согласие определяет условия получения пользователем рекламных и информационных 
-                сообщений от Музыкального лейбла «420» (далее — «Лейбл»).
+                сообщений от Индивидуального предпринимателя Костырева Виктора Николаевича 
+                (ИНН 463407305547, ОГРНИП 324460000036131), действующего под брендом 
+                Музыкальный лейбл «420» (далее — «Отправитель»).
               </p>
               <p>
-                Давая согласие, пользователь выражает желание получать от Лейбла полезную информацию 
+                Давая согласие, пользователь выражает желание получать от Отправителя полезную информацию 
                 о новых возможностях платформы, акциях, обновлениях и предложениях.
               </p>
             </section>
@@ -38,7 +62,7 @@ export default function Marketing() {
             <section>
               <h2 className="text-2xl font-semibold text-white mb-4">2. Виды сообщений</h2>
               <p>
-                При наличии согласия Лейбл может направлять следующие виды сообщений:
+                При наличии согласия Отправитель может направлять следующие виды сообщений:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li><strong>Информационные сообщения:</strong>
