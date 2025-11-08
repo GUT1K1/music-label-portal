@@ -55,6 +55,8 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
       return;
     }
 
+    console.log('📤 Starting file upload:', { file: selectedFile.name, period: selectedPeriod, userId });
+
     try {
       setUploading(true);
       setError(null);
@@ -62,18 +64,24 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
       const reader = new FileReader();
       reader.onload = async (e) => {
         const base64 = e.target?.result?.toString().split(',')[1];
+        console.log('📦 File converted to base64, length:', base64?.length);
+        
+        const requestBody = {
+          file: base64,
+          period: selectedPeriod,
+          adminUserId: userId
+        };
+        console.log('🚀 Sending request to:', API_ENDPOINTS.UPLOAD_FINANCIAL_REPORT);
         
         const response = await fetch(API_ENDPOINTS.UPLOAD_FINANCIAL_REPORT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            file: base64,
-            period: selectedPeriod,
-            adminUserId: userId
-          })
+          body: JSON.stringify(requestBody)
         });
 
+        console.log('📥 Response status:', response.status);
         const data = await response.json();
+        console.log('📊 Response data:', data);
 
         if (!response.ok) {
           throw new Error(data.error || 'Ошибка при загрузке отчёта');
@@ -85,6 +93,7 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
 
       reader.readAsDataURL(selectedFile);
     } catch (err) {
+      console.error('❌ Upload error:', err);
       setError(err instanceof Error ? err.message : 'Произошла ошибка при загрузке');
     } finally {
       setUploading(false);
