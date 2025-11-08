@@ -16,29 +16,47 @@ def normalize_string(s: str) -> str:
     s = ' '.join(s.split())
     return s
 
-def match_report_to_releases(artist_name: str, album_name: str, cursor) -> tuple:
+def load_all_releases(cursor) -> Dict[str, tuple]:
     """
-    Ищет совпадение в БД по имени артиста и названию альбома.
+    Загружает все релизы из БД один раз.
+    Возвращает словарь: {normalized_key: (user_id, release_id, artist_name)}
+    """
+    cursor.execute("""
+        SELECT r.id, r.artist_id, r.artist_name, r.release_name
+        FROM releases r
+    """)
+    
+    releases_map = {}
+    for row in cursor.fetchall():
+        release_id, artist_id, artist_name, release_name = row
+        
+        normalized_artist = normalize_string(artist_name or "")
+        normalized_album = normalize_string(release_name or "")
+        
+        if normalized_artist and normalized_album:
+            key = f"{normalized_artist}||{normalized_album}"
+            releases_map[key] = (artist_id, release_id, artist_name)
+    
+    print(f"[INIT] Loaded {len(releases_map)} releases into memory")
+    return releases_map
+
+def match_report_to_releases(artist_name: str, album_name: str, releases_map: Dict[str, tuple]) -> tuple:
+    """
+    Ищет совпадение в загруженном словаре релизов.
     Возвращает (user_id, release_id) или (None, None)
     """
     normalized_artist = normalize_string(artist_name)
     normalized_album = normalize_string(album_name)
     
-    print(f"[MATCH] Looking for: artist='{normalized_artist}' album='{normalized_album}'")
+    if not normalized_artist or not normalized_album:
+        return (None, None)
     
-    cursor.execute("""
-        SELECT r.id, r.artist_id, r.artist_name
-        FROM releases r
-        WHERE LOWER(TRIM(COALESCE(r.artist_name, ''))) = %s 
-        AND LOWER(TRIM(r.release_name)) = %s
-        LIMIT 1
-    """, (normalized_artist, normalized_album))
+    key = f"{normalized_artist}||{normalized_album}"
     
-    result = cursor.fetchone()
-    if result:
-        print(f"[MATCH] Found: release_id={result[0]} artist_id={result[1]} artist_name={result[2]}")
-        return (result[1], result[0])
-    print(f"[MATCH] Not found")
+    if key in releases_map:
+        user_id, release_id, _ = releases_map[key]
+        return (user_id, release_id)
+    
     return (None, None)
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -83,6 +101,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             conn = psycopg2.connect(dsn)
             cursor = conn.cursor()
             
+            # Загрузить все релизы ОДИН РАЗ в память
+            releases_map = load_all_releases(cursor)
+            
             parsed_rows = []
             matched_count = 0
             unmatched_rows = []
@@ -107,7 +128,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 except (ValueError, AttributeError):
                     amount = 0.0
                 
-                user_id, release_id = match_report_to_releases(artist_name, album_name, cursor)
+                user_id, release_id = match_report_to_releases(artist_name, album_name, releases_map)
                 
                 parsed_row = {
                     'row_number': row_idx,
@@ -138,6 +159,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     batch_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id))
                 
                 if len(batch_reports) >= batch_size:
+                    print(f"[BATCH] Processing batch at row {row_idx}, matched so far: {matched_count}")
                     for report in batch_reports:
                         if report[4] is not None:
                             cursor.execute("""
@@ -155,6 +177,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     batch_reports = []
             
             if batch_reports:
+                print(f"[FINAL] Processing final batch of {len(batch_reports)} records")
                 for report in batch_reports:
                     if report[4] is not None:
                         cursor.execute("""
@@ -170,7 +193,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         """, (report[0], report[1], report[2], report[3], report[6]))
                 conn.commit()
             
+            print(f"[SUMMARY] Total processed: {len(parsed_rows)}, Matched: {matched_count}, Unmatched: {len(unmatched_rows)}")
+            
             for user_id, total_amount in batch_updates.items():
+                print(f"[BALANCE] Updating user {user_id} balance by +{total_amount}")
                 cursor.execute("""
                     UPDATE users 
                     SET balance = balance + %s 
@@ -178,6 +204,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 """, (total_amount, user_id))
             
             conn.commit()
+            print(f"[DONE] All data committed successfully")
             cursor.close()
             conn.close()
             
