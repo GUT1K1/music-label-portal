@@ -8,6 +8,7 @@ import UserProfile from '@/components/UserProfile';
 import NewsView from '@/components/NewsView';
 import WithdrawalDialog from '@/components/WithdrawalDialog';
 import ArtistAnalytics from '@/components/ArtistAnalytics';
+import ArtistFinance from '@/components/ArtistFinance';
 import { User, Ticket, NewTicket } from '@/types';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -110,9 +111,9 @@ export default function ArtistView({
                 <Icon name="MessageSquare" className="w-3.5 h-3.5 md:w-5 md:h-5 text-blue-500 shrink-0" />
                 <span className="truncate">Поддержка</span>
               </TabsTrigger>
-              <TabsTrigger value="reports" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
-                <Icon name="FileText" className="w-3.5 h-3.5 md:w-5 md:h-5 text-orange-500 shrink-0" />
-                <span className="truncate">Отчёты</span>
+              <TabsTrigger value="finance" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
+                <Icon name="Wallet" className="w-3.5 h-3.5 md:w-5 md:h-5 text-orange-500 shrink-0" />
+                <span className="truncate">Финансы</span>
               </TabsTrigger>
               <TabsTrigger value="analytics" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
                 <Icon name="BarChart3" className="w-3.5 h-3.5 md:w-5 md:h-5 text-cyan-500 shrink-0" />
@@ -139,14 +140,8 @@ export default function ArtistView({
             <SupportChat userId={user.id} userRole="artist" />
           </TabsContent>
 
-          <TabsContent value="reports" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
-            <div className="flex items-center justify-center min-h-[250px] md:min-h-[400px]">
-              <div className="text-center space-y-2 md:space-y-4 p-4">
-                <div className="text-4xl md:text-6xl">📊</div>
-                <h2 className="text-base md:text-2xl font-bold text-yellow-500">Скоро будет доступно</h2>
-                <p className="text-xs md:text-base text-gray-400">Работаем над этим разделом</p>
-              </div>
-            </div>
+          <TabsContent value="finance" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
+            <ArtistFinance userId={user.id} userBalance={user.balance} onRefreshData={onRefreshData} />
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
