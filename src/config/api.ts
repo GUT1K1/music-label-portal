@@ -31,6 +31,8 @@ export const API_ENDPOINTS = {
   TICKETS: funcUrls['tickets'],
   AUTH: funcUrls['auth'],
   WITHDRAWAL: funcUrls['withdrawal'],
+  ARTIST_FINANCIAL_REPORTS: funcUrls['artist-financial-reports'],
+  UPLOAD_FINANCIAL_REPORT: funcUrls['upload-financial-report'],
 } as const;
 
 // Оптимизированная функция для fetch с retry и timeout

@@ -1,4 +1,6 @@
 {
+  "upload-financial-report": "https://functions.poehali.dev/3d9da1a0-aa93-4f89-98d9-1a7e5902a60b",
+  "artist-financial-reports": "https://functions.poehali.dev/8ff0b20d-ec0d-4b1f-bcb6-77cf8a7226de",
   "cleanup-storage": "https://functions.poehali.dev/f2f6d1bd-26e8-42a7-9118-656766f0680a",
   "telegram-assemble": "https://functions.poehali.dev/086992a2-98d4-4646-9483-14be7b0c5208",
   "telegram-get-file": "https://functions.poehali.dev/c5c1d662-1a01-4da3-af71-8c62d830921e",

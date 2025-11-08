@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import WithdrawalDialog from '@/components/WithdrawalDialog';
+import { API_ENDPOINTS } from '@/config/api';
 
 interface ArtistFinanceProps {
   userId: number;
@@ -9,12 +10,55 @@ interface ArtistFinanceProps {
   onRefreshData?: () => void;
 }
 
+interface FinancialReport {
+  id: number;
+  period: string;
+  artist_name: string;
+  album_name: string;
+  amount: number;
+  release_id: number | null;
+  uploaded_at: string;
+  status: string;
+}
+
+interface ReportStats {
+  total_earned: number;
+  reports_count: number;
+  by_period: Array<{ period: string; total: number }>;
+}
+
 export default function ArtistFinance({ userId, userBalance, onRefreshData }: ArtistFinanceProps) {
   const [showWithdrawal, setShowWithdrawal] = useState(false);
   const [showTopUp, setShowTopUp] = useState(false);
+  const [reports, setReports] = useState<FinancialReport[]>([]);
+  const [stats, setStats] = useState<ReportStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const minWithdrawal = 1500;
   const canWithdraw = userBalance >= minWithdrawal;
+
+  useEffect(() => {
+    loadReports();
+  }, [userId]);
+
+  const loadReports = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(API_ENDPOINTS.ARTIST_FINANCIAL_REPORTS, {
+        headers: { 'X-User-Id': userId.toString() }
+      });
+      
+      if (!response.ok) throw new Error('Failed to load reports');
+      
+      const data = await response.json();
+      setReports(data.reports || []);
+      setStats(data.stats || null);
+    } catch (error) {
+      console.error('Error loading financial reports:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-4 md:space-y-6 animate-fadeIn">
@@ -70,20 +114,43 @@ export default function ArtistFinance({ userId, userBalance, onRefreshData }: Ar
               <h3 className="text-lg font-bold text-white">Статистика доходов</h3>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white mb-1">0 ₽</div>
-                <div className="text-xs text-gray-400">Сегодня</div>
+            {loading ? (
+              <div className="flex justify-center py-8">
+                <Icon name="Loader2" className="w-8 h-8 animate-spin text-primary" />
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white mb-1">0 ₽</div>
-                <div className="text-xs text-gray-400">Этот месяц</div>
+            ) : stats ? (
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white mb-1">0 ₽</div>
+                  <div className="text-xs text-gray-400">Сегодня</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white mb-1">0 ₽</div>
+                  <div className="text-xs text-gray-400">Этот месяц</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white mb-1">
+                    {stats.total_earned.toLocaleString()} ₽
+                  </div>
+                  <div className="text-xs text-gray-400">Всего заработано</div>
+                </div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-white mb-1">0 ₽</div>
-                <div className="text-xs text-gray-400">Всего</div>
+            ) : (
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white mb-1">0 ₽</div>
+                  <div className="text-xs text-gray-400">Сегодня</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white mb-1">0 ₽</div>
+                  <div className="text-xs text-gray-400">Этот месяц</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white mb-1">0 ₽</div>
+                  <div className="text-xs text-gray-400">Всего</div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -129,33 +196,68 @@ export default function ArtistFinance({ userId, userBalance, onRefreshData }: Ar
             </div>
           </div>
 
-          <div className="bg-card/60 backdrop-blur-sm rounded-xl border border-border p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Icon name="Clock" className="w-5 h-5 text-purple-500" />
-              <h3 className="text-lg font-bold text-white">История</h3>
-            </div>
+          {stats && stats.by_period.length > 0 && (
+            <div className="bg-card/60 backdrop-blur-sm rounded-xl border border-border p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Icon name="Calendar" className="w-5 h-5 text-purple-500" />
+                <h3 className="text-lg font-bold text-white">По периодам</h3>
+              </div>
 
-            <div className="text-center py-8">
-              <Icon name="FileText" className="w-12 h-12 text-gray-600 mx-auto mb-2" />
-              <p className="text-sm text-gray-400">Нет транзакций</p>
+              <div className="space-y-2">
+                {stats.by_period.map((item) => (
+                  <div key={item.period} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                    <span className="text-sm text-gray-400">{item.period}</span>
+                    <span className="text-sm font-semibold text-white">{item.total.toLocaleString()} ₽</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
       <div className="bg-card/60 backdrop-blur-sm rounded-xl border border-border p-6">
         <div className="flex items-center gap-2 mb-4">
           <Icon name="FileText" className="w-5 h-5 text-orange-500" />
-          <h3 className="text-lg font-bold text-white">Финансовые отчёты</h3>
+          <h3 className="text-lg font-bold text-white">Детализация по релизам</h3>
         </div>
 
-        <div className="text-center py-12">
-          <Icon name="FileBarChart" className="w-16 h-16 text-gray-600 mx-auto mb-3" />
-          <h4 className="text-lg font-semibold text-white mb-2">Отчёты пока недоступны</h4>
-          <p className="text-sm text-gray-400 max-w-md mx-auto">
-            После первых начислений здесь появятся детальные отчёты о доходах от стриминговых платформ
-          </p>
-        </div>
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <Icon name="Loader2" className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : reports.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border/50">
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Период</th>
+                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Релиз</th>
+                  <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">Сумма</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reports.map((report) => (
+                  <tr key={report.id} className="border-b border-border/30 hover:bg-white/5 transition-colors">
+                    <td className="py-3 px-4 text-sm text-gray-300">{report.period}</td>
+                    <td className="py-3 px-4 text-sm text-white">{report.album_name}</td>
+                    <td className="py-3 px-4 text-sm font-semibold text-green-400 text-right">
+                      +{report.amount.toLocaleString()} ₽
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <Icon name="FileBarChart" className="w-16 h-16 text-gray-600 mx-auto mb-3" />
+            <h4 className="text-lg font-semibold text-white mb-2">Отчёты пока недоступны</h4>
+            <p className="text-sm text-gray-400 max-w-md mx-auto">
+              После первых начислений здесь появятся детальные отчёты о доходах от стриминговых платформ
+            </p>
+          </div>
+        )}
       </div>
 
       <WithdrawalDialog

@@ -10,6 +10,7 @@ import MessagesModal from '@/components/MessagesModal';
 import AppHeader from '@/components/AppHeader';
 import UserProfile from '@/components/UserProfile';
 import NewsView from '@/components/NewsView';
+import FinancialReportsUpload from '@/components/FinancialReportsUpload';
 import { User } from '@/types';
 import { Task } from '@/components/useTasks';
 import { useNotifications } from '@/contexts/NotificationContext';
@@ -113,6 +114,10 @@ export default function ManagerView({
                 <Icon name="BarChart3" className="w-4 h-4 text-orange-500" />
                 <span>КПД</span>
               </TabsTrigger>
+              <TabsTrigger value="finance" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+                <Icon name="Wallet" className="w-4 h-4 text-green-500" />
+                <span>Финансы</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -135,6 +140,10 @@ export default function ManagerView({
 
           <TabsContent value="releases">
             <ReleaseModerationPanel userId={user.id} userRole="manager" />
+          </TabsContent>
+
+          <TabsContent value="finance">
+            <FinancialReportsUpload userId={user.id} />
           </TabsContent>
 
           <TabsContent value="support">
