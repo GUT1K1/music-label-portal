@@ -79,18 +79,24 @@ export default function FooterSection() {
 
           <div className="pt-6 md:pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-xs md:text-sm text-gray-500">
             <p>© 2024 420 Records. Все права защищены</p>
-            <div className="flex gap-4 md:gap-6">
+            <div className="flex flex-wrap justify-center gap-3 md:gap-6">
               <a
-                href="#"
+                href="/terms"
+                className="hover:text-yellow-500 transition-colors"
+              >
+                Публичная оферта
+              </a>
+              <a
+                href="/privacy"
                 className="hover:text-yellow-500 transition-colors"
               >
                 Политика конфиденциальности
               </a>
               <a
-                href="#"
+                href="/marketing"
                 className="hover:text-yellow-500 transition-colors"
               >
-                Условия использования
+                Согласие на рекламу
               </a>
             </div>
           </div>
