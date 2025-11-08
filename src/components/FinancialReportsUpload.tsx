@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { API_ENDPOINTS } from '@/config/api';
@@ -40,6 +40,12 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
     '4 квартал 2024',
   ];
 
+  useEffect(() => {
+    console.log('🔄 FinancialReportsUpload mounted, clearing old result');
+    setResult(null);
+    setError(null);
+  }, []);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -61,7 +67,13 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
     }
 
     const uploadTime = new Date().toISOString();
-    console.log(`📤 [${uploadTime}] Starting file upload:`, { file: selectedFile.name, period: selectedPeriod, userId });
+    const fileSizeMB = (selectedFile.size / 1024 / 1024).toFixed(2);
+    console.log(`📤 [${uploadTime}] Starting file upload:`, { 
+      file: selectedFile.name, 
+      size: `${fileSizeMB} MB`,
+      period: selectedPeriod, 
+      userId 
+    });
 
     try {
       setUploading(true);
@@ -69,7 +81,15 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
       setResult(null); // Очистить старый результат
 
       const reader = new FileReader();
+      
+      reader.onerror = (err) => {
+        console.error('❌ FileReader error:', err);
+        setError('Ошибка чтения файла');
+        setUploading(false);
+      };
+      
       reader.onload = async (e) => {
+        console.log('✅ File reader loaded successfully');
         const base64 = e.target?.result?.toString().split(',')[1];
         console.log('📦 File converted to base64, length:', base64?.length);
         
