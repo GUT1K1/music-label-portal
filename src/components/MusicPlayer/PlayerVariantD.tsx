@@ -97,14 +97,12 @@ export default function PlayerVariantD({ tracks, currentIndex, onIndexChange }: 
               <img
                 src={currentTrack.coverUrl}
                 alt={currentTrack.trackName}
-                className="w-12 h-12 rounded-lg object-cover shadow-2xl shadow-primary/30"
+                className={`w-12 h-12 rounded-lg object-cover shadow-2xl transition-all ${
+                  isPlaying 
+                    ? 'border-2 border-primary shadow-primary/50' 
+                    : 'shadow-primary/30'
+                }`}
               />
-              {isPlaying && (
-                <>
-                  <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/40 to-secondary/40 animate-pulse" />
-                  <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-primary to-secondary blur-md opacity-50 animate-pulse" />
-                </>
-              )}
             </div>
           )}
           <div className="min-w-0 flex-1">
