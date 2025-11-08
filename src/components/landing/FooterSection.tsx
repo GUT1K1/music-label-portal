@@ -1,10 +1,20 @@
 import Icon from "@/components/ui/icon";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export default function FooterSection() {
+  const footerAnimation = useScrollAnimation({ threshold: 0.2 });
+
   return (
     <footer className="relative py-16 md:py-20 border-t border-white/5">
       <div className="container mx-auto px-4">
-        <div className="max-w-7xl mx-auto">
+        <div 
+          ref={footerAnimation.ref}
+          className={`max-w-7xl mx-auto transition-all duration-1000 ${
+            footerAnimation.isVisible
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-10'
+          }`}
+        >
           <div className="grid md:grid-cols-4 gap-8 md:gap-12 mb-8 md:mb-12">
             <div className="md:col-span-2">
               <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-transparent bg-clip-text">

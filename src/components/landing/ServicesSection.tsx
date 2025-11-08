@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 interface Service {
   icon: string;
@@ -15,10 +16,20 @@ interface ServicesSectionProps {
 }
 
 export default function ServicesSection({ services }: ServicesSectionProps) {
+  const titleAnimation = useScrollAnimation({ threshold: 0.2 });
+  const cardsAnimation = useScrollAnimation({ threshold: 0.1 });
+
   return (
     <section className="relative py-24 md:py-40">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16 md:mb-24 animate-fade-in">
+        <div 
+          ref={titleAnimation.ref}
+          className={`text-center mb-16 md:mb-24 transition-all duration-1000 ${
+            titleAnimation.isVisible 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-10'
+          }`}
+        >
           <h2 className="text-4xl md:text-6xl font-bold mb-6">
             <span className="text-white">
               Что мы предлагаем
@@ -29,12 +40,21 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 md:gap-10 max-w-7xl mx-auto">
+        <div 
+          ref={cardsAnimation.ref}
+          className="grid md:grid-cols-3 gap-8 md:gap-10 max-w-7xl mx-auto"
+        >
           {services.map((service, i) => (
             <div
               key={i}
-              className="group relative animate-fade-in"
-              style={{ animationDelay: `${i * 0.15}s` }}
+              className={`group relative transition-all duration-700 ${
+                cardsAnimation.isVisible
+                  ? 'opacity-100 translate-y-0'
+                  : 'opacity-0 translate-y-20'
+              }`}
+              style={{ 
+                transitionDelay: cardsAnimation.isVisible ? `${i * 150}ms` : '0ms'
+              }}
             >
               <div className="relative p-8 md:p-10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] backdrop-blur-sm rounded-3xl border border-white/10 hover:border-orange-500/30 transition-all duration-500 h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-yellow-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:via-yellow-500/5 group-hover:to-orange-500/5 rounded-3xl transition-all duration-500" />

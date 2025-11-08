@@ -2,14 +2,23 @@ import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 import { useNavigate } from "react-router-dom";
 import Animated420Logo from "@/components/Animated420Logo";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export default function CTASection() {
   const navigate = useNavigate();
+  const ctaAnimation = useScrollAnimation({ threshold: 0.3 });
 
   return (
     <section className="relative py-24 md:py-40">
       <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto">
+        <div 
+          ref={ctaAnimation.ref}
+          className={`max-w-5xl mx-auto transition-all duration-1000 ${
+            ctaAnimation.isVisible
+              ? 'opacity-100 translate-y-0 scale-100'
+              : 'opacity-0 translate-y-20 scale-95'
+          }`}
+        >
           <div className="relative p-12 md:p-20 backdrop-blur-sm bg-gradient-to-br from-orange-500/10 via-yellow-500/5 to-orange-500/10 rounded-[2.5rem] border border-orange-500/20 overflow-hidden group">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(249,115,22,0.1),transparent_70%)]" />
             <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />

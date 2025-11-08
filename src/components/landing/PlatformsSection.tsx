@@ -1,3 +1,5 @@
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+
 interface Platform {
   name: string;
   logo: string;
@@ -9,11 +11,21 @@ interface PlatformsSectionProps {
 }
 
 export default function PlatformsSection({ platforms }: PlatformsSectionProps) {
+  const titleAnimation = useScrollAnimation({ threshold: 0.2 });
+  const platformsAnimation = useScrollAnimation({ threshold: 0.1 });
+
   return (
     <section className="relative py-24 md:py-40 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-orange-500/[0.03] to-transparent" />
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16 md:mb-24 animate-fade-in">
+        <div 
+          ref={titleAnimation.ref}
+          className={`text-center mb-16 md:mb-24 transition-all duration-1000 ${
+            titleAnimation.isVisible
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-10'
+          }`}
+        >
           <h2 className="text-4xl md:text-6xl font-bold mb-6 text-white">
             Все площадки в одном месте
           </h2>
@@ -22,12 +34,21 @@ export default function PlatformsSection({ platforms }: PlatformsSectionProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8 max-w-6xl mx-auto">
+        <div 
+          ref={platformsAnimation.ref}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8 max-w-6xl mx-auto"
+        >
           {platforms.map((platform, i) => (
             <div
               key={i}
-              className="group relative animate-fade-in"
-              style={{ animationDelay: `${i * 0.05}s` }}
+              className={`group relative transition-all duration-700 ${
+                platformsAnimation.isVisible
+                  ? 'opacity-100 scale-100'
+                  : 'opacity-0 scale-90'
+              }`}
+              style={{ 
+                transitionDelay: platformsAnimation.isVisible ? `${i * 80}ms` : '0ms'
+              }}
             >
               <div className="relative p-8 bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 hover:border-orange-500/30 transition-all duration-300 hover:scale-105">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-yellow-500/0 group-hover:from-orange-500/10 group-hover:to-yellow-500/10 rounded-2xl transition-all duration-300" />
