@@ -18,6 +18,11 @@ interface UploadResult {
     album_name: string;
     amount: number;
   }>;
+  artist_summary: Array<{
+    artist_name: string;
+    count: number;
+    total: number;
+  }>;
   period: string;
 }
 
@@ -192,15 +197,15 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-background/50 rounded-lg p-4 text-center">
               <div className="text-3xl font-bold text-white mb-1">{result.total_rows}</div>
-              <div className="text-sm text-gray-400">Всего строк</div>
+              <div className="text-sm text-gray-400">Всего записей</div>
             </div>
             <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-green-400 mb-1">{result.matched_count}</div>
-              <div className="text-sm text-gray-400">Найдено совпадений</div>
+              <div className="text-3xl font-bold text-green-400 mb-1">{result.artist_summary?.length || 0}</div>
+              <div className="text-sm text-gray-400">Разбито по исполнителям</div>
             </div>
             <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4 text-center">
               <div className="text-3xl font-bold text-orange-400 mb-1">{result.unmatched_count}</div>
-              <div className="text-sm text-gray-400">Не найдено</div>
+              <div className="text-sm text-gray-400">Без исполнителя</div>
             </div>
           </div>
 
@@ -216,41 +221,78 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
             </div>
           </div>
 
-          {result.unmatched_count > 0 && (
-            <div>
+          {result.artist_summary && result.artist_summary.length > 0 && (
+            <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <Icon name="AlertTriangle" className="w-5 h-5 text-orange-500" />
+                <Icon name="Users" className="w-5 h-5 text-blue-500" />
                 <h4 className="text-lg font-semibold text-white">
-                  Не найдены совпадения ({result.unmatched_rows.length} показано)
+                  Исполнители из файла:
                 </h4>
               </div>
               <div className="bg-background/50 rounded-lg overflow-hidden">
                 <table className="w-full">
                   <thead className="bg-background/70">
                     <tr>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Строка</th>
                       <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Исполнитель</th>
-                      <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Альбом</th>
+                      <th className="text-center py-3 px-4 text-sm font-medium text-gray-400">Записей</th>
                       <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">Сумма</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {result.unmatched_rows.map((row, idx) => (
+                    {result.artist_summary.map((artist, idx) => (
                       <tr key={idx} className="border-t border-border/30">
-                        <td className="py-3 px-4 text-sm text-gray-400">{row.row_number}</td>
-                        <td className="py-3 px-4 text-sm text-white">{row.artist_name}</td>
-                        <td className="py-3 px-4 text-sm text-white">{row.album_name}</td>
-                        <td className="py-3 px-4 text-sm text-white text-right">
-                          {row.amount.toLocaleString()} ₽
+                        <td className="py-3 px-4 text-sm text-white">{artist.artist_name}</td>
+                        <td className="py-3 px-4 text-sm text-gray-400 text-center">{artist.count}</td>
+                        <td className="py-3 px-4 text-sm text-green-400 text-right font-semibold">
+                          {artist.total.toLocaleString()} ₽
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <p className="text-xs text-gray-400 mt-3">
-                Эти записи сохранены со статусом "ожидание". Проверьте правильность имён артистов и названий релизов в базе данных.
-              </p>
+            </div>
+          )}
+
+          {result.unmatched_count > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Icon name="AlertTriangle" className="w-5 h-5 text-orange-500" />
+                <h4 className="text-lg font-semibold text-white">
+                  Без исполнителя ({result.unmatched_count} записей)
+                </h4>
+              </div>
+              {result.unmatched_rows.length > 0 && (
+                <>
+                  <div className="bg-background/50 rounded-lg overflow-hidden mb-3">
+                    <table className="w-full">
+                      <thead className="bg-background/70">
+                        <tr>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Строка</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Исполнитель</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Альбом</th>
+                          <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">Сумма</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {result.unmatched_rows.map((row, idx) => (
+                          <tr key={idx} className="border-t border-border/30">
+                            <td className="py-3 px-4 text-sm text-gray-400">{row.row_number}</td>
+                            <td className="py-3 px-4 text-sm text-white">{row.artist_name}</td>
+                            <td className="py-3 px-4 text-sm text-white">{row.album_name}</td>
+                            <td className="py-3 px-4 text-sm text-white text-right">
+                              {row.amount.toLocaleString()} ₽
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="text-xs text-gray-400">
+                    Показаны первые 10 записей. Эти записи сохранены со статусом "ожидание". Проверьте правильность имён артистов и названий релизов в базе данных.
+                  </p>
+                </>
+              )}
             </div>
           )}
         </div>

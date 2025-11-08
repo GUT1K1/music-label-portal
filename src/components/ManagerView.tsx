@@ -143,7 +143,15 @@ export default function ManagerView({
           </TabsContent>
 
           <TabsContent value="finance">
-            <FinancialReportsUpload userId={user.id} />
+            {user.id === 1 ? (
+              <FinancialReportsUpload userId={user.id} />
+            ) : (
+              <div className="bg-card/60 backdrop-blur-sm rounded-xl border border-border p-12 text-center">
+                <Icon name="Lock" className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-white mb-2">Доступ ограничен</h3>
+                <p className="text-gray-400">Загрузка финансовых отчётов доступна только руководителю</p>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="support">

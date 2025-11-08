@@ -82,6 +82,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             parsed_rows = []
             matched_count = 0
             unmatched_rows = []
+            artist_totals = {}
+            batch_size = 100
+            batch_reports = []
+            batch_updates = {}
             
             for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
                 if not row or len(row) < 14:
@@ -115,28 +119,71 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 if user_id:
                     matched_count += 1
-                    cursor.execute("""
-                        INSERT INTO financial_reports 
-                        (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-                    """, (period, artist_name, album_name, amount, user_id, release_id, admin_user_id))
+                    batch_reports.append((period, artist_name, album_name, amount, user_id, release_id, admin_user_id))
                     
-                    cursor.execute("""
-                        UPDATE users 
-                        SET balance = balance + %s 
-                        WHERE id = %s
-                    """, (amount, user_id))
+                    if user_id not in batch_updates:
+                        batch_updates[user_id] = 0
+                    batch_updates[user_id] += amount
+                    
+                    if artist_name not in artist_totals:
+                        artist_totals[artist_name] = {'count': 0, 'total': 0}
+                    artist_totals[artist_name]['count'] += 1
+                    artist_totals[artist_name]['total'] += amount
                 else:
                     unmatched_rows.append(parsed_row)
-                    cursor.execute("""
-                        INSERT INTO financial_reports 
-                        (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                        VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
-                    """, (period, artist_name, album_name, amount, admin_user_id))
+                    batch_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id))
+                
+                if len(batch_reports) >= batch_size:
+                    for report in batch_reports:
+                        if report[4] is not None:
+                            cursor.execute("""
+                                INSERT INTO financial_reports 
+                                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
+                            """, report)
+                        else:
+                            cursor.execute("""
+                                INSERT INTO financial_reports 
+                                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                                VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
+                            """, (report[0], report[1], report[2], report[3], report[6]))
+                    conn.commit()
+                    batch_reports = []
+            
+            if batch_reports:
+                for report in batch_reports:
+                    if report[4] is not None:
+                        cursor.execute("""
+                            INSERT INTO financial_reports 
+                            (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
+                        """, report)
+                    else:
+                        cursor.execute("""
+                            INSERT INTO financial_reports 
+                            (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                            VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
+                        """, (report[0], report[1], report[2], report[3], report[6]))
+                conn.commit()
+            
+            for user_id, total_amount in batch_updates.items():
+                cursor.execute("""
+                    UPDATE users 
+                    SET balance = balance + %s 
+                    WHERE id = %s
+                """, (total_amount, user_id))
             
             conn.commit()
             cursor.close()
             conn.close()
+            
+            artist_summary = []
+            for artist_name, data in artist_totals.items():
+                artist_summary.append({
+                    'artist_name': artist_name,
+                    'count': data['count'],
+                    'total': data['total']
+                })
             
             return {
                 'statusCode': 200,
@@ -147,6 +194,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'matched_count': matched_count,
                     'unmatched_count': len(unmatched_rows),
                     'unmatched_rows': unmatched_rows[:10],
+                    'artist_summary': artist_summary,
                     'period': period
                 })
             }
