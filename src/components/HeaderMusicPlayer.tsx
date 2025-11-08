@@ -21,6 +21,8 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.7);
   const [showVolume, setShowVolume] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -142,103 +144,151 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
     playNext();
   };
 
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+    }
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!audioRef.current || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    audioRef.current.currentTime = percent * duration;
+  };
+
+  const formatTime = (seconds: number) => {
+    if (!seconds || isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   if (tracks.length === 0 || !currentTrack) {
     return null;
   }
 
   return (
-    <div className="hidden lg:flex items-center gap-3 bg-background/30 backdrop-blur-sm border border-border/50 rounded-lg px-4 py-2 min-w-[380px] max-w-[480px]">
+    <div className="hidden lg:flex flex-col gap-2 min-w-[320px] max-w-[400px]">
       <audio
         ref={audioRef}
         src={currentTrack.audioUrl}
         onEnded={handleEnded}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
       />
       
-      {currentTrack.coverUrl && (
-        <img
-          src={currentTrack.coverUrl}
-          alt={currentTrack.trackName}
-          className="w-10 h-10 rounded object-cover flex-shrink-0"
-        />
-      )}
-      
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-white truncate">
-          {currentTrack.trackName}
-        </div>
-        <div className="text-xs text-gray-400 truncate">
-          {currentTrack.artistName}
-        </div>
-      </div>
-
-      <div className="flex items-center gap-1 flex-shrink-0">
-        <button
-          onClick={playPrevious}
-          className="p-1.5 hover:bg-white/10 rounded transition-colors"
-          title="Предыдущий трек"
-        >
-          <Icon name="SkipBack" size={16} className="text-gray-300" />
-        </button>
-
-        <button
-          onClick={togglePlay}
-          className="p-2 bg-primary/20 hover:bg-primary/30 rounded-full transition-colors"
-          title={isPlaying ? 'Пауза' : 'Воспроизвести'}
-        >
-          <Icon 
-            name={isPlaying ? 'Pause' : 'Play'} 
-            size={18} 
-            className="text-primary" 
+      <div className="flex items-center gap-3">
+        {currentTrack.coverUrl && (
+          <img
+            src={currentTrack.coverUrl}
+            alt={currentTrack.trackName}
+            className="w-12 h-12 rounded-lg object-cover flex-shrink-0 shadow-lg border-2 border-primary/20"
           />
-        </button>
+        )}
+        
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-semibold text-white truncate">
+            {currentTrack.trackName}
+          </div>
+          <div className="text-xs text-primary/70 truncate">
+            {currentTrack.artistName}
+          </div>
+        </div>
 
-        <button
-          onClick={playNext}
-          className="p-1.5 hover:bg-white/10 rounded transition-colors"
-          title="Следующий трек"
-        >
-          <Icon name="SkipForward" size={16} className="text-gray-300" />
-        </button>
-
-        <div 
-          className="relative"
-          onMouseEnter={() => setShowVolume(true)}
-          onMouseLeave={() => setShowVolume(false)}
-        >
+        <div className="flex items-center gap-1 flex-shrink-0">
           <button
-            onClick={() => setVolume(volume > 0 ? 0 : 0.7)}
-            className="p-1.5 hover:bg-white/10 rounded transition-colors"
-            title="Громкость"
+            onClick={playPrevious}
+            className="p-1.5 hover:bg-primary/10 rounded-lg transition-all hover:scale-110"
+            title="Предыдущий трек"
+          >
+            <Icon name="SkipBack" size={18} className="text-primary/80 hover:text-primary" />
+          </button>
+
+          <button
+            onClick={togglePlay}
+            className="p-2.5 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-full transition-all hover:scale-110 shadow-lg shadow-primary/30"
+            title={isPlaying ? 'Пауза' : 'Воспроизвести'}
           >
             <Icon 
-              name={volume === 0 ? 'VolumeX' : volume < 0.5 ? 'Volume1' : 'Volume2'} 
-              size={16} 
-              className="text-gray-300" 
+              name={isPlaying ? 'Pause' : 'Play'} 
+              size={20} 
+              className="text-white" 
             />
           </button>
-          
-          {showVolume && (
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-background/95 backdrop-blur-sm border border-border rounded-lg p-2 shadow-xl">
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={volume}
-                onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-primary"
-                style={{
-                  writingMode: 'bt-lr',
-                  WebkitAppearance: 'slider-vertical',
-                  height: '60px',
-                  width: '4px'
-                }}
+
+          <button
+            onClick={playNext}
+            className="p-1.5 hover:bg-primary/10 rounded-lg transition-all hover:scale-110"
+            title="Следующий трек"
+          >
+            <Icon name="SkipForward" size={18} className="text-primary/80 hover:text-primary" />
+          </button>
+
+          <div 
+            className="relative"
+            onMouseEnter={() => setShowVolume(true)}
+            onMouseLeave={() => setShowVolume(false)}
+          >
+            <button
+              onClick={() => setVolume(volume > 0 ? 0 : 0.7)}
+              className="p-1.5 hover:bg-primary/10 rounded-lg transition-all hover:scale-110"
+              title="Громкость"
+            >
+              <Icon 
+                name={volume === 0 ? 'VolumeX' : volume < 0.5 ? 'Volume1' : 'Volume2'} 
+                size={18} 
+                className="text-primary/80 hover:text-primary" 
               />
-            </div>
-          )}
+            </button>
+            
+            {showVolume && (
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-card/95 backdrop-blur-sm border border-primary/30 rounded-lg p-2 shadow-xl">
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
+                  className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-primary"
+                  style={{
+                    writingMode: 'bt-lr',
+                    WebkitAppearance: 'slider-vertical',
+                    height: '60px',
+                    width: '4px'
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
+      </div>
+      
+      <div className="flex items-center gap-2 text-xs">
+        <span className="text-primary/60 font-mono">{formatTime(currentTime)}</span>
+        <div 
+          className="flex-1 h-1 bg-white/10 rounded-full cursor-pointer group relative overflow-hidden"
+          onClick={handleSeek}
+        >
+          <div 
+            className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-secondary rounded-full transition-all"
+            style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+          />
+          <div 
+            className="absolute inset-y-0 left-0 bg-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            style={{ width: '100%' }}
+          />
+        </div>
+        <span className="text-primary/60 font-mono">{formatTime(duration)}</span>
       </div>
     </div>
   );
