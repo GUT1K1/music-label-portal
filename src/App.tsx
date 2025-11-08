@@ -17,6 +17,7 @@ import VKCallback from "./pages/VKCallback";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Marketing from "./pages/Marketing";
+import Analytics from "./pages/Analytics";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/marketing" element={<Marketing />} />
+              <Route path="/analytics" element={<Analytics />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFoundCustom />} />
             </Routes>

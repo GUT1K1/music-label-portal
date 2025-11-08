@@ -35,10 +35,13 @@ export default function BurgerMenu() {
       href: '#platforms'
     },
     {
-      icon: 'Trophy',
-      label: 'Кейсы',
-      description: 'Успешные релизы',
-      href: '#cases'
+      icon: 'BarChart3',
+      label: 'Аналитика',
+      description: 'Статистика релизов',
+      action: () => {
+        navigate('/analytics');
+        setIsOpen(false);
+      }
     },
     {
       icon: 'Users',
