@@ -309,25 +309,6 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
           </div>
         </div>
 
-        {isTikTok && (
-          <div className="mb-3">
-            <div className="flex flex-wrap gap-3 text-xs mb-3">
-              {tiktokMetrics.map((metric) => (
-                <label key={metric.key} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={visibleMetrics[metric.key]}
-                    onChange={(e) => setVisibleMetrics({ ...visibleMetrics, [metric.key]: e.target.checked })}
-                    className="w-3 h-3"
-                    style={{ accentColor: metric.color }}
-                  />
-                  <span className="text-gray-300">{metric.label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
-
         <div className="h-[250px] md:h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={currentData}>
@@ -394,6 +375,56 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
             </AreaChart>
           </ResponsiveContainer>
         </div>
+
+        {isTikTok && (
+          <div className="mt-4 pt-4 border-t border-border/50">
+            <div className="flex items-center gap-2 mb-3">
+              <Icon name="Filter" className="w-4 h-4 text-primary" />
+              <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Фильтр метрик</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+              {tiktokMetrics.map((metric) => (
+                <label
+                  key={metric.key}
+                  className={`relative flex items-center gap-2.5 px-3 py-2.5 rounded-lg border transition-all duration-200 cursor-pointer group ${
+                    visibleMetrics[metric.key]
+                      ? 'bg-white/5 border-white/20 hover:bg-white/10'
+                      : 'bg-transparent border-border/50 hover:border-border'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={visibleMetrics[metric.key]}
+                    onChange={(e) => setVisibleMetrics({ ...visibleMetrics, [metric.key]: e.target.checked })}
+                    className="sr-only"
+                  />
+                  <div
+                    className={`w-4 h-4 rounded flex items-center justify-center border-2 transition-all ${
+                      visibleMetrics[metric.key]
+                        ? 'bg-opacity-20 scale-100'
+                        : 'bg-transparent border-gray-600 group-hover:border-gray-500'
+                    }`}
+                    style={{
+                      backgroundColor: visibleMetrics[metric.key] ? metric.color : 'transparent',
+                      borderColor: visibleMetrics[metric.key] ? metric.color : undefined
+                    }}
+                  >
+                    {visibleMetrics[metric.key] && (
+                      <Icon name="Check" className="w-3 h-3" style={{ color: metric.color }} />
+                    )}
+                  </div>
+                  <span
+                    className={`text-xs font-medium transition-colors ${
+                      visibleMetrics[metric.key] ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'
+                    }`}
+                  >
+                    {metric.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <div>
