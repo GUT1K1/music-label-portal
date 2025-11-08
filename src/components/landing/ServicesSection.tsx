@@ -16,52 +16,55 @@ interface ServicesSectionProps {
 
 export default function ServicesSection({ services }: ServicesSectionProps) {
   return (
-    <section className="relative py-20 md:py-32">
+    <section className="relative py-24 md:py-40">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 md:mb-20 animate-fade-in">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">
-            <span className="text-transparent bg-gradient-to-r from-yellow-400 via-orange-500 to-amber-600 bg-clip-text">
-              Сервисы лейбла
+        <div className="text-center mb-16 md:mb-24 animate-fade-in">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6">
+            <span className="text-white">
+              Что мы предлагаем
             </span>
           </h2>
-          <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto">
-            Всё необходимое для успешного развития музыкальной карьеры
+          <p className="text-lg md:text-2xl text-gray-400 max-w-3xl mx-auto font-light">
+            Полный набор инструментов для развития вашей музыкальной карьеры
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 md:gap-10 max-w-7xl mx-auto">
           {services.map((service, i) => (
-            <Card
+            <div
               key={i}
-              className="group relative p-6 md:p-8 bg-white/5 backdrop-blur-xl border border-white/10 hover:border-yellow-500/50 transition-all duration-500 hover:scale-105 animate-fade-in"
-              style={{ animationDelay: `${i * 0.1}s` }}
+              className="group relative animate-fade-in"
+              style={{ animationDelay: `${i * 0.15}s` }}
             >
-              <div className="relative z-10">
-                <div
-                  className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500 shadow-lg`}
-                >
-                  <Icon name={service.icon} className="w-7 h-7 md:w-8 md:h-8 text-black" />
+              <div className="relative p-8 md:p-10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] backdrop-blur-sm rounded-3xl border border-white/10 hover:border-orange-500/30 transition-all duration-500 h-full">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-yellow-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:via-yellow-500/5 group-hover:to-orange-500/5 rounded-3xl transition-all duration-500" />
+                
+                <div className="relative z-10">
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                    <Icon name={service.icon} className="w-8 h-8 md:w-10 md:h-10 text-orange-400" />
+                  </div>
+                  
+                  <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+                    {service.title}
+                  </h3>
+                  
+                  <p className="text-base md:text-lg text-gray-400 mb-6 leading-relaxed">
+                    {service.description}
+                  </p>
+                  
+                  <ul className="space-y-3">
+                    {service.features.map((feature, j) => (
+                      <li key={j} className="flex items-start gap-3 text-base">
+                        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <div className="w-2 h-2 rounded-full bg-gradient-to-br from-yellow-400 to-orange-400" />
+                        </div>
+                        <span className="text-gray-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-white">
-                  {service.title}
-                </h3>
-                <p className="text-sm md:text-base text-gray-400 mb-4 md:mb-6 leading-relaxed">
-                  {service.description}
-                </p>
-                <ul className="space-y-2 md:space-y-3">
-                  {service.features.map((feature, j) => (
-                    <li key={j} className="flex items-start gap-2 md:gap-3 text-sm md:text-base">
-                      <Icon
-                        name="CheckCircle2"
-                        className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 mt-0.5 text-${service.glowColor}-500`}
-                      />
-                      <span className="text-gray-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-orange-500/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </Card>
+            </div>
           ))}
         </div>
       </div>

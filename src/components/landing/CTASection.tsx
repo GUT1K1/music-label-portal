@@ -7,43 +7,42 @@ export default function CTASection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative py-20 md:py-32">
+    <section className="relative py-24 md:py-40">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative p-8 md:p-16 backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 to-orange-500/10 rounded-3xl border border-yellow-500/30 overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/0 via-orange-500/10 to-amber-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-            <div className="absolute top-0 right-0 w-64 md:w-96 h-64 md:h-96 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-1000" />
+        <div className="max-w-5xl mx-auto">
+          <div className="relative p-12 md:p-20 backdrop-blur-sm bg-gradient-to-br from-orange-500/10 via-yellow-500/5 to-orange-500/10 rounded-[2.5rem] border border-orange-500/20 overflow-hidden group">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(249,115,22,0.1),transparent_70%)]" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />
 
             <div className="relative z-10 text-center">
-              <div className="flex justify-center items-center mb-6 md:mb-8">
-                <div className="scale-75 md:scale-100">
+              <div className="flex justify-center items-center mb-8 md:mb-10">
+                <div className="scale-90 md:scale-100">
                   <Animated420Logo />
                 </div>
               </div>
 
-              <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6 text-white leading-tight">
+              <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 text-white leading-tight">
                 Готов выпустить свой трек?
               </h2>
-              <p className="text-base md:text-xl text-gray-300 mb-8 md:mb-10 max-w-2xl mx-auto">
+              <p className="text-lg md:text-2xl text-gray-300 mb-10 md:mb-12 max-w-3xl mx-auto font-light leading-relaxed">
                 Присоединяйся к{" "}
-                <span className="text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text font-semibold">
-                  420 Records
+                <span className="text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text font-bold">
+                  420
                 </span>{" "}
                 и начни зарабатывать на своей музыке уже сегодня
               </p>
               <Button
                 onClick={() => navigate("/app")}
                 size="lg"
-                className="relative overflow-hidden bg-gradient-to-r from-yellow-600 via-orange-600 to-amber-600 hover:shadow-2xl hover:shadow-yellow-500/50 text-black font-bold text-base md:text-lg px-8 md:px-12 py-5 md:py-7 border-0 group/btn transition-all duration-500"
+                className="relative overflow-hidden bg-gradient-to-r from-yellow-500 via-orange-500 to-amber-500 hover:shadow-2xl hover:shadow-orange-500/40 text-black font-bold text-lg md:text-xl px-12 md:px-16 py-6 md:py-8 border-0 group/btn transition-all duration-300 rounded-full"
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center gap-3">
                   Начать прямо сейчас
                   <Icon
-                    name="Sparkles"
-                    className="w-4 h-4 md:w-5 md:h-5 group-hover/btn:rotate-12 group-hover/btn:scale-110 transition-transform"
+                    name="ArrowRight"
+                    className="w-5 h-5 md:w-6 md:h-6 group-hover/btn:translate-x-1 transition-transform"
                   />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
               </Button>
             </div>
           </div>
