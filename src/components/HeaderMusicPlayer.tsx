@@ -71,7 +71,8 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
             console.log(`[HeaderMusicPlayer] Release "${release.release_name}" has ${releaseTracks.length} tracks`);
             
             for (const track of releaseTracks) {
-              if (track.audio_url) {
+              const audioUrl = track.audio_url || track.file_url;
+              if (audioUrl) {
                 console.log(`[HeaderMusicPlayer] ✅ Track with audio: ${track.track_name || track.title}`);
                 allTracks.push({
                   releaseId: release.id,
@@ -79,7 +80,7 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
                   trackName: track.track_name || track.title || 'Без названия',
                   artistName: release.artist_name,
                   coverUrl: release.cover_url,
-                  audioUrl: track.audio_url
+                  audioUrl: audioUrl
                 });
               } else {
                 console.log(`[HeaderMusicPlayer] ❌ Track without audio: ${track.track_name || track.title}`);
