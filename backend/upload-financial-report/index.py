@@ -5,8 +5,6 @@ from typing import Dict, Any, List
 import openpyxl
 from io import BytesIO
 import base64
-import threading
-import time
 
 def normalize_string(s: str) -> str:
     """Нормализует строку для сравнения: убирает пробелы, спецсимволы, приводит к lowercase"""
@@ -68,78 +66,78 @@ def match_report_to_releases(artist_name: str, album_name: str, releases_map: Di
         print(f"[MATCH] ❌ NOT FOUND")
     return (None, None)
 
-def process_financial_report(job_id: int, file_bytes: bytes, period: str, admin_user_id: int, dsn: str):
+def process_financial_report_sync(file_bytes: bytes, period: str, admin_user_id: int, cursor, conn) -> dict:
     """
-    Фоновая обработка финансового отчёта
+    Синхронная обработка финансового отчёта с батч-коммитами
     """
-    conn = None
-    try:
-        conn = psycopg2.connect(dsn)
-        cursor = conn.cursor()
+    workbook = openpyxl.load_workbook(BytesIO(file_bytes))
+    sheet = workbook.active
+    
+    releases_map = load_all_releases(cursor)
+    print(f"[UPLOAD] Loaded {len(releases_map)} releases")
+    
+    matched_count = 0
+    artist_totals = {}
+    batch_reports = []
+    batch_updates = {}
+    total_rows = 0
+    batch_size = 500
+    
+    for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
+        if not row or len(row) < 14:
+            continue
         
-        cursor.execute("""
-            UPDATE financial_upload_jobs 
-            SET status = 'processing', started_at = NOW() 
-            WHERE id = %s
-        """, (job_id,))
-        conn.commit()
+        artist_name = str(row[6]) if row[6] else ""
+        album_name = str(row[8]) if row[8] else ""
+        amount_str = str(row[13]) if row[13] else "0"
         
-        workbook = openpyxl.load_workbook(BytesIO(file_bytes))
-        sheet = workbook.active
+        if not artist_name:
+            continue
         
-        releases_map = load_all_releases(cursor)
-        print(f"[JOB {job_id}] Loaded {len(releases_map)} releases")
+        try:
+            amount = float(amount_str.replace(',', '.').replace(' ', ''))
+        except (ValueError, AttributeError):
+            amount = 0.0
         
-        parsed_rows = []
-        matched_count = 0
-        artist_totals = {}
-        all_reports = []
-        batch_updates = {}
+        user_id, release_id = match_report_to_releases(artist_name, album_name, releases_map, False)
         
-        for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
-            if not row or len(row) < 14:
-                continue
-            
-            artist_name = str(row[6]) if row[6] else ""
-            album_name = str(row[8]) if row[8] else ""
-            amount_str = str(row[13]) if row[13] else "0"
-            
-            if not artist_name:
-                continue
-            
-            try:
-                amount = float(amount_str.replace(',', '.').replace(' ', ''))
-            except (ValueError, AttributeError):
-                amount = 0.0
-            
-            user_id, release_id = match_report_to_releases(artist_name, album_name, releases_map, False)
-            
-            if user_id:
-                matched_count += 1
-                all_reports.append((period, artist_name, album_name, amount, user_id, release_id, admin_user_id, True))
-                
-                if user_id not in batch_updates:
-                    batch_updates[user_id] = 0
-                batch_updates[user_id] += amount
-                
-                if artist_name not in artist_totals:
-                    artist_totals[artist_name] = {'count': 0, 'total': 0}
-                artist_totals[artist_name]['count'] += 1
-                artist_totals[artist_name]['total'] += amount
-            else:
-                all_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id, False))
-            
-            if row_idx % 1000 == 0:
-                cursor.execute("""
-                    UPDATE financial_upload_jobs 
-                    SET processed_rows = %s 
-                    WHERE id = %s
-                """, (row_idx, job_id))
-                conn.commit()
-                print(f"[JOB {job_id}] Progress: {row_idx} rows, {matched_count} matched")
+        total_rows += 1
         
-        print(f"[JOB {job_id}] Inserting {len(all_reports)} records...")
-        for report in all_reports:
+        if user_id:
+            matched_count += 1
+            batch_reports.append((period, artist_name, album_name, amount, user_id, release_id, admin_user_id, True))
+            
+            if user_id not in batch_updates:
+                batch_updates[user_id] = 0
+            batch_updates[user_id] += amount
+            
+            if artist_name not in artist_totals:
+                artist_totals[artist_name] = {'count': 0, 'total': 0}
+            artist_totals[artist_name]['count'] += 1
+            artist_totals[artist_name]['total'] += amount
+        else:
+            batch_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id, False))
+        
+        if len(batch_reports) >= batch_size:
+            for report in batch_reports:
+                if report[7]:
+                    cursor.execute("""
+                        INSERT INTO financial_reports 
+                        (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
+                    """, report[:7])
+                else:
+                    cursor.execute("""
+                        INSERT INTO financial_reports 
+                        (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                        VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
+                    """, (report[0], report[1], report[2], report[3], report[6]))
+            conn.commit()
+            print(f"[BATCH] Committed {len(batch_reports)} records at row {row_idx}, matched: {matched_count}")
+            batch_reports = []
+    
+    if batch_reports:
+        for report in batch_reports:
             if report[7]:
                 cursor.execute("""
                     INSERT INTO financial_reports 
@@ -152,48 +150,31 @@ def process_financial_report(job_id: int, file_bytes: bytes, period: str, admin_
                     (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
                     VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
                 """, (report[0], report[1], report[2], report[3], report[6]))
-        
-        for user_id, total_amount in batch_updates.items():
-            cursor.execute("""
-                UPDATE users 
-                SET balance = balance + %s 
-                WHERE id = %s
-            """, (total_amount, user_id))
-        
         conn.commit()
-        
+        print(f"[FINAL] Committed final {len(batch_reports)} records")
+    
+    for user_id, total_amount in batch_updates.items():
         cursor.execute("""
-            UPDATE financial_upload_jobs 
-            SET status = 'completed', 
-                completed_at = NOW(),
-                total_rows = %s,
-                processed_rows = %s,
-                matched_count = %s,
-                unmatched_count = %s
+            UPDATE users 
+            SET balance = balance + %s 
             WHERE id = %s
-        """, (len(parsed_rows), len(parsed_rows), matched_count, len(all_reports) - matched_count, job_id))
-        conn.commit()
-        
-        print(f"[JOB {job_id}] ✅ COMPLETED: {len(parsed_rows)} rows, {matched_count} matched")
-        
-        cursor.close()
-        conn.close()
-        
-    except Exception as e:
-        print(f"[JOB {job_id}] ❌ ERROR: {str(e)}")
-        if conn:
-            try:
-                cursor = conn.cursor()
-                cursor.execute("""
-                    UPDATE financial_upload_jobs 
-                    SET status = 'failed', error_message = %s, completed_at = NOW() 
-                    WHERE id = %s
-                """, (str(e), job_id))
-                conn.commit()
-                cursor.close()
-                conn.close()
-            except:
-                pass
+        """, (total_amount, user_id))
+    conn.commit()
+    
+    artist_summary = []
+    for artist_name, data in artist_totals.items():
+        artist_summary.append({
+            'artist_name': artist_name,
+            'count': data['count'],
+            'total': data['total']
+        })
+    
+    return {
+        'total_rows': total_rows,
+        'matched_count': matched_count,
+        'unmatched_count': total_rows - matched_count,
+        'artist_summary': artist_summary
+    }
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """
@@ -296,30 +277,44 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor = conn.cursor()
             
             cursor.execute("""
-                INSERT INTO financial_upload_jobs (uploaded_by, period, filename, status)
-                VALUES (%s, %s, %s, 'pending')
+                INSERT INTO financial_upload_jobs (uploaded_by, period, filename, status, started_at)
+                VALUES (%s, %s, %s, 'processing', NOW())
                 RETURNING id
             """, (admin_user_id, period, filename))
             job_id = cursor.fetchone()[0]
             conn.commit()
+            
+            print(f"[UPLOAD] Processing job {job_id} for user {admin_user_id}")
+            
+            result = process_financial_report_sync(file_bytes, period, admin_user_id, cursor, conn)
+            
+            cursor.execute("""
+                UPDATE financial_upload_jobs 
+                SET status = 'completed', 
+                    completed_at = NOW(),
+                    total_rows = %s,
+                    processed_rows = %s,
+                    matched_count = %s,
+                    unmatched_count = %s
+                WHERE id = %s
+            """, (result['total_rows'], result['total_rows'], result['matched_count'], result['unmatched_count'], job_id))
+            conn.commit()
+            
             cursor.close()
             conn.close()
             
-            print(f"[UPLOAD] Created job {job_id} for user {admin_user_id}")
-            
-            thread = threading.Thread(
-                target=process_financial_report,
-                args=(job_id, file_bytes, period, admin_user_id, dsn)
-            )
-            thread.start()
+            print(f"[UPLOAD] ✅ Job {job_id} completed: {result['matched_count']}/{result['total_rows']} matched")
             
             return {
-                'statusCode': 202,
+                'statusCode': 200,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                 'body': json.dumps({
                     'success': True,
                     'job_id': job_id,
-                    'message': 'Файл принят в обработку. Это займёт несколько минут.',
+                    'total_rows': result['total_rows'],
+                    'matched_count': result['matched_count'],
+                    'unmatched_count': result['unmatched_count'],
+                    'artist_summary': result['artist_summary'],
                     'period': period
                 })
             }
