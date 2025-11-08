@@ -7,6 +7,7 @@ import AppHeader from '@/components/AppHeader';
 import UserProfile from '@/components/UserProfile';
 import NewsView from '@/components/NewsView';
 import WithdrawalDialog from '@/components/WithdrawalDialog';
+import ArtistAnalytics from '@/components/ArtistAnalytics';
 import { User, Ticket, NewTicket } from '@/types';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -96,7 +97,7 @@ export default function ArtistView({
           }}
           className="w-full mt-2 md:mt-4">
           <div className="w-full container mx-auto px-2 md:px-4">
-            <TabsList className="grid w-full grid-cols-4 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-0.5 md:p-1">
+            <TabsList className="grid w-full grid-cols-5 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-0.5 md:p-1">
               <TabsTrigger value="news" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
                 <Icon name="Newspaper" className="w-3.5 h-3.5 md:w-5 md:h-5 text-yellow-500 shrink-0" />
                 <span className="truncate">Новости</span>
@@ -112,6 +113,10 @@ export default function ArtistView({
               <TabsTrigger value="reports" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
                 <Icon name="FileText" className="w-3.5 h-3.5 md:w-5 md:h-5 text-orange-500 shrink-0" />
                 <span className="truncate">Отчёты</span>
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="text-[11px] md:text-sm px-1.5 md:px-4 transition-all duration-200 md:hover:scale-105 gap-1 md:gap-2">
+                <Icon name="BarChart3" className="w-3.5 h-3.5 md:w-5 md:h-5 text-cyan-500 shrink-0" />
+                <span className="truncate">Аналитика</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -142,6 +147,10 @@ export default function ArtistView({
                 <p className="text-xs md:text-base text-gray-400">Работаем над этим разделом</p>
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="analytics" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
+            <ArtistAnalytics />
           </TabsContent>
         </Tabs>
 
