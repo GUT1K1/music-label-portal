@@ -35,6 +35,7 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
 
   const loadTracks = async () => {
     try {
+      console.log('[HeaderMusicPlayer] Loading tracks...');
       const response = await fetch(`${API_ENDPOINTS.RELEASES}?status=approved&limit=50`, {
         headers: {
           'X-User-Id': userId.toString()
@@ -44,6 +45,7 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
       if (response.ok) {
         const releases = await response.json();
         const releasesArray = Array.isArray(releases) ? releases : [];
+        console.log(`[HeaderMusicPlayer] Found ${releasesArray.length} approved releases`);
         
         const allTracks: Track[] = [];
         
@@ -60,9 +62,11 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
           if (releaseDetailResponse.ok) {
             const releaseDetail = await releaseDetailResponse.json();
             const releaseTracks = releaseDetail.tracks || [];
+            console.log(`[HeaderMusicPlayer] Release "${release.release_name}" has ${releaseTracks.length} tracks`);
             
             for (const track of releaseTracks) {
               if (track.audio_url) {
+                console.log(`[HeaderMusicPlayer] ✅ Track with audio: ${track.track_name || track.title}`);
                 allTracks.push({
                   releaseId: release.id,
                   trackId: track.id,
@@ -71,15 +75,20 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
                   coverUrl: release.cover_url,
                   audioUrl: track.audio_url
                 });
+              } else {
+                console.log(`[HeaderMusicPlayer] ❌ Track without audio: ${track.track_name || track.title}`);
               }
             }
           }
         }
         
+        console.log(`[HeaderMusicPlayer] Total tracks with audio: ${allTracks.length}`);
         setTracks(allTracks);
+      } else {
+        console.error(`[HeaderMusicPlayer] Failed to load releases: ${response.status}`);
       }
     } catch (error) {
-      console.error('Failed to load tracks:', error);
+      console.error('[HeaderMusicPlayer] Failed to load tracks:', error);
     }
   };
 
