@@ -10,7 +10,11 @@ interface Release {
   release_file?: string;
 }
 
-export default function HeaderMusicPlayer() {
+interface HeaderMusicPlayerProps {
+  userId: number;
+}
+
+export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
   const [releases, setReleases] = useState<Release[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -20,7 +24,7 @@ export default function HeaderMusicPlayer() {
 
   useEffect(() => {
     loadReleases();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -30,7 +34,11 @@ export default function HeaderMusicPlayer() {
 
   const loadReleases = async () => {
     try {
-      const response = await fetch(`${API_ENDPOINTS.RELEASES}?status=approved&limit=50`);
+      const response = await fetch(`${API_ENDPOINTS.RELEASES}?status=approved&limit=50`, {
+        headers: {
+          'X-User-Id': userId.toString()
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         const releasesWithAudio = (Array.isArray(data) ? data : data.releases || [])

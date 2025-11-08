@@ -124,7 +124,7 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
         </div>
       </div>
       
-      <HeaderMusicPlayer />
+      <HeaderMusicPlayer userId={userId} />
       
       {/* Desktop menu */}
       <div className="hidden md:flex items-center gap-3">
