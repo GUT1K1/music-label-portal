@@ -253,9 +253,9 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
           <div className="text-sm text-gray-300 space-y-2">
             <p className="font-medium text-white">Требования к файлу Excel:</p>
             <ul className="list-disc list-inside space-y-1 text-gray-400">
-              <li>Колонка G (Исполнитель) - имя артиста</li>
-              <li>Колонка I (Название альбома) - название релиза</li>
-              <li>Колонка O (Итого вознаграждение ЛИЦЕНЗИАРА) - сумма выплаты</li>
+              <li>Колонка G - имя исполнителя (сценическое имя)</li>
+              <li>Колонка I - название альбома/релиза</li>
+              <li>Колонка N - сумма вознаграждения</li>
               <li>Система автоматически сопоставит данные с релизами в базе</li>
               <li>При успешном сопоставлении баланс артиста обновится автоматически</li>
             </ul>
