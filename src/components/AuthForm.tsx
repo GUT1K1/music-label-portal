@@ -29,6 +29,10 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
   const [verifyCode, setVerifyCode] = useState('');
   const [verifyEmail, setVerifyEmail] = useState('');
   
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [agreeMarketing, setAgreeMarketing] = useState(false);
+  
   const [forgotEmail, setForgotEmail] = useState('');
   const [resetCode, setResetCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -200,10 +204,16 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
               regLoading={regLoading}
               showVerifyCode={showVerifyCode}
               verifyCode={verifyCode}
+              agreeTerms={agreeTerms}
+              agreePrivacy={agreePrivacy}
+              agreeMarketing={agreeMarketing}
               setRegUsername={setRegUsername}
               setRegEmail={setRegEmail}
               setRegPassword={setRegPassword}
               setVerifyCode={setVerifyCode}
+              setAgreeTerms={setAgreeTerms}
+              setAgreePrivacy={setAgreePrivacy}
+              setAgreeMarketing={setAgreeMarketing}
               handleRegister={handleRegister}
               handleVerifyCode={handleVerifyCode}
             />

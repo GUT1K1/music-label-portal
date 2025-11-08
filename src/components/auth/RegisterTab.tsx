@@ -2,7 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TabsContent } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
+import { Link } from 'react-router-dom';
 
 interface RegisterTabProps {
   regUsername: string;
@@ -11,10 +13,16 @@ interface RegisterTabProps {
   regLoading: boolean;
   showVerifyCode: boolean;
   verifyCode: string;
+  agreeTerms: boolean;
+  agreePrivacy: boolean;
+  agreeMarketing: boolean;
   setRegUsername: (value: string) => void;
   setRegEmail: (value: string) => void;
   setRegPassword: (value: string) => void;
   setVerifyCode: (value: string) => void;
+  setAgreeTerms: (value: boolean) => void;
+  setAgreePrivacy: (value: boolean) => void;
+  setAgreeMarketing: (value: boolean) => void;
   handleRegister: () => void;
   handleVerifyCode: () => void;
 }
@@ -26,10 +34,16 @@ export default function RegisterTab({
   regLoading,
   showVerifyCode,
   verifyCode,
+  agreeTerms,
+  agreePrivacy,
+  agreeMarketing,
   setRegUsername,
   setRegEmail,
   setRegPassword,
   setVerifyCode,
+  setAgreeTerms,
+  setAgreePrivacy,
+  setAgreeMarketing,
   handleRegister,
   handleVerifyCode
 }: RegisterTabProps) {
@@ -96,9 +110,53 @@ export default function RegisterTab({
             />
           </div>
           
+          <div className="space-y-3 pt-2">
+            <div className="flex items-start space-x-2">
+              <Checkbox 
+                id="terms" 
+                checked={agreeTerms}
+                onCheckedChange={(checked) => setAgreeTerms(checked as boolean)}
+              />
+              <label htmlFor="terms" className="text-sm text-gray-300 leading-tight cursor-pointer">
+                Я ознакомлен(а) и соглашаюсь с{' '}
+                <Link to="/terms" className="text-primary hover:underline" target="_blank">
+                  договором публичной оферты
+                </Link>
+              </label>
+            </div>
+
+            <div className="flex items-start space-x-2">
+              <Checkbox 
+                id="privacy" 
+                checked={agreePrivacy}
+                onCheckedChange={(checked) => setAgreePrivacy(checked as boolean)}
+              />
+              <label htmlFor="privacy" className="text-sm text-gray-300 leading-tight cursor-pointer">
+                Я предоставляю согласие на{' '}
+                <Link to="/privacy" className="text-primary hover:underline" target="_blank">
+                  обработку персональных данных
+                </Link>
+              </label>
+            </div>
+
+            <div className="flex items-start space-x-2">
+              <Checkbox 
+                id="marketing" 
+                checked={agreeMarketing}
+                onCheckedChange={(checked) => setAgreeMarketing(checked as boolean)}
+              />
+              <label htmlFor="marketing" className="text-sm text-gray-300 leading-tight cursor-pointer">
+                Я предоставляю согласие на получение{' '}
+                <Link to="/marketing" className="text-primary hover:underline" target="_blank">
+                  рекламных и информационных сообщений
+                </Link>
+              </label>
+            </div>
+          </div>
+
           <Button 
             onClick={handleRegister}
-            disabled={regLoading}
+            disabled={regLoading || !agreeTerms || !agreePrivacy}
             className="w-full"
           >
             {regLoading ? (
