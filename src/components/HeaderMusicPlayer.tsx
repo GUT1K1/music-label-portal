@@ -25,6 +25,12 @@ export default function HeaderMusicPlayer({ userId }: HeaderMusicPlayerProps) {
 
   useEffect(() => {
     loadTracks();
+    
+    const interval = setInterval(() => {
+      loadTracks();
+    }, 60000);
+    
+    return () => clearInterval(interval);
   }, [userId]);
 
   useEffect(() => {
