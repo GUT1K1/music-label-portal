@@ -4,6 +4,7 @@ import psycopg2
 from typing import Dict, Any
 import openpyxl
 from io import BytesIO
+import urllib.request
 
 def normalize_string(s: str) -> str:
     if not s:
@@ -147,8 +148,8 @@ def process_chunk(chunk_id: int, job_id: int, start_row: int, end_row: int,
         'balance_updates': batch_updates
     }
 
-def finalize_job(job_id: int, cursor, conn):
-    """Завершает обработку задачи и обновляет балансы"""
+def finalize_job(job_id: int, cursor, conn) -> bool:
+    """Завершает обработку задачи и обновляет балансы. Возвращает True если остались чанки"""
     cursor.execute("""
         SELECT COUNT(*), SUM(processed_rows), SUM(matched_count)
         FROM job_chunks
@@ -169,6 +170,8 @@ def finalize_job(job_id: int, cursor, conn):
             unmatched_count = %s - %s
         WHERE id = %s
     """, (completed_chunks, total_processed, total_matched, total_processed, total_matched, job_id))
+    
+    has_more_chunks = completed_chunks < total_chunks
     
     if completed_chunks >= total_chunks:
         cursor.execute("""
@@ -196,8 +199,11 @@ def finalize_job(job_id: int, cursor, conn):
         """, (job_id,))
         
         print(f"[JOB {job_id}] ✅ Completed and balances updated")
+    else:
+        print(f"[JOB {job_id}] Progress: {completed_chunks}/{total_chunks} chunks")
     
     conn.commit()
+    return has_more_chunks
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """
@@ -290,11 +296,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     """, (str(e), chunk_id))
                     conn.commit()
             
+            has_more_chunks = False
             for job_id in processed_jobs:
-                finalize_job(job_id, cursor, conn)
+                if finalize_job(job_id, cursor, conn):
+                    has_more_chunks = True
             
             cursor.close()
             conn.close()
+            
+            if has_more_chunks and total_processed > 0:
+                function_url = os.environ.get('SELF_URL')
+                if function_url:
+                    print(f"[WORKER] 🔄 Auto-triggering next batch...")
+                    try:
+                        req = urllib.request.Request(
+                            function_url,
+                            method='GET',
+                            headers={'Content-Type': 'application/json'}
+                        )
+                        urllib.request.urlopen(req, timeout=2)
+                    except Exception as e:
+                        print(f"[WORKER] Auto-trigger sent (fire-and-forget): {str(e)}")
             
             return {
                 'statusCode': 200,
@@ -302,7 +324,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({
                     'success': True,
                     'processed': total_processed,
-                    'jobs': list(processed_jobs)
+                    'jobs': list(processed_jobs),
+                    'has_more': has_more_chunks
                 })
             }
             
