@@ -116,8 +116,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             matched_count = 0
             unmatched_rows = []
             artist_totals = {}
-            batch_size = 100
-            batch_reports = []
+            all_reports = []
             batch_updates = {}
             
             for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
@@ -156,7 +155,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 if user_id:
                     matched_count += 1
-                    batch_reports.append((period, artist_name, album_name, amount, user_id, release_id, admin_user_id))
+                    all_reports.append((period, artist_name, album_name, amount, user_id, release_id, admin_user_id, True))
                     
                     if user_id not in batch_updates:
                         batch_updates[user_id] = 0
@@ -168,42 +167,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     artist_totals[artist_name]['total'] += amount
                 else:
                     unmatched_rows.append(parsed_row)
-                    batch_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id))
+                    all_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id, False))
                 
-                if len(batch_reports) >= batch_size:
-                    print(f"[BATCH] Processing batch at row {row_idx}, matched so far: {matched_count}")
-                    for report in batch_reports:
-                        if report[4] is not None:
-                            cursor.execute("""
-                                INSERT INTO financial_reports 
-                                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-                            """, report)
-                        else:
-                            cursor.execute("""
-                                INSERT INTO financial_reports 
-                                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                                VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
-                            """, (report[0], report[1], report[2], report[3], report[6]))
-                    conn.commit()
-                    batch_reports = []
+                if row_idx % 1000 == 0:
+                    print(f"[PROGRESS] Processed {row_idx} rows, matched so far: {matched_count}")
             
-            if batch_reports:
-                print(f"[FINAL] Processing final batch of {len(batch_reports)} records")
-                for report in batch_reports:
-                    if report[4] is not None:
-                        cursor.execute("""
-                            INSERT INTO financial_reports 
-                            (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-                        """, report)
-                    else:
-                        cursor.execute("""
-                            INSERT INTO financial_reports 
-                            (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                            VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
-                        """, (report[0], report[1], report[2], report[3], report[6]))
-                conn.commit()
+            print(f"[SUMMARY] Total processed: {len(parsed_rows)}, Matched: {matched_count}, Unmatched: {len(unmatched_rows)}")
+            print(f"[INSERT] Inserting {len(all_reports)} records to database...")
+            
+            for report in all_reports:
+                if report[7]:
+                    cursor.execute("""
+                        INSERT INTO financial_reports 
+                        (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
+                    """, report[:7])
+                else:
+                    cursor.execute("""
+                        INSERT INTO financial_reports 
+                        (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                        VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
+                    """, (report[0], report[1], report[2], report[3], report[6]))
             
             print(f"[SUMMARY] Total processed: {len(parsed_rows)}, Matched: {matched_count}, Unmatched: {len(unmatched_rows)}")
             
