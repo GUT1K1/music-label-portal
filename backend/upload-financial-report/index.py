@@ -25,9 +25,10 @@ def match_report_to_releases(artist_name: str, album_name: str, cursor) -> tuple
     normalized_album = normalize_string(album_name)
     
     cursor.execute("""
-        SELECT r.id, r.user_id 
+        SELECT r.id, r.artist_id, u.full_name
         FROM releases r
-        WHERE LOWER(TRIM(COALESCE(r.artist_name, ''))) = %s 
+        LEFT JOIN users u ON u.id = r.artist_id
+        WHERE LOWER(TRIM(COALESCE(u.full_name, ''))) = %s 
         AND LOWER(TRIM(r.release_name)) = %s
         LIMIT 1
     """, (normalized_artist, normalized_album))
