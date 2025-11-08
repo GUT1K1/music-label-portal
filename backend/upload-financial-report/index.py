@@ -40,7 +40,7 @@ def load_all_releases(cursor) -> Dict[str, tuple]:
     print(f"[INIT] Loaded {len(releases_map)} releases into memory")
     return releases_map
 
-def match_report_to_releases(artist_name: str, album_name: str, releases_map: Dict[str, tuple]) -> tuple:
+def match_report_to_releases(artist_name: str, album_name: str, releases_map: Dict[str, tuple], debug_mode: bool = False) -> tuple:
     """
     Ищет совпадение в загруженном словаре релизов.
     Возвращает (user_id, release_id) или (None, None)
@@ -53,10 +53,17 @@ def match_report_to_releases(artist_name: str, album_name: str, releases_map: Di
     
     key = f"{normalized_artist}||{normalized_album}"
     
+    if debug_mode:
+        print(f"[MATCH] Looking for key: '{key}'")
+    
     if key in releases_map:
         user_id, release_id, _ = releases_map[key]
+        if debug_mode:
+            print(f"[MATCH] ✅ FOUND! user_id={user_id}, release_id={release_id}")
         return (user_id, release_id)
     
+    if debug_mode:
+        print(f"[MATCH] ❌ NOT FOUND")
     return (None, None)
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -103,6 +110,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             # Загрузить все релизы ОДИН РАЗ в память
             releases_map = load_all_releases(cursor)
+            print(f"[DEBUG] Releases in map (first 5): {list(releases_map.keys())[:5]}")
             
             parsed_rows = []
             matched_count = 0
@@ -120,6 +128,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 album_name = str(row[8]) if row[8] else ""
                 amount_str = str(row[13]) if row[13] else "0"
                 
+                if row_idx <= 12:
+                    print(f"[ROW {row_idx}] artist='{artist_name}' | album='{album_name}' | amount='{amount_str}'")
+                
                 if not artist_name:
                     continue
                 
@@ -128,7 +139,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 except (ValueError, AttributeError):
                     amount = 0.0
                 
-                user_id, release_id = match_report_to_releases(artist_name, album_name, releases_map)
+                debug_mode = row_idx <= 12
+                user_id, release_id = match_report_to_releases(artist_name, album_name, releases_map, debug_mode)
                 
                 parsed_row = {
                     'row_number': row_idx,
