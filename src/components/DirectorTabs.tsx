@@ -17,6 +17,7 @@ import AnalyticsView from '@/components/AnalyticsView';
 import WeeklyReport from '@/components/WeeklyReport';
 import ReleaseModerationPanel from '@/components/ReleaseModerationPanel';
 import NewsView from '@/components/NewsView';
+import FinancialReportsUpload from '@/components/FinancialReportsUpload';
 import { Task } from '@/components/useTasks';
 import TasksTab from '@/components/TasksTab';
 import { useNotifications } from '@/contexts/NotificationContext';
@@ -200,7 +201,7 @@ export default function DirectorTabs({
 
       <TabsContent value="reports" className="animate-fadeIn">
         <Tabs defaultValue="weekly" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
+          <TabsList className="grid w-full grid-cols-3 bg-card/60 backdrop-blur-sm border border-border rounded-xl p-1">
             <TabsTrigger value="weekly" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
               <Icon name="Calendar" className="w-4 h-4 text-primary" />
               Еженедельный отчёт
@@ -209,12 +210,19 @@ export default function DirectorTabs({
               <Icon name="Upload" className="w-4 h-4 text-green-500" />
               Загрузить отчёт
             </TabsTrigger>
+            <TabsTrigger value="financial" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+              <Icon name="Wallet" className="w-4 h-4 text-orange-500" />
+              Финансовые отчёты
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="weekly" className="animate-fadeIn">
             <WeeklyReport />
           </TabsContent>
           <TabsContent value="upload" className="animate-fadeIn">
             <ReportsUploader userId={user.id} />
+          </TabsContent>
+          <TabsContent value="financial" className="animate-fadeIn">
+            <FinancialReportsUpload userId={user.id} />
           </TabsContent>
         </Tabs>
       </TabsContent>
