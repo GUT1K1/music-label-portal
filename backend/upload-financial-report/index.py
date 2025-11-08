@@ -256,6 +256,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
     
     if method == 'POST':
+        conn = None
+        cursor = None
+        job_id = None
+        
         try:
             body_data = json.loads(event.get('body', '{}'))
             file_base64 = body_data.get('file')
@@ -277,53 +281,114 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor = conn.cursor()
             
             cursor.execute("""
-                INSERT INTO financial_upload_jobs (uploaded_by, period, filename, status, started_at)
-                VALUES (%s, %s, %s, 'processing', NOW())
+                INSERT INTO financial_upload_jobs (uploaded_by, period, filename, status)
+                VALUES (%s, %s, %s, 'pending')
                 RETURNING id
             """, (admin_user_id, period, filename))
             job_id = cursor.fetchone()[0]
             conn.commit()
             
-            print(f"[UPLOAD] Processing job {job_id} for user {admin_user_id}")
-            
-            result = process_financial_report_sync(file_bytes, period, admin_user_id, cursor, conn)
+            print(f"[UPLOAD] Created job {job_id}, starting processing...")
             
             cursor.execute("""
                 UPDATE financial_upload_jobs 
-                SET status = 'completed', 
-                    completed_at = NOW(),
-                    total_rows = %s,
-                    processed_rows = %s,
-                    matched_count = %s,
-                    unmatched_count = %s
+                SET status = 'processing', started_at = NOW()
                 WHERE id = %s
-            """, (result['total_rows'], result['total_rows'], result['matched_count'], result['unmatched_count'], job_id))
+            """, (job_id,))
             conn.commit()
             
-            cursor.close()
-            conn.close()
-            
-            print(f"[UPLOAD] ✅ Job {job_id} completed: {result['matched_count']}/{result['total_rows']} matched")
-            
-            return {
-                'statusCode': 200,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({
-                    'success': True,
-                    'job_id': job_id,
-                    'total_rows': result['total_rows'],
-                    'matched_count': result['matched_count'],
-                    'unmatched_count': result['unmatched_count'],
-                    'artist_summary': result['artist_summary'],
-                    'period': period
-                })
-            }
+            try:
+                result = process_financial_report_sync(file_bytes, period, admin_user_id, cursor, conn)
+                
+                cursor.execute("""
+                    UPDATE financial_upload_jobs 
+                    SET status = 'completed', 
+                        completed_at = NOW(),
+                        total_rows = %s,
+                        processed_rows = %s,
+                        matched_count = %s,
+                        unmatched_count = %s
+                    WHERE id = %s
+                """, (result['total_rows'], result['total_rows'], result['matched_count'], result['unmatched_count'], job_id))
+                conn.commit()
+                
+                print(f"[UPLOAD] ✅ Job {job_id} completed: {result['matched_count']}/{result['total_rows']} matched")
+                
+                cursor.close()
+                conn.close()
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({
+                        'success': True,
+                        'job_id': job_id,
+                        'total_rows': result['total_rows'],
+                        'matched_count': result['matched_count'],
+                        'unmatched_count': result['unmatched_count'],
+                        'artist_summary': result['artist_summary'],
+                        'period': period
+                    })
+                }
+                
+            except Exception as process_error:
+                error_msg = f"Processing error: {str(process_error)}"
+                print(f"[ERROR] Job {job_id}: {error_msg}")
+                
+                cursor.execute("""
+                    UPDATE financial_upload_jobs 
+                    SET status = 'failed', 
+                        completed_at = NOW(),
+                        error_message = %s
+                    WHERE id = %s
+                """, (error_msg, job_id))
+                conn.commit()
+                
+                if cursor:
+                    cursor.close()
+                if conn:
+                    conn.close()
+                
+                return {
+                    'statusCode': 500,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({
+                        'error': error_msg,
+                        'job_id': job_id
+                    })
+                }
             
         except Exception as e:
+            error_msg = str(e)
+            print(f"[ERROR] Upload failed: {error_msg}")
+            
+            if job_id and cursor and conn:
+                try:
+                    cursor.execute("""
+                        UPDATE financial_upload_jobs 
+                        SET status = 'failed', 
+                            error_message = %s
+                        WHERE id = %s
+                    """, (error_msg, job_id))
+                    conn.commit()
+                except:
+                    pass
+            
+            if cursor:
+                try:
+                    cursor.close()
+                except:
+                    pass
+            if conn:
+                try:
+                    conn.close()
+                except:
+                    pass
+            
             return {
                 'statusCode': 500,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': str(e)})
+                'body': json.dumps({'error': error_msg})
             }
     
     return {

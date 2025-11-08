@@ -114,10 +114,10 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
 
         const data = await response.json();
 
-        if (response.status === 202) {
+        if (response.ok) {
           setSelectedFile(null);
           loadJobs();
-        } else if (!response.ok) {
+        } else {
           throw new Error(data.error || 'Ошибка при загрузке отчёта');
         }
       };
