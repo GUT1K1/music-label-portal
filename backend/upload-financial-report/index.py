@@ -24,6 +24,8 @@ def match_report_to_releases(artist_name: str, album_name: str, cursor) -> tuple
     normalized_artist = normalize_string(artist_name)
     normalized_album = normalize_string(album_name)
     
+    print(f"[MATCH] Looking for: artist='{normalized_artist}' album='{normalized_album}'")
+    
     cursor.execute("""
         SELECT r.id, r.artist_id, r.artist_name
         FROM releases r
@@ -34,7 +36,9 @@ def match_report_to_releases(artist_name: str, album_name: str, cursor) -> tuple
     
     result = cursor.fetchone()
     if result:
+        print(f"[MATCH] Found: release_id={result[0]} artist_id={result[1]} artist_name={result[2]}")
         return (result[1], result[0])
+    print(f"[MATCH] Not found")
     return (None, None)
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
