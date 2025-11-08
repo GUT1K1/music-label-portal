@@ -137,8 +137,8 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showReleaseSelector, showPeriodSelector]);
 
-  const getCachedData = (period: Period, platform: Platform) => {
-    const key = `${period}-${platform}`;
+  const getCachedData = (period: Period, platform: Platform, releaseId: number | null) => {
+    const key = `${period}-${platform}-${releaseId}`;
     if (!cachedData[key]) {
       const newData = generatePlatformData(period, platform);
       setCachedData(prev => ({ ...prev, [key]: newData }));
@@ -147,7 +147,7 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
     return cachedData[key];
   };
 
-  const currentData = getCachedData(selectedPeriod, selectedPlatform);
+  const currentData = getCachedData(selectedPeriod, selectedPlatform, selectedRelease);
   const isTikTok = selectedPlatform === 'tiktok';
   const currentRelease = releases.find(r => r.id === selectedRelease);
   const currentPeriodOption = periodOptions.find(p => p.id === selectedPeriod);
