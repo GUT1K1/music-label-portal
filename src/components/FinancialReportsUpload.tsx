@@ -60,11 +60,13 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
       return;
     }
 
-    console.log('📤 Starting file upload:', { file: selectedFile.name, period: selectedPeriod, userId });
+    const uploadTime = new Date().toISOString();
+    console.log(`📤 [${uploadTime}] Starting file upload:`, { file: selectedFile.name, period: selectedPeriod, userId });
 
     try {
       setUploading(true);
       setError(null);
+      setResult(null); // Очистить старый результат
 
       const reader = new FileReader();
       reader.onload = async (e) => {
