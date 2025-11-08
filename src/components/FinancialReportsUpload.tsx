@@ -200,12 +200,12 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
               <div className="text-sm text-gray-400">Всего записей</div>
             </div>
             <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-green-400 mb-1">{result.artist_summary?.length || 0}</div>
-              <div className="text-sm text-gray-400">Разбито по исполнителям</div>
+              <div className="text-3xl font-bold text-green-400 mb-1">{result.matched_count}</div>
+              <div className="text-sm text-gray-400">Найдено в базе</div>
             </div>
-            <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4 text-center">
-              <div className="text-3xl font-bold text-orange-400 mb-1">{result.unmatched_count}</div>
-              <div className="text-sm text-gray-400">Без исполнителя</div>
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-center">
+              <div className="text-3xl font-bold text-blue-400 mb-1">{result.artist_summary?.length || 0}</div>
+              <div className="text-sm text-gray-400">Исполнителей</div>
             </div>
           </div>
 
@@ -224,9 +224,9 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
           {result.artist_summary && result.artist_summary.length > 0 && (
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <Icon name="Users" className="w-5 h-5 text-blue-500" />
+                <Icon name="Users" className="w-5 h-5 text-green-500" />
                 <h4 className="text-lg font-semibold text-white">
-                  Исполнители из файла:
+                  Найдено в базе данных:
                 </h4>
               </div>
               <div className="bg-background/50 rounded-lg overflow-hidden">
@@ -251,48 +251,26 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
                   </tbody>
                 </table>
               </div>
+              <p className="text-xs text-gray-400 mt-3">
+                <Icon name="CheckCircle" className="w-3 h-3 inline mr-1" />
+                Баланс этих исполнителей автоматически обновлён
+              </p>
             </div>
           )}
 
           {result.unmatched_count > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="AlertTriangle" className="w-5 h-5 text-orange-500" />
-                <h4 className="text-lg font-semibold text-white">
-                  Без исполнителя ({result.unmatched_count} записей)
-                </h4>
-              </div>
-              {result.unmatched_rows.length > 0 && (
-                <>
-                  <div className="bg-background/50 rounded-lg overflow-hidden mb-3">
-                    <table className="w-full">
-                      <thead className="bg-background/70">
-                        <tr>
-                          <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Строка</th>
-                          <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Исполнитель</th>
-                          <th className="text-left py-3 px-4 text-sm font-medium text-gray-400">Альбом</th>
-                          <th className="text-right py-3 px-4 text-sm font-medium text-gray-400">Сумма</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {result.unmatched_rows.map((row, idx) => (
-                          <tr key={idx} className="border-t border-border/30">
-                            <td className="py-3 px-4 text-sm text-gray-400">{row.row_number}</td>
-                            <td className="py-3 px-4 text-sm text-white">{row.artist_name}</td>
-                            <td className="py-3 px-4 text-sm text-white">{row.album_name}</td>
-                            <td className="py-3 px-4 text-sm text-white text-right">
-                              {row.amount.toLocaleString()} ₽
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <p className="text-xs text-gray-400">
-                    Показаны первые 10 записей. Эти записи сохранены со статусом "ожидание". Проверьте правильность имён артистов и названий релизов в базе данных.
+            <div className="p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+              <div className="flex items-start gap-3">
+                <Icon name="Info" className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-white mb-1">
+                    Не найдено в базе: {result.unmatched_count} записей
                   </p>
-                </>
-              )}
+                  <p className="text-xs text-gray-400">
+                    Эти исполнители и релизы отсутствуют в базе данных. Платежи для них не были начислены.
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
