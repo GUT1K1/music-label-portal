@@ -461,6 +461,13 @@
     }
   }
 
+  .telegram-widget-wrapper iframe {
+    width: 100% !important;
+    height: 46px !important;
+    border-radius: 0.5rem !important;
+    overflow: hidden !important;
+  }
+
   @keyframes liquid-flow {
     0%,
     100% {
