@@ -72,7 +72,7 @@ def process_one_job(job_id: int, file_data: bytes, period: str, admin_user_id: i
     batch_reports = []
     batch_updates = {}
     total_rows = 0
-    batch_size = 1000
+    batch_size = 2000
     
     for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
         if not row or len(row) < 14:
