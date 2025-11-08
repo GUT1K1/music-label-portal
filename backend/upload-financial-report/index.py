@@ -70,7 +70,7 @@ def process_financial_report_sync(file_bytes: bytes, period: str, admin_user_id:
     """
     Синхронная обработка финансового отчёта с батч-коммитами
     """
-    workbook = openpyxl.load_workbook(BytesIO(file_bytes))
+    workbook = openpyxl.load_workbook(BytesIO(file_bytes), read_only=True, data_only=True)
     sheet = workbook.active
     
     releases_map = load_all_releases(cursor)
@@ -81,7 +81,7 @@ def process_financial_report_sync(file_bytes: bytes, period: str, admin_user_id:
     batch_reports = []
     batch_updates = {}
     total_rows = 0
-    batch_size = 500
+    batch_size = 1000
     
     for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
         if not row or len(row) < 14:
@@ -119,37 +119,45 @@ def process_financial_report_sync(file_bytes: bytes, period: str, admin_user_id:
             batch_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id, False))
         
         if len(batch_reports) >= batch_size:
-            for report in batch_reports:
-                if report[7]:
-                    cursor.execute("""
-                        INSERT INTO financial_reports 
-                        (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-                    """, report[:7])
-                else:
-                    cursor.execute("""
-                        INSERT INTO financial_reports 
-                        (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                        VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
-                    """, (report[0], report[1], report[2], report[3], report[6]))
+            matched_batch = [r[:7] for r in batch_reports if r[7]]
+            unmatched_batch = [(r[0], r[1], r[2], r[3], r[6]) for r in batch_reports if not r[7]]
+            
+            if matched_batch:
+                cursor.executemany("""
+                    INSERT INTO financial_reports 
+                    (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
+                """, matched_batch)
+            
+            if unmatched_batch:
+                cursor.executemany("""
+                    INSERT INTO financial_reports 
+                    (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                    VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
+                """, unmatched_batch)
+            
             conn.commit()
             print(f"[BATCH] Committed {len(batch_reports)} records at row {row_idx}, matched: {matched_count}")
             batch_reports = []
     
     if batch_reports:
-        for report in batch_reports:
-            if report[7]:
-                cursor.execute("""
-                    INSERT INTO financial_reports 
-                    (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-                """, report[:7])
-            else:
-                cursor.execute("""
-                    INSERT INTO financial_reports 
-                    (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                    VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
-                """, (report[0], report[1], report[2], report[3], report[6]))
+        matched_batch = [r[:7] for r in batch_reports if r[7]]
+        unmatched_batch = [(r[0], r[1], r[2], r[3], r[6]) for r in batch_reports if not r[7]]
+        
+        if matched_batch:
+            cursor.executemany("""
+                INSERT INTO financial_reports 
+                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
+            """, matched_batch)
+        
+        if unmatched_batch:
+            cursor.executemany("""
+                INSERT INTO financial_reports 
+                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
+                VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
+            """, unmatched_batch)
+        
         conn.commit()
         print(f"[FINAL] Committed final {len(batch_reports)} records")
     
