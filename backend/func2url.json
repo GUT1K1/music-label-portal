@@ -1,4 +1,5 @@
 {
+  "process-financial-jobs": "https://functions.poehali.dev/71563c1f-ad12-4e44-a1d4-ad39d030803b",
   "upload-financial-report": "https://functions.poehali.dev/3d9da1a0-aa93-4f89-98d9-1a7e5902a60b",
   "artist-financial-reports": "https://functions.poehali.dev/8ff0b20d-ec0d-4b1f-bcb6-77cf8a7226de",
   "cleanup-storage": "https://functions.poehali.dev/f2f6d1bd-26e8-42a7-9118-656766f0680a",

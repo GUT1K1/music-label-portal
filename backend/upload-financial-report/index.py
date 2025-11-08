@@ -289,82 +289,29 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor = conn.cursor()
             
             cursor.execute("""
-                INSERT INTO financial_upload_jobs (uploaded_by, period, filename, status)
-                VALUES (%s, %s, %s, 'pending')
+                INSERT INTO financial_upload_jobs 
+                (uploaded_by, period, filename, status, file_data)
+                VALUES (%s, %s, %s, 'pending', %s)
                 RETURNING id
-            """, (admin_user_id, period, filename))
+            """, (admin_user_id, period, filename, psycopg2.Binary(file_bytes)))
             job_id = cursor.fetchone()[0]
             conn.commit()
             
-            print(f"[UPLOAD] Created job {job_id}, starting processing...")
+            cursor.close()
+            conn.close()
             
-            cursor.execute("""
-                UPDATE financial_upload_jobs 
-                SET status = 'processing', started_at = NOW()
-                WHERE id = %s
-            """, (job_id,))
-            conn.commit()
+            print(f"[UPLOAD] Created job {job_id} in queue for async processing")
             
-            try:
-                result = process_financial_report_sync(file_bytes, period, admin_user_id, cursor, conn)
-                
-                cursor.execute("""
-                    UPDATE financial_upload_jobs 
-                    SET status = 'completed', 
-                        completed_at = NOW(),
-                        total_rows = %s,
-                        processed_rows = %s,
-                        matched_count = %s,
-                        unmatched_count = %s
-                    WHERE id = %s
-                """, (result['total_rows'], result['total_rows'], result['matched_count'], result['unmatched_count'], job_id))
-                conn.commit()
-                
-                print(f"[UPLOAD] ✅ Job {job_id} completed: {result['matched_count']}/{result['total_rows']} matched")
-                
-                cursor.close()
-                conn.close()
-                
-                return {
-                    'statusCode': 200,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({
-                        'success': True,
-                        'job_id': job_id,
-                        'total_rows': result['total_rows'],
-                        'matched_count': result['matched_count'],
-                        'unmatched_count': result['unmatched_count'],
-                        'artist_summary': result['artist_summary'],
-                        'period': period
-                    })
-                }
-                
-            except Exception as process_error:
-                error_msg = f"Processing error: {str(process_error)}"
-                print(f"[ERROR] Job {job_id}: {error_msg}")
-                
-                cursor.execute("""
-                    UPDATE financial_upload_jobs 
-                    SET status = 'failed', 
-                        completed_at = NOW(),
-                        error_message = %s
-                    WHERE id = %s
-                """, (error_msg, job_id))
-                conn.commit()
-                
-                if cursor:
-                    cursor.close()
-                if conn:
-                    conn.close()
-                
-                return {
-                    'statusCode': 500,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({
-                        'error': error_msg,
-                        'job_id': job_id
-                    })
-                }
+            return {
+                'statusCode': 202,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({
+                    'success': True,
+                    'job_id': job_id,
+                    'message': 'File queued for processing',
+                    'period': period
+                })
+            }
             
         except Exception as e:
             error_msg = str(e)

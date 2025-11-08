@@ -114,7 +114,7 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
 
         const data = await response.json();
 
-        if (response.ok) {
+        if (response.ok || response.status === 202) {
           setSelectedFile(null);
           loadJobs();
         } else {
@@ -317,10 +317,11 @@ export default function FinancialReportsUpload({ userId }: FinancialReportsUploa
           <div className="text-sm text-gray-300 space-y-2">
             <p className="font-medium text-white">Как работает загрузка:</p>
             <ul className="list-disc list-inside space-y-1 text-gray-400">
-              <li>Файл обрабатывается в фоновом режиме — это займёт несколько минут</li>
-              <li>Вы можете закрыть страницу, обработка продолжится</li>
+              <li>Файл добавляется в очередь обработки — это займёт 1-3 минуты</li>
+              <li>Обработка происходит в фоновом режиме, можно закрыть страницу</li>
               <li>Статус обновляется автоматически каждые 3 секунды</li>
               <li>После завершения баланс артистов обновится автоматически</li>
+              <li>Большие файлы (8000+ строк) обрабатываются без ошибок</li>
             </ul>
           </div>
         </div>
