@@ -1,9 +1,3 @@
-"""
-Business: Worker для обработки финансовых отчётов из очереди
-Args: event - HTTP trigger или cron, context - execution context
-Returns: HTTP 200 с количеством обработанных задач
-"""
-
 import json
 import os
 import psycopg2
@@ -12,7 +6,6 @@ import openpyxl
 from io import BytesIO
 
 def normalize_string(s: str) -> str:
-    """Нормализует строку для сравнения: убирает пробелы, спецсимволы, приводит к lowercase"""
     if not s:
         return ""
     s = s.strip().lower()
@@ -22,7 +15,6 @@ def normalize_string(s: str) -> str:
     return s
 
 def load_all_releases(cursor) -> Dict[str, tuple]:
-    """Загружает все релизы из БД один раз в память"""
     cursor.execute("""
         SELECT r.id, r.artist_id, r.artist_name, r.release_name
         FROM releases r
@@ -42,7 +34,6 @@ def load_all_releases(cursor) -> Dict[str, tuple]:
     return releases_map
 
 def match_report_to_releases(artist_name: str, album_name: str, releases_map: Dict[str, tuple]) -> tuple:
-    """Ищет совпадение в загруженном словаре релизов"""
     normalized_artist = normalize_string(artist_name)
     normalized_album = normalize_string(album_name)
     
@@ -57,24 +48,29 @@ def match_report_to_releases(artist_name: str, album_name: str, releases_map: Di
     
     return (None, None)
 
-def process_one_job(job_id: int, file_data: bytes, period: str, admin_user_id: int, cursor, conn) -> dict:
-    """Обрабатывает один файл из очереди"""
-    print(f"[WORKER] Processing job {job_id}...")
+def process_chunk(chunk_id: int, job_id: int, start_row: int, end_row: int, 
+                  file_data: bytes, period: str, admin_user_id: int, 
+                  releases_map: Dict[str, tuple], cursor, conn) -> dict:
+    """Обрабатывает один чанк файла"""
+    print(f"[CHUNK {chunk_id}] Processing rows {start_row}-{end_row}")
     
     workbook = openpyxl.load_workbook(BytesIO(file_data), read_only=True, data_only=True)
     sheet = workbook.active
     
-    releases_map = load_all_releases(cursor)
-    print(f"[WORKER] Loaded {len(releases_map)} releases")
-    
     matched_count = 0
-    artist_totals = {}
     batch_reports = []
     batch_updates = {}
-    total_rows = 0
-    batch_size = 2000
+    processed_rows = 0
+    current_row = 0
     
-    for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        current_row += 1
+        
+        if current_row < start_row:
+            continue
+        if current_row > end_row:
+            break
+        
         if not row or len(row) < 14:
             continue
         
@@ -92,7 +88,7 @@ def process_one_job(job_id: int, file_data: bytes, period: str, admin_user_id: i
         
         user_id, release_id = match_report_to_releases(artist_name, album_name, releases_map)
         
-        total_rows += 1
+        processed_rows += 1
         
         if user_id:
             matched_count += 1
@@ -101,41 +97,8 @@ def process_one_job(job_id: int, file_data: bytes, period: str, admin_user_id: i
             if user_id not in batch_updates:
                 batch_updates[user_id] = 0
             batch_updates[user_id] += amount
-            
-            if artist_name not in artist_totals:
-                artist_totals[artist_name] = {'count': 0, 'total': 0}
-            artist_totals[artist_name]['count'] += 1
-            artist_totals[artist_name]['total'] += amount
         else:
             batch_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id, False))
-        
-        if len(batch_reports) >= batch_size:
-            matched_batch = [r[:7] for r in batch_reports if r[7]]
-            unmatched_batch = [(r[0], r[1], r[2], r[3], r[6]) for r in batch_reports if not r[7]]
-            
-            if matched_batch:
-                cursor.executemany("""
-                    INSERT INTO financial_reports 
-                    (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-                """, matched_batch)
-            
-            if unmatched_batch:
-                cursor.executemany("""
-                    INSERT INTO financial_reports 
-                    (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                    VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
-                """, unmatched_batch)
-            
-            cursor.execute("""
-                UPDATE financial_upload_jobs 
-                SET processed_rows = %s
-                WHERE id = %s
-            """, (total_rows, job_id))
-            
-            conn.commit()
-            print(f"[WORKER] Job {job_id}: Committed {len(batch_reports)} records at row {row_idx}")
-            batch_reports = []
     
     if batch_reports:
         matched_batch = [r[:7] for r in batch_reports if r[7]]
@@ -151,41 +114,88 @@ def process_one_job(job_id: int, file_data: bytes, period: str, admin_user_id: i
         if unmatched_batch:
             cursor.executemany("""
                 INSERT INTO financial_reports 
-                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
+                (period, artist_name, album_name, amount, uploaded_by, status)
+                VALUES (%s, %s, %s, %s, %s, 'pending')
             """, unmatched_batch)
         
         conn.commit()
-        print(f"[WORKER] Job {job_id}: Committed final {len(batch_reports)} records")
     
-    for user_id, total_amount in batch_updates.items():
-        cursor.execute("""
-            UPDATE users 
-            SET balance = balance + %s 
-            WHERE id = %s
-        """, (total_amount, user_id))
+    cursor.execute("""
+        UPDATE job_chunks
+        SET status = 'completed',
+            matched_count = %s,
+            processed_rows = %s,
+            completed_at = NOW()
+        WHERE id = %s
+    """, (matched_count, processed_rows, chunk_id))
     conn.commit()
     
-    artist_summary = []
-    for artist_name, data in artist_totals.items():
-        artist_summary.append({
-            'artist_name': artist_name,
-            'count': data['count'],
-            'total': data['total']
-        })
+    print(f"[CHUNK {chunk_id}] Completed: {processed_rows} rows, {matched_count} matched")
     
     return {
-        'total_rows': total_rows,
+        'chunk_id': chunk_id,
+        'processed_rows': processed_rows,
         'matched_count': matched_count,
-        'unmatched_count': total_rows - matched_count,
-        'artist_summary': artist_summary
+        'balance_updates': batch_updates
     }
+
+def finalize_job(job_id: int, cursor, conn):
+    """Завершает обработку задачи и обновляет балансы"""
+    cursor.execute("""
+        SELECT COUNT(*), SUM(processed_rows), SUM(matched_count)
+        FROM job_chunks
+        WHERE job_id = %s AND status = 'completed'
+    """, (job_id,))
+    completed_chunks, total_processed, total_matched = cursor.fetchone()
+    
+    cursor.execute("""
+        SELECT total_chunks FROM financial_upload_jobs WHERE id = %s
+    """, (job_id,))
+    total_chunks = cursor.fetchone()[0]
+    
+    cursor.execute("""
+        UPDATE financial_upload_jobs
+        SET completed_chunks = %s,
+            processed_rows = %s,
+            matched_count = %s,
+            unmatched_count = %s - %s
+        WHERE id = %s
+    """, (completed_chunks, total_processed, total_matched, total_processed, total_matched, job_id))
+    
+    if completed_chunks >= total_chunks:
+        cursor.execute("""
+            SELECT user_id, SUM(amount) as total_amount
+            FROM financial_reports
+            WHERE uploaded_by IN (SELECT uploaded_by FROM financial_upload_jobs WHERE id = %s)
+              AND period = (SELECT period FROM financial_upload_jobs WHERE id = %s)
+              AND status = 'matched'
+              AND uploaded_at >= (SELECT created_at FROM financial_upload_jobs WHERE id = %s)
+            GROUP BY user_id
+        """, (job_id, job_id, job_id))
+        
+        for user_id, total_amount in cursor.fetchall():
+            cursor.execute("""
+                UPDATE users
+                SET balance = balance + %s
+                WHERE id = %s
+            """, (total_amount, user_id))
+        
+        cursor.execute("""
+            UPDATE financial_upload_jobs
+            SET status = 'completed',
+                completed_at = NOW()
+            WHERE id = %s
+        """, (job_id,))
+        
+        print(f"[JOB {job_id}] ✅ Completed and balances updated")
+    
+    conn.commit()
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """
-    Business: Worker для обработки очереди финансовых отчётов
-    Args: event - HTTP/cron trigger, context - execution metadata
-    Returns: HTTP 200 с результатами обработки
+    Business: Worker для обработки финансовых отчётов по чанкам
+    Args: event с httpMethod GET
+    Returns: Статус обработки чанков
     """
     method = event.get('httpMethod', 'GET')
     
@@ -201,110 +211,113 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': ''
         }
     
-    dsn = os.environ.get('DATABASE_URL')
-    conn = None
-    cursor = None
-    processed_count = 0
-    
-    try:
-        conn = psycopg2.connect(dsn)
-        cursor = conn.cursor()
-        
-        cursor.execute("""
-            SELECT id, file_data, period, uploaded_by, total_rows
-            FROM financial_upload_jobs
-            WHERE status = 'pending'
-            ORDER BY created_at ASC
-            LIMIT 5
-        """)
-        
-        jobs = cursor.fetchall()
-        print(f"[WORKER] Found {len(jobs)} pending jobs")
-        
-        for job in jobs:
-            job_id, file_data, period, admin_user_id, expected_total = job
-            
-            if not file_data:
-                cursor.execute("""
-                    UPDATE financial_upload_jobs 
-                    SET status = 'failed', 
-                        error_message = 'No file data found',
-                        completed_at = NOW()
-                    WHERE id = %s
-                """, (job_id,))
-                conn.commit()
-                continue
+    if method == 'GET':
+        try:
+            dsn = os.environ.get('DATABASE_URL')
+            conn = psycopg2.connect(dsn)
+            cursor = conn.cursor()
             
             cursor.execute("""
-                UPDATE financial_upload_jobs 
+                SELECT jc.id, jc.job_id, jc.start_row, jc.end_row,
+                       fuj.file_data, fuj.period, fuj.uploaded_by
+                FROM job_chunks jc
+                JOIN financial_upload_jobs fuj ON jc.job_id = fuj.id
+                WHERE jc.status = 'pending'
+                ORDER BY jc.job_id, jc.chunk_number
+                LIMIT 3
+            """)
+            
+            pending_chunks = cursor.fetchall()
+            
+            if not pending_chunks:
+                cursor.close()
+                conn.close()
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json'},
+                    'body': json.dumps({
+                        'success': True,
+                        'processed': 0,
+                        'message': 'No pending chunks'
+                    })
+                }
+            
+            cursor.execute("""
+                UPDATE job_chunks
                 SET status = 'processing', started_at = NOW()
-                WHERE id = %s
-            """, (job_id,))
+                WHERE id IN %s
+            """, (tuple(chunk[0] for chunk in pending_chunks),))
             conn.commit()
             
-            try:
-                result = process_one_job(job_id, file_data, period, admin_user_id, cursor, conn)
-                
-                cursor.execute("""
-                    UPDATE financial_upload_jobs 
-                    SET status = 'completed', 
-                        completed_at = NOW(),
-                        total_rows = %s,
-                        processed_rows = %s,
-                        matched_count = %s,
-                        unmatched_count = %s
-                    WHERE id = %s
-                """, (result['total_rows'], result['total_rows'], 
-                      result['matched_count'], result['unmatched_count'], job_id))
-                conn.commit()
-                
-                print(f"[WORKER] ✅ Job {job_id} completed: {result['matched_count']}/{result['total_rows']} matched")
-                processed_count += 1
-                
-            except Exception as job_error:
-                error_msg = f"Processing error: {str(job_error)}"
-                print(f"[WORKER] ❌ Job {job_id} failed: {error_msg}")
-                
-                cursor.execute("""
-                    UPDATE financial_upload_jobs 
-                    SET status = 'failed', 
-                        completed_at = NOW(),
-                        error_message = %s
-                    WHERE id = %s
-                """, (error_msg, job_id))
-                conn.commit()
-        
-        if cursor:
+            releases_map = load_all_releases(cursor)
+            print(f"[WORKER] Loaded {len(releases_map)} releases")
+            
+            processed_jobs = set()
+            total_processed = 0
+            
+            for chunk_id, job_id, start_row, end_row, file_data, period, admin_user_id in pending_chunks:
+                try:
+                    cursor.execute("""
+                        UPDATE financial_upload_jobs
+                        SET status = 'processing', started_at = COALESCE(started_at, NOW())
+                        WHERE id = %s AND status = 'pending'
+                    """, (job_id,))
+                    conn.commit()
+                    
+                    result = process_chunk(
+                        chunk_id, job_id, start_row, end_row,
+                        bytes(file_data), period, admin_user_id,
+                        releases_map, cursor, conn
+                    )
+                    
+                    processed_jobs.add(job_id)
+                    total_processed += 1
+                    
+                except Exception as e:
+                    print(f"[CHUNK {chunk_id}] ❌ Error: {str(e)}")
+                    cursor.execute("""
+                        UPDATE job_chunks
+                        SET status = 'failed', error_message = %s
+                        WHERE id = %s
+                    """, (str(e), chunk_id))
+                    conn.commit()
+            
+            for job_id in processed_jobs:
+                finalize_job(job_id, cursor, conn)
+            
             cursor.close()
-        if conn:
             conn.close()
-        
-        return {
-            'statusCode': 200,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({
-                'success': True,
-                'processed': processed_count,
-                'pending_jobs': len(jobs)
-            })
-        }
-        
-    except Exception as e:
-        print(f"[WORKER] Fatal error: {str(e)}")
-        
-        if cursor:
+            
+            return {
+                'statusCode': 200,
+                'headers': {'Content-Type': 'application/json'},
+                'body': json.dumps({
+                    'success': True,
+                    'processed': total_processed,
+                    'jobs': list(processed_jobs)
+                })
+            }
+            
+        except Exception as e:
+            error_msg = str(e)
+            print(f"[WORKER] Fatal error: {error_msg}")
+            
             try:
-                cursor.close()
+                if cursor:
+                    cursor.close()
+                if conn:
+                    conn.close()
             except:
                 pass
-        if conn:
-            try:
-                conn.close()
-            except:
-                pass
-        
-        return {
-            'statusCode': 500,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': str(e)})
-        }
+            
+            return {
+                'statusCode': 500,
+                'headers': {'Content-Type': 'application/json'},
+                'body': json.dumps({'error': error_msg})
+            }
+    
+    return {
+        'statusCode': 405,
+        'headers': {'Content-Type': 'application/json'},
+        'body': json.dumps({'error': 'Method not allowed'})
+    }

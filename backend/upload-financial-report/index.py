@@ -66,123 +66,39 @@ def match_report_to_releases(artist_name: str, album_name: str, releases_map: Di
         print(f"[MATCH] ❌ NOT FOUND")
     return (None, None)
 
-def process_financial_report_sync(file_bytes: bytes, period: str, admin_user_id: int, cursor, conn) -> dict:
-    """
-    Синхронная обработка финансового отчёта с батч-коммитами
-    """
+def count_file_rows(file_bytes: bytes) -> int:
+    """Подсчитывает количество строк в Excel файле"""
     workbook = openpyxl.load_workbook(BytesIO(file_bytes), read_only=True, data_only=True)
     sheet = workbook.active
-    
-    releases_map = load_all_releases(cursor)
-    print(f"[UPLOAD] Loaded {len(releases_map)} releases")
-    
-    matched_count = 0
-    artist_totals = {}
-    batch_reports = []
-    batch_updates = {}
     total_rows = 0
-    batch_size = 1000
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if row and len(row) >= 14 and row[6]:
+            total_rows += 1
+    return total_rows
+
+def create_job_chunks(job_id: int, total_rows: int, chunk_size: int, cursor, conn):
+    """Создаёт чанки для обработки файла"""
+    total_chunks = (total_rows + chunk_size - 1) // chunk_size
     
-    for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
-        if not row or len(row) < 14:
-            continue
+    for chunk_num in range(total_chunks):
+        start_row = chunk_num * chunk_size + 2
+        end_row = min((chunk_num + 1) * chunk_size + 1, total_rows + 1)
         
-        artist_name = str(row[6]) if row[6] else ""
-        album_name = str(row[8]) if row[8] else ""
-        amount_str = str(row[13]) if row[13] else "0"
-        
-        if not artist_name:
-            continue
-        
-        try:
-            amount = float(amount_str.replace(',', '.').replace(' ', ''))
-        except (ValueError, AttributeError):
-            amount = 0.0
-        
-        user_id, release_id = match_report_to_releases(artist_name, album_name, releases_map, False)
-        
-        total_rows += 1
-        
-        if user_id:
-            matched_count += 1
-            batch_reports.append((period, artist_name, album_name, amount, user_id, release_id, admin_user_id, True))
-            
-            if user_id not in batch_updates:
-                batch_updates[user_id] = 0
-            batch_updates[user_id] += amount
-            
-            if artist_name not in artist_totals:
-                artist_totals[artist_name] = {'count': 0, 'total': 0}
-            artist_totals[artist_name]['count'] += 1
-            artist_totals[artist_name]['total'] += amount
-        else:
-            batch_reports.append((period, artist_name, album_name, amount, None, None, admin_user_id, False))
-        
-        if len(batch_reports) >= batch_size:
-            matched_batch = [r[:7] for r in batch_reports if r[7]]
-            unmatched_batch = [(r[0], r[1], r[2], r[3], r[6]) for r in batch_reports if not r[7]]
-            
-            if matched_batch:
-                cursor.executemany("""
-                    INSERT INTO financial_reports 
-                    (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-                """, matched_batch)
-            
-            if unmatched_batch:
-                cursor.executemany("""
-                    INSERT INTO financial_reports 
-                    (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                    VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
-                """, unmatched_batch)
-            
-            conn.commit()
-            print(f"[BATCH] Committed {len(batch_reports)} records at row {row_idx}, matched: {matched_count}")
-            batch_reports = []
-    
-    if batch_reports:
-        matched_batch = [r[:7] for r in batch_reports if r[7]]
-        unmatched_batch = [(r[0], r[1], r[2], r[3], r[6]) for r in batch_reports if not r[7]]
-        
-        if matched_batch:
-            cursor.executemany("""
-                INSERT INTO financial_reports 
-                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-            """, matched_batch)
-        
-        if unmatched_batch:
-            cursor.executemany("""
-                INSERT INTO financial_reports 
-                (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                VALUES (%s, %s, %s, %s, NULL, NULL, %s, 'pending')
-            """, unmatched_batch)
-        
-        conn.commit()
-        print(f"[FINAL] Committed final {len(batch_reports)} records")
-    
-    for user_id, total_amount in batch_updates.items():
         cursor.execute("""
-            UPDATE users 
-            SET balance = balance + %s 
-            WHERE id = %s
-        """, (total_amount, user_id))
+            INSERT INTO job_chunks 
+            (job_id, chunk_number, start_row, end_row, status)
+            VALUES (%s, %s, %s, %s, 'pending')
+        """, (job_id, chunk_num, start_row, end_row))
+    
+    cursor.execute("""
+        UPDATE financial_upload_jobs
+        SET total_chunks = %s, chunk_size = %s
+        WHERE id = %s
+    """, (total_chunks, chunk_size, job_id))
+    
     conn.commit()
-    
-    artist_summary = []
-    for artist_name, data in artist_totals.items():
-        artist_summary.append({
-            'artist_name': artist_name,
-            'count': data['count'],
-            'total': data['total']
-        })
-    
-    return {
-        'total_rows': total_rows,
-        'matched_count': matched_count,
-        'unmatched_count': total_rows - matched_count,
-        'artist_summary': artist_summary
-    }
+    print(f"[UPLOAD] Created {total_chunks} chunks for job {job_id}")
+    return total_chunks
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """
@@ -223,7 +139,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor.execute("""
                 SELECT id, period, filename, status, total_rows, processed_rows, 
                        matched_count, unmatched_count, error_message, 
-                       created_at, started_at, completed_at
+                       created_at, started_at, completed_at, total_chunks, completed_chunks
                 FROM financial_upload_jobs
                 WHERE uploaded_by = %s
                 ORDER BY created_at DESC
@@ -244,7 +160,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'error_message': row[8],
                     'created_at': row[9].isoformat() if row[9] else None,
                     'started_at': row[10].isoformat() if row[10] else None,
-                    'completed_at': row[11].isoformat() if row[11] else None
+                    'completed_at': row[11].isoformat() if row[11] else None,
+                    'total_chunks': row[12],
+                    'completed_chunks': row[13],
+                    'progress': round((row[13] / row[12] * 100) if row[12] and row[12] > 0 else 0, 1)
                 })
             
             cursor.close()
@@ -288,19 +207,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             conn = psycopg2.connect(dsn)
             cursor = conn.cursor()
             
+            total_rows = count_file_rows(file_bytes)
+            print(f"[UPLOAD] File has {total_rows} rows")
+            
             cursor.execute("""
                 INSERT INTO financial_upload_jobs 
-                (uploaded_by, period, filename, status, file_data)
-                VALUES (%s, %s, %s, 'pending', %s)
+                (uploaded_by, period, filename, status, file_data, total_rows)
+                VALUES (%s, %s, %s, 'pending', %s, %s)
                 RETURNING id
-            """, (admin_user_id, period, filename, psycopg2.Binary(file_bytes)))
+            """, (admin_user_id, period, filename, psycopg2.Binary(file_bytes), total_rows))
             job_id = cursor.fetchone()[0]
             conn.commit()
+            
+            chunk_size = 1000
+            total_chunks = create_job_chunks(job_id, total_rows, chunk_size, cursor, conn)
             
             cursor.close()
             conn.close()
             
-            print(f"[UPLOAD] Created job {job_id} in queue for async processing")
+            print(f"[UPLOAD] Created job {job_id} with {total_chunks} chunks")
             
             return {
                 'statusCode': 202,
@@ -308,8 +233,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({
                     'success': True,
                     'job_id': job_id,
-                    'message': 'File queued for processing',
-                    'period': period
+                    'message': f'File queued for processing ({total_chunks} chunks)',
+                    'period': period,
+                    'total_rows': total_rows,
+                    'total_chunks': total_chunks
                 })
             }
             
