@@ -6,68 +6,51 @@ import { Release } from './releases/types';
 import { API_ENDPOINTS } from '@/config/api';
 
 type Platform = 'yandex' | 'vk' | 'tiktok' | 'mts' | 'spotify' | 'sber';
+type Period = 'week' | 'month' | 'halfyear' | 'year';
 
-const platformData = {
-  yandex: [
-    { date: '05.05', plays: 520 },
-    { date: '06.05', plays: 480 },
-    { date: '07.05', plays: 610 },
-    { date: '08.05', plays: 680 },
-    { date: '09.05', plays: 540 },
-    { date: '10.05', plays: 590 },
-    { date: '11.05', plays: 510 },
-    { date: '12.05', plays: 450 },
-  ],
-  vk: [
-    { date: '05.05', plays: 35 },
-    { date: '06.05', plays: 42 },
-    { date: '07.05', plays: 38 },
-    { date: '08.05', plays: 51 },
-    { date: '09.05', plays: 45 },
-    { date: '10.05', plays: 39 },
-    { date: '11.05', plays: 33 },
-    { date: '12.05', plays: 28 },
-  ],
-  tiktok: [
-    { date: '05.05', creations: 46, views: 13000, comments: 56, likes: 450, shares: 121, favorites: 28 },
-    { date: '06.05', creations: 38, views: 11500, comments: 42, likes: 380, shares: 95, favorites: 22 },
-    { date: '07.05', creations: 52, views: 15000, comments: 68, likes: 520, shares: 142, favorites: 35 },
-    { date: '08.05', creations: 61, views: 16200, comments: 73, likes: 610, shares: 158, favorites: 41 },
-    { date: '09.05', creations: 44, views: 12800, comments: 51, likes: 440, shares: 108, favorites: 26 },
-    { date: '10.05', creations: 41, views: 12300, comments: 48, likes: 390, shares: 102, favorites: 24 },
-    { date: '11.05', creations: 29, views: 8200, comments: 33, likes: 280, shares: 68, favorites: 16 },
-    { date: '12.05', creations: 12, views: 2100, comments: 14, likes: 95, shares: 28, favorites: 7 },
-  ],
-  mts: [
-    { date: '05.05', plays: 48 },
-    { date: '06.05', plays: 52 },
-    { date: '07.05', plays: 45 },
-    { date: '08.05', plays: 61 },
-    { date: '09.05', plays: 55 },
-    { date: '10.05', plays: 49 },
-    { date: '11.05', plays: 42 },
-    { date: '12.05', plays: 38 },
-  ],
-  spotify: [
-    { date: '05.05', plays: 2 },
-    { date: '06.05', plays: 3 },
-    { date: '07.05', plays: 4 },
-    { date: '08.05', plays: 3 },
-    { date: '09.05', plays: 2 },
-    { date: '10.05', plays: 3 },
-    { date: '11.05', plays: 1 },
-    { date: '12.05', plays: 1 },
-  ],
-  sber: [
-    { date: '05.05', plays: 0 },
-    { date: '06.05', plays: 1 },
-    { date: '07.05', plays: 0 },
-    { date: '08.05', plays: 1 },
-    { date: '09.05', plays: 0 },
-    { date: '10.05', plays: 0 },
-    { date: '11.05', plays: 1 },
-    { date: '12.05', plays: 0 },
-  ],
+const generatePlatformData = (period: Period, platform: Platform) => {
+  const baseMultipliers = {
+    yandex: 1,
+    vk: 0.07,
+    tiktok: 25,
+    mts: 0.08,
+    spotify: 0.004,
+    sber: 0.001
+  };
+
+  const multiplier = baseMultipliers[platform];
+
+  if (platform === 'tiktok') {
+    const configs = {
+      week: { points: 7, baseViews: 2000 },
+      month: { points: 30, baseViews: 500 },
+      halfyear: { points: 26, baseViews: 3000 },
+      year: { points: 52, baseViews: 3500 }
+    };
+    const config = configs[period];
+    return Array.from({ length: config.points }, (_, i) => ({
+      date: period === 'year' ? `Нед ${i + 1}` : period === 'halfyear' ? `${i + 1} нед` : `${String(i + 1).padStart(2, '0')}.11`,
+      creations: Math.floor(30 + Math.random() * 40),
+      views: Math.floor(config.baseViews + Math.random() * 5000 + Math.sin(i / 2) * 3000),
+      comments: Math.floor(40 + Math.random() * 40),
+      likes: Math.floor(300 + Math.random() * 400),
+      shares: Math.floor(80 + Math.random() * 100),
+      favorites: Math.floor(15 + Math.random() * 30)
+    }));
+  }
+
+  const configs = {
+    week: { points: 7, base: 500 },
+    month: { points: 30, base: 150 },
+    halfyear: { points: 26, base: 600 },
+    year: { points: 52, base: 650 }
+  };
+  const config = configs[period];
+
+  return Array.from({ length: config.points }, (_, i) => ({
+    date: period === 'year' ? `Нед ${i + 1}` : period === 'halfyear' ? `${i + 1} нед` : `${String(i + 1).padStart(2, '0')}.11`,
+    plays: Math.floor((config.base + Math.random() * 200 + Math.sin(i / 2) * 100) * multiplier)
+  }));
 };
 
 const platformStats = [
@@ -94,13 +77,21 @@ interface ArtistAnalyticsProps {
   userId: number;
 }
 
+const periodOptions = [
+  { id: 'week' as Period, label: 'За неделю', icon: 'Calendar' },
+  { id: 'month' as Period, label: 'За месяц', icon: 'CalendarDays' },
+  { id: 'halfyear' as Period, label: 'За полгода', icon: 'CalendarRange' },
+  { id: 'year' as Period, label: 'За год', icon: 'CalendarClock' }
+];
+
 export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
-  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'halfyear'>('week');
+  const [selectedPeriod, setSelectedPeriod] = useState<Period>('week');
   const [selectedRelease, setSelectedRelease] = useState<number | null>(null);
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('yandex');
   const [releases, setReleases] = useState<Release[]>([]);
   const [loading, setLoading] = useState(true);
   const [showReleaseSelector, setShowReleaseSelector] = useState(false);
+  const [showPeriodSelector, setShowPeriodSelector] = useState(false);
   const [visibleMetrics, setVisibleMetrics] = useState<Record<string, boolean>>({
     creations: true,
     views: true,
@@ -137,14 +128,18 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
       if (showReleaseSelector && !target.closest('.release-selector-container')) {
         setShowReleaseSelector(false);
       }
+      if (showPeriodSelector && !target.closest('.period-selector-container')) {
+        setShowPeriodSelector(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showReleaseSelector]);
+  }, [showReleaseSelector, showPeriodSelector]);
 
-  const currentData = platformData[selectedPlatform];
+  const currentData = generatePlatformData(selectedPeriod, selectedPlatform);
   const isTikTok = selectedPlatform === 'tiktok';
   const currentRelease = releases.find(r => r.id === selectedRelease);
+  const currentPeriodOption = periodOptions.find(p => p.id === selectedPeriod);
 
   if (loading) {
     return (
@@ -270,31 +265,47 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
             )}
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0">
-            <Button
-              variant={selectedPeriod === 'week' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedPeriod('week')}
-              className={`text-xs whitespace-nowrap ${selectedPeriod === 'week' ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-black hover:from-yellow-600 hover:to-orange-600' : 'border-border text-gray-400'}`}
+          <div className="relative period-selector-container min-w-[180px]">
+            <button
+              onClick={() => setShowPeriodSelector(!showPeriodSelector)}
+              className="w-full bg-card/60 border border-border rounded-xl px-4 py-3 text-left flex items-center justify-between hover:border-primary/50 transition-all group"
             >
-              Неделя
-            </Button>
-            <Button
-              variant={selectedPeriod === 'month' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedPeriod('month')}
-              className={`text-xs whitespace-nowrap ${selectedPeriod === 'month' ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-black hover:from-yellow-600 hover:to-orange-600' : 'border-border text-gray-400'}`}
-            >
-              Месяц
-            </Button>
-            <Button
-              variant={selectedPeriod === 'halfyear' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedPeriod('halfyear')}
-              className={`text-xs whitespace-nowrap ${selectedPeriod === 'halfyear' ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-black hover:from-yellow-600 hover:to-orange-600' : 'border-border text-gray-400'}`}
-            >
-              Полгода
-            </Button>
+              {currentPeriodOption ? (
+                <div className="flex items-center gap-3">
+                  <Icon name={currentPeriodOption.icon} className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-medium text-white">{currentPeriodOption.label}</span>
+                </div>
+              ) : (
+                <span className="text-gray-400">Выберите период</span>
+              )}
+              <Icon
+                name={showPeriodSelector ? 'ChevronUp' : 'ChevronDown'}
+                className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors"
+              />
+            </button>
+            
+            {showPeriodSelector && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-2xl z-50">
+                {periodOptions.map((period) => (
+                  <button
+                    key={period.id}
+                    onClick={() => {
+                      setSelectedPeriod(period.id);
+                      setShowPeriodSelector(false);
+                    }}
+                    className={`w-full p-3 flex items-center gap-3 hover:bg-white/5 transition-colors first:rounded-t-xl last:rounded-b-xl ${
+                      selectedPeriod === period.id ? 'bg-primary/10' : ''
+                    }`}
+                  >
+                    <Icon name={period.icon} className="w-5 h-5 text-primary" />
+                    <span className="flex-1 text-left text-sm font-medium text-white">{period.label}</span>
+                    {selectedPeriod === period.id && (
+                      <Icon name="Check" className="w-5 h-5 text-primary" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
