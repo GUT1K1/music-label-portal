@@ -85,12 +85,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             unmatched_rows = []
             
             for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
-                if not row or len(row) < 15:
+                if not row or len(row) < 14:
                     continue
                 
                 artist_name = str(row[6]) if row[6] else ""
                 album_name = str(row[8]) if row[8] else ""
-                amount_str = str(row[14]) if row[14] else "0"
+                amount_str = str(row[13]) if row[13] else "0"
                 
                 if not artist_name or not album_name:
                     continue
