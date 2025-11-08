@@ -105,18 +105,26 @@ def process_chunk(chunk_id: int, job_id: int, start_row: int, end_row: int,
         unmatched_batch = [(r[0], r[1], r[2], r[3], r[6]) for r in batch_reports if not r[7]]
         
         if matched_batch:
-            cursor.executemany("""
+            values_str = ','.join(
+                cursor.mogrify("(%s,%s,%s,%s,%s,%s,%s,'matched')", row).decode('utf-8')
+                for row in matched_batch
+            )
+            cursor.execute(f"""
                 INSERT INTO financial_reports 
                 (period, artist_name, album_name, amount, user_id, release_id, uploaded_by, status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, 'matched')
-            """, matched_batch)
+                VALUES {values_str}
+            """)
         
         if unmatched_batch:
-            cursor.executemany("""
+            values_str = ','.join(
+                cursor.mogrify("(%s,%s,%s,%s,%s,'pending')", row).decode('utf-8')
+                for row in unmatched_batch
+            )
+            cursor.execute(f"""
                 INSERT INTO financial_reports 
                 (period, artist_name, album_name, amount, uploaded_by, status)
-                VALUES (%s, %s, %s, %s, %s, 'pending')
-            """, unmatched_batch)
+                VALUES {values_str}
+            """)
         
         conn.commit()
     
