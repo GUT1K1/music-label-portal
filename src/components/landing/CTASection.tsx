@@ -24,12 +24,6 @@ export default function CTASection() {
             <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-700" />
 
             <div className="relative z-10 text-center">
-              <div className="flex justify-center items-center mb-8 md:mb-10">
-                <div className="scale-90 md:scale-100">
-                  <Animated420Logo />
-                </div>
-              </div>
-
               <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 text-white leading-tight">
                 Готов выпустить свой трек?
               </h2>
