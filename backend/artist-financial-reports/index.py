@@ -50,7 +50,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     uploaded_at,
                     status
                 FROM financial_reports
-                WHERE user_id = %s AND status = 'matched'
+                WHERE user_id = %s 
+                  AND status = 'matched'
+                  AND id > 2
                 ORDER BY uploaded_at DESC, period DESC
             """, (user_id,))
             
@@ -72,7 +74,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     COALESCE(SUM(amount), 0) as total,
                     COUNT(*) as count
                 FROM financial_reports
-                WHERE user_id = %s AND status = 'matched'
+                WHERE user_id = %s 
+                  AND status = 'matched'
+                  AND id > 2
             """, (user_id,))
             
             stats_row = cursor.fetchone()
@@ -82,7 +86,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor.execute("""
                 SELECT period, SUM(amount) as period_total
                 FROM financial_reports
-                WHERE user_id = %s AND status = 'matched'
+                WHERE user_id = %s 
+                  AND status = 'matched'
+                  AND id > 2
                 GROUP BY period
                 ORDER BY period DESC
             """, (user_id,))
