@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import NotificationBell from '@/components/NotificationBell';
-import HeaderMusicPlayer from '@/components/HeaderMusicPlayer';
 import { API_ENDPOINTS } from '@/config/api';
 import {
   DropdownMenu,
@@ -123,8 +122,6 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
           <p className="text-xs text-primary/60 tracking-wider">Музыкальный лейбл</p>
         </div>
       </div>
-      
-      <HeaderMusicPlayer userId={userId} />
       
       {/* Desktop menu */}
       <div className="hidden md:flex items-center gap-3">

@@ -9,6 +9,7 @@ import NewsView from '@/components/NewsView';
 import WithdrawalDialog from '@/components/WithdrawalDialog';
 import ArtistAnalytics from '@/components/ArtistAnalytics';
 import ArtistFinance from '@/components/ArtistFinance';
+import MusicPlayerDemo from '@/components/MusicPlayer/MusicPlayerDemo';
 import { User, Ticket, NewTicket } from '@/types';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -178,7 +179,7 @@ export default function ArtistView({
         />
       </div>
 
-
+      <MusicPlayerDemo userId={user.id} />
     </div>
   );
 }
