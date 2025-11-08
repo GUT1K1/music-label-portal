@@ -101,6 +101,11 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
     favorites: true,
   });
   const [cachedData, setCachedData] = useState<Record<string, any[]>>({});
+  const [totalStats] = useState(() => ({
+    halfYear: Math.floor(150000 + Math.random() * 50000),
+    month: Math.floor(20000 + Math.random() * 15000),
+    day: Math.floor(50 + Math.random() * 100)
+  }));
 
   useEffect(() => {
     const loadReleases = async () => {
@@ -151,12 +156,6 @@ export default function ArtistAnalytics({ userId }: ArtistAnalyticsProps) {
   const isTikTok = selectedPlatform === 'tiktok';
   const currentRelease = releases.find(r => r.id === selectedRelease);
   const currentPeriodOption = periodOptions.find(p => p.id === selectedPeriod);
-
-  const totalStats = {
-    halfYear: Math.floor(150000 + Math.random() * 50000 + releases.length * 10000),
-    month: Math.floor(20000 + Math.random() * 15000 + releases.length * 2000),
-    day: Math.floor(50 + Math.random() * 100 + releases.length * 10)
-  };
 
   if (loading) {
     return (
