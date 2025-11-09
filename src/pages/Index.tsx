@@ -13,6 +13,7 @@ export default function Index() {
   const { user, login, logout, updateUserProfile, refreshUserData } = useAuth();
   const [newUser, setNewUser] = useState({ username: '', full_name: '', role: 'artist' });
   const [messagesOpen, setMessagesOpen] = useState(false);
+  const [isProcessingAuth, setIsProcessingAuth] = useState(false);
 
   useEffect(() => {
     const handleVKCallback = async () => {
@@ -20,6 +21,11 @@ export default function Index() {
       const urlParams = new URLSearchParams(window.location.search);
       const vkCode = urlParams.get('code');
       const vkState = urlParams.get('state');
+      
+      // Если есть VK параметры - показываем loader
+      if (vkCode && vkState) {
+        setIsProcessingAuth(true);
+      }
       
       console.log('🔍 VK params:', { vkCode, vkState });
       
@@ -74,9 +80,11 @@ export default function Index() {
             login('', '', undefined, data.user);
           } else {
             console.error('🔴 VK auth failed - FULL ERROR:', data);
+            setIsProcessingAuth(false); // Убираем loader при ошибке
           }
         } catch (error) {
           console.error('🔴 VK auth error:', error);
+          setIsProcessingAuth(false); // Убираем loader при ошибке
         }
         
         // Убираем параметры из URL
@@ -118,6 +126,11 @@ export default function Index() {
       </div>
     </div>
   ));
+
+  // Показываем loader пока обрабатывается VK/Telegram авторизация
+  if (isProcessingAuth) {
+    return <LoadingFallback />;
+  }
 
   if (!user) {
     return <AuthForm onLogin={login} />;
