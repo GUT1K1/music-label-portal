@@ -35,7 +35,8 @@ export default function ArtistFinance({ userId, userBalance, onRefreshData }: Ar
   const [loading, setLoading] = useState(true);
 
   const minWithdrawal = 1500;
-  const canWithdraw = userBalance >= minWithdrawal;
+  const balance = userBalance || 0;
+  const canWithdraw = balance >= minWithdrawal;
 
   useEffect(() => {
     loadReports();
@@ -69,10 +70,10 @@ export default function ArtistFinance({ userId, userBalance, onRefreshData }: Ar
               <div>
                 <div className="text-sm text-gray-400 mb-1">Текущий баланс</div>
                 <div className="text-4xl md:text-5xl font-bold text-white mb-2">
-                  {userBalance.toLocaleString()} ₽
+                  {balance.toLocaleString()} ₽
                 </div>
                 <div className="text-xs text-gray-400">
-                  {canWithdraw ? `Доступно для вывода: ${userBalance.toLocaleString()} ₽` : `До минимального вывода: ${(minWithdrawal - userBalance).toLocaleString()} ₽`}
+                  {canWithdraw ? `Доступно для вывода: ${balance.toLocaleString()} ₽` : `До минимального вывода: ${(minWithdrawal - balance).toLocaleString()} ₽`}
                 </div>
               </div>
               <div className="bg-yellow-500/20 p-3 rounded-lg">

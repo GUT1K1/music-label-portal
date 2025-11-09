@@ -25,6 +25,7 @@ export default function WithdrawalDialog({
   onSuccess 
 }: WithdrawalDialogProps) {
   const { toast } = useToast();
+  const balance = currentBalance || 0;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     amount: '',
@@ -47,7 +48,7 @@ export default function WithdrawalDialog({
       return;
     }
     
-    if (amount > currentBalance) {
+    if (amount > balance) {
       toast({
         title: 'Ошибка',
         description: 'Сумма превышает доступный баланс',
@@ -123,7 +124,7 @@ export default function WithdrawalDialog({
             Запрос на вывод средств
           </DialogTitle>
           <DialogDescription>
-            Доступно к выводу: <span className="text-primary font-bold">{currentBalance.toFixed(2)} ₽</span>
+            Доступно к выводу: <span className="text-primary font-bold">{balance.toFixed(2)} ₽</span>
           </DialogDescription>
         </DialogHeader>
 
@@ -135,7 +136,7 @@ export default function WithdrawalDialog({
               type="number"
               step="0.01"
               min="1000"
-              max={currentBalance}
+              max={balance}
               value={formData.amount}
               onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               placeholder="Введите сумму"
