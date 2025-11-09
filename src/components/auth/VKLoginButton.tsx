@@ -6,7 +6,6 @@ interface VKLoginButtonProps {
 }
 
 const VK_APP_ID = '54299249';
-const VK_REDIRECT_PROXY = 'https://functions.poehali.dev/c2662a32-9a12-4f7d-b516-8441bc06cfa5';
 
 export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
   const { toast } = useToast();
@@ -58,9 +57,13 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       sessionStorage.setItem('vk_code_verifier', codeVerifier);
       sessionStorage.setItem('vk_state', stateRandom);
       
-      // Формируем URL авторизации (используем прокси-функцию для VK redirect)
-      // device_id НЕ передаем - VK сам его генерирует и вернет в callback!
-      const redirectUri = VK_REDIRECT_PROXY;
+      // Формируем URL авторизации
+      // VK ID редиректит обратно на наш фронтенд /app
+      const redirectUri = `${currentDomain}/app`;
+      
+      // Сохраняем redirect_uri для использования в backend
+      sessionStorage.setItem('vk_redirect_uri', redirectUri);
+      
       const params = new URLSearchParams({
         response_type: 'code',
         client_id: VK_APP_ID,
