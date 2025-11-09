@@ -32,6 +32,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         body_str = event.get('body', '{}')
         body = json.loads(body_str)
         
+        print(f"🔍 vk-auth received request:")
+        print(f"  Body keys: {list(body.keys())}")
+        print(f"  code: {body.get('code', '')[:20]}..." if body.get('code') else "  code: None")
+        print(f"  code_verifier present: {bool(body.get('code_verifier'))}")
+        print(f"  device_id present: {bool(body.get('device_id'))}")
+        
         vk_code = body.get('code')
         code_verifier = body.get('code_verifier')
         device_id = body.get('device_id')
