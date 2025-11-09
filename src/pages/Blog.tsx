@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BurgerMenu from '@/components/BurgerMenu';
 import Icon from '@/components/ui/icon';
 import SEO from '@/components/SEO';
 
 interface BlogPost {
   id: number;
+  slug: string;
   title: string;
   excerpt: string;
   content: string;
@@ -17,10 +19,13 @@ interface BlogPost {
 
 export default function Blog() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const posts: BlogPost[] = [
     {
       id: 1,
+      slug: 'skolko-proslushivaniy-v-top-1',
       title: 'Сколько прослушиваний в ТОП 1?',
       excerpt: 'Актуальная статистика 2025 года: сколько нужно прослушиваний для попадания в чарты на всех популярных платформах. Реальные примеры артистов.',
       content: `
@@ -140,6 +145,7 @@ export default function Blog() {
     },
     {
       id: 2,
+      slug: 'trendy-2025-kak-stat-populyarnym-artistom',
       title: 'Тренды 2025. Как стать популярным артистом?',
       excerpt: '7 главных трендов музыкальной индустрии 2025 года + реальные кейсы артистов, которые взорвали чарты. AI, короткие форматы, коллаборации.',
       content: `
@@ -318,6 +324,7 @@ export default function Blog() {
     },
     {
       id: 3,
+      slug: 'skolko-platyat-za-proslushivaniya',
       title: 'Сколько платят за прослушивания',
       excerpt: 'В эпоху цифровой дистрибуции роялти от прослушиваний играют все более важную роль в монетизации музыки и получаете разное роялти...',
       content: `
@@ -360,6 +367,7 @@ export default function Blog() {
     },
     {
       id: 4,
+      slug: 'prodvizhenie-muzyki-v-tiktok',
       title: 'Продвижение музыки в TikTok',
       excerpt: 'В современном мире музыкальной индустрии TikTok стал одной из самых мощных платформ для открытия и продвижения новой музыки...',
       content: `
@@ -411,6 +419,7 @@ export default function Blog() {
     },
     {
       id: 5,
+      slug: 'chek-list-podgotovki-reliza',
       title: 'Чек-лист подготовки релиза',
       excerpt: 'Качественное оформление и грамотная подача материала — залог успешного старта релиза и продолжительной жизни трека в музыкальном пространстве...',
       content: `
@@ -467,6 +476,7 @@ export default function Blog() {
     },
     {
       id: 6,
+      slug: 'kartochki-artista-i-kak-s-nimi-rabotat',
       title: 'Карточки артиста и как с ними работать',
       excerpt: 'Оптимизация платформ профилей — главный инструмент для привлечения слушателей. А начинается все с правильно оформленной карточки...',
       content: `
@@ -523,6 +533,7 @@ export default function Blog() {
     },
     {
       id: 7,
+      slug: 'prodvizhenie-muzyki-vk',
       title: 'Продвижение музыки VK',
       excerpt: 'VKонтакте — это не просто соцсеть, а крупная платформа для продвижения музыки. Разбираемся, как работать с VK музыкой и клипами...',
       content: `
@@ -587,6 +598,7 @@ export default function Blog() {
     },
     {
       id: 8,
+      slug: 'kak-prodvigatsya-v-yandex-muzyke',
       title: 'Как продвигаться в Яндекс Музыке',
       excerpt: 'Яндекс Музыка — это одна из самых перспективных платформ для продвижения музыки в России. Треки находят слушателей через умные алгоритмы...',
       content: `
@@ -653,6 +665,7 @@ export default function Blog() {
     },
     {
       id: 9,
+      slug: 'distribuciya-muzyki-chto-eto-i-kak-rabotaet',
       title: 'Дистрибуция музыки: что это и как работает',
       excerpt: 'Дистрибуция музыки — быстрый, эффективный и абсолютно легальный сервис, доставляющий музыку на стриминговые площадки. 10% комиссии, поддержка 24/7...',
       content: `
@@ -729,6 +742,7 @@ export default function Blog() {
     },
     {
       id: 10,
+      slug: 'fl-studio-dlya-nachinayushchih',
       title: 'FL Studio для начинающих: создай первый трек',
       excerpt: 'Простой инструмент, позволяющий написать бит: справятся даже новички без опыта. Подробная инструкция от установки до экспорта...',
       content: `
@@ -818,6 +832,7 @@ export default function Blog() {
     },
     {
       id: 11,
+      slug: 'etapy-muzykalnogo-prodakshena',
       title: 'Этапы музыкального продакшена',
       excerpt: 'Простым языком объясняем, что такое миксинг, аранжировка, мастеринг и сонграйтинг. Полный путь от идеи до готового трека...',
       content: `
@@ -912,6 +927,7 @@ export default function Blog() {
     },
     {
       id: 12,
+      slug: 'kak-ii-vliyaet-na-muzykalnuyu-industriyu',
       title: 'Как ИИ влияет на музыкальную индустрию',
       excerpt: 'Выясняем, чем полезен искусственный интеллект и почему из-за него ваш любимый артист может лишиться работы. Друг бизнеса и враг творчества...',
       content: `
@@ -1006,6 +1022,7 @@ export default function Blog() {
     },
     {
       id: 13,
+      slug: 'kak-prodvigat-muzykanta-v-2025',
       title: 'Как продвигать музыканта в 2025 году',
       excerpt: 'Не избегать российских соцсетей и выжимать максимум из запрещённых. Актуальные стратегии продвижения артистов в новых реалиях...',
       content: `
@@ -1122,6 +1139,7 @@ export default function Blog() {
     },
     {
       id: 14,
+      slug: '5-glavnyh-sposobov-zarabatyvat-na-muzyke',
       title: '5+ главных способов зарабатывать на музыке',
       excerpt: 'Стриминги, концерты, мерч и не только. Разбираем все возможные источники дохода для современного музыканта...',
       content: `
@@ -1261,6 +1279,7 @@ export default function Blog() {
     },
     {
       id: 15,
+      slug: 'chem-zanimaetsya-menedzher-muzykalnogo-artista',
       title: 'Чем занимается менеджер музыкального артиста',
       excerpt: 'Рассказывают менеджеры Black Star, Therr Maitz, Риты Дакоты. Кто управляет карьерой звезд и как стать музыкальным менеджером...',
       content: `
@@ -1436,6 +1455,7 @@ export default function Blog() {
     },
     {
       id: 16,
+      slug: 'kak-vypustit-svoy-pervyy-trek',
       title: 'Как выпустить свой первый трек: полная инструкция',
       excerpt: 'Пошаговый гайд для тех, кто никогда не выпускал музыку. От создания трека до публикации на всех платформах. Без воды, только практика...',
       content: `
@@ -1630,6 +1650,7 @@ export default function Blog() {
     },
     {
       id: 17,
+      slug: 'telegram-prodvizhenie-dlya-muzykantov',
       title: 'Telegram-продвижение для музыкантов в 2025',
       excerpt: 'Telegram обогнал Instagram по эффективности. Как создать канал, набрать подписчиков и продавать музыку через Telegram. Боты, реклама, монетизация...',
       content: `
@@ -1857,6 +1878,7 @@ export default function Blog() {
     },
     {
       id: 18,
+      slug: 'kak-popast-v-pleylisty-spotify',
       title: 'Как попасть в плейлисты Spotify в 2025',
       excerpt: 'Пошаговая инструкция: как подать трек в редакторские плейлисты Spotify, работать с кураторами и увеличить шансы на попадание в Release Radar.',
       content: `
@@ -1993,6 +2015,7 @@ export default function Blog() {
     },
     {
       id: 19,
+      slug: 'mastering-treka-gde-i-za-skolko',
       title: 'Мастеринг трека: где и за сколько',
       excerpt: 'Сравнение вариантов мастеринга: AI-сервисы ($10), фриланс ($50-200), профессиональные студии ($300-1000). Что выбрать для вашего бюджета?',
       content: `
@@ -2118,6 +2141,7 @@ export default function Blog() {
     },
     {
       id: 20,
+      slug: 'kak-raskrutit-youtube-kanal-muzykantu',
       title: 'Как раскрутить YouTube канал музыканту',
       excerpt: 'Стратегия продвижения музыкального YouTube-канала: оптимизация SEO, Shorts, коллаборации. От 0 до 10,000 подписчиков за 6 месяцев.',
       content: `
@@ -2292,7 +2316,8 @@ export default function Blog() {
     },
     {
       id: 21,
-      title: 'Лучшие дистриб Human: уторы музыки 2025',
+      slug: 'luchshie-distributory-muzyki-2025',
+      title: 'Лучшие дистрибьюторы музыки 2025',
       excerpt: 'Сравнение топ-10 дистрибьюторов: DistroKid, TuneCore, CD Baby, Believe, AWAL. Цены, комиссии, скорость выплат, эксклюзивные возможности.',
       content: `
         <h2>Топ-10 дистрибьюторов музыки 2025</h2>
@@ -2363,6 +2388,7 @@ export default function Blog() {
     },
     {
       id: 22,
+      slug: 'avtorskie-prava-na-muzyku',
       title: 'Авторские права на музыку: простыми словами',
       excerpt: 'Как защитить свои треки, зарегистрировать в РАО, что делать если украли музыку. Юридический гид для музыкантов без сложных терминов.',
       content: `
@@ -2466,6 +2492,7 @@ export default function Blog() {
     },
     {
       id: 23,
+      slug: 'kak-sozdat-press-kit-dlya-artista',
       title: 'Как создать пресс-кит для артиста',
       excerpt: 'Электронный пресс-кит (EPK) — визитка музыканта для букеров, СМИ и лейблов. Что включить, где хостить, примеры успешных EPK.',
       content: `
@@ -2583,6 +2610,7 @@ export default function Blog() {
     },
     {
       id: 24,
+      slug: 'reklama-muzyki-v-socsetyah',
       title: 'Реклама музыки в социальных сетях: бюджеты и стратегии',
       excerpt: 'Сколько стоит реклама трека в VK, Instagram, TikTok. Оптимальные бюджеты, настройка таргетинга, реальные кейсы с ROI.',
       content: `
@@ -2723,6 +2751,7 @@ export default function Blog() {
     },
     {
       id: 25,
+      slug: 'kak-zarabotat-na-strimah',
       title: 'Как музыканту заработать на стримах',
       excerpt: 'Донаты, подписки, спонсорства — как монетизировать стримы на Twitch, YouTube, Boosty. Реальные цифры и стратегии.',
       content: `
@@ -2788,6 +2817,7 @@ export default function Blog() {
     },
     {
       id: 26,
+      slug: 'prodvizhenie-cherez-blogerov',
       title: 'Продвижение через блогеров и инфлюенсеров',
       excerpt: 'Как найти подходящих инфлюенсеров, договориться о коллаборации, сколько стоит интеграция. Telegram, Instagram, YouTube.',
       content: `
@@ -2871,6 +2901,7 @@ export default function Blog() {
     },
     {
       id: 27,
+      slug: 'verifikaciya-v-spotify-i-apple-music',
       title: 'Как получить верификацию в Spotify и Apple Music',
       excerpt: 'Синяя галочка в профиле артиста: требования, процесс подачи заявки, сроки рассмотрения. Spotify for Artists и Apple Music for Artists.',
       content: `
@@ -2965,6 +2996,29 @@ export default function Blog() {
     }
   ];
 
+  // Handle URL routing
+  useEffect(() => {
+    const slug = location.pathname.replace('/blog/', '').replace('/blog', '');
+    if (slug && slug !== '') {
+      const post = posts.find(p => p.slug === slug);
+      if (post) {
+        setSelectedPost(post);
+      }
+    } else {
+      setSelectedPost(null);
+    }
+  }, [location.pathname]);
+
+  const handlePostClick = (post: BlogPost) => {
+    navigate(`/blog/${post.slug}`);
+    setSelectedPost(post);
+  };
+
+  const handleBackClick = () => {
+    navigate('/blog');
+    setSelectedPost(null);
+  };
+
   const categories = ['Все', 'Продвижение', 'Аналитика', 'Релизы', 'Монетизация', 'Обучение', 'Тренды', 'Карьера', 'Для начинающих'];
   const [activeCategory, setActiveCategory] = useState('Все');
 
@@ -2982,7 +3036,7 @@ export default function Blog() {
           description={selectedPost.excerpt}
           keywords={keywords}
           image={selectedPost.image}
-          url={`https://420music.ru/blog/${selectedPost.id}`}
+          url={`https://420music.ru/blog/${selectedPost.slug}`}
           type="article"
           publishedTime={selectedPost.isoDate}
           author="420 Music"
@@ -3002,7 +3056,7 @@ export default function Blog() {
           </nav>
           
           <button
-            onClick={() => setSelectedPost(null)}
+            onClick={handleBackClick}
             className="flex items-center gap-2 text-orange-400 hover:text-orange-300 mb-8 group"
           >
             <Icon name="ArrowLeft" size={20} className="group-hover:-translate-x-1 transition-transform" />
@@ -3089,7 +3143,7 @@ export default function Blog() {
           {filteredPosts.map((post) => (
             <article
               key={post.id}
-              onClick={() => setSelectedPost(post)}
+              onClick={() => handlePostClick(post)}
               className="group relative bg-gradient-to-br from-purple-900/20 via-purple-800/10 to-transparent rounded-2xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all duration-300"
             >
               <div className="relative h-48 overflow-hidden">
