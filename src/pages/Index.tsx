@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useCallback, memo, useEffect } from 'react';
+import { useState, lazy, Suspense, useCallback, memo, useEffect, useRef } from 'react';
 import AuthForm from '@/components/AuthForm';
 import { useAuth } from '@/components/useAuth';
 import { useUsers } from '@/components/useUsers';
@@ -14,23 +14,32 @@ export default function Index() {
   const [newUser, setNewUser] = useState({ username: '', full_name: '', role: 'artist' });
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
+  const authProcessedRef = useRef(false); // Флаг чтобы обработать только 1 раз
 
   useEffect(() => {
     const handleVKCallback = async () => {
+      // Защита от повторного вызова
+      if (authProcessedRef.current) {
+        console.log('⚠️ VK callback already processed, skipping');
+        return;
+      }
+      
       console.log('🔍 Checking for VK callback params...', window.location.search);
       const urlParams = new URLSearchParams(window.location.search);
       const vkCode = urlParams.get('code');
       const vkState = urlParams.get('state');
       
-      // Если есть VK параметры - показываем loader
-      if (vkCode && vkState) {
-        setIsProcessingAuth(true);
-      }
-      
       console.log('🔍 VK params:', { vkCode, vkState });
       
       if (vkCode && vkState) {
+        // Отмечаем что начали обработку
+        authProcessedRef.current = true;
+        
         console.log('🟢 VK callback detected on /app page');
+        setIsProcessingAuth(true);
+        
+        // СРАЗУ очищаем URL чтобы при повторном рендере не было параметров
+        window.history.replaceState({}, document.title, '/app');
         
         // Извлекаем code_verifier из state (формат: random__base64url(domain)__base64url(code_verifier))
         let codeVerifier = null;
@@ -78,17 +87,17 @@ export default function Index() {
           if (data.user) {
             console.log('🟢 VK auth successful:', data.user);
             login('', '', undefined, data.user);
+            // Не убираем loader - login() сам покажет ЛК
           } else {
             console.error('🔴 VK auth failed - FULL ERROR:', data);
-            setIsProcessingAuth(false); // Убираем loader при ошибке
+            setIsProcessingAuth(false);
+            authProcessedRef.current = false; // Сбрасываем флаг при ошибке
           }
         } catch (error) {
           console.error('🔴 VK auth error:', error);
-          setIsProcessingAuth(false); // Убираем loader при ошибке
+          setIsProcessingAuth(false);
+          authProcessedRef.current = false; // Сбрасываем флаг при ошибке
         }
-        
-        // Убираем параметры из URL
-        window.history.replaceState({}, document.title, '/app');
       }
     };
     

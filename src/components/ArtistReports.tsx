@@ -71,8 +71,8 @@ export default function ArtistReports({ userId, userName }: ArtistReportsProps) 
     return true;
   });
 
-  const totalPlays = filteredReports.reduce((sum, r) => sum + r.plays, 0);
-  const totalReward = filteredReports.reduce((sum, r) => sum + r.total_reward, 0);
+  const totalPlays = filteredReports.reduce((sum, r) => sum + (r.plays || 0), 0);
+  const totalReward = filteredReports.reduce((sum, r) => sum + (r.total_reward || 0), 0);
   const artistShare = filteredReports.length > 0 ? filteredReports[0].revenue_share_percent || 50 : 50;
   const artistReward = totalReward * (artistShare / 100);
   const labelReward = totalReward - artistReward;
@@ -105,7 +105,7 @@ export default function ArtistReports({ userId, userName }: ArtistReportsProps) 
             <CardTitle className="text-sm text-gray-400">Общее вознаграждение</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{totalReward.toFixed(2)} ₽</div>
+            <div className="text-2xl font-bold text-white">{(totalReward || 0).toFixed(2)} ₽</div>
             <div className="text-xs text-gray-400 mt-1">100% от стриминга</div>
           </CardContent>
         </Card>
@@ -115,8 +115,8 @@ export default function ArtistReports({ userId, userName }: ArtistReportsProps) 
             <CardTitle className="text-sm text-gray-400">Ваша доля ({artistShare}%)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-green-400">{artistReward.toFixed(2)} ₽</div>
-            <div className="text-xs text-gray-400 mt-1">Лейбл: {labelReward.toFixed(2)} ₽</div>
+            <div className="text-3xl font-bold text-green-400">{(artistReward || 0).toFixed(2)} ₽</div>
+            <div className="text-xs text-gray-400 mt-1">Лейбл: {(labelReward || 0).toFixed(2)} ₽</div>
           </CardContent>
         </Card>
 
@@ -250,11 +250,11 @@ export default function ArtistReports({ userId, userName }: ArtistReportsProps) 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3 text-sm">
                     <div>
                       <span className="text-gray-500">Прослушиваний:</span>
-                      <p className="text-white font-medium">{report.plays.toLocaleString('ru-RU')}</p>
+                      <p className="text-white font-medium">{(report.plays || 0).toLocaleString('ru-RU')}</p>
                     </div>
                     <div>
                       <span className="text-gray-500">Вознаграждение:</span>
-                      <p className="text-green-400 font-medium">{report.total_reward.toFixed(2)} ₽</p>
+                      <p className="text-green-400 font-medium">{(report.total_reward || 0).toFixed(2)} ₽</p>
                     </div>
                     <div>
                       <span className="text-gray-500">Территория:</span>
