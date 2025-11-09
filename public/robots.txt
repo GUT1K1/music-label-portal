@@ -25,4 +25,9 @@ Disallow: /animations
 Disallow: /menus
 Disallow: /header-variants
 
-Sitemap: https://music-label-portal.poehali.dev/sitemap.xml
+Sitemap: https://420music.ru/sitemap.xml
+
+# Яндекс
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
