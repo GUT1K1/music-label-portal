@@ -10,6 +10,7 @@ interface BlogPost {
   content: string;
   image: string;
   date: string;
+  isoDate?: string;
   readTime: string;
   category: string;
 }
@@ -52,6 +53,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '5 ноября 2025',
+      isoDate: '2025-11-05T00:00:00Z',
       readTime: '4 мин',
       category: 'Аналитика'
     },
@@ -97,6 +99,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/76195329-3b9b-47ad-a9d4-a44135abae78.jpg',
       date: '3 ноября 2025',
+      isoDate: '2025-11-03T00:00:00Z',
       readTime: '6 мин',
       category: 'Продвижение'
     },
@@ -138,6 +141,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/0f1f5e76-8eba-4b07-b58e-33dfec98efd1.jpg',
       date: '1 ноября 2025',
+      isoDate: '2025-11-01T00:00:00Z',
       readTime: '5 мин',
       category: 'Монетизация'
     },
@@ -188,6 +192,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '28 октября 2025',
+      isoDate: '2025-10-28T00:00:00Z',
       readTime: '7 мин',
       category: 'Продвижение'
     },
@@ -243,6 +248,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '25 октября 2025',
+      isoDate: '2025-10-25T00:00:00Z',
       readTime: '5 мин',
       category: 'Релизы'
     },
@@ -298,6 +304,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '22 октября 2025',
+      isoDate: '2025-10-22T00:00:00Z',
       readTime: '6 мин',
       category: 'Продвижение'
     },
@@ -361,6 +368,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '18 октября 2025',
+      isoDate: '2025-10-18T00:00:00Z',
       readTime: '8 мин',
       category: 'Продвижение'
     },
@@ -426,6 +434,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '15 октября 2025',
+      isoDate: '2025-10-15T00:00:00Z',
       readTime: '7 мин',
       category: 'Продвижение'
     },
@@ -501,6 +510,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '12 октября 2025',
+      isoDate: '2025-10-12T00:00:00Z',
       readTime: '9 мин',
       category: 'Релизы'
     },
@@ -589,6 +599,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '8 октября 2025',
+      isoDate: '2025-10-08T00:00:00Z',
       readTime: '10 мин',
       category: 'Обучение'
     },
@@ -682,6 +693,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '5 октября 2025',
+      isoDate: '2025-10-05T00:00:00Z',
       readTime: '8 мин',
       category: 'Обучение'
     },
@@ -775,6 +787,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '1 октября 2025',
+      isoDate: '2025-10-01T00:00:00Z',
       readTime: '9 мин',
       category: 'Тренды'
     },
@@ -890,6 +903,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '25 сентября 2025',
+      isoDate: '2025-09-25T00:00:00Z',
       readTime: '11 мин',
       category: 'Продвижение'
     },
@@ -1028,6 +1042,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '20 сентября 2025',
+      isoDate: '2025-09-20T00:00:00Z',
       readTime: '12 мин',
       category: 'Монетизация'
     },
@@ -1202,6 +1217,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '15 сентября 2025',
+      isoDate: '2025-09-15T00:00:00Z',
       readTime: '10 мин',
       category: 'Карьера'
     },
@@ -1395,6 +1411,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '10 сентября 2025',
+      isoDate: '2025-09-10T00:00:00Z',
       readTime: '15 мин',
       category: 'Для начинающих'
     },
@@ -1621,6 +1638,7 @@ export default function Blog() {
       `,
       image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
       date: '8 сентября 2025',
+      isoDate: '2025-09-08T00:00:00Z',
       readTime: '13 мин',
       category: 'Продвижение'
     }
@@ -1645,7 +1663,7 @@ export default function Blog() {
           image={selectedPost.image}
           url={`https://420music.ru/blog/${selectedPost.id}`}
           type="article"
-          publishedTime={new Date(selectedPost.date).toISOString()}
+          publishedTime={selectedPost.isoDate}
           author="420 Music"
         />
         <BurgerMenu />
