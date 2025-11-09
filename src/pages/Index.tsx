@@ -87,7 +87,7 @@ export default function Index() {
           if (data.user) {
             console.log('🟢 VK auth successful:', data.user);
             login('', '', undefined, data.user);
-            // Не убираем loader - login() сам покажет ЛК
+            setIsProcessingAuth(false);
           } else {
             console.error('🔴 VK auth failed - FULL ERROR:', data);
             setIsProcessingAuth(false);
