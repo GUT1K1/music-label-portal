@@ -47,9 +47,13 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       const codeVerifier = generateRandomString(64);
       const stateRandom = generateRandomString(32);
       
-      // Передаем домен И code_verifier в state для передачи через прокси
+      // Сохраняем code_verifier в sessionStorage (VK обрезает длинный state!)
+      sessionStorage.setItem('vk_code_verifier', codeVerifier);
+      sessionStorage.setItem('vk_state', stateRandom);
+      
+      // Передаем только домен в state (без code_verifier)
       const currentDomain = window.location.origin;
-      const state = `${stateRandom}|${btoa(currentDomain)}|${btoa(codeVerifier)}`;
+      const state = `${stateRandom}|${btoa(currentDomain)}`;
       
       const hashed = await sha256(codeVerifier);
       const codeChallenge = base64urlencode(hashed);
@@ -70,6 +74,7 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       
       const authUrl = `https://id.vk.ru/authorize?${params.toString()}`;
       console.log('🔵 Redirecting to VK auth:', authUrl);
+      console.log('🔵 Saved code_verifier to sessionStorage');
       
       // Делаем редирект на VK (не popup!)
       window.location.href = authUrl;
