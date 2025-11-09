@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { useNotifications } from '@/contexts/NotificationContext';
 import { API_ENDPOINTS } from '@/config/api';
 
 const NOTIFICATIONS_URL = API_ENDPOINTS.NOTIFICATIONS;
@@ -25,10 +26,10 @@ interface NotificationBellProps {
 
 export default function NotificationBell({ userId }: NotificationBellProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { unreadCounts, refreshCounts } = useNotifications();
 
   useEffect(() => {
     if (isOpen) {
@@ -43,7 +44,7 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
       });
       const data = await response.json();
       setNotifications(data.notifications || []);
-      setUnreadCount(data.unread_count || 0);
+      refreshCounts();
     } catch (error) {
       // Silently fail
     }
@@ -130,12 +131,12 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
         className="relative"
       >
         <Icon name="Bell" size={20} />
-        {unreadCount > 0 && (
+        {unreadCounts.notifications > 0 && (
           <Badge
             variant="destructive"
             className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
           >
-            {unreadCount > 9 ? '9+' : unreadCount}
+            {unreadCounts.notifications > 9 ? '9+' : unreadCounts.notifications}
           </Badge>
         )}
       </Button>
@@ -149,7 +150,7 @@ export default function NotificationBell({ userId }: NotificationBellProps) {
           <Card className="fixed left-1/2 -translate-x-1/2 top-16 sm:absolute sm:right-0 sm:left-auto sm:translate-x-0 w-[calc(100vw-2rem)] sm:w-96 max-h-[70vh] sm:max-h-[500px] overflow-hidden z-50 shadow-xl">
             <div className="flex items-center justify-between p-3 sm:p-4 border-b">
               <h3 className="font-semibold text-sm sm:text-base">Уведомления</h3>
-              {unreadCount > 0 && (
+              {unreadCounts.notifications > 0 && (
                 <Button
                   variant="ghost"
                   size="sm"

@@ -6,6 +6,7 @@ interface UnreadCounts {
   tasks: number;
   messages: number;
   submissions: number;
+  notifications: number;
 }
 
 interface NotificationContextValue {
@@ -51,15 +52,16 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     tickets: 0,
     tasks: 0,
     messages: 0,
-    submissions: 0
+    submissions: 0,
+    notifications: 0
   });
   const [loading, setLoading] = useState(false);
   const prevCountsRef = useRef<UnreadCounts>(unreadCounts);
   const lastFetchRef = useRef<number>(0);
   const cacheRef = useRef<{ data: UnreadCounts | null; timestamp: number }>({ data: null, timestamp: 0 });
-  const DEBOUNCE_TIME = 5000;
-  const CACHE_TIME = 30000;
-  const POLLING_INTERVAL = 300000; // Оптимизация: 5 минут вместо 2
+  const DEBOUNCE_TIME = 3000;
+  const CACHE_TIME = 60000;
+  const POLLING_INTERVAL = 120000; // Оптимизация: 2 минуты
 
   const fetchUnreadCounts = useCallback(async (force = false) => {
     const now = Date.now();
@@ -107,13 +109,16 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
           newCounts.tickets > prevCounts.tickets ||
           newCounts.tasks > prevCounts.tasks ||
           newCounts.messages > prevCounts.messages ||
-          newCounts.submissions > prevCounts.submissions;
+          newCounts.submissions > prevCounts.submissions ||
+          newCounts.notifications > prevCounts.notifications;
 
         if (hasNewNotifications) {
           playNotificationSound();
           
           if ('Notification' in window && Notification.permission === 'granted') {
             let notificationText = '';
+            if (newCounts.notifications > prevCounts.notifications) 
+              notificationText += `Новых уведомлений: ${newCounts.notifications - prevCounts.notifications}\n`;
             if (newCounts.tickets > prevCounts.tickets) 
               notificationText += `Новых тикетов: ${newCounts.tickets - prevCounts.tickets}\n`;
             if (newCounts.tasks > prevCounts.tasks) 
