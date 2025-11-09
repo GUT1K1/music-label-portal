@@ -66,7 +66,7 @@ export function useNewsData(userId: number) {
 
   const loadNews = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/02b8e089-cfba-4460-9cad-479b3d0c5c80');
+      const response = await fetch('https://functions.poehali.dev/66f994a1-bcfd-46ea-81e8-b98c339839d1');
       const data = await response.json();
       setNews(data);
     } catch (error) {
@@ -87,7 +87,7 @@ export function useNewsData(userId: number) {
 
   const handleCreateNews = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/02b8e089-cfba-4460-9cad-479b3d0c5c80', {
+      const response = await fetch('https://functions.poehali.dev/66f994a1-bcfd-46ea-81e8-b98c339839d1', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ export function useNewsData(userId: number) {
     if (!editingNews) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/02b8e089-cfba-4460-9cad-479b3d0c5c80', {
+      const response = await fetch('https://functions.poehali.dev/66f994a1-bcfd-46ea-81e8-b98c339839d1', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ export function useNewsData(userId: number) {
     if (!confirm('Вы уверены, что хотите удалить эту новость?')) return;
 
     try {
-      const response = await fetch(`https://functions.poehali.dev/02b8e089-cfba-4460-9cad-479b3d0c5c80?id=${id}`, {
+      const response = await fetch(`https://functions.poehali.dev/66f994a1-bcfd-46ea-81e8-b98c339839d1?id=${id}`, {
         method: 'DELETE',
         headers: {
           'X-User-Id': userId.toString()
