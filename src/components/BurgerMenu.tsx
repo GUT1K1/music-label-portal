@@ -23,6 +23,15 @@ export default function BurgerMenu() {
       href: '#'
     },
     {
+      icon: 'BookOpen',
+      label: 'Блог',
+      description: 'Полезные статьи',
+      action: () => {
+        navigate('/blog');
+        setIsOpen(false);
+      }
+    },
+    {
       icon: 'Music',
       label: 'Услуги',
       description: 'Дистрибуция музыки',
