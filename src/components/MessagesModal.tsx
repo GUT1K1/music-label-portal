@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import { API_ENDPOINTS } from '@/config/api';
+import { SmartPolling } from '@/utils/smartPolling';
 
 interface Message {
   id: number;
@@ -53,6 +54,11 @@ export function MessagesModal({ open, onOpenChange, userId, userRole, userName }
   useEffect(() => {
     if (open) {
       loadDialogsList();
+      
+      const polling = new SmartPolling(loadDialogsList, 30000, 120000);
+      polling.start();
+      
+      return () => polling.destroy();
     }
   }, [open, userId]);
 

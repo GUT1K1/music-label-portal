@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { logActivity } from '@/utils/activityLogger';
 import { User, API_URLS } from '@/types';
+import { cookies } from '@/utils/cookies';
+import { normalizeUser } from '@/utils/userHelpers';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -10,20 +12,11 @@ export const useAuth = () => {
   const login = async (username: string, password: string, vkData?: any, telegramData?: any) => {
     try {
       if (telegramData) {
-        const userData: User = {
-          id: telegramData.id,
-          username: telegramData.username,
-          full_name: telegramData.full_name,
-          fullName: telegramData.full_name,
-          role: telegramData.role as 'artist' | 'manager' | 'director',
-          telegram_chat_id: telegramData.telegram_chat_id,
-          avatar: telegramData.avatar,
-          vk_photo: telegramData.avatar, // Синхронизируем avatar и vk_photo
-          is_blocked: telegramData.is_blocked,
-          is_frozen: telegramData.is_frozen
-        };
+        const userData = normalizeUser(telegramData);
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
+        cookies.set('user_id', userData.id.toString(), 30);
+        cookies.set('user_session', btoa(JSON.stringify({ id: userData.id, role: userData.role })), 30);
         logActivity(userData.id, 'login', `Пользователь ${userData.full_name} вошёл через Telegram`);
         toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name}` });
         return;
@@ -52,20 +45,11 @@ export const useAuth = () => {
       const data = await response.json();
       
       if (response.ok) {
-        // Синхронизируем vk_photo и avatar при входе
-        const userData = data.user;
-        if (userData.vk_photo) {
-          userData.avatar = userData.vk_photo;
-        }
-        if (userData.avatar) {
-          userData.vk_photo = userData.avatar;
-        }
-        if (userData.full_name) {
-          userData.fullName = userData.full_name;
-        }
-        
+        const userData = normalizeUser(data.user);
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
+        cookies.set('user_id', userData.id.toString(), 30);
+        cookies.set('user_session', btoa(JSON.stringify({ id: userData.id, role: userData.role })), 30);
         logActivity(userData.id, 'login', `Пользователь ${userData.full_name} вошёл в систему`);
         toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name}` });
       } else {
@@ -79,48 +63,16 @@ export const useAuth = () => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    cookies.remove('user_id');
+    cookies.remove('user_session');
     toast({ title: 'Вы вышли из системы' });
   };
 
   const updateUserProfile = (updates: Partial<User>) => {
     if (user) {
-      const updatedUser = { ...user, ...updates };
-      
-      // Синхронизируем camelCase и snake_case поля
-      if (updates.fullName) {
-        updatedUser.full_name = updates.fullName;
-      }
-      if (updates.full_name) {
-        updatedUser.fullName = updates.full_name;
-      }
-      
-      // КРИТИЧНО: синхронизируем avatar и vk_photo в обе стороны
-      if (updates.avatar) {
-        updatedUser.vk_photo = updates.avatar;
-        updatedUser.avatar = updates.avatar;
-      }
-      if (updates.vk_photo) {
-        updatedUser.avatar = updates.vk_photo;
-        updatedUser.vk_photo = updates.vk_photo;
-      }
-      
-      if (updates.email) {
-        updatedUser.email = updates.email;
-      }
-      
-      if (updates.balance !== undefined) {
-        updatedUser.balance = updates.balance;
-      }
-      
+      const updatedUser = normalizeUser({ ...user, ...updates });
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      
-      // Логируем для отладки
-      console.log('User profile updated:', { 
-        avatar: updatedUser.avatar, 
-        vk_photo: updatedUser.vk_photo,
-        fullName: updatedUser.fullName 
-      });
     }
   };
 
@@ -140,40 +92,20 @@ export const useAuth = () => {
         throw new Error(`HTTP ${response.status}`);
       }
       
-      const updatedUser = await response.json();
+      const serverData = await response.json();
       
-      if (updatedUser && updatedUser.id) {
-        // Синхронизируем vk_photo и avatar
-        if (updatedUser.vk_photo) {
-          updatedUser.avatar = updatedUser.vk_photo;
-        }
-        if (updatedUser.avatar) {
-          updatedUser.vk_photo = updatedUser.avatar;
-        }
-        
-        // Синхронизируем full_name и fullName
-        if (updatedUser.full_name) {
-          updatedUser.fullName = updatedUser.full_name;
-        }
-        if (updatedUser.fullName) {
-          updatedUser.full_name = updatedUser.fullName;
-        }
+      if (serverData && serverData.id) {
+        const updatedUser = normalizeUser(serverData);
         
         const hasChanges = 
           updatedUser.role !== user.role || 
           updatedUser.balance !== user.balance ||
-          updatedUser.vk_photo !== user.vk_photo ||
-          updatedUser.full_name !== user.full_name;
+          updatedUser.avatar !== user.avatar ||
+          updatedUser.fullName !== user.fullName;
         
         if (hasChanges) {
           setUser(updatedUser);
           localStorage.setItem('user', JSON.stringify(updatedUser));
-          
-          console.log('User data refreshed from server:', {
-            avatar: updatedUser.avatar,
-            vk_photo: updatedUser.vk_photo,
-            fullName: updatedUser.fullName
-          });
           
           if (updatedUser.role !== user.role) {
             toast({ title: '✅ Данные обновлены', description: 'Ваши права доступа изменены' });
@@ -186,30 +118,40 @@ export const useAuth = () => {
   }, [user, toast]);
 
   useEffect(() => {
+    const cookieSession = cookies.get('user_session');
     const savedUser = localStorage.getItem('user');
+    
+    if (cookieSession && !savedUser) {
+      try {
+        const sessionData = JSON.parse(atob(cookieSession));
+        fetch(`${API_URLS.users}?id=${sessionData.id}`, {
+          method: 'GET',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-User-Id': sessionData.id.toString()
+          }
+        })
+        .then(res => res.json())
+        .then(userData => {
+          if (userData && userData.id) {
+            const normalized = normalizeUser(userData);
+            setUser(normalized);
+            localStorage.setItem('user', JSON.stringify(normalized));
+          }
+        })
+        .catch(err => console.error('Cookie auth failed:', err));
+      } catch (e) {
+        console.error('Invalid cookie session:', e);
+        cookies.remove('user_session');
+      }
+      return;
+    }
+    
     if (savedUser) {
-      const userData = JSON.parse(savedUser);
-      
-      // Синхронизируем поля при загрузке из localStorage
-      if (userData.vk_photo && !userData.avatar) {
-        userData.avatar = userData.vk_photo;
-      }
-      if (userData.avatar && !userData.vk_photo) {
-        userData.vk_photo = userData.avatar;
-      }
-      if (userData.full_name && !userData.fullName) {
-        userData.fullName = userData.full_name;
-      }
-      if (userData.fullName && !userData.full_name) {
-        userData.full_name = userData.fullName;
-      }
-      
+      const userData = normalizeUser(JSON.parse(savedUser));
       setUser(userData);
-      // Пересохраняем с синхронизированными полями
       localStorage.setItem('user', JSON.stringify(userData));
       
-      // КРИТИЧНО: Сразу после загрузки из localStorage обновляем данные с сервера
-      // чтобы получить актуальную аватарку
       setTimeout(() => {
         fetch(`${API_URLS.users}?id=${userData.id}`, {
           method: 'GET',
@@ -221,24 +163,9 @@ export const useAuth = () => {
         .then(res => res.json())
         .then(serverUser => {
           if (serverUser && serverUser.id) {
-            // Синхронизируем avatar и vk_photo
-            if (serverUser.vk_photo) {
-              serverUser.avatar = serverUser.vk_photo;
-            }
-            if (serverUser.avatar) {
-              serverUser.vk_photo = serverUser.avatar;
-            }
-            if (serverUser.full_name) {
-              serverUser.fullName = serverUser.full_name;
-            }
-            
-            setUser(serverUser);
-            localStorage.setItem('user', JSON.stringify(serverUser));
-            
-            console.log('✅ Avatar loaded from server:', {
-              avatar: serverUser.avatar,
-              vk_photo: serverUser.vk_photo
-            });
+            const normalized = normalizeUser(serverUser);
+            setUser(normalized);
+            localStorage.setItem('user', JSON.stringify(normalized));
           }
         })
         .catch(err => console.error('Failed to refresh user on mount:', err));

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { SupportThread, Message, Artist, Release, Track } from './types';
+import { SmartPolling } from '@/utils/smartPolling';
 
 const SUPPORT_URL = 'https://functions.poehali.dev/11402095-5040-4816-8217-4004a233d00f';
 
@@ -152,28 +153,20 @@ export function useSupportData(
       loadUserReleases();
     }
     
-    // Оптимизация: обновляем список диалогов раз в минуту только когда вкладка активна
-    const interval = setInterval(() => {
-      if (!document.hidden) {
-        loadThreads();
-      }
-    }, 60000);
+    const polling = new SmartPolling(loadThreads, 60000, 180000);
+    polling.start();
     
-    return () => clearInterval(interval);
+    return () => polling.destroy();
   }, [statusFilter]);
 
   useEffect(() => {
     if (activeThread) {
       loadMessages(activeThread);
       
-      // Оптимизация: обновляем сообщения раз в 30 секунд только когда вкладка активна
-      const interval = setInterval(() => {
-        if (!document.hidden) {
-          loadMessages(activeThread);
-        }
-      }, 30000);
+      const polling = new SmartPolling(() => loadMessages(activeThread), 30000, 120000);
+      polling.start();
       
-      return () => clearInterval(interval);
+      return () => polling.destroy();
     }
   }, [activeThread]);
 
