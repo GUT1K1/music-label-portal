@@ -1,6 +1,6 @@
 import { useToast } from '@/hooks/use-toast';
 
-const AUTH_API = 'https://functions.poehali.dev/eb22fe48-55fa-4497-9269-caf203d14d12';
+const AUTH_API = 'https://functions.poehali.dev/7847ab7a-8881-4e5d-b785-33d719f53db6';
 
 export const useAuthHandlers = () => {
   const { toast } = useToast();
