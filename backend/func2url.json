@@ -1,4 +1,6 @@
 {
+  "blog-admin": "https://functions.poehali.dev/d61fe125-c1fe-446c-a35b-79bd0f0ae128",
+  "blog-public": "https://functions.poehali.dev/a5045a0c-e192-4009-875b-ec78a3364f52",
   "auth-system": "https://functions.poehali.dev/7847ab7a-8881-4e5d-b785-33d719f53db6",
   "notifications": "https://functions.poehali.dev/dcdcb34b-ad53-498c-97b5-54c6bb9e9404",
   "cleanup-storage": "https://functions.poehali.dev/2c745ecb-f4fd-406b-b68c-8d66db2be216",

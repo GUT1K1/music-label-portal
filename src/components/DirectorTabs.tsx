@@ -18,6 +18,7 @@ import WeeklyReport from '@/components/WeeklyReport';
 import ReleaseModerationPanel from '@/components/ReleaseModerationPanel';
 import NewsView from '@/components/NewsView';
 import FinancialReportsUpload from '@/components/FinancialReportsUpload';
+import BlogManagement from '@/components/BlogManagement';
 import { Task } from '@/components/useTasks';
 import TasksTab from '@/components/TasksTab';
 import { useNotifications } from '@/contexts/NotificationContext';
@@ -156,6 +157,10 @@ export default function DirectorTabs({
             <Icon name="Wallet" className="w-4 h-4 text-green-500" />
             <span>Выплаты</span>
           </TabsTrigger>
+          <TabsTrigger value="blog" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+            <Icon name="BookOpen" className="w-4 h-4 text-purple-500" />
+            <span>Блог</span>
+          </TabsTrigger>
           <TabsTrigger value="settings" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
             <Icon name="Settings" className="w-4 h-4 text-gray-500" />
             <span>Настройки</span>
@@ -229,6 +234,10 @@ export default function DirectorTabs({
 
       <TabsContent value="withdrawals" className="animate-fadeIn">
         <WithdrawalList userId={user.id} userRole="director" />
+      </TabsContent>
+
+      <TabsContent value="blog" className="animate-fadeIn">
+        <BlogManagement userId={user.id} />
       </TabsContent>
 
       <TabsContent value="settings" className="animate-fadeIn">
