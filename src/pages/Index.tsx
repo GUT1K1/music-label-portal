@@ -36,9 +36,8 @@ export default function Index() {
           return;
         }
         
-        // Получаем code_verifier и redirect_uri из sessionStorage
+        // Получаем code_verifier из sessionStorage
         const savedCodeVerifier = sessionStorage.getItem('vk_code_verifier');
-        const savedRedirectUri = sessionStorage.getItem('vk_redirect_uri');
         const deviceIdFromUrl = urlParams.get('device_id'); // VK возвращает device_id в callback
         
         try {
@@ -48,7 +47,6 @@ export default function Index() {
             body: JSON.stringify({
               code: vkCode,
               code_verifier: savedCodeVerifier,
-              redirect_uri: savedRedirectUri,
               device_id: deviceIdFromUrl,
               state: vkState
             })
@@ -63,7 +61,6 @@ export default function Index() {
             // Очищаем sessionStorage
             sessionStorage.removeItem('vk_code_verifier');
             sessionStorage.removeItem('vk_state');
-            sessionStorage.removeItem('vk_redirect_uri');
             sessionStorage.removeItem('vk_device_id');
           } else {
             console.error('🔴 VK auth failed - FULL ERROR:', data);

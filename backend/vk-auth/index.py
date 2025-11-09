@@ -35,7 +35,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         vk_code = body.get('code')
         code_verifier = body.get('code_verifier')
         device_id = body.get('device_id')
-        redirect_uri = body.get('redirect_uri')
         
         if not vk_code or not code_verifier:
             return {
@@ -52,8 +51,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         vk_app_id = os.environ.get('VK_APP_ID', '54299249')
         
         # КРИТИЧНО: redirect_uri должен ТОЧНО совпадать с тем, что был в authorize!
-        # Используем redirect_uri из тела запроса (фронтенд передает его)
-        vk_redirect_uri = redirect_uri if redirect_uri else body.get('redirect_uri')
+        # Используем прокси-функцию vk-redirect
+        vk_redirect_uri = 'https://functions.poehali.dev/c2662a32-9a12-4f7d-b516-8441bc06cfa5'
         
         # VK ID token exchange - минимальный набор параметров
         token_params = {
