@@ -60,16 +60,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Используем прокси-функцию vk-redirect
         vk_redirect_uri = 'https://functions.poehali.dev/c2662a32-9a12-4f7d-b516-8441bc06cfa5'
         
-        # VK ID token exchange - минимальный набор параметров
-        # ВАЖНО: device_id и state НЕ используются в token exchange!
-        # Они нужны только для authorize (первый шаг)
+        # VK ID token exchange - только обязательные параметры
         token_params = {
             'grant_type': 'authorization_code',
-            'code': vk_code,
             'code_verifier': code_verifier,
-            'client_id': vk_app_id,
-            'redirect_uri': vk_redirect_uri
+            'redirect_uri': vk_redirect_uri,
+            'code': vk_code,
+            'client_id': vk_app_id
         }
+        
+        print(f"🔍 Sending to VK token exchange: {token_params}")
         
         # Логируем запрос для отладки
         print(f"Token exchange params: {token_params}")
