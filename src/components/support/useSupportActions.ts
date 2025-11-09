@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { uploadFile } from '@/utils/uploadFile';
 
-const SUPPORT_URL = 'https://functions.poehali.dev/03b127de-537a-446c-af8d-01caba70e2e9';
+const SUPPORT_URL = 'https://functions.poehali.dev/11402095-5040-4816-8217-4004a233d00f';
 
 export function useSupportActions(
   userId: number,

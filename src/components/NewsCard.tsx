@@ -56,7 +56,7 @@ export default function NewsCard({ item, userRole, userId, onEdit, onDelete }: N
     setLoadingPoll(true);
     try {
       const response = await fetch(
-        `https://functions.poehali.dev/02b8e089-cfba-4460-9cad-479b3d0c5c80?action=get_poll&news_id=${item.id}`,
+        `https://functions.poehali.dev/66f994a1-bcfd-46ea-81e8-b98c339839d1?action=get_poll&news_id=${item.id}`,
         {
           headers: {
             'X-User-Id': userId.toString()
@@ -78,7 +78,7 @@ export default function NewsCard({ item, userRole, userId, onEdit, onDelete }: N
     if (!pollData) return;
     
     try {
-      const response = await fetch('https://functions.poehali.dev/02b8e089-cfba-4460-9cad-479b3d0c5c80', {
+      const response = await fetch('https://functions.poehali.dev/66f994a1-bcfd-46ea-81e8-b98c339839d1', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

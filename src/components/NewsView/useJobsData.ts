@@ -43,7 +43,7 @@ export function useJobsData(userId: number) {
 
   const loadJobs = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/57ba52aa-ffc4-4822-b9ee-d1847947bc41');
+      const response = await fetch('https://functions.poehali.dev/cbf7ab8b-9298-4b19-8c00-81f1da9a852c');
       const data = await response.json();
       setJobs(data);
     } catch (error) {
@@ -58,8 +58,8 @@ export function useJobsData(userId: number) {
   const handleSaveJob = async () => {
     try {
       const url = editingJob 
-        ? `https://functions.poehali.dev/57ba52aa-ffc4-4822-b9ee-d1847947bc41?id=${editingJob.id}`
-        : 'https://functions.poehali.dev/57ba52aa-ffc4-4822-b9ee-d1847947bc41';
+        ? `https://functions.poehali.dev/cbf7ab8b-9298-4b19-8c00-81f1da9a852c?id=${editingJob.id}`
+        : 'https://functions.poehali.dev/cbf7ab8b-9298-4b19-8c00-81f1da9a852c';
       
       const response = await fetch(url, {
         method: editingJob ? 'PUT' : 'POST',
@@ -94,7 +94,7 @@ export function useJobsData(userId: number) {
     if (!confirm('Вы уверены, что хотите удалить эту вакансию?')) return;
 
     try {
-      const response = await fetch(`https://functions.poehali.dev/57ba52aa-ffc4-4822-b9ee-d1847947bc41?id=${id}`, {
+      const response = await fetch(`https://functions.poehali.dev/cbf7ab8b-9298-4b19-8c00-81f1da9a852c?id=${id}`, {
         method: 'DELETE',
         headers: {
           'X-User-Id': userId.toString()

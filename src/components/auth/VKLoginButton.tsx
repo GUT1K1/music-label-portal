@@ -6,7 +6,7 @@ interface VKLoginButtonProps {
 }
 
 const VK_APP_ID = '54299249';
-const VK_REDIRECT_PROXY = 'https://functions.poehali.dev/07be7329-c8ac-448b-99b7-930db7c3b704';
+const VK_REDIRECT_PROXY = 'https://functions.poehali.dev/c2662a32-9a12-4f7d-b516-8441bc06cfa5';
 
 export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
   const { toast } = useToast();

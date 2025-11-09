@@ -39,7 +39,7 @@ export default function Index() {
         const deviceIdFromUrl = urlParams.get('device_id'); // VK возвращает device_id в callback
         
         try {
-          const response = await fetch('https://functions.poehali.dev/9733f2f5-a548-43c2-a405-0600fb27532e', {
+          const response = await fetch('https://functions.poehali.dev/cb96d937-901e-4d21-aba2-d06bf4504cd9', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
