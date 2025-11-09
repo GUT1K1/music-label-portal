@@ -1,0 +1,5 @@
+UPDATE blog_posts SET image_url = 'https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/3a4e85d9-d0e0-49e0-8679-9b60208a702b.jpg' WHERE title = 'Сколько прослушиваний в ТОП 1?';
+UPDATE blog_posts SET image_url = 'https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/8d22148a-0c8e-4b96-955c-31096e85346a.jpg' WHERE title LIKE '%дистрибуции%';
+UPDATE blog_posts SET image_url = 'https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/4ea7dede-040b-4fb9-9d91-f8943531a967.jpg' WHERE title LIKE '%зарабат%' OR title LIKE '%деньги%' OR title LIKE '%монетиз%';
+UPDATE blog_posts SET image_url = 'https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/9b272d6a-4f04-482e-92d5-2045f2bcbba8.jpg' WHERE title LIKE '%продвиж%' OR title LIKE '%соцсет%' OR title LIKE '%Instagram%' OR title LIKE '%TikTok%';
+UPDATE blog_posts SET image_url = 'https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/5ed6b698-8e7a-416d-830e-411f4fc219e5.jpg' WHERE title LIKE '%релиз%' OR title LIKE '%стратег%';
