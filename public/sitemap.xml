@@ -32,7 +32,7 @@
     <priority>0.7</priority>
   </url>
   
-  <!-- Статьи блога (первые 17) -->
+  <!-- Статьи блога (27 статей) -->
   <url>
     <loc>https://420music.ru/blog/1</loc>
     <lastmod>2025-11-05</lastmod>
@@ -132,6 +132,66 @@
   <url>
     <loc>https://420music.ru/blog/17</loc>
     <lastmod>2025-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/18</loc>
+    <lastmod>2025-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/19</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/20</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/21</loc>
+    <lastmod>2025-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/22</loc>
+    <lastmod>2025-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/23</loc>
+    <lastmod>2025-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/24</loc>
+    <lastmod>2025-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/25</loc>
+    <lastmod>2025-10-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/26</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://420music.ru/blog/27</loc>
+    <lastmod>2025-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
