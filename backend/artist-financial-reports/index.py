@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     """
-    Business: Получение финансовых отчётов артиста
+    Business: Получение финансовых отчётов артиста с детальной статистикой
     Args: event с httpMethod, headers (X-User-Id)
     Returns: HTTP response со списком отчётов и статистикой
     """

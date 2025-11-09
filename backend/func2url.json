@@ -31,6 +31,7 @@
   "telegram-assemble": "https://functions.poehali.dev/3dbe2c23-f203-4107-9e8b-e0c5fa9e7e18",
   "telegram-bot": "https://functions.poehali.dev/e6dc2065-cb44-4455-9dec-58845f2daf91",
   "vk-redirect": "https://functions.poehali.dev/c2662a32-9a12-4f7d-b516-8441bc06cfa5",
+  "artist-financial-reports": "https://functions.poehali.dev/eb41127f-9f81-4c95-a369-c2aa0e41afc0",
   "telegram-upload": "https://functions.poehali.dev/40cc3204-18d1-4f4e-82b9-cc564b3fd22a",
   "messages": "https://functions.poehali.dev/8eb4d288-9207-4e21-9824-4473403b319d"
 }
