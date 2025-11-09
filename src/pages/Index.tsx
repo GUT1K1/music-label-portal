@@ -26,18 +26,27 @@ export default function Index() {
       if (vkCode && vkState) {
         console.log('🟢 VK callback detected on /app page');
         
-        // Проверяем state (извлекаем random часть: random|base64domain)
-        const savedState = sessionStorage.getItem('vk_state');
-        const stateRandom = vkState.includes('|') ? vkState.split('|')[0] : vkState;
+        // Извлекаем code_verifier из state (формат: random|base64domain|base64(code_verifier))
+        let codeVerifier = null;
         
-        if (stateRandom !== savedState) {
-          console.error('🔴 State mismatch - possible CSRF attack');
+        try {
+          const stateParts = vkState.split('|');
+          if (stateParts.length >= 3) {
+            codeVerifier = atob(stateParts[2]);
+            console.log('🟢 Extracted code_verifier from state');
+          } else {
+            console.error('🔴 Invalid state format - missing code_verifier');
+          }
+        } catch (e) {
+          console.error('🔴 Failed to decode state:', e);
+        }
+        
+        if (!codeVerifier) {
+          console.error('🔴 No code_verifier found');
           window.history.replaceState({}, document.title, '/app');
           return;
         }
         
-        // Получаем code_verifier из sessionStorage
-        const savedCodeVerifier = sessionStorage.getItem('vk_code_verifier');
         const deviceIdFromUrl = urlParams.get('device_id'); // VK возвращает device_id в callback
         
         try {
@@ -46,7 +55,7 @@ export default function Index() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               code: vkCode,
-              code_verifier: savedCodeVerifier,
+              code_verifier: codeVerifier,
               device_id: deviceIdFromUrl,
               state: vkState
             })
@@ -58,10 +67,7 @@ export default function Index() {
             console.log('🟢 VK auth successful:', data.user);
             login('', '', undefined, data.user);
             
-            // Очищаем sessionStorage
-            sessionStorage.removeItem('vk_code_verifier');
-            sessionStorage.removeItem('vk_state');
-            sessionStorage.removeItem('vk_device_id');
+            // sessionStorage не используется для VK auth (все через state в URL)
           } else {
             console.error('🔴 VK auth failed - FULL ERROR:', data);
           }

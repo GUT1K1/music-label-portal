@@ -47,16 +47,12 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       const codeVerifier = generateRandomString(64);
       const stateRandom = generateRandomString(32);
       
-      // Передаем текущий домен в state для корректного редиректа
+      // Передаем домен И code_verifier в state для передачи через прокси
       const currentDomain = window.location.origin;
-      const state = `${stateRandom}|${btoa(currentDomain)}`;
+      const state = `${stateRandom}|${btoa(currentDomain)}|${btoa(codeVerifier)}`;
       
       const hashed = await sha256(codeVerifier);
       const codeChallenge = base64urlencode(hashed);
-      
-      // Сохраняем в sessionStorage для использования после редиректа
-      sessionStorage.setItem('vk_code_verifier', codeVerifier);
-      sessionStorage.setItem('vk_state', stateRandom);
       
       // Формируем URL авторизации
       // VK ID редиректит на прокси-функцию, которая потом редиректит на фронтенд
