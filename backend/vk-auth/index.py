@@ -53,8 +53,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        # Получаем VK credentials из environment
-        vk_app_id = os.environ.get('VK_APP_ID', '54299249')
+        # VK App ID - должен совпадать с фронтендом (VKLoginButton.tsx)
+        vk_app_id = '54299249'
         
         # КРИТИЧНО: redirect_uri должен ТОЧНО совпадать с тем, что был в authorize!
         # Используем прокси-функцию vk-redirect
