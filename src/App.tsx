@@ -21,7 +21,6 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Marketing = lazy(() => import("./pages/Marketing"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Blog = lazy(() => import("./pages/Blog"));
-const Blog = lazy(() => import("./pages/Blog"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
