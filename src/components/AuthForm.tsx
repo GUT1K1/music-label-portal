@@ -117,8 +117,7 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
       <MatrixRain 
         onComplete={() => {
           if (userData) {
-            localStorage.setItem('user', JSON.stringify(userData));
-            window.location.href = '/app';
+            onLogin('', '', undefined, userData);
           }
         }} 
         duration={3500} 

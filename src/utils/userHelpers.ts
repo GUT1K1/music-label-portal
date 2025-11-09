@@ -1,17 +1,21 @@
 import { User } from '@/types';
 
 export function normalizeUser(userData: any): User {
+  if (!userData) return userData;
+  
   const normalized = { ...userData };
 
-  if (normalized.vk_photo && !normalized.avatar) {
+  if (normalized.vk_photo) {
     normalized.avatar = normalized.vk_photo;
-  } else if (normalized.avatar && !normalized.vk_photo) {
+  }
+  if (normalized.avatar) {
     normalized.vk_photo = normalized.avatar;
   }
 
-  if (normalized.full_name && !normalized.fullName) {
+  if (normalized.full_name) {
     normalized.fullName = normalized.full_name;
-  } else if (normalized.fullName && !normalized.full_name) {
+  }
+  if (normalized.fullName) {
     normalized.full_name = normalized.fullName;
   }
 

@@ -25,7 +25,7 @@ export const useAuth = () => {
       if (!password && !vkData) {
         const savedUser = localStorage.getItem('user');
         if (savedUser) {
-          const userData = JSON.parse(savedUser);
+          const userData = normalizeUser(JSON.parse(savedUser));
           setUser(userData);
         }
         return;
