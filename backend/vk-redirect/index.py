@@ -30,6 +30,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         state = params.get('state')
         device_id = params.get('device_id')
         
+        # Логирование для отладки
+        print(f"🔍 VK redirect proxy received:")
+        print(f"  code: {code[:20] if code else None}...")
+        print(f"  state: {state}")
+        print(f"  state length: {len(state) if state else 0}")
+        print(f"  state parts: {len(state.split('|')) if state else 0}")
+        print(f"  device_id: {device_id[:20] if device_id else None}...")
+        
         # Формируем query string для редиректа
         redirect_params = {}
         if code:
@@ -41,16 +49,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         import base64
         
-        # Извлекаем домен из state (формат: random|base64(domain)|base64(code_verifier))
+        # Извлекаем домен из state (формат: random__base64url(domain)__base64url(code_verifier))
         base_url = "https://420.xn--p1ai/app"  # default
         
-        if state and '|' in state:
+        if state and '__' in state:
             try:
-                parts = state.split('|')
+                parts = state.split('__')
+                print(f"  State split into {len(parts)} parts")
                 if len(parts) >= 2:  # Может быть 2 или 3 части (с code_verifier или без)
                     encoded_domain = parts[1]
-                    domain = base64.b64decode(encoded_domain).decode('utf-8')
+                    # URL-safe base64 декодирование (добавляем паддинг)
+                    encoded_domain = encoded_domain.replace('-', '+').replace('_', '/')
+                    padding = '=' * ((4 - len(encoded_domain) % 4) % 4)
+                    domain = base64.b64decode(encoded_domain + padding).decode('utf-8')
                     base_url = f"{domain}/app"
+                    print(f"  Decoded domain: {domain}")
             except Exception as e:
                 print(f"Failed to decode domain from state: {e}")
         

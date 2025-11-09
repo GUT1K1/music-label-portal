@@ -48,15 +48,17 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
       const stateRandom = generateRandomString(32);
       
       // Передаем домен + code_verifier в state
-      // Формат: random|base64url(domain)|base64url(code_verifier)
+      // Формат: random__base64url(domain)__base64url(code_verifier)
+      // Используем __ вместо | т.к. VK может обрезать | в state
       const currentDomain = window.location.origin;
       
       // URL-safe base64 без паддинга (короче)
       const domainB64 = btoa(currentDomain).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
       const verifierB64 = btoa(codeVerifier).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
       
-      const state = `${stateRandom}|${domainB64}|${verifierB64}`;
+      const state = `${stateRandom}__${domainB64}__${verifierB64}`;
       
+      console.log('🔵 State:', state);
       console.log('🔵 State length:', state.length, 'chars');
       
       const hashed = await sha256(codeVerifier);

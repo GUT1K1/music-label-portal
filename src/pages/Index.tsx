@@ -26,12 +26,13 @@ export default function Index() {
       if (vkCode && vkState) {
         console.log('🟢 VK callback detected on /app page');
         
-        // Извлекаем code_verifier из state (формат: random|base64url(domain)|base64url(code_verifier))
+        // Извлекаем code_verifier из state (формат: random__base64url(domain)__base64url(code_verifier))
         let codeVerifier = null;
         
         try {
-          const stateParts = vkState.split('|');
+          const stateParts = vkState.split('__');
           console.log('🔍 State parts:', stateParts.length);
+          console.log('🔍 Full state:', vkState);
           
           if (stateParts.length >= 3) {
             // URL-safe base64 декодирование (добавляем паддинг обратно)
