@@ -39,8 +39,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if device_id:
             redirect_params['device_id'] = device_id
         
+        import base64
+        
+        # Извлекаем домен из state (формат: random|base64(domain))
+        base_url = "https://420.xn--p1ai/app"  # default
+        
+        if state and '|' in state:
+            try:
+                parts = state.split('|')
+                if len(parts) == 2:
+                    encoded_domain = parts[1]
+                    domain = base64.b64decode(encoded_domain).decode('utf-8')
+                    base_url = f"{domain}/app"
+            except Exception as e:
+                print(f"Failed to decode domain from state: {e}")
+        
         query_string = urlencode(redirect_params)
-        redirect_url = f"https://420.xn--p1ai/app?{query_string}"
+        redirect_url = f"{base_url}?{query_string}"
         
         # Используем HTML редирект вместо 302, т.к. Cloud Functions может его перехватывать
         html_body = f'''<!DOCTYPE html>

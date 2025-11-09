@@ -45,14 +45,18 @@ export default function VKLoginButton({ onAuth }: VKLoginButtonProps) {
     try {
       // Генерируем PKCE параметры
       const codeVerifier = generateRandomString(64);
-      const state = generateRandomString(32);
+      const stateRandom = generateRandomString(32);
+      
+      // Передаем текущий домен в state для корректного редиректа
+      const currentDomain = window.location.origin;
+      const state = `${stateRandom}|${btoa(currentDomain)}`;
       
       const hashed = await sha256(codeVerifier);
       const codeChallenge = base64urlencode(hashed);
       
       // Сохраняем в sessionStorage для использования после редиректа
       sessionStorage.setItem('vk_code_verifier', codeVerifier);
-      sessionStorage.setItem('vk_state', state);
+      sessionStorage.setItem('vk_state', stateRandom);
       
       // Формируем URL авторизации (используем прокси-функцию для VK redirect)
       // device_id НЕ передаем - VK сам его генерирует и вернет в callback!

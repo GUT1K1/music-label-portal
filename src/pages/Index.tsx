@@ -26,9 +26,11 @@ export default function Index() {
       if (vkCode && vkState) {
         console.log('🟢 VK callback detected on /app page');
         
-        // Проверяем state
+        // Проверяем state (извлекаем random часть: random|base64domain)
         const savedState = sessionStorage.getItem('vk_state');
-        if (vkState !== savedState) {
+        const stateRandom = vkState.includes('|') ? vkState.split('|')[0] : vkState;
+        
+        if (stateRandom !== savedState) {
           console.error('🔴 State mismatch - possible CSRF attack');
           window.history.replaceState({}, document.title, '/app');
           return;
