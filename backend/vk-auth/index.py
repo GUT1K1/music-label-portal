@@ -48,12 +48,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'isBase64Encoded': False
             }
         
-        # Хардкод правильного VK App ID (секрет не обновляется)
-        vk_app_id = '54299249'
+        # Получаем VK credentials из environment
+        vk_app_id = os.environ.get('VK_APP_ID', '54299249')
         
         # КРИТИЧНО: redirect_uri должен ТОЧНО совпадать с тем, что был в authorize!
-        # VK проверяет его при token exchange
-        vk_redirect_uri = 'https://functions.poehali.dev/07be7329-c8ac-448b-99b7-930db7c3b704'
+        # Используем прокси-функцию vk-redirect как redirect_uri
+        vk_redirect_uri = 'https://functions.poehali.dev/c2662a32-9a12-4f7d-b516-8441bc06cfa5'
         
         # VK ID token exchange - минимальный набор параметров
         token_params = {
