@@ -1,7 +1,6 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import MatrixRain from '@/components/MatrixRain';
-
-const LandingPage = lazy(() => import('@/components/LandingPage'));
+import LandingPage from '@/components/LandingPage';
 
 export default function Home() {
   const [showLoader, setShowLoader] = useState(true);
@@ -47,13 +46,5 @@ export default function Home() {
     return <MatrixRain onComplete={handleLoadComplete} duration={3500} />;
   }
 
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Загрузка...</div>
-      </div>
-    }>
-      <LandingPage />
-    </Suspense>
-  );
+  return <LandingPage />;
 }
