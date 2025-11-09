@@ -41,13 +41,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         import base64
         
-        # Извлекаем домен из state (формат: random|base64(domain))
+        # Извлекаем домен из state (формат: random|base64(domain)|base64(code_verifier))
         base_url = "https://420.xn--p1ai/app"  # default
         
         if state and '|' in state:
             try:
                 parts = state.split('|')
-                if len(parts) == 2:
+                if len(parts) >= 2:  # Может быть 2 или 3 части (с code_verifier или без)
                     encoded_domain = parts[1]
                     domain = base64.b64decode(encoded_domain).decode('utf-8')
                     base_url = f"{domain}/app"
