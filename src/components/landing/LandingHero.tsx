@@ -10,7 +10,7 @@ interface LandingHeroProps {
 export default function LandingHero({ scrollY, typedText, isTypingComplete }: LandingHeroProps) {
   const [visibleWords, setVisibleWords] = useState<number[]>([]);
   const [cursorPos, setCursorPos] = useState({ x: 50, y: 50 });
-
+  
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth) * 100;
@@ -26,15 +26,22 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
   
   useEffect(() => {
     const order = [0, 3, 1, 4, 2];
+    const timers: NodeJS.Timeout[] = [];
+    
     order.forEach((index, i) => {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setVisibleWords(prev => [...prev, index]);
       }, i * 350);
+      timers.push(timer);
     });
+    
+    return () => {
+      timers.forEach(timer => clearTimeout(timer));
+    };
   }, []);
   
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 md:px-6 lg:px-12 pt-24 md:pt-32 overflow-hidden">
+    <section className="relative z-10 min-h-screen flex items-center justify-center px-4 md:px-6 lg:px-12 pt-24 md:pt-32 overflow-hidden">
       <div className="absolute top-20 right-32 w-3 h-3 bg-gold-400/40 rounded-full animate-pulse hidden md:block" />
       <div className="absolute top-40 left-24 w-2 h-2 bg-orange-400/40 rounded-full animate-pulse hidden md:block" style={{ animationDelay: '0.5s' }} />
       <div className="absolute bottom-32 right-1/4 w-2 h-2 bg-gold-400/40 rounded-full animate-pulse hidden md:block" style={{ animationDelay: '1s' }} />
