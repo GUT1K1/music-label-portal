@@ -36,6 +36,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
   
   return (
     <section className="relative min-h-screen flex items-center justify-center px-4 md:px-6 lg:px-12 pt-24 md:pt-32 overflow-hidden">
+      {/* Декоративные элементы */}
       <div className="absolute top-20 right-32 w-3 h-3 bg-gold-400/40 rounded-full animate-pulse hidden md:block" />
       <div className="absolute top-40 left-24 w-2 h-2 bg-orange-400/40 rounded-full animate-pulse hidden md:block" style={{ animationDelay: '0.5s' }} />
       <div className="absolute bottom-32 right-1/4 w-2 h-2 bg-gold-400/40 rounded-full animate-pulse hidden md:block" style={{ animationDelay: '1s' }} />

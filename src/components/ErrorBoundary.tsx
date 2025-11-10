@@ -10,6 +10,8 @@ interface State {
 }
 
 export default class ErrorBoundary extends Component<Props, State> {
+  private errorResetTimer?: NodeJS.Timeout;
+
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -21,6 +23,18 @@ export default class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Автосброс ошибки через 5 секунд для hot reload
+    this.errorResetTimer = setTimeout(() => {
+      console.log('ErrorBoundary: Auto-resetting error state');
+      this.setState({ hasError: false, error: null });
+    }, 5000);
+  }
+
+  componentWillUnmount() {
+    if (this.errorResetTimer) {
+      clearTimeout(this.errorResetTimer);
+    }
   }
 
   render() {
