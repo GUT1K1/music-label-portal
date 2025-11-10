@@ -296,6 +296,12 @@ export default function LandingStyles() {
         .animate-morph-glow {
           animation: none !important;
         }
+        
+        /* Уменьшаем blur для фоновых эффектов на мобильных */
+        .bg-glow-effect {
+          filter: blur(60px) !important;
+          transform: scale(0.6) !important;
+        }
       }
       
       /* Аппаратное ускорение для всех анимаций */
