@@ -1,5 +1,6 @@
 import Icon from "@/components/ui/icon";
 import BlogCarousel from "./BlogCarousel";
+import { useState } from "react";
 
 interface LandingBottomSectionsProps {
   handleMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -10,6 +11,8 @@ export default function LandingBottomSections({
   handleMouseMove, 
   handleMouseLeave
 }: LandingBottomSectionsProps) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
   const platforms = [
     { name: "Spotify", icon: "Music", color: "from-green-500 to-emerald-500" },
     { name: "Apple Music", icon: "Music2", color: "from-pink-500 to-rose-500" },
@@ -137,7 +140,7 @@ export default function LandingBottomSections({
           
           <div className="space-y-6">
             {faqs.map((faq, i) => (
-              <details
+              <div
                 key={i}
                 className="group relative"
                 onMouseMove={handleMouseMove}
@@ -147,55 +150,60 @@ export default function LandingBottomSections({
                   transition: 'transform 0.3s ease-out'
                 }}
               >
-                <div className="absolute -inset-1 bg-gradient-to-r from-gold-600/40 via-orange-600/40 to-gold-600/40 rounded-[28px] blur-xl opacity-0 group-open:opacity-100 transition-all duration-700 animate-gradient-x" />
+                <div className={`absolute -inset-1 bg-gradient-to-r from-gold-600/40 via-orange-600/40 to-gold-600/40 rounded-[28px] blur-xl opacity-0 transition-all duration-700 ${openIndex === i ? 'opacity-100 animate-gradient-x' : ''}`} />
                 
-                <div className="relative bg-black/70 backdrop-blur-xl border-2 border-gold-500/30 rounded-3xl group-hover:border-gold-500/50 group-open:border-gold-500/80 group-open:shadow-2xl group-open:shadow-gold-500/30 transition-all duration-500 overflow-hidden group-hover:-translate-y-1 group-open:-translate-y-2">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gold-500/20 to-transparent rounded-full blur-3xl opacity-0 group-open:opacity-100 transition-opacity duration-700" />
-                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-orange-500/20 to-transparent rounded-full blur-3xl opacity-0 group-open:opacity-100 transition-opacity duration-700" />
+                <div className={`relative bg-black/70 backdrop-blur-xl border-2 rounded-3xl transition-all duration-500 overflow-hidden ${openIndex === i ? 'border-gold-500/80 shadow-2xl shadow-gold-500/30 -translate-y-2' : 'border-gold-500/30 group-hover:border-gold-500/50 group-hover:-translate-y-1'}`}>
+                  <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gold-500/20 to-transparent rounded-full blur-3xl opacity-0 transition-opacity duration-700 ${openIndex === i ? 'opacity-100' : ''}`} />
+                  <div className={`absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-orange-500/20 to-transparent rounded-full blur-3xl opacity-opacity-0 transition-opacity duration-700 ${openIndex === i ? 'opacity-100' : ''}`} />
                   
-                  <div className="absolute top-8 right-8 w-32 h-32 border-2 border-gold-400/20 rounded-[24px] rotate-12 group-hover:rotate-45 group-open:scale-150 transition-all duration-700" />
-                  <div className="absolute bottom-8 left-8 w-24 h-24 border-2 border-orange-400/20 rounded-full -rotate-12 group-hover:-rotate-45 group-open:scale-150 transition-all duration-700" />
+                  <div className={`absolute top-8 right-8 w-32 h-32 border-2 border-gold-400/20 rounded-[24px] rotate-12 transition-all duration-700 ${openIndex === i ? 'scale-150' : 'group-hover:rotate-45'}`} />
+                  <div className={`absolute bottom-8 left-8 w-24 h-24 border-2 border-orange-400/20 rounded-full -rotate-12 transition-all duration-700 ${openIndex === i ? 'scale-150' : 'group-hover:-rotate-45'}`} />
                   
-                  <summary className="cursor-pointer p-10 flex items-center justify-between group/summary list-none">
+                  <button 
+                    onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                    className="w-full p-10 flex items-center justify-between cursor-pointer group/button text-left"
+                  >
                     <span className="flex items-center gap-5 flex-1 pr-4">
                       <div className="relative flex-shrink-0">
-                        <div className="absolute inset-0 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl blur-lg opacity-60 group-open:scale-125 transition-all duration-500" />
-                        <div className="relative w-14 h-14 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 group-hover:scale-110 group-hover:rotate-12 group-open:rotate-0 group-open:scale-125 transition-all duration-500">
-                          <span className="text-black font-black text-xl">{i + 1}</span>
+                        <div className={`absolute inset-0 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl blur-lg opacity-60 transition-all duration-500 ${openIndex === i ? 'scale-125' : ''}`} />
+                        <div className={`relative w-16 h-16 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 transition-all duration-500 ${openIndex === i ? 'scale-125' : 'group-hover:scale-110 group-hover:rotate-12'}`}>
+                          <span className="text-black font-black text-2xl">{i + 1}</span>
                         </div>
                       </div>
                       
-                      <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-gold-200 group-open:text-gold-100 transition-colors duration-300">
+                      <h3 className={`text-xl md:text-2xl font-bold transition-colors duration-300 ${openIndex === i ? 'text-gold-100' : 'text-white group-hover:text-gold-200'}`}>
                         {faq.q}
                       </h3>
                     </span>
                     
-                    <div className="relative flex-shrink-0 group-hover/summary:scale-110 transition-transform duration-300">
-                      <div className="absolute inset-0 bg-gold-500/40 rounded-2xl blur-2xl opacity-0 group-hover/summary:opacity-100 transition-opacity duration-300" />
+                    <div className="relative flex-shrink-0 group-hover/button:scale-110 transition-transform duration-300">
+                      <div className="absolute inset-0 bg-gold-500/40 rounded-2xl blur-2xl opacity-0 group-hover/button:opacity-100 transition-opacity duration-300" />
                       <div className="relative w-16 h-16 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 border-2 border-gold-300/50">
-                        <Icon name="ChevronDown" size={32} className="text-black font-bold group-open:rotate-180 transition-all duration-500" />
+                        <Icon name="ChevronDown" size={32} className={`text-black font-bold transition-all duration-500 ${openIndex === i ? 'rotate-180' : ''}`} />
                       </div>
                     </div>
-                  </summary>
+                  </button>
                   
-                  <div className="px-10 pb-10">
-                    <div className="pl-[76px] relative">
-                      <div className="absolute left-7 top-0 w-0.5 h-full bg-gradient-to-b from-gold-500/50 via-gold-500/30 to-transparent rounded-full" />
-                      
-                      <div className="relative bg-gradient-to-br from-gold-500/5 to-orange-500/5 backdrop-blur-sm border border-gold-400/20 rounded-2xl p-8 group-open:animate-fade-in-up">
-                        <div className="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-gold-400/20 to-transparent rounded-tl-2xl" />
-                        <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-orange-400/20 to-transparent rounded-br-2xl" />
+                  {openIndex === i && (
+                    <div className="px-10 pb-10 animate-fade-in-up">
+                      <div className="pl-[76px] relative">
+                        <div className="absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-gold-500/50 via-gold-500/30 to-transparent rounded-full" />
                         
-                        <p className="text-gray-200 leading-relaxed text-lg md:text-xl relative z-10">
-                          {faq.a}
-                        </p>
+                        <div className="relative bg-gradient-to-br from-gold-500/10 to-orange-500/10 backdrop-blur-sm border-2 border-gold-400/30 rounded-2xl p-8 shadow-xl">
+                          <div className="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-gold-400/30 to-transparent rounded-tl-2xl" />
+                          <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-br-2xl" />
+                          
+                          <p className="text-gray-100 leading-relaxed text-lg md:text-xl relative z-10">
+                            {faq.a}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                   
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 via-orange-500 to-gold-500 opacity-0 group-open:opacity-100 transition-opacity duration-500" />
+                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 via-orange-500 to-gold-500 transition-opacity duration-500 ${openIndex === i ? 'opacity-100' : 'opacity-0'}`} />
                 </div>
-              </details>
+              </div>
             ))}
           </div>
         </div>
