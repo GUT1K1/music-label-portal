@@ -43,19 +43,7 @@ export default function LandingFeaturesSection({
   ];
 
   return (
-    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 via-gray-950 to-gray-900 relative overflow-hidden">
-      <div 
-        className="absolute inset-0 opacity-40"
-        style={{ transform: `translateY(${scrollY * 0.15}px)` }}
-      >
-        <img 
-          src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/cd01e971-8333-4e23-bee8-22a54c946842.jpg"
-          alt="Background"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-gray-950/50 to-gray-900/70" />
-      </div>
-      
+    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16 scroll-animate">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">

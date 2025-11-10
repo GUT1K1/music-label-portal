@@ -1,4 +1,5 @@
 import Icon from "@/components/ui/icon";
+import AnimatedLogo from "./AnimatedLogo";
 
 interface LandingHeaderProps {
   isScrolled: boolean;
@@ -8,13 +9,13 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
       isScrolled 
-        ? 'bg-black/90 backdrop-blur-2xl border-b border-orange-500/20 shadow-lg shadow-orange-500/10' 
+        ? 'bg-gray-950/90 backdrop-blur-2xl border-b border-orange-500/20 shadow-lg shadow-orange-500/10' 
         : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <a href="/" className="text-2xl font-bold text-orange-500 hover:text-orange-400 transition-colors duration-300">
-            420.рф
+          <a href="/" className="block">
+            <AnimatedLogo />
           </a>
           
           <nav className="hidden md:flex items-center gap-8">

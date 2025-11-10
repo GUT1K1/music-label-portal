@@ -5,14 +5,12 @@ interface LandingBottomSectionsProps {
   scrollY: number;
   handleMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
   handleMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
-  createSparkle: (e: React.MouseEvent) => void;
 }
 
 export default function LandingBottomSections({ 
   scrollY, 
   handleMouseMove, 
-  handleMouseLeave,
-  createSparkle
+  handleMouseLeave
 }: LandingBottomSectionsProps) {
   const platforms = [
     { name: "Яндекс Музыка", icon: "Music" },
@@ -45,19 +43,7 @@ export default function LandingBottomSections({
   return (
     <>
       {/* Platforms Section */}
-      <section id="platforms" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
-        <div 
-          className="absolute inset-0 opacity-40"
-          style={{ transform: `translateY(${scrollY * 0.25}px)` }}
-        >
-          <img 
-            src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/28767271-4aef-4a51-b799-796154fc31c0.jpg"
-            alt="Background"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-800/60 to-gray-900/80" />
-        </div>
-        
+      <section id="platforms" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16 scroll-animate">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
@@ -97,7 +83,7 @@ export default function LandingBottomSections({
       <BlogCarousel />
 
       {/* FAQ Section */}
-      <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 via-gray-950 to-gray-900">
+      <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16 scroll-animate">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
@@ -129,19 +115,7 @@ export default function LandingBottomSections({
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
-        <div 
-          className="absolute inset-0 opacity-50"
-          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
-        >
-          <img 
-            src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/33f4d99e-a10a-4062-b1e3-0e97b2f60bed.jpg"
-            alt="Background"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-800/60 to-gray-900/80" />
-        </div>
-        
+      <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="max-w-4xl mx-auto text-center relative z-10 scroll-animate">
           <h2 className="text-4xl sm:text-5xl font-bold mb-6 gradient-text">
             Готов начать работу?
@@ -153,7 +127,6 @@ export default function LandingBottomSections({
           <a
             href="/app"
             className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105 button-ripple glow-border"
-            onMouseMove={createSparkle}
           >
             Выпустить первый релиз
             <Icon name="ArrowRight" size={22} />

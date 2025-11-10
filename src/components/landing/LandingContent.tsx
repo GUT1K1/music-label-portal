@@ -6,22 +6,11 @@ import LandingBottomSections from "./LandingBottomSections";
 
 export default function LandingContent() {
   const [scrollY, setScrollY] = useState(0);
-  const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number }>>([]);
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-    const handleMouseMove = (e: MouseEvent) => {
-      setCursorPosition({ x: e.clientX, y: e.clientY });
-    };
-    
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -44,25 +33,11 @@ export default function LandingContent() {
     card.style.setProperty("--rotate-y", "0deg");
   };
 
-  const createSparkle = (e: React.MouseEvent) => {
-    const newSparkle = {
-      id: Date.now(),
-      x: e.clientX,
-      y: e.clientY,
-    };
-    setSparkles((prev) => [...prev, newSparkle]);
-    setTimeout(() => {
-      setSparkles((prev) => prev.filter((s) => s.id !== newSparkle.id));
-    }, 1500);
-  };
+
 
   return (
     <>
-      <LandingBackgroundEffects 
-        scrollY={scrollY} 
-        cursorPosition={cursorPosition} 
-        sparkles={sparkles} 
-      />
+      <LandingBackgroundEffects scrollY={scrollY} />
       
       <LandingStatsSection 
         scrollY={scrollY} 
@@ -80,7 +55,6 @@ export default function LandingContent() {
         scrollY={scrollY} 
         handleMouseMove={handleMouseMove} 
         handleMouseLeave={handleMouseLeave}
-        createSparkle={createSparkle}
       />
     </>
   );

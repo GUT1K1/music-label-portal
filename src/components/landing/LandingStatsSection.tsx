@@ -64,19 +64,7 @@ export default function LandingStatsSection({
   }, [isVisible]);
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
-      <div 
-        className="absolute inset-0 opacity-50"
-        style={{ transform: `translateY(${scrollY * 0.2}px)` }}
-      >
-        <img 
-          src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/6f1dd302-dd25-49ae-aebf-13f4871d0d4d.jpg"
-          alt="Background"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 via-gray-800/60 to-gray-900/80" />
-      </div>
-      
+    <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="max-w-6xl mx-auto relative z-10" ref={statsRef}>
         <div className="text-center mb-16 scroll-animate">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
