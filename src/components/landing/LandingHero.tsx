@@ -10,12 +10,6 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 pt-32">
       <div className="relative z-10 max-w-5xl mx-auto text-center">
-        <div className="mb-12 inline-block opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
-          <div className="px-6 py-3 bg-gradient-to-r from-gold-500/10 to-gold-600/10 border border-gold-400/30 rounded-full backdrop-blur-sm">
-            <span className="text-gold-300 text-sm font-semibold tracking-wide">ДИСТРИБУЦИЯ МУЗЫКИ</span>
-          </div>
-        </div>
-        
         <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold mb-8 tracking-tight">
           <span className="block text-white mb-4 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
             МУЗЫКА БЕЗ ГРАНИЦ.
