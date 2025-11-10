@@ -156,7 +156,7 @@ export default function LandingBottomSections({
                   <div className="absolute top-8 right-8 w-32 h-32 border-2 border-gold-400/20 rounded-[24px] rotate-12 group-hover:rotate-45 group-open:scale-150 transition-all duration-700" />
                   <div className="absolute bottom-8 left-8 w-24 h-24 border-2 border-orange-400/20 rounded-full -rotate-12 group-hover:-rotate-45 group-open:scale-150 transition-all duration-700" />
                   
-                  <summary className="cursor-pointer p-10 flex items-center justify-between group/summary">
+                  <summary className="cursor-pointer p-10 flex items-center justify-between group/summary list-none">
                     <span className="flex items-center gap-5 flex-1 pr-4">
                       <div className="relative flex-shrink-0">
                         <div className="absolute inset-0 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl blur-lg opacity-60 group-open:scale-125 transition-all duration-500" />
@@ -170,10 +170,10 @@ export default function LandingBottomSections({
                       </h3>
                     </span>
                     
-                    <div className="relative flex-shrink-0">
-                      <div className="absolute inset-0 bg-gold-500/30 rounded-2xl blur-xl opacity-0 group-hover/summary:opacity-100 transition-opacity duration-300" />
-                      <div className="relative w-14 h-14 bg-gradient-to-br from-gold-500/30 to-orange-500/30 rounded-2xl flex items-center justify-center border-2 border-gold-400/40 group-hover/summary:border-gold-400/70 group-hover/summary:scale-110 transition-all duration-300">
-                        <Icon name="ChevronDown" size={28} className="text-gold-400 group-open:rotate-180 group-hover/summary:text-gold-300 transition-all duration-500" />
+                    <div className="relative flex-shrink-0 group-hover/summary:scale-110 transition-transform duration-300">
+                      <div className="absolute inset-0 bg-gold-500/40 rounded-2xl blur-2xl opacity-0 group-hover/summary:opacity-100 transition-opacity duration-300" />
+                      <div className="relative w-16 h-16 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 border-2 border-gold-300/50">
+                        <Icon name="ChevronDown" size={32} className="text-black font-bold group-open:rotate-180 transition-all duration-500" />
                       </div>
                     </div>
                   </summary>
