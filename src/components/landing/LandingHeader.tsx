@@ -1,5 +1,4 @@
 import Icon from "@/components/ui/icon";
-import AnimatedLogo from "./AnimatedLogo";
 
 interface LandingHeaderProps {
   isScrolled: boolean;
@@ -7,34 +6,33 @@ interface LandingHeaderProps {
 
 export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled 
-        ? 'bg-gray-950/90 backdrop-blur-2xl border-b border-orange-500/20 shadow-lg shadow-orange-500/10' 
+        ? 'bg-black/80 backdrop-blur-xl border-b border-gold-500/10' 
         : 'bg-transparent'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20">
-          <a href="/" className="block">
-            <AnimatedLogo />
+          <a href="/" className="flex items-center gap-2">
+            <span className="text-2xl font-bold text-gold-400">420</span>
           </a>
           
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm font-medium text-gray-400 hover:text-orange-400 transition-all duration-300 hover:scale-110">
+            <a href="#features" className="text-sm text-gray-400 hover:text-gold-400 transition-colors">
               Возможности
             </a>
-            <a href="#platforms" className="text-sm font-medium text-gray-400 hover:text-orange-400 transition-all duration-300 hover:scale-110">
+            <a href="#platforms" className="text-sm text-gray-400 hover:text-gold-400 transition-colors">
               Площадки
             </a>
-            <a href="/blog" className="text-sm font-medium text-gray-400 hover:text-orange-400 transition-all duration-300 hover:scale-110">
+            <a href="/blog" className="text-sm text-gray-400 hover:text-gold-400 transition-colors">
               Блог
             </a>
-            <a href="#faq" className="text-sm font-medium text-gray-400 hover:text-orange-400 transition-all duration-300 hover:scale-110">
+            <a href="#faq" className="text-sm text-gray-400 hover:text-gold-400 transition-colors">
               FAQ
             </a>
             <a
               href="/app"
-              className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-lg font-semibold text-sm hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105"
-              style={{ animation: 'glow-pulse 3s ease-in-out infinite' }}
+              className="px-6 py-2.5 bg-gold-500 text-black rounded-lg font-semibold text-sm hover:bg-gold-400 transition-all"
             >
               Войти
             </a>

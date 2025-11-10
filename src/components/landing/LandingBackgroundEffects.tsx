@@ -1,84 +1,44 @@
 export default function LandingBackgroundEffects() {
   return (
     <>
-      {/* Base Gradient - Rich and Deep */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-orange-950/20 via-transparent to-amber-950/10" />
-      </div>
+      {/* Base black background */}
+      <div className="fixed inset-0 bg-black pointer-events-none" />
       
-      {/* Large Smooth Gradient Clouds */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      {/* Subtle animated golden glow */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-20">
         <div 
-          className="absolute rounded-full"
+          className="absolute w-[1000px] h-[1000px] rounded-full"
           style={{
-            width: '1200px',
-            height: '1200px',
-            top: '-20%',
-            left: '-10%',
-            background: 'radial-gradient(circle, rgba(251, 146, 60, 0.15) 0%, rgba(251, 146, 60, 0.08) 40%, transparent 70%)',
+            top: '10%',
+            left: '10%',
+            background: 'radial-gradient(circle, rgba(234, 179, 8, 0.3) 0%, transparent 70%)',
+            filter: 'blur(120px)',
+            animation: 'float-slow 30s ease-in-out infinite'
+          }}
+        />
+        <div 
+          className="absolute w-[800px] h-[800px] rounded-full"
+          style={{
+            bottom: '20%',
+            right: '15%',
+            background: 'radial-gradient(circle, rgba(202, 138, 4, 0.25) 0%, transparent 70%)',
             filter: 'blur(100px)',
-            animation: 'gentle-drift 40s ease-in-out infinite'
-          }}
-        />
-        <div 
-          className="absolute rounded-full"
-          style={{
-            width: '1000px',
-            height: '1000px',
-            top: '30%',
-            right: '-15%',
-            background: 'radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.06) 40%, transparent 70%)',
-            filter: 'blur(90px)',
-            animation: 'gentle-drift 50s ease-in-out infinite 10s'
-          }}
-        />
-        <div 
-          className="absolute rounded-full"
-          style={{
-            width: '1100px',
-            height: '1100px',
-            bottom: '-10%',
-            left: '20%',
-            background: 'radial-gradient(circle, rgba(251, 191, 36, 0.13) 0%, rgba(251, 191, 36, 0.07) 40%, transparent 70%)',
-            filter: 'blur(95px)',
-            animation: 'gentle-drift 45s ease-in-out infinite 20s'
+            animation: 'float-slow 40s ease-in-out infinite 10s'
           }}
         />
       </div>
       
-      {/* Soft Glow Effect */}
+      {/* Minimal particles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-30">
-        <div 
-          className="absolute w-full h-full"
-          style={{
-            background: 'radial-gradient(ellipse at 30% 40%, rgba(251, 146, 60, 0.08), transparent 60%)',
-            animation: 'soft-pulse 20s ease-in-out infinite'
-          }}
-        />
-        <div 
-          className="absolute w-full h-full"
-          style={{
-            background: 'radial-gradient(ellipse at 70% 60%, rgba(245, 158, 11, 0.06), transparent 50%)',
-            animation: 'soft-pulse 25s ease-in-out infinite 8s'
-          }}
-        />
-      </div>
-      
-      {/* Ambient Particles - Minimal */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-40">
-        {[...Array(30)].map((_, i) => (
+        {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="absolute rounded-full"
+            className="absolute w-1 h-1 rounded-full bg-gold-400"
             style={{
-              width: '2px',
-              height: '2px',
-              background: i % 2 === 0 ? 'rgba(251, 146, 60, 0.5)' : 'rgba(251, 191, 36, 0.4)',
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animation: `slow-twinkle ${8 + Math.random() * 10}s ease-in-out infinite ${Math.random() * 8}s`,
-              boxShadow: '0 0 10px currentColor'
+              animation: `twinkle-slow ${10 + Math.random() * 15}s ease-in-out infinite ${Math.random() * 10}s`,
+              boxShadow: '0 0 8px rgba(234, 179, 8, 0.8)'
             }}
           />
         ))}

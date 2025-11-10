@@ -8,97 +8,80 @@ interface LandingHeroProps {
 
 export default function LandingHero({ scrollY, typedText, isTypingComplete }: LandingHeroProps) {
   return (
-    <>
-      {/* Animated Background Orbs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div 
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl"
-          style={{ 
-            animation: 'float-up 20s ease-in-out infinite'
-          }}
-        />
-        <div 
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl"
-          style={{ 
-            animation: 'float-up 25s ease-in-out infinite reverse'
-          }}
-        />
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-3xl animate-rotate"
-        />
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-orange-400/60 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `twinkle ${2 + Math.random() * 3}s infinite ${Math.random() * 2}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-10" />
-        
-        <div className="relative z-10 max-w-6xl mx-auto text-center">
-          <div className="mb-8 inline-block animate-slideIn opacity-0" style={{ animation: 'slide-in-up 0.8s 0.2s forwards' }}>
-            <span className="px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-full text-sm text-orange-400 font-medium backdrop-blur-sm">
-              420
-            </span>
-          </div>
-          
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-[1.15] tracking-tight px-4">
-            <span className="block opacity-0 animate-slideIn text-white" style={{ animation: 'slide-in-up 0.8s 0.4s forwards', textShadow: '0 0 30px rgba(0,0,0,0.8)' }}>
-              МУЗЫКА БЕЗ ГРАНИЦ.
-            </span>
-            <span 
-              className={`block opacity-0 ${!isTypingComplete ? 'typing-cursor' : ''}`} 
-              style={{ 
-                animation: 'slide-in-up 0.8s 0.8s forwards',
-                background: 'linear-gradient(270deg, #f97316, #fb923c, #f59e0b, #fb923c, #f97316)',
-                backgroundSize: '400% 400%',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 20px rgba(251, 146, 60, 0.5))',
-                animationName: 'slide-in-up, gradient-shift',
-                animationDuration: '0.8s, 8s',
-                animationDelay: '0.8s, 0s',
-                animationIterationCount: '1, infinite',
-                animationTimingFunction: 'ease, ease',
-                animationFillMode: 'forwards, none'
-              }}
-            >
-              {typedText}
-            </span>
-          </h1>
-          
-          <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed font-light opacity-0" style={{ animation: 'slide-in-up 0.8s 1.5s forwards' }}>
-            Выпускай треки на Spotify, Apple Music, Яндекс.Музыку и ещё 50+ площадок. Зарабатывай на своём творчестве.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0" style={{ animation: 'slide-in-up 0.8s 1.8s forwards' }}>
-            <a
-              href="/app"
-              className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105 button-ripple relative z-10"
-            >
-Загрузить трек
-              <Icon name="ArrowRight" className="inline ml-2 group-hover:translate-x-2 transition-transform duration-300" size={20} />
-            </a>
-            
-            <a
-              href="#features"
-              className="px-8 py-4 glassmorphism rounded-xl font-semibold text-lg hover:bg-white/10 hover:border-orange-500/30 transition-all duration-300 backdrop-blur-sm color-shift"
-            >
-              Узнать больше
-            </a>
+    <section className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 pt-20">
+      {/* Background */}
+      <div className="absolute inset-0 bg-black" />
+      
+      {/* Subtle grid */}
+      <div className="absolute inset-0 opacity-[0.02]" 
+        style={{ 
+          backgroundImage: 'linear-gradient(rgba(234, 179, 8, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(234, 179, 8, 0.5) 1px, transparent 1px)',
+          backgroundSize: '100px 100px' 
+        }} 
+      />
+      
+      {/* Golden gradient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-gold-500/10 via-gold-600/5 to-transparent blur-3xl" />
+      
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
+        {/* Badge */}
+        <div className="mb-12 inline-block">
+          <div className="px-5 py-2 bg-gold-500/10 border border-gold-500/20 rounded-full backdrop-blur-sm">
+            <span className="text-gold-400 text-sm font-semibold tracking-wider">420 MUSIC</span>
           </div>
         </div>
-      </section>
-    </>
+        
+        {/* Heading */}
+        <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold mb-6 tracking-tight">
+          <span className="block text-white mb-3">
+            МУЗЫКА БЕЗ ГРАНИЦ.
+          </span>
+          <span 
+            className={`block bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent ${!isTypingComplete ? 'typing-cursor' : ''}`}
+          >
+            {typedText}
+          </span>
+        </h1>
+        
+        {/* Description */}
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+          Выпускай треки на Spotify, Apple Music, Яндекс.Музыку и ещё 50+ площадок. Зарабатывай на своём творчестве.
+        </p>
+        
+        {/* CTA */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a
+            href="/app"
+            className="group px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 rounded-lg font-semibold text-lg text-black hover:shadow-2xl hover:shadow-gold-500/50 transition-all duration-300 hover:scale-105 flex items-center gap-2"
+          >
+            Загрузить трек
+            <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform" size={20} />
+          </a>
+          
+          <a
+            href="#features"
+            className="px-8 py-4 border border-gold-500/30 rounded-lg font-semibold text-lg text-white hover:bg-gold-500/5 hover:border-gold-500/50 transition-all duration-300"
+          >
+            Узнать больше
+          </a>
+        </div>
+        
+        {/* Stats */}
+        <div className="mt-20 grid grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <div className="text-center">
+            <div className="text-4xl font-bold text-gold-400 mb-2">50+</div>
+            <div className="text-sm text-gray-500">Платформ</div>
+          </div>
+          <div className="text-center border-x border-gray-800">
+            <div className="text-4xl font-bold text-gold-400 mb-2">0₽</div>
+            <div className="text-sm text-gray-500">За выпуск</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl font-bold text-gold-400 mb-2">100%</div>
+            <div className="text-sm text-gray-500">Твои права</div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

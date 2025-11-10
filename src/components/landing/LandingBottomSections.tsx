@@ -11,10 +11,10 @@ export default function LandingBottomSections({
   handleMouseLeave
 }: LandingBottomSectionsProps) {
   const platforms = [
-    { name: "Яндекс Музыка", icon: "Music" },
-    { name: "VK Музыка", icon: "Music2" },
-    { name: "Spotify", icon: "Music3" },
-    { name: "Apple Music", icon: "Music4" },
+    { name: "Spotify", icon: "Music" },
+    { name: "Apple Music", icon: "Music2" },
+    { name: "Яндекс Музыка", icon: "Music3" },
+    { name: "VK Музыка", icon: "Music4" },
     { name: "YouTube Music", icon: "Youtube" },
     { name: "Deezer", icon: "Disc3" },
   ];
@@ -41,13 +41,15 @@ export default function LandingBottomSections({
   return (
     <>
       {/* Platforms Section */}
-      <section id="platforms" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-16 scroll-animate">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
-              50+ музыкальных платформ
+      <section id="platforms" className="py-32 px-6 lg:px-12 relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">
+                50+ музыкальных платформ
+              </span>
             </h2>
-            <p className="text-gray-300 text-lg font-light">
+            <p className="text-gray-400 text-lg">
               Твоя музыка будет доступна миллионам слушателей
             </p>
           </div>
@@ -56,24 +58,18 @@ export default function LandingBottomSections({
             {platforms.map((platform, i) => (
               <div
                 key={i}
-                className="scroll-animate group p-6 neomorphism glassmorphism rounded-2xl glow-border transition-all duration-500 card-3d wave-enter flex flex-col items-center justify-center text-center color-shift"
-                style={{ 
-                  transitionDelay: `${i * 50}ms`,
-                  animationDelay: `${i * 100}ms`
-                }}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
+                className="group p-6 bg-gradient-to-b from-gray-900/50 to-black/50 border border-gold-500/10 rounded-xl hover:border-gold-500/30 transition-all duration-300 flex flex-col items-center justify-center text-center"
               >
-                <Icon name={platform.icon as any} size={32} className="text-orange-400 mb-3 group-hover:scale-125 transition-all duration-500 wave-animate" />
-                <div className="text-sm font-medium text-gray-200 group-hover:text-white transition-colors duration-300">
+                <Icon name={platform.icon as any} size={32} className="text-gold-400 mb-3 group-hover:scale-110 transition-transform" />
+                <div className="text-sm font-medium text-gray-200">
                   {platform.name}
                 </div>
               </div>
             ))}
           </div>
           
-          <div className="mt-12 text-center scroll-animate">
-            <p className="text-gray-400 text-sm">+ ещё 40 музыкальных сервисов по всему миру</p>
+          <div className="mt-12 text-center">
+            <p className="text-gray-500 text-sm">+ ещё 40 музыкальных сервисов по всему миру</p>
           </div>
         </div>
       </section>
@@ -81,11 +77,13 @@ export default function LandingBottomSections({
       <BlogCarousel />
 
       {/* FAQ Section */}
-      <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section id="faq" className="py-32 px-6 lg:px-12 relative">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16 scroll-animate">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
-              Популярные вопросы
+          <div className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">
+                Популярные вопросы
+              </span>
             </h2>
           </div>
           
@@ -93,17 +91,13 @@ export default function LandingBottomSections({
             {faqs.map((faq, i) => (
               <details
                 key={i}
-                className="scroll-animate group p-6 neomorphism glassmorphism rounded-2xl glow-border transition-all duration-500 wave-enter color-shift"
-                style={{ 
-                  transitionDelay: `${i * 100}ms`,
-                  animationDelay: `${i * 150}ms`
-                }}
+                className="group p-6 bg-gradient-to-b from-gray-900/50 to-black/50 border border-gold-500/10 rounded-xl hover:border-gold-500/30 transition-all"
               >
-                <summary className="cursor-pointer font-semibold text-lg flex items-center justify-between group-hover:text-orange-400 transition-colors duration-300">
+                <summary className="cursor-pointer font-semibold text-lg flex items-center justify-between text-white">
                   {faq.q}
-                  <Icon name="ChevronDown" size={20} className="text-orange-400 group-open:rotate-180 transition-transform duration-300" />
+                  <Icon name="ChevronDown" size={20} className="text-gold-400 group-open:rotate-180 transition-transform" />
                 </summary>
-                <p className="mt-4 text-gray-300 leading-relaxed font-light">
+                <p className="mt-4 text-gray-400 leading-relaxed">
                   {faq.a}
                 </p>
               </details>
@@ -113,34 +107,36 @@ export default function LandingBottomSections({
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="max-w-4xl mx-auto text-center relative z-10 scroll-animate">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-6 gradient-text">
-            Начни зарабатывать на музыке
+      <section className="py-32 px-6 lg:px-12 relative">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">
+              Начни зарабатывать на музыке
+            </span>
           </h2>
-          <p className="text-gray-300 text-lg mb-12 font-light max-w-2xl mx-auto">
+          <p className="text-gray-400 text-lg mb-12 max-w-2xl mx-auto">
             Загрузи первый трек и выведи своё творчество на новый уровень
           </p>
           
           <a
             href="/app"
-            className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105 button-ripple glow-border"
+            className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-gold-500 to-gold-600 rounded-lg font-semibold text-lg text-black hover:shadow-2xl hover:shadow-gold-500/50 transition-all duration-300 hover:scale-105"
           >
-Загрузить трек
+            Загрузить трек
             <Icon name="ArrowRight" size={22} />
           </a>
           
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-gray-400">
-            <div className="flex items-center gap-2 hover:text-orange-400 transition-colors duration-300">
-              <Icon name="Check" size={16} className="text-orange-400" />
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-gray-500">
+            <div className="flex items-center gap-2">
+              <Icon name="Check" size={16} className="text-gold-400" />
               <span>Без скрытых комиссий</span>
             </div>
-            <div className="flex items-center gap-2 hover:text-orange-400 transition-colors duration-300">
-              <Icon name="Check" size={16} className="text-orange-400" />
+            <div className="flex items-center gap-2">
+              <Icon name="Check" size={16} className="text-gold-400" />
               <span>Быстрая модерация</span>
             </div>
-            <div className="flex items-center gap-2 hover:text-orange-400 transition-colors duration-300">
-              <Icon name="Check" size={16} className="text-orange-400" />
+            <div className="flex items-center gap-2">
+              <Icon name="Check" size={16} className="text-gold-400" />
               <span>Поддержка 24/7</span>
             </div>
           </div>
@@ -148,24 +144,24 @@ export default function LandingBottomSections({
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-950 border-t border-orange-500/20">
-        <div className="max-w-6xl mx-auto">
+      <footer className="py-12 px-6 lg:px-12 border-t border-gold-500/10">
+        <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-2xl font-bold text-orange-500">
-              420.рф
+            <div className="text-2xl font-bold text-gold-400">
+              420
             </div>
             
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
-              <a href="/blog" className="hover:text-orange-400 transition-all duration-300 hover:scale-110">Блог</a>
-              <a href="/terms" className="hover:text-orange-400 transition-all duration-300 hover:scale-110">Условия</a>
-              <a href="/privacy" className="hover:text-orange-400 transition-all duration-300 hover:scale-110">Конфиденциальность</a>
-              <a href="https://t.me/+QgiLIa1gFRY4Y2Iy" target="_blank" rel="noopener noreferrer" className="hover:text-orange-400 transition-all duration-300 hover:scale-110">
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500">
+              <a href="/blog" className="hover:text-gold-400 transition-colors">Блог</a>
+              <a href="/terms" className="hover:text-gold-400 transition-colors">Условия</a>
+              <a href="/privacy" className="hover:text-gold-400 transition-colors">Конфиденциальность</a>
+              <a href="https://t.me/+QgiLIa1gFRY4Y2Iy" target="_blank" rel="noopener noreferrer" className="hover:text-gold-400 transition-colors">
                 Telegram
               </a>
             </div>
           </div>
           
-          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+          <div className="mt-8 pt-8 border-t border-gray-900 text-center text-sm text-gray-600">
             © 2024 420 Music. Все права защищены.
           </div>
         </div>

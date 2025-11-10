@@ -14,9 +14,9 @@ export default function LandingStatsSection({
   const statsRef = useRef<HTMLDivElement>(null);
 
   const stats = [
-    { value: 50, suffix: "+", label: "Музыкальных площадок по всему миру" },
-    { value: 100, suffix: "%", label: "Ты сохраняешь все права на музыку" },
-    { value: 0, suffix: "₽", label: "За выпуск релиза — без скрытых плат" },
+    { value: 50, suffix: "+", label: "Музыкальных площадок по всему миру", highlight: "Spotify, Apple Music, Яндекс" },
+    { value: 100, suffix: "%", label: "Ты сохраняешь все права на музыку", highlight: "Полный контроль" },
+    { value: 0, suffix: "₽", label: "За выпуск релиза — без скрытых плат", highlight: "Бесплатный старт" },
   ];
 
   useEffect(() => {
@@ -62,34 +62,35 @@ export default function LandingStatsSection({
   }, [isVisible]);
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto relative z-10" ref={statsRef}>
-        <div className="text-center mb-16 scroll-animate">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
-            Почему 420 Music?
+    <section className="py-32 px-6 lg:px-12 relative">
+      <div className="max-w-7xl mx-auto" ref={statsRef}>
+        {/* Header */}
+        <div className="text-center mb-20">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+            <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">
+              Почему 420 Music?
+            </span>
           </h2>
-          <p className="text-gray-300 text-lg font-light">
+          <p className="text-gray-400 text-lg">
             Простые условия, честные выплаты, полный контроль
           </p>
         </div>
         
+        {/* Stats Grid */}
         <div className="grid md:grid-cols-3 gap-6">
           {stats.map((stat, i) => (
             <div
               key={i}
               data-index={i}
-              className="stat-card scroll-animate group p-8 neomorphism glassmorphism rounded-3xl glow-border transition-all duration-500 card-3d wave-enter color-shift"
-              style={{ 
-                transitionDelay: `${i * 100}ms`,
-                animationDelay: `${i * 150}ms`
-              }}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+              className="stat-card group p-8 bg-gradient-to-b from-gray-900/50 to-black/50 border border-gold-500/10 rounded-2xl hover:border-gold-500/30 transition-all duration-300"
             >
-              <div className="text-6xl font-bold text-orange-500 mb-4 group-hover:scale-110 transition-transform duration-500">
+              <div className="text-6xl font-bold text-gold-400 mb-4">
                 {counts[`stat${i}` as keyof typeof counts]}{stat.suffix}
               </div>
-              <p className="text-gray-200 text-lg leading-relaxed">
+              <p className="text-sm text-gold-400/80 mb-2 font-semibold">
+                {stat.highlight}
+              </p>
+              <p className="text-gray-300 text-lg leading-relaxed">
                 {stat.label}
               </p>
             </div>
