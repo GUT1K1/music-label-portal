@@ -1,7 +1,6 @@
 import LandingBackgroundEffects from "./LandingBackgroundEffects";
 import LandingStatsSection from "./LandingStatsSection";
 import LandingFeaturesSection from "./LandingFeaturesSection";
-import WhySection from "./WhySection";
 import LandingBottomSections from "./LandingBottomSections";
 
 export default function LandingContent() {
@@ -41,8 +40,6 @@ export default function LandingContent() {
         handleMouseMove={handleMouseMove} 
         handleMouseLeave={handleMouseLeave} 
       />
-      
-      <WhySection />
       
       <LandingBottomSections 
         handleMouseMove={handleMouseMove} 
