@@ -17,7 +17,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
       const y = (e.clientY / window.innerHeight) * 100;
       setCursorPos({ x, y });
     };
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
   
