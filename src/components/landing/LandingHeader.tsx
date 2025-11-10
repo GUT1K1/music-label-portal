@@ -1,10 +1,32 @@
 import Icon from "@/components/ui/icon";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface LandingHeaderProps {
   isScrolled: boolean;
 }
 
 export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    e.preventDefault();
+    
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
   return (
     <header className={`fixed top-6 left-0 right-0 z-50 transition-all duration-500 px-6`}>
       <div className={`max-w-7xl mx-auto rounded-2xl transition-all duration-500 ${
@@ -28,11 +50,11 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
                 Блог
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300 shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
               </a>
-              <a href="#why" className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
+              <a href="#why" onClick={(e) => handleAnchorClick(e, '#why')} className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
                 Преимущества
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300 shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
               </a>
-              <a href="#faq" className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
+              <a href="#faq" onClick={(e) => handleAnchorClick(e, '#faq')} className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
                 Вопросы
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300 shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
               </a>

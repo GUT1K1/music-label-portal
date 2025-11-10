@@ -91,6 +91,7 @@
   html {
     background: linear-gradient(180deg, #1f0e08 0%, #120906 50%, #080402 100%);
     min-height: 100vh;
+    scroll-behavior: smooth;
   }
 
   body {
