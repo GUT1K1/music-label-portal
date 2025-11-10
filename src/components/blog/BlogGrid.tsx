@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import SEO from '@/components/SEO';
-import BurgerMenu from '@/components/BurgerMenu';
+import LandingHeader from '@/components/landing/LandingHeader';
 import { categories } from '@/data/blogData';
 import type { BlogPost } from '@/data/blogData';
 
@@ -24,7 +24,7 @@ export default function BlogGrid({ posts, onPostClick }: BlogGridProps) {
         keywords="блог о музыке, продвижение музыки, дистрибуция, музыкальный маркетинг, как продвигать музыку, заработок на музыке"
         url="https://420music.ru/blog"
       />
-      <BurgerMenu />
+      <LandingHeader isScrolled={true} />
       
       <div className="absolute inset-0 bg-grid-pattern opacity-20 pointer-events-none"></div>
       

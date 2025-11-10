@@ -1,6 +1,6 @@
 import Icon from '@/components/ui/icon';
 import SEO from '@/components/SEO';
-import BurgerMenu from '@/components/BurgerMenu';
+import LandingHeader from '@/components/landing/LandingHeader';
 import ShareButtons from '@/components/blog/ShareButtons';
 import type { BlogPost } from '@/data/blogData';
 
@@ -24,7 +24,7 @@ export default function BlogPostView({ post, onBack }: BlogPostViewProps) {
         publishedTime={post.isoDate}
         author="420 Music"
       />
-      <BurgerMenu />
+      <LandingHeader isScrolled={true} />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-24">
         <nav className="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
