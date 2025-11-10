@@ -21,10 +21,12 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
             МУЗЫКА БЕЗ ГРАНИЦ.
           </span>
           <span 
-            className={`block bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent opacity-0 animate-fade-in-up animate-shimmer bg-[length:200%_100%] ${!isTypingComplete ? 'typing-cursor' : ''}`}
+            className={`block opacity-0 animate-fade-in-up ${!isTypingComplete ? 'typing-cursor' : ''}`}
             style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}
           >
-            {typedText}
+            <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
+              {typedText}
+            </span>
           </span>
         </h1>
         
