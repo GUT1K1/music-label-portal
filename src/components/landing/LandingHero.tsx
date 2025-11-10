@@ -89,8 +89,8 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
         
         <div className="mt-24 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto opacity-0 animate-fade-in-up" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
           <div className="text-center group cursor-pointer">
-            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">50%</div>
-            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Роялти артисту</div>
+            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">0₽</div>
+            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Бесплатный старт</div>
           </div>
           <div className="text-center group cursor-pointer">
             <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">7 лет</div>
