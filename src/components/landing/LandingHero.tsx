@@ -115,7 +115,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
             <div className="text-xs md:text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Твоё авторство</div>
           </div>
           <div className="text-center group cursor-pointer">
-            <div className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-2 md:mb-3 group-hover:scale-110 md:group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">50+</div>
+            <div className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-2 md:mb-3 group-hover:scale-110 md:group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">170+</div>
             <div className="text-xs md:text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Платформ</div>
           </div>
         </div>
