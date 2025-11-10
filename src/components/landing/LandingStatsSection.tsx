@@ -67,9 +67,7 @@ export default function LandingStatsSection({
         {/* Header */}
         <div className="text-center mb-20">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">
-              Почему 420 Music?
-            </span>
+            <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">Почему 420?</span>
           </h2>
           <p className="text-gray-400 text-lg">
             Простые условия, честные выплаты, полный контроль
