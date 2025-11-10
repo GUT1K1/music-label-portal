@@ -401,6 +401,38 @@ export default function LandingStyles() {
           opacity: 0.7;
         }
       }
+      
+      @keyframes gentle-drift {
+        0%, 100% { 
+          transform: translate(0, 0) scale(1);
+        }
+        33% { 
+          transform: translate(40px, 50px) scale(1.05);
+        }
+        66% { 
+          transform: translate(-30px, -40px) scale(0.98);
+        }
+      }
+      
+      @keyframes soft-pulse {
+        0%, 100% { 
+          opacity: 0.3;
+        }
+        50% { 
+          opacity: 0.5;
+        }
+      }
+      
+      @keyframes slow-twinkle {
+        0%, 100% { 
+          opacity: 0.2;
+          transform: scale(1);
+        }
+        50% { 
+          opacity: 0.6;
+          transform: scale(1.3);
+        }
+      }
     `}</style>
   );
 }
