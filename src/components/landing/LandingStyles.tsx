@@ -55,6 +55,21 @@ export default function LandingStyles() {
         animation: shimmer 3s ease-in-out infinite;
       }
       
+      @keyframes slide-up {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .scroll-animate.animate-in {
+        animation: slide-up 1s ease-out forwards;
+      }
+      
       @keyframes twinkle-slow {
         0%, 100% { 
           opacity: 0.2;

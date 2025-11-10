@@ -9,7 +9,7 @@ export default function LandingBackgroundEffects() {
           style={{
             top: '10%',
             left: '-15%',
-            background: 'radial-gradient(circle, rgba(234, 179, 8, 0.12) 0%, rgba(202, 138, 4, 0.06) 50%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(234, 179, 8, 0.15) 0%, rgba(202, 138, 4, 0.08) 50%, transparent 70%)',
             filter: 'blur(120px)',
             animation: 'float-gentle 35s ease-in-out infinite'
           }}
@@ -20,7 +20,7 @@ export default function LandingBackgroundEffects() {
           style={{
             top: '40%',
             right: '-10%',
-            background: 'radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.05) 50%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(251, 146, 60, 0.12) 0%, rgba(245, 158, 11, 0.06) 50%, transparent 70%)',
             filter: 'blur(130px)',
             animation: 'float-gentle 40s ease-in-out infinite 10s'
           }}
@@ -31,9 +31,20 @@ export default function LandingBackgroundEffects() {
           style={{
             bottom: '5%',
             left: '30%',
-            background: 'radial-gradient(circle, rgba(250, 204, 21, 0.08) 0%, rgba(234, 179, 8, 0.04) 50%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, rgba(147, 51, 234, 0.05) 50%, transparent 70%)',
             filter: 'blur(110px)',
             animation: 'float-gentle 45s ease-in-out infinite 20s'
+          }}
+        />
+        
+        <div 
+          className="absolute w-[600px] h-[600px] rounded-full"
+          style={{
+            top: '20%',
+            right: '20%',
+            background: 'radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, rgba(219, 39, 119, 0.04) 50%, transparent 70%)',
+            filter: 'blur(100px)',
+            animation: 'float-gentle 38s ease-in-out infinite 15s'
           }}
         />
         
@@ -43,7 +54,7 @@ export default function LandingBackgroundEffects() {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            background: 'radial-gradient(circle, rgba(234, 179, 8, 0.05) 0%, transparent 60%)',
+            background: 'radial-gradient(circle, rgba(234, 179, 8, 0.06) 0%, transparent 60%)',
             filter: 'blur(140px)',
             animation: 'pulse-gentle 25s ease-in-out infinite'
           }}
@@ -54,7 +65,7 @@ export default function LandingBackgroundEffects() {
         <div 
           className="absolute inset-0"
           style={{
-            background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(234, 179, 8, 0.03), transparent 70%)',
+            background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(234, 179, 8, 0.05), transparent 70%)',
           }}
         />
       </div>

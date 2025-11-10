@@ -35,17 +35,19 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up" style={{ animationDelay: '0.8s', animationFillMode: 'forwards' }}>
           <a
             href="/app"
-            className="group px-8 py-4 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 rounded-xl font-bold text-lg text-black hover:shadow-xl hover:shadow-gold-400/30 transition-all duration-500 hover:scale-[1.02] flex items-center gap-2"
+            className="group relative px-8 py-4 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 rounded-xl font-bold text-lg text-black hover:shadow-2xl hover:shadow-gold-400/40 transition-all duration-500 hover:scale-[1.05] flex items-center gap-2 overflow-hidden"
           >
-            Загрузить трек
-            <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform" size={20} />
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <span className="relative z-10">Загрузить трек</span>
+            <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform relative z-10" size={20} />
           </a>
           
           <a
             href="#features"
-            className="px-8 py-4 border border-gold-400/30 rounded-xl font-semibold text-lg text-gray-300 hover:text-white hover:bg-gold-500/10 hover:border-gold-400/50 transition-all duration-500"
+            className="group relative px-8 py-4 border-2 border-gold-400/30 rounded-xl font-semibold text-lg text-gray-300 hover:text-white hover:border-gold-400/60 transition-all duration-500 overflow-hidden"
           >
-            Узнать больше
+            <div className="absolute inset-0 bg-gradient-to-r from-gold-500/0 via-gold-500/10 to-gold-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            <span className="relative z-10">Узнать больше</span>
           </a>
         </div>
         
