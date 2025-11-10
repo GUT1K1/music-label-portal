@@ -62,9 +62,7 @@ export default function LandingBottomSections({
               <span className="text-purple-300 font-bold text-sm uppercase tracking-wider">Везде где ты слушаешь</span>
             </div>
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-6">
-              <span className="bg-gradient-to-r from-purple-200 via-pink-400 to-purple-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
-                50+ музыкальных платформ
-              </span>
+              <span className="bg-gradient-to-r from-purple-200 via-pink-400 to-purple-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">170+ музыкальных платформ</span>
             </h2>
             <p className="text-gray-400 text-xl max-w-2xl mx-auto">
               Твоя музыка будет доступна миллионам слушателей по всему миру
