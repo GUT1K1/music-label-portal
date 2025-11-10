@@ -77,7 +77,7 @@ export default function ArtistView({
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-yellow-950/30 to-black bg-grid-pattern">
+    <div className="min-h-screen bg-black bg-grid-pattern">
       <div className="w-full animate-fadeIn">
         <div className="sticky top-0 z-30 mb-2 md:mb-0 container mx-auto px-2 md:px-4">
           <AppHeader 

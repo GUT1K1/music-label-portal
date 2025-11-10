@@ -126,7 +126,7 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-yellow-950/20 to-black bg-grid-pattern p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-black bg-grid-pattern p-4 relative overflow-hidden">
       <Button
         onClick={() => navigate('/')}
         variant="ghost"

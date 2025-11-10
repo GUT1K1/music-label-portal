@@ -8,8 +8,8 @@ export default function DemoBanner() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
-      <div className="bg-gradient-to-r from-gray-900/98 via-gray-900/95 to-gray-900/98 backdrop-blur-xl border-2 border-gold-400/30 rounded-2xl shadow-2xl shadow-gold-500/20 p-6 max-w-2xl mx-4">
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-slide-up w-full max-w-2xl px-4">
+      <div className="bg-gradient-to-r from-gray-900/98 via-gray-900/95 to-gray-900/98 backdrop-blur-xl border-2 border-gold-400/30 rounded-2xl shadow-2xl shadow-gold-500/20 p-6">
         <button
           onClick={() => setIsVisible(false)}
           className="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors"

@@ -57,7 +57,7 @@ export default function ManagerView({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-yellow-950/30 to-black bg-grid-pattern">
+    <div className="min-h-screen bg-black bg-grid-pattern">
       <div className="container mx-auto p-4 animate-fadeIn">
         <div className="sticky top-0 z-30">
           <AppHeader 
