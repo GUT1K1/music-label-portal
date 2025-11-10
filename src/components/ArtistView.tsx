@@ -10,6 +10,7 @@ import WithdrawalDialog from '@/components/WithdrawalDialog';
 import ArtistAnalytics from '@/components/ArtistAnalytics';
 import ArtistFinance from '@/components/ArtistFinance';
 import MusicPlayerDemo from '@/components/MusicPlayer/MusicPlayerDemo';
+import DemoBanner from '@/components/DemoBanner';
 import { User, Ticket, NewTicket } from '@/types';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
@@ -137,7 +138,7 @@ export default function ArtistView({
           </TabsContent>
 
           <TabsContent value="tracks" className="mt-2 md:mt-6">
-            <ReleaseManager userId={user.id} userRole="artist" />
+            <ReleaseManager userId={user.id} userRole="artist" isDemoMode={isDemoMode} />
           </TabsContent>
 
           <TabsContent value="support" className="mt-2 md:mt-6 container mx-auto px-2 md:px-4">
@@ -183,6 +184,8 @@ export default function ArtistView({
       </div>
 
       <MusicPlayerDemo userId={user.id} />
+      
+      {isDemoMode && <DemoBanner />}
     </div>
   );
 }

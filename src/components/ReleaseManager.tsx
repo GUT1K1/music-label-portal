@@ -6,9 +6,25 @@ import { useReleaseManager } from './releases/useReleaseManager';
 interface ReleaseManagerProps {
   userId: number;
   userRole?: string;
+  isDemoMode?: boolean;
 }
 
-export default function ReleaseManager({ userId, userRole = 'artist' }: ReleaseManagerProps) {
+export default function ReleaseManager({ userId, userRole = 'artist', isDemoMode = false }: ReleaseManagerProps) {
+  
+  // В демо-режиме показываем заглушку
+  if (isDemoMode) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center space-y-4 bg-gradient-to-br from-gray-900/40 via-gray-900/30 to-black/40 border border-gold-400/20 rounded-3xl p-12">
+          <Icon name="Music" size={64} className="mx-auto text-gold-400/50" />
+          <h3 className="text-2xl font-bold text-white">Здесь будут ваши треки</h3>
+          <p className="text-gray-400 max-w-md mx-auto">
+            После регистрации вы сможете загружать треки, управлять релизами и отслеживать их статус
+          </p>
+        </div>
+      </div>
+    );
+  }
   const {
     releases,
     loading,
