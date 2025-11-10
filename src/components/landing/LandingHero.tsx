@@ -81,7 +81,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
                   }`}
                 >
                   <span className="relative inline-block">
-                    <span className="absolute inset-0 bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 animate-morph-glow" />
+                    <span className="absolute inset-0 blur-xl bg-gradient-to-r from-gold-400/20 via-gold-500/30 to-orange-500/20" />
                     <span className="relative bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
                       {word}
                     </span>
