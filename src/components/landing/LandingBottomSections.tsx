@@ -108,52 +108,92 @@ export default function LandingBottomSections({
 
       <BlogCarousel />
 
-      <section id="faq" className="py-32 px-6 lg:px-12 relative scroll-animate">
+      <section id="faq" className="py-32 px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gradient-to-r from-gold-500/5 to-orange-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-gold-500/10 to-orange-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-orange-500/10 to-gold-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
         </div>
         
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-20">
-            <div className="inline-block px-6 py-2 bg-gradient-to-r from-gold-500/20 to-orange-500/20 border border-gold-400/30 rounded-full mb-6">
-              <span className="text-gold-300 font-bold text-sm uppercase tracking-wider">Ответы на вопросы</span>
+        <div className="absolute top-20 left-10 w-32 h-32 border-4 border-gold-400/10 rounded-[32px] rotate-12 animate-spin" style={{ animationDuration: '20s' }} />
+        <div className="absolute bottom-20 right-20 w-24 h-24 border-4 border-orange-400/10 rounded-full animate-spin" style={{ animationDuration: '15s' }} />
+        
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-24 relative">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-gold-500/20 rounded-full blur-3xl" />
+            
+            <div className="inline-block px-8 py-3 bg-gradient-to-r from-gold-500/30 to-orange-500/30 border-2 border-gold-400/40 rounded-full mb-8 shadow-2xl shadow-gold-500/20 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-gold-400/20 to-orange-400/20 rounded-full blur-xl" />
+              <span className="text-gold-200 font-black text-sm uppercase tracking-wider relative z-10">Ответы на вопросы</span>
             </div>
-            <h2 className="text-5xl sm:text-6xl font-black mb-6">
-              <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">
+            
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-6 relative">
+              <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%] drop-shadow-[0_0_30px_rgba(234,179,8,0.3)]">
                 Популярные вопросы
               </span>
             </h2>
+            
+            <div className="h-1 w-40 mx-auto bg-gradient-to-r from-transparent via-gold-400 to-transparent rounded-full" />
           </div>
           
-          <div className="space-y-5">
+          <div className="space-y-6">
             {faqs.map((faq, i) => (
               <details
                 key={i}
                 className="group relative"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                style={{
+                  transform: 'perspective(2000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg))',
+                  transition: 'transform 0.3s ease-out'
+                }}
               >
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-gold-600/30 to-orange-600/30 rounded-2xl blur-md opacity-0 group-open:opacity-100 transition-opacity duration-500" />
+                <div className="absolute -inset-1 bg-gradient-to-r from-gold-600/40 via-orange-600/40 to-gold-600/40 rounded-[28px] blur-xl opacity-0 group-open:opacity-100 transition-all duration-700 animate-gradient-x" />
                 
-                <div className="relative p-8 bg-black/60 backdrop-blur-sm border-2 border-gold-500/20 rounded-2xl group-hover:border-gold-500/40 group-open:border-gold-500/60 transition-all overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-gold-500/10 to-transparent rounded-full opacity-0 group-open:opacity-100 transition-opacity duration-500" />
+                <div className="relative bg-black/70 backdrop-blur-xl border-2 border-gold-500/30 rounded-3xl group-hover:border-gold-500/50 group-open:border-gold-500/80 group-open:shadow-2xl group-open:shadow-gold-500/30 transition-all duration-500 overflow-hidden group-hover:-translate-y-1 group-open:-translate-y-2">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gold-500/20 to-transparent rounded-full blur-3xl opacity-0 group-open:opacity-100 transition-opacity duration-700" />
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-orange-500/20 to-transparent rounded-full blur-3xl opacity-0 group-open:opacity-100 transition-opacity duration-700" />
                   
-                  <summary className="cursor-pointer font-bold text-xl flex items-center justify-between text-white group-hover:text-gold-200 transition-colors">
-                    <span className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-gold-500 to-orange-500 rounded-lg flex items-center justify-center text-black font-black text-sm">
-                        {i + 1}
+                  <div className="absolute top-8 right-8 w-32 h-32 border-2 border-gold-400/20 rounded-[24px] rotate-12 group-hover:rotate-45 group-open:scale-150 transition-all duration-700" />
+                  <div className="absolute bottom-8 left-8 w-24 h-24 border-2 border-orange-400/20 rounded-full -rotate-12 group-hover:-rotate-45 group-open:scale-150 transition-all duration-700" />
+                  
+                  <summary className="cursor-pointer p-10 flex items-center justify-between group/summary">
+                    <span className="flex items-center gap-5 flex-1 pr-4">
+                      <div className="relative flex-shrink-0">
+                        <div className="absolute inset-0 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl blur-lg opacity-60 group-open:scale-125 transition-all duration-500" />
+                        <div className="relative w-14 h-14 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 group-hover:scale-110 group-hover:rotate-12 group-open:rotate-0 group-open:scale-125 transition-all duration-500">
+                          <span className="text-black font-black text-xl">{i + 1}</span>
+                        </div>
                       </div>
-                      {faq.q}
+                      
+                      <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-gold-200 group-open:text-gold-100 transition-colors duration-300">
+                        {faq.q}
+                      </h3>
                     </span>
-                    <div className="w-10 h-10 bg-gold-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Icon name="ChevronDown" size={24} className="text-gold-400 group-open:rotate-180 transition-transform duration-500" />
+                    
+                    <div className="relative flex-shrink-0">
+                      <div className="absolute inset-0 bg-gold-500/30 rounded-2xl blur-xl opacity-0 group-hover/summary:opacity-100 transition-opacity duration-300" />
+                      <div className="relative w-14 h-14 bg-gradient-to-br from-gold-500/30 to-orange-500/30 rounded-2xl flex items-center justify-center border-2 border-gold-400/40 group-hover/summary:border-gold-400/70 group-hover/summary:scale-110 transition-all duration-300">
+                        <Icon name="ChevronDown" size={28} className="text-gold-400 group-open:rotate-180 group-hover/summary:text-gold-300 transition-all duration-500" />
+                      </div>
                     </div>
                   </summary>
                   
-                  <div className="mt-6 pl-11">
-                    <div className="h-px bg-gradient-to-r from-gold-500/50 to-transparent mb-6" />
-                    <p className="text-gray-300 leading-relaxed text-lg">
-                      {faq.a}
-                    </p>
+                  <div className="px-10 pb-10">
+                    <div className="pl-[76px] relative">
+                      <div className="absolute left-7 top-0 w-0.5 h-full bg-gradient-to-b from-gold-500/50 via-gold-500/30 to-transparent rounded-full" />
+                      
+                      <div className="relative bg-gradient-to-br from-gold-500/5 to-orange-500/5 backdrop-blur-sm border border-gold-400/20 rounded-2xl p-8 group-open:animate-fade-in-up">
+                        <div className="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-gold-400/20 to-transparent rounded-tl-2xl" />
+                        <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-orange-400/20 to-transparent rounded-br-2xl" />
+                        
+                        <p className="text-gray-200 leading-relaxed text-lg md:text-xl relative z-10">
+                          {faq.a}
+                        </p>
+                      </div>
+                    </div>
                   </div>
+                  
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 via-orange-500 to-gold-500 opacity-0 group-open:opacity-100 transition-opacity duration-500" />
                 </div>
               </details>
             ))}
