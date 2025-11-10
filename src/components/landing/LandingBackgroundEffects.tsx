@@ -28,21 +28,7 @@ export default function LandingBackgroundEffects() {
         />
       </div>
       
-      {/* Minimal particles */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-30">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 rounded-full bg-gold-400"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `twinkle-slow ${10 + Math.random() * 15}s ease-in-out infinite ${Math.random() * 10}s`,
-              boxShadow: '0 0 8px rgba(234, 179, 8, 0.8)'
-            }}
-          />
-        ))}
-      </div>
+
     </>
   );
 }
