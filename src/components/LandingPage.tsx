@@ -129,7 +129,7 @@ export default function LandingPage() {
         <div className="relative z-10 max-w-6xl mx-auto text-center">
           <div className="mb-8 inline-block">
             <span className="px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-full text-sm text-orange-400 font-medium">
-              420 Music Distribution
+              420
             </span>
           </div>
           
