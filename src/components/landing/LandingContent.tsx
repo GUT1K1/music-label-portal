@@ -1,5 +1,5 @@
 import Icon from "@/components/ui/icon";
-import { posts } from "@/data/blogData";
+import BlogCarousel from "./BlogCarousel";
 
 export default function LandingContent() {
   const stats = [
@@ -154,8 +154,17 @@ export default function LandingContent() {
       </section>
 
       {/* Platforms Section */}
-      <section id="platforms" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black">
-        <div className="max-w-6xl mx-auto">
+      <section id="platforms" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <img 
+            src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/28767271-4aef-4a51-b799-796154fc31c0.jpg"
+            alt="Background"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black" />
+        </div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16 scroll-animate">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">
               Дистрибуция на все площадки
@@ -186,74 +195,7 @@ export default function LandingContent() {
         </div>
       </section>
 
-      {/* Blog Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-black relative overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 scroll-animate">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-              Полезные статьи для артистов
-            </h2>
-            <p className="text-gray-400 text-lg font-light">
-              Узнай, как продвигать музыку и зарабатывать на творчестве
-            </p>
-          </div>
-          
-          <div className="relative">
-            <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide scroll-smooth">
-              {posts.slice(0, 6).map((post, i) => (
-                <a
-                  key={post.id}
-                  href={`/blog/${post.slug}`}
-                  className="scroll-animate flex-shrink-0 w-80 snap-start group"
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-800 rounded-3xl overflow-hidden hover:border-orange-500/50 transition-all duration-500 card-hover glow-on-hover h-full">
-                    <div className="relative h-48 overflow-hidden">
-                      <img 
-                        src={post.image_url} 
-                        alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
-                      <span className="absolute top-4 left-4 px-3 py-1 bg-orange-500/90 backdrop-blur-sm rounded-full text-xs font-semibold text-white">
-                        {post.category}
-                      </span>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold mb-3 group-hover:text-orange-400 transition-colors duration-300 line-clamp-2">
-                        {post.title}
-                      </h3>
-                      <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
-                        {post.excerpt}
-                      </p>
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Icon name="Calendar" size={14} />
-                          {post.date}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Icon name="Clock" size={14} />
-                          {post.readTime}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
-            
-            <div className="flex justify-center mt-8">
-              <a 
-                href="/blog"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-xl font-semibold hover:bg-white/10 hover:border-orange-500/30 transition-all duration-300"
-              >
-                Все статьи
-                <Icon name="ArrowRight" size={18} />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <BlogCarousel />
 
       {/* FAQ Section */}
       <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black">

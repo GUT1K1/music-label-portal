@@ -108,6 +108,31 @@ export default function LandingStyles() {
       .scrollbar-hide::-webkit-scrollbar {
         display: none;
       }
+      
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.5); }
+      }
+      
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      
+      .animate-rotate {
+        animation: rotate 20s linear infinite;
+      }
     `}</style>
   );
 }
