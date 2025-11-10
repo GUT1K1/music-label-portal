@@ -70,6 +70,28 @@ export default function LandingStyles() {
         animation: slide-up 1s ease-out forwards;
       }
       
+      @keyframes scroll-infinite {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      
+      .animate-scroll-infinite {
+        animation: scroll-infinite 30s linear infinite;
+      }
+      
+      .animate-scroll-infinite:hover {
+        animation-play-state: paused;
+      }
+      
+      .mask-gradient {
+        -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      }
+      
       @keyframes twinkle-slow {
         0%, 100% { 
           opacity: 0.2;

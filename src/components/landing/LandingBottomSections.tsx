@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 import BlogCarousel from "./BlogCarousel";
 
@@ -11,26 +10,20 @@ export default function LandingBottomSections({
   handleMouseMove, 
   handleMouseLeave
 }: LandingBottomSectionsProps) {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  
   const platforms = [
-    { name: "Spotify", icon: "Music", color: "from-green-500/20 to-green-600/10" },
-    { name: "Apple Music", icon: "Music2", color: "from-pink-500/20 to-red-600/10" },
-    { name: "Яндекс Музыка", icon: "Music3", color: "from-yellow-500/20 to-yellow-600/10" },
-    { name: "VK Музыка", icon: "Music4", color: "from-blue-500/20 to-blue-600/10" },
-    { name: "YouTube Music", icon: "Youtube", color: "from-red-500/20 to-red-600/10" },
-    { name: "Deezer", icon: "Disc3", color: "from-purple-500/20 to-purple-600/10" },
-    { name: "SoundCloud", icon: "Cloud", color: "from-orange-500/20 to-orange-600/10" },
-    { name: "Tidal", icon: "Waves", color: "from-cyan-500/20 to-cyan-600/10" },
-    { name: "Amazon Music", icon: "ShoppingCart", color: "from-blue-400/20 to-blue-500/10" },
+    { name: "Spotify", icon: "Music" },
+    { name: "Apple Music", icon: "Music2" },
+    { name: "Яндекс.Музыка", icon: "Music3" },
+    { name: "VK Музыка", icon: "Music4" },
+    { name: "YouTube Music", icon: "Youtube" },
+    { name: "Deezer", icon: "Disc3" },
+    { name: "SoundCloud", icon: "Cloud" },
+    { name: "Tidal", icon: "Waves" },
+    { name: "Amazon Music", icon: "ShoppingCart" },
+    { name: "Shazam", icon: "Radio" },
+    { name: "Pandora", icon: "Music" },
+    { name: "TikTok", icon: "Video" },
   ];
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % Math.ceil(platforms.length / 3));
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [platforms.length]);
 
   const faqs = [
     {
@@ -67,42 +60,20 @@ export default function LandingBottomSections({
           </div>
           
           <div className="relative">
-            <div className="overflow-hidden rounded-3xl">
-              <div 
-                className="flex transition-transform duration-700 ease-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {Array.from({ length: Math.ceil(platforms.length / 3) }).map((_, slideIndex) => (
-                  <div key={slideIndex} className="min-w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-2">
-                    {platforms.slice(slideIndex * 3, slideIndex * 3 + 3).map((platform, i) => (
-                      <div
-                        key={i}
-                        className={`group relative p-10 bg-gradient-to-br ${platform.color} border border-gold-400/30 rounded-3xl hover:border-gold-400/60 transition-all duration-500 flex flex-col items-center justify-center text-center hover:scale-105 hover:shadow-2xl hover:shadow-gold-500/20 overflow-hidden`}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <Icon name={platform.icon as any} size={48} className="text-gold-200 mb-6 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 relative z-10" />
-                        <div className="text-xl font-bold text-white relative z-10 group-hover:text-gold-100 transition-colors">
-                          {platform.name}
-                        </div>
-                      </div>
-                    ))}
+            <div className="overflow-hidden mask-gradient">
+              <div className="flex gap-6 animate-scroll-infinite">
+                {[...platforms, ...platforms].map((platform, i) => (
+                  <div
+                    key={i}
+                    className="group flex-shrink-0 w-[280px] p-8 bg-gradient-to-br from-gray-900/40 to-black/40 border border-gold-400/20 rounded-2xl hover:border-gold-400/50 hover:bg-gradient-to-br hover:from-gray-900/60 hover:to-black/60 transition-all duration-500 flex flex-col items-center justify-center text-center hover:scale-105 hover:shadow-xl hover:shadow-gold-500/10"
+                  >
+                    <Icon name={platform.icon as any} size={40} className="text-gold-300 mb-4 group-hover:scale-110 group-hover:text-gold-200 transition-all duration-300" />
+                    <div className="text-base font-semibold text-gray-300 group-hover:text-white transition-colors">
+                      {platform.name}
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-            
-            <div className="flex justify-center gap-2 mt-8">
-              {Array.from({ length: Math.ceil(platforms.length / 3) }).map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentSlide(i)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    currentSlide === i 
-                      ? 'bg-gold-400 w-8' 
-                      : 'bg-gold-400/30 hover:bg-gold-400/50'
-                  }`}
-                />
-              ))}
             </div>
           </div>
           
