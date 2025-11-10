@@ -14,7 +14,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
   const words2 = ['ТВОРИ', 'СВОБОДНО'];
   
   useEffect(() => {
-    const order = [3, 0, 4, 1, 2];
+    const order = [0, 3, 1, 4, 2];
     
     order.forEach((index, i) => {
       setTimeout(() => {
