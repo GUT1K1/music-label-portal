@@ -13,6 +13,17 @@ export default function LandingStyles() {
         }
       }
       
+      @keyframes pulse-glow {
+        0%, 100% { 
+          opacity: 0.5;
+          transform: scale(1);
+        }
+        50% { 
+          opacity: 0.8;
+          transform: scale(1.15);
+        }
+      }
+      
       @keyframes twinkle-slow {
         0%, 100% { 
           opacity: 0.2;
