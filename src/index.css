@@ -89,18 +89,21 @@
   }
 
   html {
-    @apply bg-background;
+    background: linear-gradient(180deg, #1a0f0a 0%, #0d0805 50%, #000000 100%);
+    min-height: 100vh;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: transparent;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
   }
 
   #root {
-    @apply bg-background min-h-screen;
+    background: transparent;
+    min-height: 100vh;
   }
 
   /* Стилизованный скролл для всего сайта */
