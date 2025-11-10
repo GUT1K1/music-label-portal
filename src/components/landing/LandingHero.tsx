@@ -22,7 +22,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
             МУЗЫКА БЕЗ ГРАНИЦ.
           </span>
           <span 
-            className={`block bg-gradient-to-r from-gold-200 via-gold-300 to-gold-200 bg-clip-text text-transparent animate-fade-in-up ${!isTypingComplete ? 'typing-cursor' : ''}`}
+            className={`block bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-fade-in-up animate-shimmer bg-[length:200%_100%] ${!isTypingComplete ? 'typing-cursor' : ''}`}
             style={{ animationDelay: '0.3s', opacity: 0 }}
           >
             {typedText}
