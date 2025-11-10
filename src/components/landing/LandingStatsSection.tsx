@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
 interface LandingStatsSectionProps {
-  scrollY: number;
   handleMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
   handleMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export default function LandingStatsSection({ 
-  scrollY, 
   handleMouseMove, 
   handleMouseLeave 
 }: LandingStatsSectionProps) {

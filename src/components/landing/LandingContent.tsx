@@ -1,17 +1,9 @@
-import { useEffect, useState } from "react";
 import LandingBackgroundEffects from "./LandingBackgroundEffects";
 import LandingStatsSection from "./LandingStatsSection";
 import LandingFeaturesSection from "./LandingFeaturesSection";
 import LandingBottomSections from "./LandingBottomSections";
 
 export default function LandingContent() {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
@@ -37,22 +29,19 @@ export default function LandingContent() {
 
   return (
     <>
-      <LandingBackgroundEffects scrollY={scrollY} />
+      <LandingBackgroundEffects />
       
       <LandingStatsSection 
-        scrollY={scrollY} 
         handleMouseMove={handleMouseMove} 
         handleMouseLeave={handleMouseLeave} 
       />
       
       <LandingFeaturesSection 
-        scrollY={scrollY} 
         handleMouseMove={handleMouseMove} 
         handleMouseLeave={handleMouseLeave} 
       />
       
       <LandingBottomSections 
-        scrollY={scrollY} 
         handleMouseMove={handleMouseMove} 
         handleMouseLeave={handleMouseLeave}
       />

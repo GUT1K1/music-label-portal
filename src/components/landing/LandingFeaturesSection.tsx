@@ -1,13 +1,11 @@
 import Icon from "@/components/ui/icon";
 
 interface LandingFeaturesSectionProps {
-  scrollY: number;
   handleMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
   handleMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export default function LandingFeaturesSection({ 
-  scrollY, 
   handleMouseMove, 
   handleMouseLeave 
 }: LandingFeaturesSectionProps) {

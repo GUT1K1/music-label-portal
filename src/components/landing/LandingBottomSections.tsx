@@ -2,13 +2,11 @@ import Icon from "@/components/ui/icon";
 import BlogCarousel from "./BlogCarousel";
 
 interface LandingBottomSectionsProps {
-  scrollY: number;
   handleMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
   handleMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export default function LandingBottomSections({ 
-  scrollY, 
   handleMouseMove, 
   handleMouseLeave
 }: LandingBottomSectionsProps) {

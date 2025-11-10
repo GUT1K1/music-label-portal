@@ -1,8 +1,4 @@
-interface LandingBackgroundEffectsProps {
-  scrollY: number;
-}
-
-export default function LandingBackgroundEffects({ scrollY }: LandingBackgroundEffectsProps) {
+export default function LandingBackgroundEffects() {
   return (
     <>
       {/* Base Gradient - Rich and Deep */}
