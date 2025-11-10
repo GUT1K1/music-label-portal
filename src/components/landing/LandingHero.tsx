@@ -86,7 +86,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0" style={{ animation: 'slide-in-up 0.8s 1.8s forwards' }}>
             <a
               href="/app"
-              className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105"
+              className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105 button-ripple relative z-10"
             >
               Выпустить релиз
               <Icon name="ArrowRight" className="inline ml-2 group-hover:translate-x-2 transition-transform duration-300" size={20} />
@@ -94,7 +94,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
             
             <a
               href="#features"
-              className="px-8 py-4 bg-white/5 border border-white/10 rounded-xl font-semibold text-lg hover:bg-white/10 hover:border-orange-500/30 transition-all duration-300 backdrop-blur-sm"
+              className="px-8 py-4 glassmorphism rounded-xl font-semibold text-lg hover:bg-white/10 hover:border-orange-500/30 transition-all duration-300 backdrop-blur-sm color-shift"
             >
               Узнать больше
             </a>

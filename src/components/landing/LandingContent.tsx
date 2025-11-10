@@ -1,11 +1,18 @@
+import { useEffect, useRef, useState } from "react";
 import Icon from "@/components/ui/icon";
 import BlogCarousel from "./BlogCarousel";
 
 export default function LandingContent() {
+  const [counts, setCounts] = useState({ stat0: 0, stat1: 0, stat2: 0 });
+  const [isVisible, setIsVisible] = useState({ stat0: false, stat1: false, stat2: false });
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
+
   const stats = [
-    { value: "90%", label: "Музыкантов достигают топ-100 в первый месяц" },
-    { value: "24ч", label: "Средняя скорость модерации релизов" },
-    { value: "50+", label: "Платформ для распространения музыки" },
+    { value: 90, suffix: "%", label: "Музыкантов достигают топ-100 в первый месяц" },
+    { value: 24, suffix: "ч", label: "Средняя скорость модерации релизов" },
+    { value: 50, suffix: "+", label: "Платформ для распространения музыки" },
   ];
 
   const features = [
@@ -13,25 +20,29 @@ export default function LandingContent() {
       icon: "Upload",
       title: "Дистрибуция",
       description: "Выпускай музыку на всех площадках мира — от Spotify до Яндекс.Музыки. Быстрая модерация, прозрачные условия.",
-      highlight: "Без комиссий за релиз"
+      highlight: "Без комиссий за релиз",
+      progress: 95
     },
     {
       icon: "TrendingUp",
       title: "Промо и питчинг",
       description: "Продвигаем треки в редакционные плейлисты, работаем с кураторами площадок, запускаем таргет.",
-      highlight: "Попадание в топ-плейлисты"
+      highlight: "Попадание в топ-плейлисты",
+      progress: 88
     },
     {
       icon: "BarChart3",
       title: "Аналитика",
       description: "Детальная статистика по каждому релизу: прослушивания, география, возраст слушателей, доходы.",
-      highlight: "Ежедневные обновления"
+      highlight: "Ежедневные обновления",
+      progress: 100
     },
     {
       icon: "Wallet",
       title: "Выплаты",
       description: "Получай честные роялти без скрытых комиссий. Вывод от 500₽ на карту или электронный кошелёк.",
-      highlight: "Выплаты 2 раза в месяц"
+      highlight: "Выплаты 2 раза в месяц",
+      progress: 92
     },
   ];
 
@@ -63,11 +74,101 @@ export default function LandingContent() {
     },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = parseInt(entry.target.getAttribute("data-index") || "0");
+            setIsVisible((prev) => ({ ...prev, [`stat${index}`]: true }));
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const statElements = document.querySelectorAll(".stat-card");
+    statElements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    stats.forEach((stat, index) => {
+      if (isVisible[`stat${index}` as keyof typeof isVisible]) {
+        const duration = 2000;
+        const steps = 60;
+        const increment = stat.value / steps;
+        let current = 0;
+
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= stat.value) {
+            setCounts((prev) => ({ ...prev, [`stat${index}`]: stat.value }));
+            clearInterval(timer);
+          } else {
+            setCounts((prev) => ({ ...prev, [`stat${index}`]: Math.floor(current) }));
+          }
+        }, duration / steps);
+
+        return () => clearInterval(timer);
+      }
+    });
+  }, [isVisible]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+
+    card.style.setProperty("--rotate-x", `${rotateX}deg`);
+    card.style.setProperty("--rotate-y", `${rotateY}deg`);
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    card.style.setProperty("--rotate-x", "0deg");
+    card.style.setProperty("--rotate-y", "0deg");
+  };
+
   return (
     <>
+      {/* Animated Grid Background */}
+      <div className="fixed inset-0 animated-grid opacity-20 pointer-events-none" style={{ transform: `translateY(${scrollY * 0.3}px)` }} />
+
+      {/* Particles Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-orange-400/40 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `twinkle ${3 + Math.random() * 4}s infinite ${Math.random() * 3}s`,
+              transform: `translateY(${scrollY * (0.05 + Math.random() * 0.1)}px)`
+            }}
+          />
+        ))}
+      </div>
+
       {/* Stats Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-50">
+        <div 
+          className="absolute inset-0 opacity-50"
+          style={{ transform: `translateY(${scrollY * 0.2}px)` }}
+        >
           <img 
             src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/6f1dd302-dd25-49ae-aebf-13f4871d0d4d.jpg"
             alt="Background"
@@ -76,7 +177,7 @@ export default function LandingContent() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
         </div>
         
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="max-w-6xl mx-auto relative z-10" ref={statsRef}>
           <div className="text-center mb-16 scroll-animate">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">
               Откуда мы знаем, что работаем хорошо?
@@ -90,11 +191,17 @@ export default function LandingContent() {
             {stats.map((stat, i) => (
               <div
                 key={i}
-                className="scroll-animate group p-8 bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl hover:border-orange-500/50 transition-all duration-500 card-hover glow-on-hover"
-                style={{ transitionDelay: `${i * 100}ms` }}
+                data-index={i}
+                className="stat-card scroll-animate group p-8 neomorphism glassmorphism rounded-3xl hover:border-orange-500/50 transition-all duration-500 card-3d wave-enter color-shift"
+                style={{ 
+                  transitionDelay: `${i * 100}ms`,
+                  animationDelay: `${i * 150}ms`
+                }}
+                onMouseMove={(e) => handleMouseMove(e, i)}
+                onMouseLeave={handleMouseLeave}
               >
                 <div className="text-6xl font-bold text-orange-500 mb-4 group-hover:scale-110 transition-transform duration-500">
-                  {stat.value}
+                  {counts[`stat${i}` as keyof typeof counts]}{stat.suffix}
                 </div>
                 <p className="text-gray-300 text-lg leading-relaxed">
                   {stat.label}
@@ -107,7 +214,10 @@ export default function LandingContent() {
 
       {/* Features Section */}
       <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-40">
+        <div 
+          className="absolute inset-0 opacity-40"
+          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
+        >
           <img 
             src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/cd01e971-8333-4e23-bee8-22a54c946842.jpg"
             alt="Background"
@@ -130,10 +240,15 @@ export default function LandingContent() {
             {features.map((feature, i) => (
               <div
                 key={i}
-                className="scroll-animate group p-8 bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 border border-gray-800 rounded-3xl hover:border-orange-500/50 transition-all duration-500 card-hover glow-on-hover"
-                style={{ transitionDelay: `${i * 100}ms` }}
+                className="scroll-animate group p-8 neomorphism glassmorphism rounded-3xl transition-all duration-500 card-3d wave-enter color-shift"
+                style={{ 
+                  transitionDelay: `${i * 100}ms`,
+                  animationDelay: `${i * 150}ms`
+                }}
+                onMouseMove={(e) => handleMouseMove(e, i)}
+                onMouseLeave={handleMouseLeave}
               >
-                <div className="w-14 h-14 bg-orange-500/10 border border-orange-500/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-500/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 backdrop-blur-sm">
+                <div className="w-14 h-14 bg-orange-500/10 border border-orange-500/30 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-500/20 transition-all duration-500 backdrop-blur-sm icon-morph">
                   <Icon name={feature.icon as any} size={28} className="text-orange-400" />
                 </div>
                 
@@ -143,6 +258,16 @@ export default function LandingContent() {
                 <p className="text-gray-400 leading-relaxed mb-4 font-light">
                   {feature.description}
                 </p>
+                
+                <div className="mb-4">
+                  <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-orange-500 to-amber-600 progress-bar"
+                      style={{ '--progress-width': `${feature.progress}%` } as React.CSSProperties}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Эффективность: {feature.progress}%</p>
+                </div>
                 
                 <div className="inline-block px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-lg text-sm text-orange-400 font-medium group-hover:bg-orange-500/20 transition-all duration-300">
                   {feature.highlight}
@@ -155,7 +280,10 @@ export default function LandingContent() {
 
       {/* Platforms Section */}
       <section id="platforms" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-40">
+        <div 
+          className="absolute inset-0 opacity-40"
+          style={{ transform: `translateY(${scrollY * 0.25}px)` }}
+        >
           <img 
             src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/28767271-4aef-4a51-b799-796154fc31c0.jpg"
             alt="Background"
@@ -178,10 +306,15 @@ export default function LandingContent() {
             {platforms.map((platform, i) => (
               <div
                 key={i}
-                className="scroll-animate group p-6 bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-800 rounded-2xl hover:border-orange-500/50 transition-all duration-500 card-hover glow-on-hover flex flex-col items-center justify-center text-center"
-                style={{ transitionDelay: `${i * 50}ms` }}
+                className="scroll-animate group p-6 neomorphism glassmorphism rounded-2xl transition-all duration-500 card-3d wave-enter flex flex-col items-center justify-center text-center color-shift"
+                style={{ 
+                  transitionDelay: `${i * 50}ms`,
+                  animationDelay: `${i * 100}ms`
+                }}
+                onMouseMove={(e) => handleMouseMove(e, i)}
+                onMouseLeave={handleMouseLeave}
               >
-                <Icon name={platform.icon as any} size={32} className="text-orange-400 mb-3 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500" />
+                <Icon name={platform.icon as any} size={32} className="text-orange-400 mb-3 group-hover:scale-125 transition-all duration-500 wave-animate" />
                 <div className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors duration-300">
                   {platform.name}
                 </div>
@@ -210,8 +343,11 @@ export default function LandingContent() {
             {faqs.map((faq, i) => (
               <details
                 key={i}
-                className="scroll-animate group p-6 bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-800 rounded-2xl hover:border-orange-500/30 transition-all duration-500"
-                style={{ transitionDelay: `${i * 100}ms` }}
+                className="scroll-animate group p-6 neomorphism glassmorphism rounded-2xl transition-all duration-500 wave-enter color-shift"
+                style={{ 
+                  transitionDelay: `${i * 100}ms`,
+                  animationDelay: `${i * 150}ms`
+                }}
               >
                 <summary className="cursor-pointer font-semibold text-lg flex items-center justify-between group-hover:text-orange-400 transition-colors duration-300">
                   {faq.q}
@@ -228,7 +364,10 @@ export default function LandingContent() {
 
       {/* CTA Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-50">
+        <div 
+          className="absolute inset-0 opacity-50"
+          style={{ transform: `translateY(${scrollY * 0.1}px)` }}
+        >
           <img 
             src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/33f4d99e-a10a-4062-b1e3-0e97b2f60bed.jpg"
             alt="Background"
@@ -247,8 +386,7 @@ export default function LandingContent() {
           
           <a
             href="/app"
-            className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105"
-            style={{ animation: 'glow-pulse 3s ease-in-out infinite' }}
+            className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105 button-ripple"
           >
             Выпустить первый релиз
             <Icon name="ArrowRight" size={22} />
