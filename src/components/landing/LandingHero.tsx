@@ -1,4 +1,5 @@
 import Icon from "@/components/ui/icon";
+import { useEffect, useState } from "react";
 
 interface LandingHeroProps {
   scrollY: number;
@@ -7,20 +8,59 @@ interface LandingHeroProps {
 }
 
 export default function LandingHero({ scrollY, typedText, isTypingComplete }: LandingHeroProps) {
+  const [visibleWords, setVisibleWords] = useState<number[]>([]);
+  
+  const words1 = ['МУЗЫКА', 'БЕЗ', 'ГРАНИЦ.'];
+  const words2 = ['ТВОРИ', 'СВОБОДНО'];
+  const allWords = [...words1, ...words2];
+  
+  useEffect(() => {
+    const indices = Array.from({ length: allWords.length }, (_, i) => i);
+    const shuffled = indices.sort(() => Math.random() - 0.5);
+    
+    shuffled.forEach((index, i) => {
+      setTimeout(() => {
+        setVisibleWords(prev => [...prev, index]);
+      }, i * 200);
+    });
+  }, []);
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 pt-32">
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         <h1 className="text-6xl sm:text-8xl lg:text-9xl font-bold mb-10 tracking-tight">
-          <span className="block text-white mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
-            МУЗЫКА БЕЗ ГРАНИЦ.
+          <span className="block text-white mb-6 flex flex-wrap justify-center gap-x-4 gap-y-2">
+            {words1.map((word, i) => (
+              <span 
+                key={`w1-${i}`}
+                className={`inline-block transition-all duration-700 ${
+                  visibleWords.includes(i) 
+                    ? 'opacity-100 translate-y-0' 
+                    : 'opacity-0 translate-y-8'
+                }`}
+              >
+                {word}
+              </span>
+            ))}
           </span>
-          <span 
-            className={`block opacity-0 animate-fade-in-up ${!isTypingComplete ? 'typing-cursor' : ''}`}
-            style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}
-          >
-            <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
-              {typedText}
-            </span>
+          <span className="block flex flex-wrap justify-center gap-x-4 gap-y-2">
+            {words2.map((word, i) => {
+              const wordIndex = words1.length + i;
+              return (
+                <span 
+                  key={`w2-${i}`}
+                  className={`inline-block transition-all duration-700 ${
+                    visibleWords.includes(wordIndex) 
+                      ? 'opacity-100 translate-y-0' 
+                      : 'opacity-0 translate-y-8'
+                  }`}
+                >
+                  <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
+                    {word}
+                  </span>
+                </span>
+              );
+            })}
           </span>
         </h1>
         
