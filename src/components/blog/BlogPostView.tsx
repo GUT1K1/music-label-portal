@@ -45,7 +45,7 @@ export default function BlogPostView({ post, onBack }: BlogPostViewProps) {
           <span>Назад к статьям</span>
         </button>
 
-        <article className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+        <article className="bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden backdrop-blur-sm">
           <div className="relative h-[400px] mb-8">
             <img 
               src={post.image_url} 
@@ -55,8 +55,8 @@ export default function BlogPostView({ post, onBack }: BlogPostViewProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
           </div>
 
-          <div className="px-6 pb-8">
-            <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
+          <div className="px-8 md:px-12 pb-12">
+            <div className="flex items-center gap-4 text-sm text-gray-400 mb-8">
               <span className="px-4 py-1.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-black font-bold rounded-full">
                 {post.category}
               </span>
@@ -64,25 +64,31 @@ export default function BlogPostView({ post, onBack }: BlogPostViewProps) {
               <span>{post.readTime}</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-12 leading-[1.2]">
               {post.title}
             </h1>
 
             <div 
-              className="prose prose-invert prose-lg max-w-none
-                prose-headings:text-white prose-headings:font-bold
-                prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:pb-3 prose-h2:border-b prose-h2:border-yellow-500/20
-                prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-yellow-400
-                prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-6
-                prose-ul:my-6 prose-ul:space-y-3
-                prose-li:text-gray-300 prose-li:leading-relaxed
-                prose-strong:text-yellow-400 prose-strong:font-semibold
+              className="prose prose-invert prose-xl max-w-none
+                prose-headings:text-white prose-headings:font-bold prose-headings:tracking-tight
+                prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-8 prose-h2:pb-4 prose-h2:border-b prose-h2:border-yellow-500/20 prose-h2:leading-tight
+                prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-5 prose-h3:text-yellow-400 prose-h3:leading-tight
+                prose-p:text-gray-200 prose-p:leading-[1.8] prose-p:mb-6 prose-p:text-[18px]
+                prose-ul:my-6 prose-ul:space-y-3 prose-ul:text-[17px]
+                prose-ol:my-6 prose-ol:space-y-3 prose-ol:text-[17px]
+                prose-li:text-gray-200 prose-li:leading-[1.75]
+                prose-strong:text-yellow-400 prose-strong:font-semibold prose-strong:text-[18px]
                 prose-a:text-yellow-400 prose-a:no-underline hover:prose-a:text-yellow-300 hover:prose-a:underline
-                prose-blockquote:border-l-4 prose-blockquote:border-yellow-500 prose-blockquote:pl-6 prose-blockquote:py-4 prose-blockquote:my-8 prose-blockquote:bg-yellow-500/5 prose-blockquote:rounded-r-lg
-                prose-blockquote:text-gray-200 prose-blockquote:not-italic
-                prose-code:text-yellow-400 prose-code:bg-yellow-500/10 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:font-mono prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
-                prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800 prose-pre:rounded-xl prose-pre:p-6
-                prose-img:rounded-xl prose-img:shadow-2xl"
+                prose-blockquote:border-l-4 prose-blockquote:border-yellow-500 prose-blockquote:pl-6 prose-blockquote:pr-6 prose-blockquote:py-5 prose-blockquote:my-10 prose-blockquote:bg-yellow-500/5 prose-blockquote:rounded-r-lg
+                prose-blockquote:text-gray-100 prose-blockquote:not-italic prose-blockquote:text-[17px] prose-blockquote:leading-[1.7]
+                prose-code:text-yellow-400 prose-code:bg-yellow-500/10 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:font-mono prose-code:text-base prose-code:before:content-none prose-code:after:content-none
+                prose-pre:bg-gray-950 prose-pre:border prose-pre:border-gray-800 prose-pre:rounded-xl prose-pre:p-6 prose-pre:my-8
+                prose-img:rounded-xl prose-img:shadow-2xl prose-img:my-8
+                prose-table:my-8 prose-table:border-collapse
+                prose-thead:border-b-2 prose-thead:border-yellow-500/30
+                prose-th:px-4 prose-th:py-3 prose-th:text-left prose-th:font-bold prose-th:text-yellow-400 prose-th:bg-gray-800/50 prose-th:text-base
+                prose-td:px-4 prose-td:py-3 prose-td:border-b prose-td:border-gray-800 prose-td:text-gray-200 prose-td:text-[16px] prose-td:leading-[1.6]
+                prose-tr:hover:bg-gray-800/30 prose-tr:transition-colors"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
