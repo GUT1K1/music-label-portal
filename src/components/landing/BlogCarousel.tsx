@@ -6,12 +6,10 @@ interface BlogPost {
   id: number;
   slug: string;
   title: string;
-  description: string;
-  author: string;
-  read_time: number;
+  excerpt: string;
   image_url: string;
-  published_at: string;
   category: string;
+  readTime: string;
 }
 
 export default function BlogCarousel() {
@@ -23,7 +21,7 @@ export default function BlogCarousel() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/api/blog/posts`);
+        const response = await fetch('https://functions.poehali.dev/a5045a0c-e192-4009-875b-ec78a3364f52');
         if (response.ok) {
           const data = await response.json();
           const publishedPosts = data.posts
@@ -125,14 +123,13 @@ export default function BlogCarousel() {
                             {post.title}
                           </h3>
                           <p className="text-gray-300 text-lg mb-6 line-clamp-2">
-                            {post.description}
+                            {post.excerpt}
                           </p>
                           <div className="flex items-center gap-6 text-sm text-gray-400">
                             <span className="flex items-center gap-2">
                               <Clock className="w-4 h-4" />
-                              {post.read_time} мин
+                              {post.readTime}
                             </span>
-                            <span>{post.author}</span>
                           </div>
                         </div>
                       </div>
