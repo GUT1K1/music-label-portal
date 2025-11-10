@@ -24,128 +24,109 @@ export default function LandingBackgroundEffects() {
     };
   }, []);
 
-  const hue1 = 45 + scrollProgress * 30;
-  const hue2 = 25 + scrollProgress * 40;
-  const hue3 = 280 - scrollProgress * 50;
+  const hue1 = 45 + scrollProgress * 20;
+  const hue2 = 30 + scrollProgress * 25;
 
   return (
     <>
       <div 
-        className="fixed inset-0 pointer-events-none transition-all duration-1000 -z-20"
+        className="fixed inset-0 -z-20 pointer-events-none transition-all duration-1000"
         style={{
-          background: `linear-gradient(180deg, 
-            hsl(${hue1}, 70%, 8%) 0%, 
-            hsl(0, 0%, 3%) 40%,
-            hsl(${hue2}, 60%, 5%) 70%,
-            hsl(0, 0%, 2%) 100%)`,
+          background: `
+            radial-gradient(ellipse 150% 100% at 50% 0%, 
+              hsla(${hue1}, 85%, 12%, 0.4) 0%, 
+              transparent 60%
+            ),
+            radial-gradient(ellipse 120% 80% at 20% 100%, 
+              hsla(${hue2}, 80%, 10%, 0.3) 0%, 
+              transparent 50%
+            ),
+            radial-gradient(ellipse 120% 80% at 80% 100%, 
+              hsla(25, 85%, 10%, 0.3) 0%, 
+              transparent 50%
+            ),
+            linear-gradient(180deg, 
+              hsl(0, 0%, 2%) 0%, 
+              hsl(0, 0%, 1%) 50%,
+              hsl(0, 0%, 2%) 100%
+            )
+          `,
         }}
       />
       
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
         <div 
-          className="absolute w-[1000px] h-[1000px] rounded-full transition-all duration-[2000ms] bg-glow-effect"
+          className="absolute w-[800px] h-[800px] rounded-full opacity-30"
           style={{
-            top: '10%',
-            left: '-15%',
+            top: '5%',
+            left: '-10%',
             background: `radial-gradient(circle, 
-              hsla(${hue1}, 95%, 50%, ${0.15 + scrollProgress * 0.08}) 0%, 
-              hsla(${hue1}, 90%, 45%, ${0.08 + scrollProgress * 0.04}) 40%, 
+              hsla(${hue1}, 100%, 50%, 0.25) 0%, 
               transparent 70%)`,
-            filter: 'blur(140px)',
-            animation: 'float-gentle 35s ease-in-out infinite',
-            transform: `scale(${1 + scrollProgress * 0.3})`,
+            filter: 'blur(100px)',
+            transform: `translate(${scrollProgress * 100}px, ${scrollProgress * 150}px) scale(${1 + scrollProgress * 0.3})`,
+            transition: 'transform 0.3s ease-out',
           }}
         />
         
         <div 
-          className="absolute w-[1100px] h-[1100px] rounded-full transition-all duration-[2000ms] bg-glow-effect"
+          className="absolute w-[900px] h-[900px] rounded-full opacity-25"
           style={{
-            top: '40%',
-            right: '-10%',
+            top: '30%',
+            right: '-15%',
             background: `radial-gradient(circle, 
-              hsla(${hue2}, 100%, 55%, ${0.12 + scrollProgress * 0.06}) 0%, 
-              hsla(${hue2}, 95%, 50%, ${0.06 + scrollProgress * 0.03}) 40%, 
-              transparent 70%)`,
-            filter: 'blur(140px)',
-            animation: 'float-gentle 40s ease-in-out infinite 10s',
-            transform: `scale(${1 + scrollProgress * 0.4})`,
-          }}
-        />
-        
-        <div 
-          className="absolute w-[900px] h-[900px] rounded-full transition-all duration-[2000ms] bg-glow-effect"
-          style={{
-            bottom: '5%',
-            left: '30%',
-            background: `radial-gradient(circle, 
-              hsla(${hue3}, 80%, 60%, ${0.10 + scrollProgress * 0.08}) 0%, 
-              hsla(${hue3}, 75%, 55%, ${0.05 + scrollProgress * 0.04}) 40%, 
-              transparent 70%)`,
-            filter: 'blur(140px)',
-            animation: 'float-gentle 45s ease-in-out infinite 20s',
-            transform: `scale(${1 + scrollProgress * 0.35})`,
-          }}
-        />
-        
-        <div 
-          className="absolute w-[800px] h-[800px] rounded-full transition-all duration-[2000ms]"
-          style={{
-            top: '20%',
-            right: '20%',
-            background: `radial-gradient(circle, 
-              hsla(340, 90%, 60%, ${0.10 + scrollProgress * 0.06}) 0%, 
-              hsla(330, 85%, 55%, ${0.04 + scrollProgress * 0.03}) 40%, 
+              hsla(${hue2}, 95%, 55%, 0.3) 0%, 
               transparent 70%)`,
             filter: 'blur(120px)',
-            animation: 'float-gentle 38s ease-in-out infinite 15s',
-            transform: `scale(${1 + scrollProgress * 0.25})`,
+            transform: `translate(${-scrollProgress * 80}px, ${scrollProgress * 100}px) scale(${1 + scrollProgress * 0.4})`,
+            transition: 'transform 0.3s ease-out',
           }}
         />
         
         <div 
-          className="absolute w-[1200px] h-[1200px] rounded-full transition-all duration-[2000ms]"
+          className="absolute w-[700px] h-[700px] rounded-full opacity-20"
           style={{
-            top: '50%',
-            left: '50%',
-            transform: `translate(-50%, -50%) scale(${1 + scrollProgress * 0.5})`,
+            bottom: '10%',
+            left: '40%',
             background: `radial-gradient(circle, 
-              hsla(${hue1}, 100%, 55%, ${0.08 + scrollProgress * 0.10}) 0%, 
-              transparent 60%)`,
-            filter: 'blur(160px)',
-            animation: 'pulse-gentle 25s ease-in-out infinite',
+              hsla(20, 100%, 60%, 0.25) 0%, 
+              transparent 70%)`,
+            filter: 'blur(90px)',
+            transform: `translate(${scrollProgress * -60}px, ${-scrollProgress * 120}px) scale(${1 + scrollProgress * 0.35})`,
+            transition: 'transform 0.3s ease-out',
           }}
         />
 
         <div 
-          className="absolute w-[600px] h-[600px] rounded-full transition-all duration-[2000ms]"
+          className="absolute w-[600px] h-[600px] rounded-full opacity-15"
           style={{
-            top: `${60 + scrollProgress * 20}%`,
-            left: `${10 + scrollProgress * 15}%`,
+            top: '60%',
+            left: '10%',
             background: `radial-gradient(circle, 
-              hsla(190, 80%, 50%, ${0.08 + scrollProgress * 0.06}) 0%, 
+              hsla(35, 95%, 50%, 0.2) 0%, 
               transparent 70%)`,
-            filter: 'blur(100px)',
-            animation: 'float-gentle 50s ease-in-out infinite 25s',
+            filter: 'blur(80px)',
+            transform: `translate(${scrollProgress * 50}px, ${-scrollProgress * 80}px) rotate(${scrollProgress * 30}deg)`,
+            transition: 'transform 0.3s ease-out',
           }}
         />
       </div>
       
-      <div className="fixed inset-0 pointer-events-none -z-10">
-        <div 
-          className="absolute inset-0 transition-opacity duration-1000"
-          style={{
-            background: `radial-gradient(ellipse 80% 50% at 50% 0%, 
-              hsla(${hue1}, 100%, 55%, ${0.06 + scrollProgress * 0.04}), 
-              transparent 70%)`,
-          }}
-        />
-      </div>
+      <div 
+        className="fixed inset-0 -z-10 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse 100% 60% at 50% ${40 + scrollProgress * 20}%, 
+            hsla(${hue1}, 100%, 50%, ${0.08 + scrollProgress * 0.06}), 
+            transparent 70%)`,
+          transition: 'background 0.5s ease-out',
+        }}
+      />
 
       <div 
-        className="fixed inset-0 pointer-events-none -z-10"
+        className="fixed inset-0 -z-10 pointer-events-none"
         style={{
-          opacity: 0.03,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          opacity: 0.02,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
     </>
