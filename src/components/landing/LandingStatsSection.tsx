@@ -14,9 +14,9 @@ export default function LandingStatsSection({
   const statsRef = useRef<HTMLDivElement>(null);
 
   const stats = [
-    { value: 90, suffix: "%", label: "Музыкантов достигают топ-100 в первый месяц" },
-    { value: 24, suffix: "ч", label: "Средняя скорость модерации релизов" },
-    { value: 50, suffix: "+", label: "Платформ для распространения музыки" },
+    { value: 50, suffix: "+", label: "Музыкальных площадок по всему миру" },
+    { value: 100, suffix: "%", label: "Ты сохраняешь все права на музыку" },
+    { value: 0, suffix: "₽", label: "За выпуск релиза — без скрытых плат" },
   ];
 
   useEffect(() => {
@@ -66,10 +66,10 @@ export default function LandingStatsSection({
       <div className="max-w-6xl mx-auto relative z-10" ref={statsRef}>
         <div className="text-center mb-16 scroll-animate">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
-            Откуда мы знаем, что работаем хорошо?
+            Почему 420 Music?
           </h2>
           <p className="text-gray-300 text-lg font-light">
-            Результаты наших артистов говорят сами за себя
+            Простые условия, честные выплаты, полный контроль
           </p>
         </div>
         

@@ -11,7 +11,7 @@ export default function LandingPage() {
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const fullText = "УСПЕШНОЙ РАБОТЫ";
+  const fullText = "ТВОРИ СВОБОДНО";
 
   useEffect(() => {
     const handleScroll = () => {

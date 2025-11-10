@@ -53,7 +53,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-[1.15] tracking-tight px-4">
             <span className="block opacity-0 animate-slideIn text-white" style={{ animation: 'slide-in-up 0.8s 0.4s forwards', textShadow: '0 0 30px rgba(0,0,0,0.8)' }}>
-              ВСЁ, ЧТО НУЖНО АРТИСТУ ДЛЯ
+              МУЗЫКА БЕЗ ГРАНИЦ.
             </span>
             <span 
               className={`block opacity-0 ${!isTypingComplete ? 'typing-cursor' : ''}`} 
@@ -78,7 +78,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           </h1>
           
           <p className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed font-light opacity-0" style={{ animation: 'slide-in-up 0.8s 1.5s forwards' }}>
-            Дистрибуция музыки на все площадки мира. Промо в плейлисты. Детальная аналитика. Честные выплаты.
+            Выпускай треки на Spotify, Apple Music, Яндекс.Музыку и ещё 50+ площадок. Зарабатывай на своём творчестве.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0" style={{ animation: 'slide-in-up 0.8s 1.8s forwards' }}>
@@ -86,7 +86,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
               href="/app"
               className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105 button-ripple relative z-10"
             >
-              Выпустить релиз
+Загрузить трек
               <Icon name="ArrowRight" className="inline ml-2 group-hover:translate-x-2 transition-transform duration-300" size={20} />
             </a>
             

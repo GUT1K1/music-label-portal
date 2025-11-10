@@ -13,30 +13,30 @@ export default function LandingFeaturesSection({
     {
       icon: "Upload",
       title: "Дистрибуция",
-      description: "Выпускай музыку на всех площадках мира — от Spotify до Яндекс.Музыки. Быстрая модерация, прозрачные условия.",
-      highlight: "Без комиссий за релиз",
-      progress: 95
+      description: "Загружай треки и альбомы — мы разместим их на всех крупнейших платформах. Spotify, Apple Music, Яндекс.Музыка, VK и ещё 50+ сервисов.",
+      highlight: "Выход за 3-5 дней",
+      progress: 100
     },
     {
-      icon: "TrendingUp",
-      title: "Промо и питчинг",
-      description: "Продвигаем треки в редакционные плейлисты, работаем с кураторами площадок, запускаем таргет.",
-      highlight: "Попадание в топ-плейлисты",
-      progress: 88
+      icon: "Shield",
+      title: "Защита прав",
+      description: "Все авторские права остаются у тебя. Мы только распространяем твою музыку и собираем роялти. Ты полностью владеешь своим контентом.",
+      highlight: "100% твои права",
+      progress: 100
     },
     {
       icon: "BarChart3",
       title: "Аналитика",
-      description: "Детальная статистика по каждому релизу: прослушивания, география, возраст слушателей, доходы.",
-      highlight: "Ежедневные обновления",
-      progress: 100
+      description: "Следи за успехом своих релизов в реальном времени. Просматривай прослушивания, географию, доходы по каждой площадке.",
+      highlight: "Подробная статистика",
+      progress: 95
     },
     {
       icon: "Wallet",
       title: "Выплаты",
-      description: "Получай честные роялти без скрытых комиссий. Вывод от 500₽ на карту или электронный кошелёк.",
+      description: "Получай честные роялти без скрытых комиссий. Вывод денег на карту или электронный кошелёк. Минимальная сумма — всего 500₽.",
       highlight: "Выплаты 2 раза в месяц",
-      progress: 92
+      progress: 90
     },
   ];
 
@@ -45,10 +45,10 @@ export default function LandingFeaturesSection({
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="text-center mb-16 scroll-animate">
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
-            Инструменты для твоего успеха
+            Как это работает?
           </h2>
           <p className="text-gray-300 text-lg font-light max-w-2xl mx-auto">
-            Полный цикл работы с музыкой: от загрузки трека до получения денег на карту
+            Простой путь от загрузки трека до первых денег
           </p>
         </div>
         
