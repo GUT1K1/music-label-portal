@@ -139,6 +139,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     vk_photo_url = user[4] if len(user) > 4 else None
+    
     user_data = {
         'id': user[0],
         'username': user[1],

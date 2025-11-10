@@ -47,14 +47,7 @@ export default function ManagerView({
   useOnlineStatus(user.id);
   useActivityTracking(user.id);
 
-  // Отладка для аватара
-  console.log('🔍 ManagerView - user object:', user);
-  console.log('🔍 ManagerView - avatar fields:', {
-    avatar: user.avatar,
-    vk_photo: user.vk_photo,
-    photo: (user as any).photo,
-    avatarValue: user.avatar || user.vk_photo
-  });
+
 
   const Badge = ({ count }: { count: number }) => {
     if (count === 0) return null;

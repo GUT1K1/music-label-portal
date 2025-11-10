@@ -429,7 +429,7 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
     cur.execute(
         """
         SELECT id, username, email, role, full_name, telegram_chat_id, 
-               yandex_music_url, vk_group_url, tiktok_url, revenue_share_percent
+               yandex_music_url, vk_group_url, tiktok_url, revenue_share_percent, vk_photo
         FROM t_p35759334_music_label_portal.users
         WHERE id = {}
         """.format(user['id'])
@@ -440,12 +440,16 @@ def login_user(event: Dict[str, Any]) -> Dict[str, Any]:
     
     print(f'✅ Успешный логин пользователя: {user_data["username"]} (role: {user_data["role"]})')
     
+    # Добавляем поле avatar синхронизированное с vk_photo
+    user_dict = dict(user_data)
+    user_dict['avatar'] = user_dict.get('vk_photo')
+    
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
         'body': json.dumps({
             'success': True,
-            'user': dict(user_data)
+            'user': user_dict
         })
     }
 

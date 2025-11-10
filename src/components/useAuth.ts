@@ -14,21 +14,7 @@ export const useAuth = () => {
       // VK или Telegram данные напрямую (уже авторизован через OAuth)
       if (vkData || telegramData) {
         const rawData = vkData || telegramData;
-        
-        console.log('🔍 OAuth login - raw data:', rawData);
-        console.log('🔍 OAuth login - checking avatar fields:', {
-          avatar: rawData.avatar,
-          vk_photo: rawData.vk_photo,
-          photo: rawData.photo
-        });
-        
         const userData = normalizeUser(rawData);
-        
-        console.log('🔍 OAuth login - normalized data:', userData);
-        console.log('🔍 OAuth login - normalized avatar fields:', {
-          avatar: userData.avatar,
-          vk_photo: userData.vk_photo
-        });
         
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
