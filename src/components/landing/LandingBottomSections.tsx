@@ -306,7 +306,7 @@ export default function LandingBottomSections({
                   <div className="w-10 h-10 bg-gold-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <Icon name="Mail" size={18} className="text-gold-400" />
                   </div>
-                  <span className="font-semibold">support@420music.ru</span>
+                  <span className="font-semibold">GUT1K@MAIL.RU</span>
                 </a>
                 <a href="https://t.me/music420support" className="group flex items-center gap-3 text-gray-400 hover:text-gold-300 transition-colors">
                   <div className="w-10 h-10 bg-gold-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
