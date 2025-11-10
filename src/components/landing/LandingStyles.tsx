@@ -354,6 +354,53 @@ export default function LandingStyles() {
         background-clip: text;
         animation: gradient-shift 5s ease infinite;
       }
+      
+      @keyframes wave-flow {
+        0% { transform: translateX(-100%) scaleX(0.5); }
+        50% { transform: translateX(0%) scaleX(1); }
+        100% { transform: translateX(100%) scaleX(0.5); }
+      }
+      
+      @keyframes pulse-glow {
+        0%, 100% { 
+          opacity: 0.4;
+          transform: scale(1);
+        }
+        50% { 
+          opacity: 0.6;
+          transform: scale(1.1);
+        }
+      }
+      
+      @keyframes light-ray {
+        0%, 100% { 
+          opacity: 0.15;
+          transform: rotate(15deg) translateY(0);
+        }
+        50% { 
+          opacity: 0.3;
+          transform: rotate(20deg) translateY(-30px);
+        }
+      }
+      
+      @keyframes energy-float {
+        0%, 100% { 
+          transform: translate(0, 0) scale(1);
+          opacity: 0.5;
+        }
+        25% { 
+          transform: translate(20px, -30px) scale(1.2);
+          opacity: 0.8;
+        }
+        50% { 
+          transform: translate(-15px, -60px) scale(0.9);
+          opacity: 0.6;
+        }
+        75% { 
+          transform: translate(-30px, -30px) scale(1.1);
+          opacity: 0.7;
+        }
+      }
     `}</style>
   );
 }
