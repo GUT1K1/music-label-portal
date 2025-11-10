@@ -82,7 +82,7 @@ export default function WhySection() {
                 
                 <div className="flex-1 pt-2">
                   <h3 className="text-4xl lg:text-5xl font-black text-white mb-6 leading-tight">
-                    0₽ за старт + <span className="bg-gradient-to-r from-gold-200 to-gold-400 bg-clip-text text-transparent">Высокая ставка 50%</span>
+                    0₽ за старт + <span className="bg-gradient-to-r from-gold-200 to-gold-400 bg-clip-text text-transparent">Высокая ставка</span>
                   </h3>
                   <p className="text-gray-200 text-xl leading-relaxed">
                     Без платы за выпуск релиза. Ты платишь только процент от заработка — <span className="text-gold-300 font-bold">50% тебе, 50% нам</span>. Выплаты ежеквартально от 1500₽.
