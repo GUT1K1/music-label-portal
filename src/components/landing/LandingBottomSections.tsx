@@ -46,9 +46,9 @@ export default function LandingBottomSections({
 
   return (
     <>
-      <section id="platforms" className="py-32 px-6 lg:px-12 relative scroll-animate overflow-hidden">
+      <section id="platforms" className="py-20 px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
+          <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
                 50+ музыкальных платформ
@@ -86,9 +86,9 @@ export default function LandingBottomSections({
       <BlogCarousel />
 
       {/* FAQ Section */}
-      <section id="faq" className="py-32 px-6 lg:px-12 relative">
+      <section id="faq" className="py-20 px-6 lg:px-12 relative scroll-animate">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-20">
+          <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">
               <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">
                 Популярные вопросы
@@ -116,7 +116,7 @@ export default function LandingBottomSections({
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 px-6 lg:px-12 relative">
+      <section className="py-20 px-6 lg:px-12 relative scroll-animate">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">
             <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">

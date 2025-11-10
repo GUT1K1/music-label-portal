@@ -1,10 +1,33 @@
 import Icon from "@/components/ui/icon";
+import { useEffect, useRef, useState } from "react";
 
 export default function WhySection() {
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="py-32 px-6 lg:px-12 relative scroll-animate">
+    <section ref={sectionRef} className="py-20 px-6 lg:px-12 relative">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
               Почему 420?
@@ -16,7 +39,7 @@ export default function WhySection() {
         </div>
 
         <div className="grid gap-6">
-          <div className="relative group p-10 lg:p-12 bg-gradient-to-br from-gold-500/20 via-orange-500/10 to-gold-600/20 border-2 border-gold-400/40 rounded-3xl hover:border-gold-400/70 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
+          <div className={`relative group p-10 lg:p-12 bg-gradient-to-br from-gold-500/20 via-orange-500/10 to-gold-600/20 border-2 border-gold-400/40 rounded-3xl hover:border-gold-400/70 transition-all duration-700 hover:scale-[1.02] overflow-hidden ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: '0.2s' }}>
             <div className="absolute top-6 right-6 px-4 py-2 bg-gradient-to-r from-yellow-400 to-gold-500 rounded-full text-black text-xs font-bold uppercase tracking-wider shadow-lg animate-pulse-glow">
               Лучшее предложение
             </div>
@@ -36,7 +59,7 @@ export default function WhySection() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className={`grid md:grid-cols-2 gap-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: '0.4s' }}>
             <div className="group p-8 bg-gradient-to-br from-gray-900/60 via-gray-900/40 to-black/60 border border-gold-400/30 rounded-3xl hover:border-gold-400/60 transition-all duration-500 hover:scale-[1.02]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-gradient-to-br from-gold-500/30 to-gold-600/20 border border-gold-400/40 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">

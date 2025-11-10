@@ -33,9 +33,9 @@ export default function LandingFeaturesSection({
   ];
 
   return (
-    <section id="features" className="py-32 px-6 lg:px-12 relative scroll-animate">
+    <section id="features" className="py-20 px-6 lg:px-12 relative scroll-animate">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
+        <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
               Как это работает?
