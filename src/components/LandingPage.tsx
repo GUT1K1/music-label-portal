@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import LandingStyles from "@/components/landing/LandingStyles";
+import LandingBackgroundEffects from "@/components/landing/LandingBackgroundEffects";
 import LandingHeader from "@/components/landing/LandingHeader";
 import LandingHero from "@/components/landing/LandingHero";
 import LandingContent from "@/components/landing/LandingContent";
@@ -69,6 +70,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <LandingStyles />
+      <LandingBackgroundEffects />
       <LandingHeader isScrolled={isScrolled} />
       <LandingHero 
         scrollY={scrollY}
