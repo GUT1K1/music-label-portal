@@ -38,12 +38,9 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
             </span>
           </div>
           
-          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold mb-8 leading-[1.1] tracking-tight">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-[1.15] tracking-tight px-4">
             <span className="block opacity-0 animate-slideIn" style={{ animation: 'slide-in-up 0.8s 0.4s forwards' }}>
-              ВСЁ, ЧТО НУЖНО
-            </span>
-            <span className="block opacity-0 animate-slideIn" style={{ animation: 'slide-in-up 0.8s 0.6s forwards' }}>
-              АРТИСТУ ДЛЯ
+              ВСЁ, ЧТО НУЖНО АРТИСТУ ДЛЯ
             </span>
             <span className={`block gradient-animated bg-clip-text text-transparent opacity-0 ${!isTypingComplete ? 'typing-cursor' : ''}`} style={{ animation: 'slide-in-up 0.8s 0.8s forwards' }}>
               {typedText}

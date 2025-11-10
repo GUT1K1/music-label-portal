@@ -83,6 +83,31 @@ export default function LandingStyles() {
       .glow-on-hover:hover::before {
         opacity: 1;
       }
+      
+      @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+      }
+      
+      .shimmer {
+        background: linear-gradient(90deg, transparent, rgba(251, 146, 60, 0.3), transparent);
+        background-size: 200% 100%;
+        animation: shimmer 3s infinite;
+      }
+      
+      @keyframes bounce-slow {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+      
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
     `}</style>
   );
 }
