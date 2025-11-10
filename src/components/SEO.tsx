@@ -15,8 +15,8 @@ export default function SEO({
   title,
   description,
   keywords,
-  image = 'https://420music.ru/og-image.jpg',
-  url = 'https://420music.ru',
+  image = 'https://420.рф/og-image.jpg',
+  url = 'https://420.рф',
   type = 'website',
   publishedTime,
   author
@@ -92,7 +92,7 @@ export default function SEO({
               "name": "420 Music",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://420music.ru/logo.png"
+                "url": "https://420.рф/logo.png"
               }
             },
             "mainEntityOfPage": {
@@ -114,13 +114,13 @@ export default function SEO({
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Главная",
-                "item": "https://420music.ru/"
+                "item": "https://420.рф/"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Блог",
-                "item": "https://420music.ru/blog"
+                "item": "https://420.рф/blog"
               },
               {
                 "@type": "ListItem",

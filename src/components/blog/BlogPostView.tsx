@@ -19,7 +19,7 @@ export default function BlogPostView({ post, onBack }: BlogPostViewProps) {
         description={post.excerpt}
         keywords={keywords}
         image={post.image_url}
-        url={`https://420music.ru/blog/${post.slug}`}
+        url={`https://420.рф/blog/${post.slug}`}
         type="article"
         publishedTime={post.isoDate}
         author="420 Music"

@@ -12,7 +12,7 @@ export default function ShareButtons({ url, title, description }: ShareButtonsPr
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
-  const fullUrl = url.startsWith('http') ? url : `https://420music.ru${url}`;
+  const fullUrl = url.startsWith('http') ? url : `https://420.рф${url}`;
 
   const shareLinks = {
     vk: `https://vk.com/share.php?url=${encodeURIComponent(fullUrl)}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`,
