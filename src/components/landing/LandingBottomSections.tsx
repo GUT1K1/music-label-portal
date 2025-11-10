@@ -276,9 +276,7 @@ export default function LandingBottomSections({
               <div className="text-5xl font-black mb-6 bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(234,179,8,0.4)]">
                 420
               </div>
-              <p className="text-gray-400 text-base leading-relaxed">
-                Дистрибуция музыки на 50+ платформ. Зарабатывай на своём творчестве, сохраняя все права.
-              </p>
+              <p className="text-gray-400 text-base leading-relaxed">Дистрибуция музыки на 170+ платформ. Зарабатывай на своём творчестве, сохраняя все права.</p>
             </div>
             
             <div>
