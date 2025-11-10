@@ -22,9 +22,10 @@ interface AppHeaderProps {
   userName?: string;
   userAvatar?: string;
   userBalance?: number;
+  isDemoMode?: boolean;
 }
 
-export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, onWithdrawalClick, userRole, userId, userName = 'Пользователь', userAvatar, userBalance }: AppHeaderProps) {
+export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, onWithdrawalClick, userRole, userId, userName = 'Пользователь', userAvatar, userBalance, isDemoMode = false }: AppHeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [balance, setBalance] = useState<number | null>(userBalance !== undefined ? userBalance : null);
   
@@ -126,32 +127,41 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
       {/* Desktop menu */}
       <div className="hidden md:flex items-center gap-3">
         <NotificationBell userId={userId} />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-2 px-3 py-2 hover:bg-primary/10 transition-colors min-w-0">
-              {userAvatar ? (
-                <img 
-                  src={userAvatar} 
-                  alt={userName}
-                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  }}
-                />
-              ) : null}
-              <div className={`w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold flex-shrink-0 ${userAvatar ? 'hidden' : ''}`}>
-                {userName.charAt(0).toUpperCase()}
-              </div>
-              {balance !== null && (
-                <div className="flex items-center gap-1 min-w-0">
-                  <Icon name="Wallet" size={16} className="text-primary flex-shrink-0" />
-                  <span className="font-semibold text-sm whitespace-nowrap">{Number(balance || 0).toFixed(2)} ₽</span>
+        {isDemoMode ? (
+          <Button 
+            onClick={() => window.location.href = '/app'}
+            className="bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 hover:shadow-2xl hover:shadow-gold-500/50 text-black font-bold transition-all duration-300 hover:scale-105"
+          >
+            <Icon name="LogIn" size={16} className="mr-2" />
+            Войти
+          </Button>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2 px-3 py-2 hover:bg-primary/10 transition-colors min-w-0">
+                {userAvatar ? (
+                  <img 
+                    src={userAvatar} 
+                    alt={userName}
+                    className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                ) : null}
+                <div className={`w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-sm font-bold flex-shrink-0 ${userAvatar ? 'hidden' : ''}`}>
+                  {userName.charAt(0).toUpperCase()}
                 </div>
-              )}
-              <Icon name="ChevronDown" size={16} className="flex-shrink-0" />
-            </Button>
-          </DropdownMenuTrigger>
+                {balance !== null && (
+                  <div className="flex items-center gap-1 min-w-0">
+                    <Icon name="Wallet" size={16} className="text-primary flex-shrink-0" />
+                    <span className="font-semibold text-sm whitespace-nowrap">{Number(balance || 0).toFixed(2)} ₽</span>
+                  </div>
+                )}
+                <Icon name="ChevronDown" size={16} className="flex-shrink-0" />
+              </Button>
+            </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuItem onClick={onProfileClick}>
               <Icon name="User" size={16} className="mr-2" />
@@ -187,11 +197,21 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        )}
       </div>
 
       {/* Mobile menu */}
       <div className="flex md:hidden items-center gap-2">
         <NotificationBell userId={userId} />
+        {isDemoMode && (
+          <Button 
+            onClick={() => window.location.href = '/app'}
+            size="sm"
+            className="bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 text-black font-bold"
+          >
+            <Icon name="LogIn" size={16} />
+          </Button>
+        )}
         {userRole !== 'artist' && (
           <Button
             onClick={onMessagesClick}

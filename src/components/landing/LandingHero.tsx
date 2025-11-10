@@ -98,7 +98,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up" style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}>
           <a
-            href="/app"
+            href="/app?demo=true"
             className="group relative px-8 py-4 bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 rounded-xl font-bold text-lg text-black hover:shadow-2xl hover:shadow-gold-500/50 transition-all duration-500 hover:scale-[1.08] flex items-center gap-2 overflow-hidden animate-pulse-glow"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-400 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-x" />

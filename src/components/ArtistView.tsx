@@ -32,6 +32,7 @@ interface ArtistViewProps {
   onUpdateUser: (updates: Partial<User>) => void;
   onLogout: () => void;
   onRefreshData?: () => void;
+  isDemoMode?: boolean;
 }
 
 export default function ArtistView({
@@ -50,7 +51,8 @@ export default function ArtistView({
   onMessagesOpenChange,
   onUpdateUser,
   onLogout,
-  onRefreshData
+  onRefreshData,
+  isDemoMode = false
 }: ArtistViewProps) {
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem('artist_active_tab') || 'news';
@@ -88,6 +90,7 @@ export default function ArtistView({
             userName={user.full_name}
             userAvatar={user.avatar || user.vk_photo}
             userBalance={user.balance}
+            isDemoMode={isDemoMode}
           />
         </div>
 

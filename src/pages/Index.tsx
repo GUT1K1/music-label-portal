@@ -15,6 +15,9 @@ export default function Index() {
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
   const authProcessedRef = useRef(false); // Флаг чтобы обработать только 1 раз
+  
+  // Проверяем демо-режим
+  const isDemoMode = new URLSearchParams(window.location.search).get('demo') === 'true';
 
   useEffect(() => {
     const handleVKCallback = async () => {
@@ -141,6 +144,47 @@ export default function Index() {
     return <LoadingFallback />;
   }
 
+  // Демо-режим: показываем ArtistView с моковыми данными
+  if (isDemoMode) {
+    const demoUser = {
+      id: 0,
+      username: 'demo_user',
+      full_name: 'Демо Артист',
+      role: 'artist' as const,
+      balance: 15420.50,
+      telegram_chat_id: null,
+      vk_id: null,
+      vk_photo: null,
+      avatar: null,
+      email: null,
+      phone: null,
+      created_at: new Date().toISOString()
+    };
+    
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <ArtistView
+          user={demoUser}
+          tickets={[]}
+          statusFilter="all"
+          newTicket={{ title: '', description: '', priority: 'medium' }}
+          selectedTicketFile={null}
+          uploadingTicket={false}
+          messagesOpen={messagesOpen}
+          onStatusFilterChange={() => {}}
+          onTicketChange={() => {}}
+          onCreateTicket={() => {}}
+          onFileChange={() => {}}
+          onLoadTickets={() => {}}
+          onMessagesOpenChange={setMessagesOpen}
+          onUpdateUser={() => {}}
+          onLogout={() => window.location.href = '/'}
+          isDemoMode={true}
+        />
+      </Suspense>
+    );
+  }
+
   if (!user) {
     return <AuthForm onLogin={login} />;
   }
@@ -154,6 +198,7 @@ export default function Index() {
         onMessagesOpenChange={setMessagesOpen}
         onUpdateUser={handleUpdateProfile}
         onLogout={logout}
+        isDemoMode={false}
         onRefreshData={refreshUserData}
       />
       </Suspense>
