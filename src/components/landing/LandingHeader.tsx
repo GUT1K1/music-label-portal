@@ -24,12 +24,12 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
             </a>
           
             <nav className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
-                Возможности
+              <a href="/blog" className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
+                Блог
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300 shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
               </a>
-              <a href="#platforms" className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
-                Платформы
+              <a href="#why" className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
+                Преимущества
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300 shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
               </a>
               <a href="#faq" className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
