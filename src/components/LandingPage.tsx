@@ -13,15 +13,26 @@ export default function LandingPage() {
 
   const fullText = "ТВОРИ СВОБОДНО";
 
+  // Оптимизированный скролл с throttle через requestAnimationFrame
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      setScrollY(window.scrollY);
-      setIsScrolled(window.scrollY > 50);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          setIsScrolled(window.scrollY > 50);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
+    
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Печатающий эффект
   useEffect(() => {
     let index = 0;
     const timer = setInterval(() => {
@@ -36,6 +47,7 @@ export default function LandingPage() {
     return () => clearInterval(timer);
   }, []);
 
+  // Intersection Observer для анимаций при скролле
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
@@ -55,7 +67,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <LandingStyles />
       <LandingHeader isScrolled={isScrolled} />
       <LandingHero 

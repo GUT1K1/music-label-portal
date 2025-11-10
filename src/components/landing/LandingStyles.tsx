@@ -263,6 +263,47 @@ export default function LandingStyles() {
       .holographic-effect:hover::before {
         opacity: 1;
       }
+      
+      /* Мобильное меню анимации */
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .animate-slideInUp {
+        animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+      }
+      
+      /* Оптимизация для мобильных - отключаем тяжелые эффекты */
+      @media (max-width: 768px) {
+        @keyframes float-gentle {
+          0%, 100% { 
+            transform: translateY(0);
+          }
+          50% { 
+            transform: translateY(20px);
+          }
+        }
+        
+        .holographic-effect::before,
+        .animate-morph-glow {
+          animation: none !important;
+        }
+      }
+      
+      /* Аппаратное ускорение для всех анимаций */
+      * {
+        -webkit-transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000;
+      }
     `}</style>
   );
 }

@@ -1,11 +1,27 @@
+import { useState, useEffect } from "react";
 import LandingBackgroundEffects from "./LandingBackgroundEffects";
 import LandingFeaturesSection from "./LandingFeaturesSection";
 import WhySection from "./WhySection";
 import LandingBottomSections from "./LandingBottomSections";
 
 export default function LandingContent() {
+  const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Отключаем 3D эффекты на мобильных для производительности
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return; // Пропускаем на мобильных
+    
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -20,12 +36,12 @@ export default function LandingContent() {
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return; // Пропускаем на мобильных
+    
     const card = e.currentTarget;
     card.style.setProperty("--rotate-x", "0deg");
     card.style.setProperty("--rotate-y", "0deg");
   };
-
-
 
   return (
     <>
