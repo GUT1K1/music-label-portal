@@ -89,21 +89,21 @@
   }
 
   html {
-    background: linear-gradient(180deg, #2a2a2a 0%, #1f1f1f 50%, #1a1a1a 100%);
+    background: #1e1e1e;
     min-height: 100vh;
     scroll-behavior: smooth;
   }
 
   body {
     @apply text-foreground;
-    background: transparent;
+    background: #1e1e1e;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
   }
 
   #root {
-    background: transparent;
+    background: #1e1e1e;
     min-height: 100vh;
   }
 
