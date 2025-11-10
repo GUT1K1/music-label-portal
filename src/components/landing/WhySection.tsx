@@ -25,7 +25,10 @@ export default function WhySection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-20 px-6 lg:px-12 relative">
+    <section ref={sectionRef} className="py-20 px-6 lg:px-12 relative overflow-hidden">
+      <div className="absolute top-20 right-10 w-72 h-72 bg-gold-500/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 left-10 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-gold-500/3 to-orange-500/3 rounded-full blur-3xl" />
       <div className="max-w-7xl mx-auto">
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
@@ -40,11 +43,14 @@ export default function WhySection() {
 
         <div className="grid gap-6">
           <div className={`relative group p-10 lg:p-12 bg-gradient-to-br from-gold-500/20 via-orange-500/10 to-gold-600/20 border-2 border-gold-400/40 rounded-3xl hover:border-gold-400/70 transition-all duration-700 hover:scale-[1.02] overflow-hidden ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: '0.2s' }}>
-            <div className="absolute top-6 right-6 px-4 py-2 bg-gradient-to-r from-yellow-400 to-gold-500 rounded-full text-black text-xs font-bold uppercase tracking-wider shadow-lg animate-pulse-glow">
+            <div className="absolute inset-0 bg-gradient-to-br from-gold-400/5 via-transparent to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-gold-400/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+            <div className="absolute top-6 right-6 px-4 py-2 bg-gradient-to-r from-yellow-400 to-gold-500 rounded-full text-black text-xs font-bold uppercase tracking-wider shadow-lg shadow-gold-500/50 animate-pulse-glow z-10">
               Лучшее предложение
             </div>
             
-            <div className="flex items-start gap-6 mb-6">
+            <div className="flex items-start gap-6 mb-6 relative z-10">
               <div className="w-16 h-16 bg-gradient-to-br from-gold-400 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-gold-500/50">
                 <Icon name="Zap" size={32} className="text-black" />
               </div>
@@ -60,7 +66,9 @@ export default function WhySection() {
           </div>
 
           <div className={`grid md:grid-cols-2 gap-6 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: '0.4s' }}>
-            <div className="group p-8 bg-gradient-to-br from-gray-900/60 via-gray-900/40 to-black/60 border border-gold-400/30 rounded-3xl hover:border-gold-400/60 transition-all duration-500 hover:scale-[1.02]">
+            <div className="relative group p-8 bg-gradient-to-br from-gray-900/60 via-gray-900/40 to-black/60 border border-gold-400/30 rounded-3xl hover:border-gold-400/60 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-gold-500/0 via-gold-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/5 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-1000" />
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-gradient-to-br from-gold-500/30 to-gold-600/20 border border-gold-400/40 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                   <Icon name="Upload" size={28} className="text-gold-300" />
@@ -91,7 +99,9 @@ export default function WhySection() {
               </div>
             </div>
 
-            <div className="group p-8 bg-gradient-to-br from-gray-900/60 via-gray-900/40 to-black/60 border border-gold-400/30 rounded-3xl hover:border-gold-400/60 transition-all duration-500 hover:scale-[1.02]">
+            <div className="relative group p-8 bg-gradient-to-br from-gray-900/60 via-gray-900/40 to-black/60 border border-gold-400/30 rounded-3xl hover:border-gold-400/60 transition-all duration-500 hover:scale-[1.02] overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-gold-500/0 via-gold-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/5 rounded-full blur-2xl transform translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-1000" />
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-gradient-to-br from-gold-500/30 to-gold-600/20 border border-gold-400/40 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                   <Icon name="BarChart3" size={28} className="text-gold-300" />
