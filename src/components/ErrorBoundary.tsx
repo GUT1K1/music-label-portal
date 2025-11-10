@@ -24,11 +24,19 @@ export default class ErrorBoundary extends Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
     
-    // Автосброс ошибки через 5 секунд для hot reload
-    this.errorResetTimer = setTimeout(() => {
-      console.log('ErrorBoundary: Auto-resetting error state');
-      this.setState({ hasError: false, error: null });
-    }, 5000);
+    // Проверяем если это ошибка загрузки модуля (частая при hot reload)
+    const isChunkLoadError = error.message.includes('Failed to fetch') || 
+                             error.message.includes('dynamically imported module') ||
+                             error.message.includes('Importing a module script failed');
+    
+    // В development режиме или при ошибке загрузки - автосброс через 1 секунду
+    if (import.meta.env.DEV || isChunkLoadError) {
+      this.errorResetTimer = setTimeout(() => {
+        console.log('ErrorBoundary: Auto-resetting error state');
+        this.setState({ hasError: false, error: null });
+        window.location.reload();
+      }, 1000);
+    }
   }
 
   componentWillUnmount() {
@@ -39,6 +47,18 @@ export default class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      // В DEV режиме показываем только загрузку, т.к. будет автосброс
+      if (import.meta.env.DEV) {
+        return (
+          <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-gold-400 mx-auto mb-4"></div>
+              <p className="text-gray-400">Перезагрузка...</p>
+            </div>
+          </div>
+        );
+      }
+
       return (
         <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
           <div className="text-center max-w-lg">
