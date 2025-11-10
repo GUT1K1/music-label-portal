@@ -14,15 +14,13 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
         <div 
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl"
           style={{ 
-            animation: 'float-up 20s ease-in-out infinite',
-            transform: `translate(${scrollY * 0.1}px, ${scrollY * 0.15}px)`
+            animation: 'float-up 20s ease-in-out infinite'
           }}
         />
         <div 
           className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl"
           style={{ 
-            animation: 'float-up 25s ease-in-out infinite reverse',
-            transform: `translate(-${scrollY * 0.08}px, -${scrollY * 0.12}px)`
+            animation: 'float-up 25s ease-in-out infinite reverse'
           }}
         />
         <div 
