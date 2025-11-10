@@ -33,9 +33,7 @@ export default function BlogGrid({ posts, onPostClick }: BlogGridProps) {
           <div className="inline-block animate-scaleIn">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-orange-500 to-amber-500 blur-3xl opacity-20 animate-pulse-slow"></div>
-              <h1 className="relative text-6xl md:text-8xl font-black mb-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-amber-500 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
-                Блог 420 Music
-              </h1>
+              <h1 className="relative text-6xl md:text-8xl font-black mb-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-amber-500 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">Блог 420</h1>
             </div>
           </div>
           <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed animate-fadeIn animation-delay-200">
