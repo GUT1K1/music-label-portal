@@ -1,6 +1,7 @@
 import Icon from '@/components/ui/icon';
 import SEO from '@/components/SEO';
 import BurgerMenu from '@/components/BurgerMenu';
+import ShareButtons from '@/components/blog/ShareButtons';
 import type { BlogPost } from '@/data/blogData';
 
 interface BlogPostViewProps {
@@ -84,6 +85,14 @@ export default function BlogPostView({ post, onBack }: BlogPostViewProps) {
                 prose-img:rounded-xl prose-img:shadow-2xl"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
+
+            <div className="mt-12 pt-8 border-t border-gray-800">
+              <ShareButtons 
+                url={`/blog/${post.slug}`}
+                title={post.title}
+                description={post.excerpt}
+              />
+            </div>
           </div>
         </article>
 
