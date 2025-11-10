@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import BurgerMenu from "@/components/BurgerMenu";
 import Icon from "@/components/ui/icon";
 
 export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+      setIsScrolled(window.scrollY > 50);
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -74,10 +77,48 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
-      <BurgerMenu />
+      {/* Header */}
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-black/80 backdrop-blur-xl border-b border-gray-900' 
+          : 'bg-transparent'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <a href="/" className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">
+              420.рф
+            </a>
+            
+            <nav className="hidden md:flex items-center gap-8">
+              <a href="#features" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                Возможности
+              </a>
+              <a href="#platforms" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                Площадки
+              </a>
+              <a href="/blog" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                Блог
+              </a>
+              <a href="#faq" className="text-sm font-medium text-gray-400 hover:text-white transition-colors">
+                FAQ
+              </a>
+              <a
+                href="/app"
+                className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 rounded-lg font-semibold text-sm hover:shadow-lg hover:shadow-orange-500/30 transition-all"
+              >
+                Войти
+              </a>
+            </nav>
+
+            <button className="md:hidden p-2 text-gray-400 hover:text-white">
+              <Icon name="Menu" size={24} />
+            </button>
+          </div>
+        </div>
+      </header>
       
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
         <div 
           className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5"
           style={{ transform: `translateY(${scrollY * 0.3}px)` }}
@@ -190,7 +231,7 @@ export default function LandingPage() {
       </section>
 
       {/* Platforms Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-950">
+      <section id="platforms" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black to-gray-950">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">
@@ -220,7 +261,7 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-black">
+      <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">
