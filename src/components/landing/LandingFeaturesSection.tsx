@@ -54,7 +54,7 @@ export default function LandingFeaturesSection({
           {features.map((feature, i) => (
             <div
               key={i}
-              className="relative group p-10 bg-gradient-to-br from-gray-900/40 via-gray-900/30 to-black/40 border border-gold-400/20 rounded-3xl hover:border-gold-400/50 hover:bg-gradient-to-br hover:from-gray-900/60 hover:via-gray-900/50 hover:to-black/60 transition-all duration-500 hover:shadow-2xl hover:shadow-gold-500/20 overflow-hidden cursor-pointer holographic-effect"
+              className="relative group p-10 bg-gradient-to-br from-gray-900/40 via-gray-900/30 to-black/40 border border-gold-400/20 rounded-3xl hover:border-gold-400/50 hover:bg-gradient-to-br hover:from-gray-900/60 hover:via-gray-900/50 hover:to-black/60 transition-all duration-500 hover:shadow-2xl hover:shadow-gold-500/20 overflow-hidden cursor-pointer"
               style={{
                 transform: 'perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) scale(1)',
                 transition: 'transform 0.3s ease-out, box-shadow 0.5s ease'
