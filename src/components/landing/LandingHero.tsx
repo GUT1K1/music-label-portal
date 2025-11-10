@@ -69,34 +69,36 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up" style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}>
           <a
             href="/app"
-            className="group relative px-8 py-4 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 rounded-xl font-bold text-lg text-black hover:shadow-2xl hover:shadow-gold-400/40 transition-all duration-500 hover:scale-[1.05] flex items-center gap-2 overflow-hidden"
+            className="group relative px-8 py-4 bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 rounded-xl font-bold text-lg text-black hover:shadow-2xl hover:shadow-gold-500/50 transition-all duration-500 hover:scale-[1.08] flex items-center gap-2 overflow-hidden animate-pulse-glow"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-400 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <span className="relative z-10">Загрузить трек</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-400 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-x" />
+            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.8),transparent)]" />
+            <span className="relative z-10 drop-shadow-sm">Загрузить трек</span>
             <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform relative z-10" size={20} />
           </a>
           
           <a
             href="#features"
-            className="group relative px-8 py-4 border-2 border-gold-400/30 rounded-xl font-semibold text-lg text-gray-300 hover:text-white hover:border-gold-400/60 transition-all duration-500 overflow-hidden"
+            className="group relative px-8 py-4 border-2 border-gold-400/40 rounded-xl font-semibold text-lg text-gray-300 hover:text-white hover:border-gold-400/80 transition-all duration-500 overflow-hidden hover:scale-[1.05] backdrop-blur-sm"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-gold-500/0 via-gold-500/10 to-gold-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-r from-gold-500/0 via-gold-500/20 to-orange-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-br from-gold-400/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <span className="relative z-10">Узнать больше</span>
           </a>
         </div>
         
         <div className="mt-24 grid grid-cols-3 gap-8 max-w-3xl mx-auto opacity-0 animate-fade-in-up" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
-          <div className="text-center group">
-            <div className="text-5xl font-bold bg-gradient-to-br from-gold-300 via-gold-400 to-gold-500 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">50+</div>
-            <div className="text-sm text-gray-400">Платформ</div>
+          <div className="text-center group cursor-pointer">
+            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">50+</div>
+            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Платформ</div>
           </div>
-          <div className="text-center border-x border-gray-800/50 group">
-            <div className="text-5xl font-bold bg-gradient-to-br from-gold-300 via-gold-400 to-gold-500 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">0₽</div>
-            <div className="text-sm text-gray-400">За выпуск</div>
+          <div className="text-center border-x border-gold-500/20 group cursor-pointer">
+            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">0₽</div>
+            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">За выпуск</div>
           </div>
-          <div className="text-center group">
-            <div className="text-5xl font-bold bg-gradient-to-br from-gold-300 via-gold-400 to-gold-500 bg-clip-text text-transparent mb-3 group-hover:scale-110 transition-transform duration-300">100%</div>
-            <div className="text-sm text-gray-400">Твои права</div>
+          <div className="text-center group cursor-pointer">
+            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">100%</div>
+            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Твои права</div>
           </div>
         </div>
       </div>
