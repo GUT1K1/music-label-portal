@@ -117,7 +117,8 @@ export default function AuthForm({ onLogin }: AuthFormProps) {
       <MatrixRain 
         onComplete={() => {
           if (userData) {
-            onLogin('', '', undefined, userData);
+            // Передаём как vkData (3-й параметр) для единообразной обработки OAuth
+            onLogin('', '', userData);
           }
         }} 
         duration={3500} 

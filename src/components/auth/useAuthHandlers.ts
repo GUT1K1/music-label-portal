@@ -56,7 +56,16 @@ export const useAuthHandlers = () => {
         return;
       }
 
-      setUserData(data.user);
+      // Нормализуем данные перед сохранением
+      const normalizedUser = {
+        ...data.user,
+        avatar: data.user.avatar || data.user.vk_photo,
+        vk_photo: data.user.vk_photo || data.user.avatar,
+        full_name: data.user.full_name || data.user.fullName,
+        fullName: data.user.fullName || data.user.full_name
+      };
+      
+      setUserData(normalizedUser);
       setLoginLoading(false);
       setIsSuccess(true);
       
@@ -332,7 +341,16 @@ export const useAuthHandlers = () => {
     setShowMatrixLoader: (show: boolean) => void
   ) => {
     try {
-      setUserData(userData);
+      // Нормализуем данные перед сохранением
+      const normalizedUser = {
+        ...userData,
+        avatar: userData.avatar || userData.vk_photo,
+        vk_photo: userData.vk_photo || userData.avatar,
+        full_name: userData.full_name || userData.fullName,
+        fullName: userData.fullName || userData.full_name
+      };
+      
+      setUserData(normalizedUser);
       setIsSuccess(true);
       
       setTimeout(() => {
