@@ -12,16 +12,14 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
   
   const words1 = ['МУЗЫКА', 'БЕЗ', 'ГРАНИЦ.'];
   const words2 = ['ТВОРИ', 'СВОБОДНО'];
-  const allWords = [...words1, ...words2];
   
   useEffect(() => {
-    const indices = Array.from({ length: allWords.length }, (_, i) => i);
-    const shuffled = indices.sort(() => Math.random() - 0.5);
+    const order = [3, 0, 4, 1, 2];
     
-    shuffled.forEach((index, i) => {
+    order.forEach((index, i) => {
       setTimeout(() => {
         setVisibleWords(prev => [...prev, index]);
-      }, i * 200);
+      }, i * 350);
     });
   }, []);
   
