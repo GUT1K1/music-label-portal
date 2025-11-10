@@ -13,7 +13,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <a href="/" className="text-2xl font-bold gradient-animated bg-clip-text text-transparent">
+          <a href="/" className="text-2xl font-bold text-orange-500 hover:text-orange-400 transition-colors duration-300">
             420.рф
           </a>
           

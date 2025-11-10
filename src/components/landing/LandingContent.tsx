@@ -67,13 +67,13 @@ export default function LandingContent() {
     <>
       {/* Stats Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-50">
           <img 
             src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/6f1dd302-dd25-49ae-aebf-13f4871d0d4d.jpg"
             alt="Background"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
         </div>
         
         <div className="max-w-6xl mx-auto relative z-10">
@@ -93,7 +93,7 @@ export default function LandingContent() {
                 className="scroll-animate group p-8 bg-gradient-to-br from-gray-900 to-black border border-gray-800 rounded-3xl hover:border-orange-500/50 transition-all duration-500 card-hover glow-on-hover"
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
-                <div className="text-6xl font-bold gradient-animated bg-clip-text text-transparent mb-4 group-hover:scale-110 transition-transform duration-500">
+                <div className="text-6xl font-bold text-orange-500 mb-4 group-hover:scale-110 transition-transform duration-500">
                   {stat.value}
                 </div>
                 <p className="text-gray-300 text-lg leading-relaxed">
@@ -107,13 +107,13 @@ export default function LandingContent() {
 
       {/* Features Section */}
       <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-40">
           <img 
             src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/cd01e971-8333-4e23-bee8-22a54c946842.jpg"
             alt="Background"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
         </div>
         
         <div className="max-w-6xl mx-auto relative z-10">
@@ -155,13 +155,13 @@ export default function LandingContent() {
 
       {/* Platforms Section */}
       <section id="platforms" className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-40">
           <img 
             src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/28767271-4aef-4a51-b799-796154fc31c0.jpg"
             alt="Background"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
         </div>
         
         <div className="max-w-6xl mx-auto relative z-10">
@@ -228,13 +228,13 @@ export default function LandingContent() {
 
       {/* CTA Section */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-black via-gray-950 to-black relative overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-50">
           <img 
             src="https://cdn.poehali.dev/projects/0e0d66e6-7f6e-47fa-9e86-41a58867df5f/files/33f4d99e-a10a-4062-b1e3-0e97b2f60bed.jpg"
             alt="Background"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/85 to-black" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80" />
         </div>
         
         <div className="max-w-4xl mx-auto text-center relative z-10 scroll-animate">
@@ -275,7 +275,7 @@ export default function LandingContent() {
       <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-black border-t border-gray-900">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-2xl font-bold gradient-animated bg-clip-text text-transparent">
+            <div className="text-2xl font-bold text-orange-500">
               420.рф
             </div>
             
