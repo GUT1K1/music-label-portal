@@ -63,7 +63,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
         </h1>
         
         <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-14 leading-relaxed opacity-0 animate-fade-in-up" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>
-          Выпускай треки на Spotify, Apple Music, Яндекс.Музыку и ещё 50+ площадок. Зарабатывай на своём творчестве.
+          Выпускай треки на 50+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются твоими.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up" style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}>
@@ -87,18 +87,22 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           </a>
         </div>
         
-        <div className="mt-24 grid grid-cols-3 gap-8 max-w-3xl mx-auto opacity-0 animate-fade-in-up" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
+        <div className="mt-24 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto opacity-0 animate-fade-in-up" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
           <div className="text-center group cursor-pointer">
-            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">50+</div>
-            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Платформ</div>
+            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">50%</div>
+            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Роялти артисту</div>
           </div>
-          <div className="text-center border-x border-gold-500/20 group cursor-pointer">
-            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">0₽</div>
-            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">За выпуск</div>
+          <div className="text-center group cursor-pointer">
+            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">7 лет</div>
+            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Срок лицензии</div>
           </div>
           <div className="text-center group cursor-pointer">
             <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">100%</div>
-            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Твои права</div>
+            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Твоё авторство</div>
+          </div>
+          <div className="text-center group cursor-pointer">
+            <div className="text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">50+</div>
+            <div className="text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Платформ</div>
           </div>
         </div>
       </div>
