@@ -25,11 +25,6 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
   
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 lg:px-12 pt-32 overflow-hidden">
-      <div className="absolute top-1/4 left-10 w-2 h-32 bg-gradient-to-b from-gold-500/30 to-transparent" />
-      <div className="absolute top-1/3 right-20 w-2 h-24 bg-gradient-to-b from-orange-500/30 to-transparent" />
-      <div className="absolute bottom-1/4 left-1/4 w-px h-40 bg-gradient-to-b from-transparent via-gold-500/20 to-transparent" />
-      <div className="absolute bottom-1/3 right-1/3 w-px h-32 bg-gradient-to-b from-transparent via-orange-500/20 to-transparent" />
-      
       <div className="absolute top-20 right-32 w-3 h-3 bg-gold-400/40 rounded-full animate-pulse" />
       <div className="absolute top-40 left-24 w-2 h-2 bg-orange-400/40 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
       <div className="absolute bottom-32 right-1/4 w-2 h-2 bg-gold-400/40 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
