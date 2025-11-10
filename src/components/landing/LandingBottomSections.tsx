@@ -153,25 +153,78 @@ export default function LandingBottomSections({
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 lg:px-12 border-t border-gold-500/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="text-2xl font-bold text-gold-400">
-              420
+      <footer className="relative py-16 px-6 lg:px-12 border-t border-gold-500/20 bg-gradient-to-b from-transparent to-black/50">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+            <div>
+              <div className="text-4xl font-black mb-4 bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%] drop-shadow-[0_0_20px_rgba(234,179,8,0.4)]">
+                420
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Дистрибуция музыки на 50+ платформ. Зарабатывай на своём творчестве, сохраняя все права.
+              </p>
             </div>
             
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-500">
-              <a href="/blog" className="hover:text-gold-400 transition-colors">Блог</a>
-              <a href="/terms" className="hover:text-gold-400 transition-colors">Условия</a>
-              <a href="/privacy" className="hover:text-gold-400 transition-colors">Конфиденциальность</a>
-              <a href="https://t.me/+QgiLIa1gFRY4Y2Iy" target="_blank" rel="noopener noreferrer" className="hover:text-gold-400 transition-colors">
-                Telegram
-              </a>
+            <div>
+              <h3 className="text-white font-bold mb-4 text-sm uppercase tracking-wider">Навигация</h3>
+              <div className="flex flex-col gap-3">
+                <a href="#features" className="text-gray-400 hover:text-gold-300 transition-colors text-sm group flex items-center gap-2">
+                  <Icon name="ChevronRight" size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Возможности
+                </a>
+                <a href="#platforms" className="text-gray-400 hover:text-gold-300 transition-colors text-sm group flex items-center gap-2">
+                  <Icon name="ChevronRight" size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Платформы
+                </a>
+                <a href="#faq" className="text-gray-400 hover:text-gold-300 transition-colors text-sm group flex items-center gap-2">
+                  <Icon name="ChevronRight" size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Вопросы
+                </a>
+                <a href="/blog" className="text-gray-400 hover:text-gold-300 transition-colors text-sm group flex items-center gap-2">
+                  <Icon name="ChevronRight" size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  Блог
+                </a>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-bold mb-4 text-sm uppercase tracking-wider">Контакты</h3>
+              <div className="flex flex-col gap-3">
+                <a 
+                  href="https://t.me/+QgiLIa1gFRY4Y2Iy" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-gray-400 hover:text-gold-300 transition-colors text-sm flex items-center gap-2 group"
+                >
+                  <Icon name="MessageCircle" size={16} className="text-gold-400" />
+                  <span>Telegram сообщество</span>
+                </a>
+                <a href="/terms" className="text-gray-400 hover:text-gold-300 transition-colors text-sm">
+                  Условия использования
+                </a>
+                <a href="/privacy" className="text-gray-400 hover:text-gold-300 transition-colors text-sm">
+                  Политика конфиденциальности
+                </a>
+              </div>
             </div>
           </div>
           
-          <div className="mt-8 pt-8 border-t border-gray-900 text-center text-sm text-gray-600">
-            © 2024 420 Music. Все права защищены.
+          <div className="pt-8 border-t border-gold-500/10 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm text-gray-500">
+              © 2024 420 Music. Все права защищены.
+            </div>
+            <div className="flex items-center gap-6">
+              <a 
+                href="https://t.me/+QgiLIa1gFRY4Y2Iy" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-500/20 to-orange-500/10 border border-gold-400/30 flex items-center justify-center hover:border-gold-400/60 hover:bg-gradient-to-br hover:from-gold-500/30 hover:to-orange-500/20 transition-all duration-300 hover:scale-110"
+              >
+                <Icon name="MessageCircle" size={18} className="text-gold-300" />
+              </a>
+            </div>
           </div>
         </div>
       </footer>
