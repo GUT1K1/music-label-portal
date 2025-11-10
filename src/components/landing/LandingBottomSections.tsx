@@ -40,28 +40,27 @@ export default function LandingBottomSections({
 
   return (
     <>
-      {/* Platforms Section */}
-      <section id="platforms" className="py-32 px-6 lg:px-12 relative">
+      <section id="platforms" className="py-32 px-6 lg:px-12 relative scroll-animate">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
                 50+ музыкальных платформ
               </span>
             </h2>
-            <p className="text-gray-400 text-lg">
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
               Твоя музыка будет доступна миллионам слушателей
             </p>
           </div>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
             {platforms.map((platform, i) => (
               <div
                 key={i}
-                className="group p-6 bg-gradient-to-b from-gray-900/50 to-black/50 border border-gold-500/10 rounded-xl hover:border-gold-500/30 transition-all duration-300 flex flex-col items-center justify-center text-center"
+                className="group p-8 bg-gradient-to-br from-gray-900/40 to-black/40 border border-gold-400/20 rounded-2xl hover:border-gold-400/50 hover:bg-gradient-to-br hover:from-gray-900/60 hover:to-black/60 transition-all duration-500 flex flex-col items-center justify-center text-center hover:scale-105 hover:shadow-xl hover:shadow-gold-500/10"
               >
-                <Icon name={platform.icon as any} size={32} className="text-gold-400 mb-3 group-hover:scale-110 transition-transform" />
-                <div className="text-sm font-medium text-gray-200">
+                <Icon name={platform.icon as any} size={36} className="text-gold-300 mb-4 group-hover:scale-110 group-hover:text-gold-200 transition-all duration-300" />
+                <div className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">
                   {platform.name}
                 </div>
               </div>
