@@ -35,8 +35,24 @@ export default function LandingStyles() {
         }
       }
       
+      @keyframes shimmer {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      
       .animate-fade-in-up {
         animation: fade-in-up 0.8s ease-out forwards;
+      }
+      
+      .animate-shimmer {
+        animation: shimmer 3s ease-in-out infinite;
       }
       
       @keyframes twinkle-slow {
