@@ -117,7 +117,7 @@ export default function WhySection() {
                       <Icon name="Target" size={20} className="text-purple-400" />
                     </div>
                     <div>
-                      <p className="text-white font-bold text-lg mb-1">50+ платформ</p>
+                      <p className="text-white font-bold text-lg mb-1">170+ платформ</p>
                       <p className="text-gray-400">Spotify, Apple Music, YouTube, Яндекс, VK и другие</p>
                     </div>
                   </div>
