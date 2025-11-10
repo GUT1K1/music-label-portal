@@ -3,6 +3,7 @@ import BurgerMenu from "@/components/BurgerMenu";
 import HeroSection from "@/components/landing/HeroSection";
 import ServicesSection from "@/components/landing/ServicesSection";
 import PlatformsSection from "@/components/landing/PlatformsSection";
+import BlogCarousel from "@/components/landing/BlogCarousel";
 import CTASection from "@/components/landing/CTASection";
 import FooterSection from "@/components/landing/FooterSection";
 
@@ -137,6 +138,7 @@ export default function LandingPage() {
       <HeroSection scrollY={scrollY} heroRef={heroRef} />
       <ServicesSection services={services} />
       <PlatformsSection platforms={platforms} />
+      <BlogCarousel />
       <CTASection />
       <FooterSection />
     </div>
