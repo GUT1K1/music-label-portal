@@ -4,7 +4,7 @@ export interface BlogPost {
   title: string;
   excerpt: string;
   content: string;
-  image: string;
+  image_url: string;
   date: string;
   isoDate?: string;
   readTime: string;
@@ -126,7 +126,7 @@ export const posts: BlogPost[] = [
 
       <p><strong>Можно ли без бюджета?</strong> Да, но потребуется 6-12 месяцев органического роста через соцсети и вирусный контент.</p>
     `,
-    image: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
+    image_url: 'https://cdn.poehali.dev/files/81d2b3fc-e7ee-4995-b5b8-6fd9eb0b0ac8.png',
     date: '5 ноября 2025',
     isoDate: '2025-11-05T00:00:00Z',
     readTime: '12 мин',

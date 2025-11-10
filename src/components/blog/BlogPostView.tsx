@@ -17,7 +17,7 @@ export default function BlogPostView({ post, onBack }: BlogPostViewProps) {
         title={post.title}
         description={post.excerpt}
         keywords={keywords}
-        image={post.image}
+        image={post.image_url}
         url={`https://420music.ru/blog/${post.slug}`}
         type="article"
         publishedTime={post.isoDate}
@@ -47,7 +47,7 @@ export default function BlogPostView({ post, onBack }: BlogPostViewProps) {
         <article className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
           <div className="relative h-[400px] mb-8">
             <img 
-              src={post.image} 
+              src={post.image_url} 
               alt={post.title}
               className="w-full h-full object-cover"
             />

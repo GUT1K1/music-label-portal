@@ -76,7 +76,7 @@ export default function BlogGrid({ posts, onPostClick }: BlogGridProps) {
               <div className="relative h-56 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent z-10"></div>
                 <img 
-                  src={post.image} 
+                  src={post.image_url} 
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-2 transition-all duration-700 filter group-hover:brightness-110"
                 />
