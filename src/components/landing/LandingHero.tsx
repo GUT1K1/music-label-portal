@@ -76,9 +76,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           </span>
         </h1>
         
-        <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>
-          Выпускай треки на 50+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются твоими.
-        </p>
+        <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}>
           <a
