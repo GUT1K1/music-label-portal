@@ -34,6 +34,8 @@ export default function LandingFeaturesSection({
 
   return (
     <section id="features" className="py-20 px-6 lg:px-12 relative scroll-animate overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-32 bg-gradient-to-b from-transparent via-gold-500/40 to-transparent animate-draw-line" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-32 bg-gradient-to-t from-transparent via-gold-500/40 to-transparent animate-draw-line" style={{ animationDelay: '0.5s' }} />
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-orange-500/5 rounded-full blur-3xl" />
       <div className="max-w-7xl mx-auto">
@@ -52,7 +54,13 @@ export default function LandingFeaturesSection({
           {features.map((feature, i) => (
             <div
               key={i}
-              className="relative group p-10 bg-gradient-to-br from-gray-900/40 via-gray-900/30 to-black/40 border border-gold-400/20 rounded-3xl hover:border-gold-400/50 hover:bg-gradient-to-br hover:from-gray-900/60 hover:via-gray-900/50 hover:to-black/60 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-gold-500/10 overflow-hidden"
+              className="relative group p-10 bg-gradient-to-br from-gray-900/40 via-gray-900/30 to-black/40 border border-gold-400/20 rounded-3xl hover:border-gold-400/50 hover:bg-gradient-to-br hover:from-gray-900/60 hover:via-gray-900/50 hover:to-black/60 transition-all duration-500 hover:shadow-2xl hover:shadow-gold-500/20 overflow-hidden cursor-pointer holographic-effect"
+              style={{
+                transform: 'perspective(1000px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg)) scale(1)',
+                transition: 'transform 0.3s ease-out, box-shadow 0.5s ease'
+              }}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-gold-500/0 via-gold-500/5 to-orange-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-gold-400/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />

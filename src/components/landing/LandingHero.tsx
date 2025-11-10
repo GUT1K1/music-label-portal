@@ -9,6 +9,17 @@ interface LandingHeroProps {
 
 export default function LandingHero({ scrollY, typedText, isTypingComplete }: LandingHeroProps) {
   const [visibleWords, setVisibleWords] = useState<number[]>([]);
+  const [cursorPos, setCursorPos] = useState({ x: 50, y: 50 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      setCursorPos({ x, y });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
   
   const words1 = ['МУЗЫКА', 'БЕЗ', 'ГРАНИЦ.'];
   const words2 = ['ТВОРИ', 'СВОБОДНО'];
@@ -29,6 +40,18 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
       <div className="absolute top-40 left-24 w-2 h-2 bg-orange-400/40 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
       <div className="absolute bottom-32 right-1/4 w-2 h-2 bg-gold-400/40 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
       <div className="absolute bottom-48 left-1/3 w-3 h-3 bg-orange-400/30 rounded-full animate-pulse" style={{ animationDelay: '1.5s' }} />
+      <div 
+        className="absolute z-0 pointer-events-none transition-all duration-300 ease-out"
+        style={{
+          left: `${cursorPos.x}%`,
+          top: `${cursorPos.y}%`,
+          transform: 'translate(-50%, -50%)',
+          width: '800px',
+          height: '800px',
+          background: 'radial-gradient(circle, rgba(234, 179, 8, 0.15) 0%, transparent 70%)',
+          filter: 'blur(80px)',
+        }}
+      />
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         <h1 className="text-6xl sm:text-8xl lg:text-9xl font-bold mb-10 tracking-tight">
           <span className="block text-white mb-6 flex flex-wrap justify-center gap-x-4 gap-y-2">
@@ -58,7 +81,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
                   }`}
                 >
                   <span className="relative inline-block">
-                    <span className="absolute inset-0 blur-2xl bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 opacity-30" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 animate-morph-glow" />
                     <span className="relative bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
                       {word}
                     </span>
