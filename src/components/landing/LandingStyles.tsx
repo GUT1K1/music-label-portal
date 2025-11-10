@@ -283,32 +283,59 @@ export default function LandingStyles() {
       
       /* Оптимизация для мобильных - отключаем тяжелые эффекты */
       @media (max-width: 768px) {
+        /* Упрощаем все анимации на мобильных */
         @keyframes float-gentle {
           0%, 100% { 
             transform: translateY(0);
           }
           50% { 
-            transform: translateY(20px);
+            transform: translateY(10px);
           }
         }
         
+        /* Отключаем тяжелые эффекты */
         .holographic-effect::before,
-        .animate-morph-glow {
+        .animate-morph-glow,
+        .animate-pulse-glow,
+        .animate-gradient-x {
           animation: none !important;
         }
         
-        /* Уменьшаем blur для фоновых эффектов на мобильных */
+        /* Убираем blur эффекты на мобильных */
         .bg-glow-effect {
-          filter: blur(60px) !important;
-          transform: scale(0.6) !important;
+          display: none !important;
+        }
+        
+        /* Упрощаем шиммер */
+        .animate-shimmer {
+          animation-duration: 5s !important;
+        }
+        
+        /* Отключаем сложные hover эффекты */
+        * {
+          transition-duration: 0.2s !important;
         }
       }
       
-      /* Аппаратное ускорение для всех анимаций */
-      * {
+      /* Аппаратное ускорение только для анимированных элементов */
+      .animate-fade-in-up,
+      .animate-shimmer,
+      .animate-slideIn,
+      .scroll-animate {
         -webkit-transform: translateZ(0);
         -webkit-backface-visibility: hidden;
-        -webkit-perspective: 1000;
+        will-change: transform, opacity;
+      }
+      
+      /* Уважаем настройки пользователя */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
       }
     `}</style>
   );

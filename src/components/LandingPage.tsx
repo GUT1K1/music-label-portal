@@ -48,17 +48,26 @@ export default function LandingPage() {
     return () => clearInterval(timer);
   }, []);
 
-  // Intersection Observer для анимаций при скролле
+  // Intersection Observer для анимаций при скролле - оптимизирован для мобильных
   useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-in");
+            // Отключаем наблюдение после анимации для экономии ресурсов
+            if (isMobile) {
+              observerRef.current?.unobserve(entry.target);
+            }
           }
         });
       },
-      { threshold: 0.1, rootMargin: "0px 0px -100px 0px" }
+      { 
+        threshold: isMobile ? 0.05 : 0.1, // Меньший порог для мобильных
+        rootMargin: isMobile ? "0px" : "0px 0px -100px 0px" // Упрощаем для мобильных
+      }
     );
 
     const elements = document.querySelectorAll(".scroll-animate");
