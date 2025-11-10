@@ -30,7 +30,16 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
   const [balance, setBalance] = useState<number | null>(userBalance !== undefined ? userBalance : null);
   
   // Логируем для отладки
-  console.log('AppHeader debug:', { userRole, balance, userBalance, onWithdrawalClick: !!onWithdrawalClick });
+  console.log('🔍 AppHeader render:', { 
+    userRole, 
+    userId,
+    userName,
+    userAvatar,
+    hasAvatar: !!userAvatar,
+    balance, 
+    userBalance, 
+    onWithdrawalClick: !!onWithdrawalClick 
+  });
 
   useEffect(() => {
     if (userBalance !== undefined) {

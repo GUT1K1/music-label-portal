@@ -57,13 +57,26 @@ export const useAuthHandlers = () => {
       }
 
       // Нормализуем данные перед сохранением
+      console.log('🔍 Login response - raw user data:', data.user);
+      console.log('🔍 Login response - avatar fields:', {
+        avatar: data.user.avatar,
+        vk_photo: data.user.vk_photo,
+        photo: data.user.photo
+      });
+      
       const normalizedUser = {
         ...data.user,
-        avatar: data.user.avatar || data.user.vk_photo,
-        vk_photo: data.user.vk_photo || data.user.avatar,
+        avatar: data.user.avatar || data.user.vk_photo || data.user.photo,
+        vk_photo: data.user.vk_photo || data.user.avatar || data.user.photo,
         full_name: data.user.full_name || data.user.fullName,
         fullName: data.user.fullName || data.user.full_name
       };
+      
+      console.log('🔍 Login response - normalized user:', normalizedUser);
+      console.log('🔍 Login response - normalized avatar fields:', {
+        avatar: normalizedUser.avatar,
+        vk_photo: normalizedUser.vk_photo
+      });
       
       setUserData(normalizedUser);
       setLoginLoading(false);
