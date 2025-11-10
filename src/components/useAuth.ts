@@ -11,18 +11,27 @@ export const useAuth = () => {
 
   const login = async (username: string, password: string, vkData?: any, telegramData?: any) => {
     try {
-      if (telegramData) {
-        const userData = normalizeUser(telegramData);
+      // VK или Telegram данные напрямую (уже авторизован через OAuth)
+      if (vkData || telegramData) {
+        const rawData = vkData || telegramData;
+        const userData = normalizeUser(rawData);
+        
+        console.log('🔍 OAuth login - raw data:', rawData);
+        console.log('🔍 OAuth login - normalized data:', userData);
+        
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
         cookies.set('user_id', userData.id.toString(), 30);
         cookies.set('user_session', btoa(JSON.stringify({ id: userData.id, role: userData.role })), 30);
-        logActivity(userData.id, 'login', `Пользователь ${userData.full_name} вошёл через Telegram`);
-        toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name}` });
+        
+        const source = vkData ? 'VK' : 'Telegram';
+        logActivity(userData.id, 'login', `Пользователь ${userData.full_name || userData.username} вошёл через ${source}`);
+        toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name || userData.username}` });
         return;
       }
 
-      if (!password && !vkData) {
+      // Восстановление из localStorage
+      if (!password && !username) {
         const savedUser = localStorage.getItem('user');
         if (savedUser) {
           const userData = normalizeUser(JSON.parse(savedUser));
@@ -31,15 +40,11 @@ export const useAuth = () => {
         return;
       }
 
-      const requestBody: any = { username, password };
-      if (vkData) {
-        requestBody.vk_data = vkData;
-      }
-
+      // Обычная авторизация по логину/паролю
       const response = await fetch(API_URLS.auth, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({ username, password })
       });
       
       const data = await response.json();
@@ -50,8 +55,8 @@ export const useAuth = () => {
         localStorage.setItem('user', JSON.stringify(userData));
         cookies.set('user_id', userData.id.toString(), 30);
         cookies.set('user_session', btoa(JSON.stringify({ id: userData.id, role: userData.role })), 30);
-        logActivity(userData.id, 'login', `Пользователь ${userData.full_name} вошёл в систему`);
-        toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name}` });
+        logActivity(userData.id, 'login', `Пользователь ${userData.full_name || userData.username} вошёл в систему`);
+        toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name || userData.username}` });
       } else {
         toast({ title: '❌ Ошибка', description: data.error, variant: 'destructive' });
       }

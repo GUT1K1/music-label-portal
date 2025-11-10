@@ -89,7 +89,13 @@ export default function Index() {
           
           if (data.user) {
             console.log('🟢 VK auth successful:', data.user);
-            login('', '', undefined, data.user);
+            await login('', '', data.user);
+            
+            // Форсированно обновляем данные пользователя после авторизации
+            setTimeout(() => {
+              refreshUserData();
+            }, 500);
+            
             setIsProcessingAuth(false);
           } else {
             console.error('🔴 VK auth failed - FULL ERROR:', data);

@@ -5,17 +5,19 @@ export function normalizeUser(userData: any): User {
   
   const normalized = { ...userData };
 
-  if (normalized.vk_photo) {
+  // Нормализация аватара - приоритет vk_photo
+  if (normalized.vk_photo && !normalized.avatar) {
     normalized.avatar = normalized.vk_photo;
   }
-  if (normalized.avatar) {
+  if (normalized.avatar && !normalized.vk_photo) {
     normalized.vk_photo = normalized.avatar;
   }
 
-  if (normalized.full_name) {
+  // Нормализация имени
+  if (normalized.full_name && !normalized.fullName) {
     normalized.fullName = normalized.full_name;
   }
-  if (normalized.fullName) {
+  if (normalized.fullName && !normalized.full_name) {
     normalized.full_name = normalized.fullName;
   }
 
