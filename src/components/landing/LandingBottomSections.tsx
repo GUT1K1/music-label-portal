@@ -319,9 +319,7 @@ export default function LandingBottomSections({
           </div>
           
           <div className="pt-10 border-t border-gold-500/20">
-            <p className="text-center text-gray-500 text-sm">
-              © 2024 420 Music. Все права защищены.
-            </p>
+            <p className="text-center text-gray-500 text-sm">© 2025 420.РФ Все права защищены.</p>
           </div>
         </div>
       </footer>
