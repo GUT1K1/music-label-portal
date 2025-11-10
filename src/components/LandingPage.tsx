@@ -55,7 +55,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
+    <div className="min-h-screen bg-gray-950 text-white overflow-hidden">
       <LandingStyles />
       <LandingHeader isScrolled={isScrolled} />
       <LandingHero 

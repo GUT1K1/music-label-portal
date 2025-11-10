@@ -43,7 +43,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
-        <div className="absolute inset-0 bg-black" />
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950" />
         <div className="absolute inset-0 bg-grid-pattern opacity-10" />
         
         <div className="relative z-10 max-w-6xl mx-auto text-center">

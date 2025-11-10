@@ -260,6 +260,100 @@ export default function LandingStyles() {
         background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(245, 158, 11, 0.2));
         border-color: rgba(251, 146, 60, 0.8);
       }
+      
+      @keyframes aurora {
+        0%, 100% {
+          transform: translateX(-50%) translateY(-50%) rotate(0deg);
+          opacity: 0.3;
+        }
+        33% {
+          transform: translateX(-40%) translateY(-60%) rotate(120deg);
+          opacity: 0.5;
+        }
+        66% {
+          transform: translateX(-60%) translateY(-40%) rotate(240deg);
+          opacity: 0.4;
+        }
+      }
+      
+      .aurora-effect {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        background: linear-gradient(
+          120deg,
+          rgba(251, 146, 60, 0.3) 0%,
+          rgba(245, 158, 11, 0.2) 25%,
+          rgba(251, 191, 36, 0.3) 50%,
+          rgba(251, 146, 60, 0.2) 75%,
+          rgba(249, 115, 22, 0.3) 100%
+        );
+        animation: aurora 15s ease-in-out infinite;
+        filter: blur(60px);
+        pointer-events: none;
+      }
+      
+      @keyframes spotlight {
+        0%, 100% { opacity: 0.2; transform: rotate(0deg); }
+        50% { opacity: 0.4; transform: rotate(180deg); }
+      }
+      
+      .spotlight {
+        position: absolute;
+        width: 300px;
+        height: 800px;
+        background: linear-gradient(to bottom, rgba(251, 146, 60, 0.3), transparent);
+        filter: blur(40px);
+        animation: spotlight 8s ease-in-out infinite;
+        pointer-events: none;
+      }
+      
+      @keyframes sparkle {
+        0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1) rotate(180deg); }
+      }
+      
+      .sparkle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: radial-gradient(circle, #fff, #fb923c);
+        border-radius: 50%;
+        animation: sparkle 1.5s ease-in-out;
+        pointer-events: none;
+      }
+      
+      .glow-border {
+        box-shadow: 0 0 20px rgba(251, 146, 60, 0.4),
+                    inset 0 0 20px rgba(251, 146, 60, 0.1);
+        border: 2px solid rgba(251, 146, 60, 0.5);
+      }
+      
+      .glow-border:hover {
+        box-shadow: 0 0 30px rgba(251, 146, 60, 0.6),
+                    0 0 60px rgba(251, 146, 60, 0.3),
+                    inset 0 0 30px rgba(251, 146, 60, 0.2);
+        border-color: rgba(251, 146, 60, 0.8);
+      }
+      
+      @keyframes float-orb {
+        0%, 100% { transform: translate(0, 0); }
+        25% { transform: translate(30px, -30px); }
+        50% { transform: translate(-20px, -60px); }
+        75% { transform: translate(-40px, -30px); }
+      }
+      
+      .gradient-text {
+        background: linear-gradient(135deg, #fb923c 0%, #fbbf24 50%, #f97316 100%);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradient-shift 5s ease infinite;
+      }
     `}</style>
   );
 }
