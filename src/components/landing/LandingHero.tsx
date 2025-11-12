@@ -31,10 +31,10 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
   
   return (
     <section className="relative z-10 min-h-screen flex items-center justify-center px-4 md:px-6 lg:px-12 pt-24 md:pt-32 overflow-hidden">
-      <div className="absolute top-20 right-32 w-3 h-3 bg-gold-400/40 rounded-full animate-pulse hidden md:block" />
-      <div className="absolute top-40 left-24 w-2 h-2 bg-orange-400/40 rounded-full animate-pulse hidden md:block" style={{ animationDelay: '0.5s' }} />
-      <div className="absolute bottom-32 right-1/4 w-2 h-2 bg-gold-400/40 rounded-full animate-pulse hidden md:block" style={{ animationDelay: '1s' }} />
-      <div className="absolute bottom-48 left-1/3 w-3 h-3 bg-orange-400/30 rounded-full animate-pulse hidden md:block" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute top-20 right-32 w-4 h-4 bg-gold-400 rounded-full animate-pulse hidden md:block shadow-[0_0_20px_rgba(234,179,8,0.8)]" />
+      <div className="absolute top-40 left-24 w-3 h-3 bg-orange-400 rounded-full animate-pulse hidden md:block shadow-[0_0_15px_rgba(251,146,60,0.8)]" style={{ animationDelay: '0.5s' }} />
+      <div className="absolute bottom-32 right-1/4 w-3 h-3 bg-gold-500 rounded-full animate-pulse hidden md:block shadow-[0_0_15px_rgba(234,179,8,0.8)]" style={{ animationDelay: '1s' }} />
+      <div className="absolute bottom-48 left-1/3 w-4 h-4 bg-orange-500 rounded-full animate-pulse hidden md:block shadow-[0_0_20px_rgba(251,146,60,0.8)]" style={{ animationDelay: '1.5s' }} />
       
       <div className="relative z-10 max-w-5xl mx-auto text-center">
         <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-bold mb-8 md:mb-10 tracking-tight">
@@ -65,8 +65,8 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
                   }`}
                 >
                   <span className="relative inline-block">
-                    <span className="absolute inset-0 blur-xl bg-gradient-to-r from-gold-400/20 via-gold-500/30 to-orange-500/20" />
-                    <span className="relative bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
+                    <span className="absolute inset-0 blur-2xl bg-gradient-to-r from-gold-400/60 via-gold-500/80 to-orange-500/60" />
+                    <span className="relative bg-gradient-to-r from-yellow-200 via-gold-300 to-orange-300 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%] drop-shadow-[0_0_40px_rgba(234,179,8,0.8)]">
                       {word}
                     </span>
                   </span>
@@ -76,45 +76,45 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           </span>
         </h1>
         
-        <p className="text-base md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
+        <p className="text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}>
+        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}>
           <a
             href="/app?demo=true"
-            className="group relative px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-gold-400 via-gold-500 to-orange-500 rounded-xl font-bold text-base md:text-lg text-black hover:shadow-2xl hover:shadow-gold-500/50 transition-all duration-500 active:scale-95 md:hover:scale-[1.08] flex items-center gap-2 overflow-hidden animate-pulse-glow w-full sm:w-auto justify-center"
+            className="group relative px-10 py-5 bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-400 rounded-2xl font-black text-xl text-black hover:shadow-2xl hover:shadow-gold-400/70 transition-all duration-500 active:scale-95 md:hover:scale-110 flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center shadow-[0_0_30px_rgba(234,179,8,0.5)]"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-400 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-x" />
-            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.8),transparent)]" />
-            <span className="relative z-10 drop-shadow-sm">Загрузить трек</span>
-            <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform relative z-10" size={20} />
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-300 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-x" />
+            <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.9),transparent)]" />
+            <span className="relative z-10 drop-shadow-md">Загрузить трек</span>
+            <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform relative z-10" size={24} />
           </a>
           
           <a
             href="#features"
-            className="group relative px-6 md:px-8 py-3 md:py-4 border-2 border-gold-400/40 rounded-xl font-semibold text-base md:text-lg text-gray-300 hover:text-white hover:border-gold-400/80 transition-all duration-500 overflow-hidden active:scale-95 md:hover:scale-[1.05] backdrop-blur-sm w-full sm:w-auto"
+            className="group relative px-10 py-5 border-2 border-gold-400/60 rounded-2xl font-bold text-xl text-white hover:border-gold-300 transition-all duration-500 overflow-hidden active:scale-95 md:hover:scale-105 backdrop-blur-sm w-full sm:w-auto hover:shadow-[0_0_25px_rgba(234,179,8,0.4)]"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-gold-500/0 via-gold-500/20 to-orange-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-            <div className="absolute inset-0 bg-gradient-to-br from-gold-400/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-r from-gold-500/0 via-gold-500/30 to-orange-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-br from-gold-400/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <span className="relative z-10">Узнать больше</span>
           </a>
         </div>
         
-        <div className="mt-16 md:mt-24 grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
-          <div className="text-center group cursor-pointer">
-            <div className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-2 md:mb-3 group-hover:scale-110 md:group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">0₽</div>
-            <div className="text-xs md:text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Бесплатный старт</div>
+        <div className="mt-20 md:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-8 max-w-5xl mx-auto opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
+          <div className="text-center group cursor-pointer p-6 rounded-2xl hover:bg-gradient-to-br hover:from-gold-500/10 hover:to-orange-500/10 transition-all duration-300">
+            <div className="text-5xl md:text-7xl font-black bg-gradient-to-br from-yellow-200 via-gold-300 to-orange-400 bg-clip-text text-transparent mb-3 md:mb-4 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_25px_rgba(234,179,8,0.6)] group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)]">0₽</div>
+            <div className="text-sm md:text-base text-gray-300 group-hover:text-gold-200 font-semibold transition-colors duration-300">Бесплатный старт</div>
           </div>
-          <div className="text-center group cursor-pointer">
-            <div className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-2 md:mb-3 group-hover:scale-110 md:group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">7 лет</div>
-            <div className="text-xs md:text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Срок лицензии</div>
+          <div className="text-center group cursor-pointer p-6 rounded-2xl hover:bg-gradient-to-br hover:from-gold-500/10 hover:to-orange-500/10 transition-all duration-300">
+            <div className="text-5xl md:text-7xl font-black bg-gradient-to-br from-yellow-200 via-gold-300 to-orange-400 bg-clip-text text-transparent mb-3 md:mb-4 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_25px_rgba(234,179,8,0.6)] group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)]">7 лет</div>
+            <div className="text-sm md:text-base text-gray-300 group-hover:text-gold-200 font-semibold transition-colors duration-300">Срок лицензии</div>
           </div>
-          <div className="text-center group cursor-pointer">
-            <div className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-2 md:mb-3 group-hover:scale-110 md:group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">100%</div>
-            <div className="text-xs md:text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Твоё авторство</div>
+          <div className="text-center group cursor-pointer p-6 rounded-2xl hover:bg-gradient-to-br hover:from-gold-500/10 hover:to-orange-500/10 transition-all duration-300">
+            <div className="text-5xl md:text-7xl font-black bg-gradient-to-br from-yellow-200 via-gold-300 to-orange-400 bg-clip-text text-transparent mb-3 md:mb-4 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_25px_rgba(234,179,8,0.6)] group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)]">100%</div>
+            <div className="text-sm md:text-base text-gray-300 group-hover:text-gold-200 font-semibold transition-colors duration-300">Твоё авторство</div>
           </div>
-          <div className="text-center group cursor-pointer">
-            <div className="text-3xl md:text-5xl font-bold bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-500 bg-clip-text text-transparent mb-2 md:mb-3 group-hover:scale-110 md:group-hover:scale-125 transition-all duration-500 drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] group-hover:drop-shadow-[0_0_25px_rgba(234,179,8,0.6)]">170+</div>
-            <div className="text-xs md:text-sm text-gray-400 group-hover:text-gold-300 transition-colors duration-300">Платформ</div>
+          <div className="text-center group cursor-pointer p-6 rounded-2xl hover:bg-gradient-to-br hover:from-gold-500/10 hover:to-orange-500/10 transition-all duration-300">
+            <div className="text-5xl md:text-7xl font-black bg-gradient-to-br from-yellow-200 via-gold-300 to-orange-400 bg-clip-text text-transparent mb-3 md:mb-4 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_25px_rgba(234,179,8,0.6)] group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)]">170+</div>
+            <div className="text-sm md:text-base text-gray-300 group-hover:text-gold-200 font-semibold transition-colors duration-300">Платформ</div>
           </div>
         </div>
       </div>
