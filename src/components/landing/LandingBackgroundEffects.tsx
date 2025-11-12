@@ -37,7 +37,7 @@ export default function LandingBackgroundEffects() {
     };
   }, [isMobile]);
 
-  const hue = 45 + scrollProgress * 15;
+  const hue = 280 + scrollProgress * 60;
 
   return (
     <>
@@ -74,59 +74,84 @@ export default function LandingBackgroundEffects() {
         }}
       />
 
-      {/* Мягкие светящиеся сферы - упрощенные для мобильных */}
+      {/* Яркие цветные сферы */}
       <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-        {/* Левая верхняя сфера */}
+        {/* Фиолетовая сфера */}
         <div 
-          className="absolute rounded-full"
+          className="absolute rounded-full animate-pulse"
           style={{
-            top: '5%',
+            top: '10%',
             left: '-10%',
+            width: isMobile ? '500px' : '1200px',
+            height: isMobile ? '500px' : '1200px',
+            background: `radial-gradient(circle, 
+              rgba(168, 85, 247, ${isMobile ? 0.15 : 0.25}) 0%, 
+              rgba(147, 51, 234, ${isMobile ? 0.08 : 0.15}) 30%,
+              transparent 70%)`,
+            filter: isMobile ? 'blur(80px)' : 'blur(150px)',
+            transform: isMobile ? 'none' : `translate(${scrollProgress * 80}px, ${scrollProgress * 120}px) scale(${1 + scrollProgress * 0.3})`,
+            transition: isMobile ? 'none' : 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            animationDuration: '4s'
+          }}
+        />
+        
+        {/* Розовая сфера */}
+        <div 
+          className="absolute rounded-full animate-pulse"
+          style={{
+            top: '30%',
+            right: '-15%',
+            width: isMobile ? '450px' : '1300px',
+            height: isMobile ? '450px' : '1300px',
+            background: `radial-gradient(circle, 
+              rgba(236, 72, 153, ${isMobile ? 0.12 : 0.2}) 0%, 
+              rgba(219, 39, 119, ${isMobile ? 0.06 : 0.12}) 30%,
+              transparent 70%)`,
+            filter: isMobile ? 'blur(80px)' : 'blur(160px)',
+            transform: isMobile ? 'none' : `translate(${-scrollProgress * 60}px, ${scrollProgress * 100}px) scale(${1 + scrollProgress * 0.3})`,
+            transition: isMobile ? 'none' : 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            animationDuration: '5s',
+            animationDelay: '1s'
+          }}
+        />
+        
+        {/* Голубая сфера */}
+        <div 
+          className="absolute rounded-full animate-pulse"
+          style={{
+            bottom: '10%',
+            left: '30%',
             width: isMobile ? '400px' : '1000px',
             height: isMobile ? '400px' : '1000px',
             background: `radial-gradient(circle, 
-              hsla(${hue}, 100%, 50%, ${isMobile ? 0.08 : 0.12}) 0%, 
-              hsla(${hue}, 95%, 45%, ${isMobile ? 0.04 : 0.06}) 30%,
-              transparent 65%)`,
-            filter: isMobile ? 'blur(60px)' : 'blur(140px)',
-            transform: isMobile ? 'none' : `translate(${scrollProgress * 80}px, ${scrollProgress * 120}px) scale(${1 + scrollProgress * 0.2})`,
+              rgba(6, 182, 212, ${isMobile ? 0.1 : 0.18}) 0%, 
+              rgba(8, 145, 178, ${isMobile ? 0.05 : 0.1}) 30%,
+              transparent 70%)`,
+            filter: isMobile ? 'blur(70px)' : 'blur(140px)',
+            transform: isMobile ? 'none' : `translate(${scrollProgress * -50}px, ${-scrollProgress * 90}px) scale(${1 + scrollProgress * 0.25})`,
             transition: isMobile ? 'none' : 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            animationDuration: '6s',
+            animationDelay: '2s'
           }}
         />
         
-        {/* Правая сфера */}
+        {/* Оранжевая сфера */}
         <div 
-          className="absolute rounded-full"
+          className="absolute rounded-full animate-pulse"
           style={{
-            top: '25%',
-            right: '-12%',
-            width: isMobile ? '350px' : '1100px',
-            height: isMobile ? '350px' : '1100px',
+            top: '50%',
+            right: '20%',
+            width: isMobile ? '350px' : '900px',
+            height: isMobile ? '350px' : '900px',
             background: `radial-gradient(circle, 
-              hsla(${hue + 15}, 95%, 55%, ${isMobile ? 0.06 : 0.1}) 0%, 
-              hsla(${hue + 10}, 90%, 50%, ${isMobile ? 0.03 : 0.05}) 30%,
-              transparent 65%)`,
-            filter: isMobile ? 'blur(60px)' : 'blur(150px)',
-            transform: isMobile ? 'none' : `translate(${-scrollProgress * 60}px, ${scrollProgress * 100}px) scale(${1 + scrollProgress * 0.25})`,
+              rgba(251, 146, 60, ${isMobile ? 0.08 : 0.15}) 0%, 
+              rgba(249, 115, 22, ${isMobile ? 0.04 : 0.08}) 30%,
+              transparent 70%)`,
+            filter: isMobile ? 'blur(60px)' : 'blur(130px)',
+            transform: isMobile ? 'none' : `translate(${scrollProgress * 40}px, ${-scrollProgress * 70}px)`,
             transition: isMobile ? 'none' : 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-          }}
-        />
-        
-        {/* Центральная нижняя сфера */}
-        <div 
-          className="absolute rounded-full"
-          style={{
-            bottom: '5%',
-            left: '35%',
-            width: isMobile ? '300px' : '900px',
-            height: isMobile ? '300px' : '900px',
-            background: `radial-gradient(circle, 
-              hsla(30, 100%, 55%, ${isMobile ? 0.05 : 0.08}) 0%, 
-              hsla(35, 95%, 50%, ${isMobile ? 0.025 : 0.04}) 30%,
-              transparent 65%)`,
-            filter: isMobile ? 'blur(50px)' : 'blur(130px)',
-            transform: isMobile ? 'none' : `translate(${scrollProgress * -50}px, ${-scrollProgress * 90}px) scale(${1 + scrollProgress * 0.2})`,
-            transition: isMobile ? 'none' : 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            animationDuration: '5.5s',
+            animationDelay: '0.5s'
           }}
         />
       </div>
