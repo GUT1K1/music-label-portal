@@ -14,37 +14,41 @@ export default function LandingFeaturesSection({
       icon: "Upload",
       title: "Дистрибуция",
       description: "Загружай треки и альбомы — мы разместим их на 170+ платформах. Spotify, Apple Music, Яндекс.Музыка, VK. Лицензия на 7 лет.",
-      gradient: "from-purple-600/90 via-purple-500/90 to-pink-600/90",
+      gradient: "from-purple-500 via-fuchsia-500 to-pink-500",
       iconBg: "from-purple-500 to-pink-500",
       borderGlow: "rgba(168, 85, 247, 0.6)",
-      shadow: "0 30px 60px -15px rgba(168, 85, 247, 0.5)"
+      shadow: "0 30px 60px -15px rgba(168, 85, 247, 0.5)",
+      particles: ["bg-purple-300", "bg-fuchsia-300", "bg-pink-300"]
     },
     {
       icon: "Shield",
       title: "Твои права",
       description: "100% авторских прав остаются за тобой. Мы берём лицензию на 7 лет только для дистрибуции и сбора роялти. Контент — твой.",
-      gradient: "from-cyan-600/90 via-cyan-500/90 to-blue-600/90",
+      gradient: "from-cyan-500 via-blue-500 to-indigo-500",
       iconBg: "from-cyan-500 to-blue-500",
       borderGlow: "rgba(6, 182, 212, 0.6)",
-      shadow: "0 30px 60px -15px rgba(6, 182, 212, 0.5)"
+      shadow: "0 30px 60px -15px rgba(6, 182, 212, 0.5)",
+      particles: ["bg-cyan-300", "bg-blue-300", "bg-indigo-300"]
     },
     {
       icon: "Percent",
       title: "Честный сплит",
       description: "50% роялти получаешь ты, 50% — сервис. Без скрытых комиссий. Выплаты ежеквартально при балансе от 1500₽.",
-      gradient: "from-orange-600/90 via-orange-500/90 to-red-600/90",
+      gradient: "from-orange-500 via-red-500 to-pink-500",
       iconBg: "from-orange-500 to-red-500",
       borderGlow: "rgba(249, 115, 22, 0.6)",
-      shadow: "0 30px 60px -15px rgba(249, 115, 22, 0.5)"
+      shadow: "0 30px 60px -15px rgba(249, 115, 22, 0.5)",
+      particles: ["bg-orange-300", "bg-red-300", "bg-pink-300"]
     },
     {
       icon: "BarChart3",
       title: "Аналитика",
       description: "Следи за успехом релизов в реальном времени. Прослушивания, география, доходы по каждой площадке — всё прозрачно.",
-      gradient: "from-emerald-600/90 via-emerald-500/90 to-teal-600/90",
+      gradient: "from-emerald-500 via-green-500 to-teal-500",
       iconBg: "from-emerald-500 to-teal-500",
       borderGlow: "rgba(16, 185, 129, 0.6)",
-      shadow: "0 30px 60px -15px rgba(16, 185, 129, 0.5)"
+      shadow: "0 30px 60px -15px rgba(16, 185, 129, 0.5)",
+      particles: ["bg-emerald-300", "bg-green-300", "bg-teal-300"]
     },
   ];
 
@@ -98,18 +102,32 @@ export default function LandingFeaturesSection({
                 <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
                 
                 {/* Цветные пятна */}
-                <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-yellow-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
-                <div className="absolute bottom-1/4 left-1/4 w-56 h-56 bg-pink-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
-                <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-cyan-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+                <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-yellow-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
+                <div className="absolute bottom-1/4 left-1/4 w-56 h-56 bg-pink-400/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+                <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-cyan-400/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+                
+                {/* Парящие частицы */}
+                {[0, 1, 2, 3, 4].map((idx) => (
+                  <div
+                    key={idx}
+                    className={`absolute w-3 h-3 ${feature.particles[idx % 3]} rounded-full opacity-60 animate-float`}
+                    style={{
+                      left: `${15 + idx * 18}%`,
+                      top: `${20 + (idx * 13) % 60}%`,
+                      animationDelay: `${idx * 0.8}s`,
+                      animationDuration: `${4 + idx * 0.5}s`
+                    }}
+                  />
+                ))}
                 
                 {/* Декоративные круги */}
-                <div className="absolute top-10 right-10 w-40 h-40 border-2 border-white/10 rounded-full group-hover:scale-125 group-hover:rotate-90 transition-all duration-1000" />
-                <div className="absolute bottom-10 left-10 w-32 h-32 border-2 border-white/5 rounded-full group-hover:scale-125 group-hover:-rotate-90 transition-all duration-1000" />
-                <div className="absolute top-1/2 right-1/3 w-24 h-24 border border-white/5 rounded-full group-hover:scale-150 transition-all duration-1000" />
+                <div className="absolute top-10 right-10 w-40 h-40 border-2 border-white/20 rounded-full group-hover:scale-125 group-hover:rotate-90 transition-all duration-1000 animate-spin-slow" />
+                <div className="absolute bottom-10 left-10 w-32 h-32 border-2 border-white/15 rounded-full group-hover:scale-125 group-hover:-rotate-90 transition-all duration-1000 animate-spin-slow" style={{ animationDirection: 'reverse' }} />
+                <div className="absolute top-1/2 right-1/3 w-24 h-24 border-2 border-white/10 rounded-full group-hover:scale-150 transition-all duration-1000 animate-pulse" />
                 
                 {/* Квадраты */}
-                <div className="absolute top-16 left-16 w-16 h-16 border border-white/10 rounded-xl rotate-45 group-hover:rotate-[225deg] transition-all duration-1000" />
-                <div className="absolute bottom-16 right-16 w-20 h-20 border border-white/5 rounded-2xl -rotate-12 group-hover:rotate-[60deg] transition-all duration-1000" />
+                <div className="absolute top-16 left-16 w-16 h-16 border-2 border-white/20 rounded-xl rotate-45 group-hover:rotate-[225deg] transition-all duration-1000 animate-spin-slow" />
+                <div className="absolute bottom-16 right-16 w-20 h-20 border-2 border-white/15 rounded-2xl -rotate-12 group-hover:rotate-[60deg] transition-all duration-1000 animate-spin-slow" style={{ animationDuration: '25s' }} />
                 
                 {/* Светящиеся точки */}
                 <div className="absolute top-20 right-20 w-2 h-2 bg-white/40 rounded-full animate-pulse" />
