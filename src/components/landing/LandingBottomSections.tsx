@@ -20,7 +20,7 @@ export default function LandingBottomSections({
     { name: "Apple Music", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#FA243C" width="100" height="100" rx="20"/><path fill="#fff" d="M70 25v32c0 6-5 11-11 11s-11-5-11-11 5-11 11-11c2 0 4 0 5 1V25h6zm-30 7v29c0 6-5 11-11 11s-11-5-11-11 5-11 11-11c2 0 4 0 5 1V28l17-6v10l-11 4z"/></svg>`, size: 64 },
     { name: "Яндекс Музыка", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#FFCC00" width="100" height="100" rx="18"/><path fill="#000" d="M65 20H50c-11 0-15 7-15 15v30c0 8 4 15 15 15h2V65h-2c-5 0-8-3-8-10V35c0-7 3-10 8-10h15V20z"/></svg>`, size: 64 },
     { name: "YouTube Music", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle fill="#FF0000" cx="50" cy="50" r="50"/><path fill="#fff" d="M65 50L42 65V35z"/></svg>`, size: 64 },
-    { name: "VK Музыка", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#0077FF" width="100" height="100" rx="18"/><path fill="#fff" d="M72 35c1-2 0-4-3-4h-8c-3 0-4 1-5 3 0 0-5 11-12 18-2 2-3 3-5 3-1 0-2-1-2-3V35c0-2-1-4-3-4H22c-2 0-3 1-3 2 0 3 4 3 4 11v16c0 4-1 4-3 4-3 0-11-11-16-24C3 38 2 37 0 37h-8c-3 0-3 1-3 3 0 3 3 14 15 30 8 10 19 16 29 16 6 0 7-2 7-4V71c0-3 1-4 3-4 2 0 4 1 10 7 7 7 8 10 12 10h8c3 0 4-2 4-4s-2-7-8-13c-2-3-6-6-7-8-2-2-1-3 0-4 0 0 11-15 13-20z"/></svg>`, size: 64 },
+    { name: "VK Музыка", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#0077FF" width="100" height="100" rx="18"/><path fill="#fff" d="M78 38c.5-1.5 0-2.5-2-2.5h-6.5c-1.8 0-2.6.7-3.1 2 0 0-3.6 8.7-8.7 14.4-1.6 1.6-2.3 2.1-3.2 2.1-.4 0-1.1-.5-1.1-2V38c0-1.8-.5-2.5-2-2.5h-10c-1.1 0-1.8.8-1.8 1.5 0 1.6 2.5 2 2.8 6.5v9.8c0 2.1-.4 2.5-1.3 2.5-2.3 0-7.9-8.7-11.2-18.7-.6-1.9-1.3-2.6-3.1-2.6h-6.5c-2 0-2.4 1-2.4 2 0 1.9 2.4 11 11 23.1 5.7 8.2 13.7 12.6 21 12.6 4.4 0 4.9-1 4.9-2.8v-6.5c0-2 .4-2.4 1.8-2.4 1 0 2.7.5 6.7 4.4 4.6 4.6 5.3 6.6 7.9 6.6h6.5c2 0 3-.8 2.4-2.5-.6-1.6-3-4.1-6.1-7-1.6-1.9-4-4-4.7-5-.9-1.3-.7-1.9 0-3 0 0 8.6-12.1 9.5-16.2z"/></svg>`, size: 64 },
     { name: "Deezer", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#FF0092" width="100" height="100" rx="18"/><g fill="#fff"><rect x="15" y="52" width="18" height="8"/><rect x="15" y="64" width="18" height="8"/><rect x="38" y="40" width="18" height="8"/><rect x="38" y="52" width="18" height="8"/><rect x="38" y="64" width="18" height="8"/><rect x="61" y="28" width="18" height="8"/><rect x="61" y="40" width="18" height="8"/><rect x="61" y="52" width="18" height="8"/><rect x="61" y="64" width="18" height="8"/></g></svg>`, size: 64 },
     { name: "SoundCloud", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#FF5500" width="100" height="100" rx="18"/><path fill="#fff" d="M20 50h2v10h-2V50zm4-4h2v14h-2V46zm4-2h2v16h-2V44zm4 2h2v14h-2V46zm4-8h2v22h-2V38zm4 4h2v18h-2V42zm4-2h2v20h-2V40zm4 0h2v20h-2V40zm6-8c-9 0-16 7-16 16s7 16 16 16h24c6 0 10-5 10-10 0-5-4-9-9-10-1-6-6-12-13-12-3 0-6 1-8 3-2-2-5-3-8-3z"/></svg>`, size: 70 },
     { name: "Amazon Music", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#00A8E1" width="100" height="100" rx="18"/><path fill="#fff" d="M30 50c0-8 6-14 14-14h12c8 0 14 6 14 14v16H30V50z"/><circle fill="#000" cx="38" cy="35" r="8"/><circle fill="#000" cx="62" cy="35" r="8"/></svg>`, size: 64 },
@@ -73,7 +73,7 @@ export default function LandingBottomSections({
           </div>
           
           <div className="relative space-y-8 py-8">
-            <div className="overflow-hidden">
+            <div className="overflow-hidden py-4">
               <div className="flex gap-12 animate-scroll-right">
                 {[...row1, ...row1, ...row1, ...row1].map((platform, i) => (
                   <div
@@ -90,7 +90,7 @@ export default function LandingBottomSections({
               </div>
             </div>
 
-            <div className="overflow-hidden">
+            <div className="overflow-hidden py-4">
               <div className="flex gap-12 animate-scroll-left">
                 {[...row2, ...row2, ...row2, ...row2].map((platform, i) => (
                   <div
