@@ -76,31 +76,30 @@ export default function LandingFeaturesSection({
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-700`} />
               
-              <div className={`absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br ${feature.color} opacity-20 rounded-full blur-3xl group-hover:scale-150 group-hover:opacity-40 transition-all duration-1000`} />
+              <div className={`absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br ${feature.color} opacity-30 rounded-full blur-3xl group-hover:scale-150 group-hover:opacity-50 transition-all duration-1000`} />
               
-              <div className="hidden md:block absolute top-8 right-8 w-32 h-32 border-2 border-white/10 rounded-full group-hover:scale-150 group-hover:rotate-180 transition-all duration-1000" />
-              <div className="hidden md:block absolute bottom-8 left-8 w-24 h-24 border-2 border-white/5 rounded-full group-hover:scale-150 group-hover:-rotate-180 transition-all duration-1000" />
+              <div className="absolute top-8 right-8 w-32 h-32 border-2 border-white/10 rounded-full group-hover:scale-150 group-hover:rotate-180 transition-all duration-1000" />
+              <div className="absolute bottom-8 left-8 w-24 h-24 border-2 border-white/5 rounded-full group-hover:scale-150 group-hover:-rotate-180 transition-all duration-1000" />
               
-              <div className="relative mb-6 md:mb-8">
-                <div className={`w-16 md:w-20 h-16 md:h-20 bg-gradient-to-br ${feature.color} rounded-xl md:rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl`}
+              <div className="relative mb-8">
+                <div className={`w-20 h-20 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl`}
                   style={{
                     boxShadow: `0 10px 40px -10px ${feature.shadowColor}`
                   }}
                 >
-                  <div className="absolute inset-0 bg-white/20 rounded-xl md:rounded-2xl blur-xl" />
-                  <Icon name={feature.icon as any} size={28} className="md:w-9 md:h-9 text-white relative z-10" />
+                  <Icon name={feature.icon as any} size={32} className="text-white relative z-10" />
                 </div>
-                <div className={`absolute top-0 left-0 w-16 md:w-20 h-16 md:h-20 bg-gradient-to-br ${feature.color} rounded-xl md:rounded-2xl blur-2xl opacity-60 animate-pulse`} />
+                <div className={`absolute top-0 left-0 w-20 h-20 bg-gradient-to-br ${feature.color} rounded-2xl blur-2xl opacity-60 animate-pulse`} />
               </div>
               
               <div className="relative z-10">
-                <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-                  <h3 className={`text-xl md:text-3xl font-black text-white transition-all duration-300`}>
+                <div className="flex items-center gap-3 mb-4">
+                  <h3 className={`text-3xl font-black text-white transition-all duration-300`}>
                     {feature.title}
                   </h3>
                   <div className="h-1 flex-1 bg-gradient-to-r from-white/20 to-transparent rounded-full" />
                 </div>
-                <p className="text-gray-400 leading-relaxed text-sm md:text-lg group-hover:text-gray-300 transition-colors duration-300">
+                <p className="text-gray-400 leading-relaxed text-lg group-hover:text-gray-300 transition-colors duration-300">
                   {feature.description}
                 </p>
               </div>
