@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Clock, ArrowRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface BlogPost {
@@ -15,8 +15,10 @@ interface BlogPost {
 export default function BlogCarousel() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -39,29 +41,27 @@ export default function BlogCarousel() {
     fetchPosts();
   }, []);
 
-  useEffect(() => {
-    if (!isAutoPlaying || posts.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % posts.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, posts.length]);
-
-  const nextSlide = () => {
-    setIsAutoPlaying(false);
-    setCurrentSlide((prev) => (prev + 1) % posts.length);
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
   };
 
-  const prevSlide = () => {
-    setIsAutoPlaying(false);
-    setCurrentSlide((prev) => (prev - 1 + posts.length) % posts.length);
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  const goToSlide = (index: number) => {
-    setIsAutoPlaying(false);
-    setCurrentSlide(index);
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
   };
 
   if (loading || posts.length === 0) {
@@ -69,117 +69,131 @@ export default function BlogCarousel() {
   }
 
   return (
-    <section className="py-24 relative">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-orange-500 to-amber-600 bg-clip-text text-transparent">
-                База знаний
-              </h2>
-              <p className="text-gray-400 text-lg">
-                Всё о музыкальной индустрии и продвижении
-              </p>
-            </div>
-            <Link
-              to="/blog"
-              className="hidden md:flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-400 hover:border-yellow-500/40 transition-all duration-300 group"
-            >
-              <span>Все статьи</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
+    <section className="py-16 md:py-32 relative overflow-hidden scroll-animate">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gold-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-orange-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
+      </div>
 
-          <div className="relative">
-            <div className="overflow-hidden rounded-2xl">
-              <div
-                className="flex transition-transform duration-700 ease-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {posts.map((post) => (
-                  <div key={post.id} className="w-full flex-shrink-0">
-                    <Link
-                      to={`/blog/${post.slug}`}
-                      className="block group"
-                      onMouseEnter={() => setIsAutoPlaying(false)}
-                      onMouseLeave={() => setIsAutoPlaying(true)}
-                    >
-                      <div className="relative h-[500px] rounded-2xl overflow-hidden">
-                        <img
-                          src={post.image_url}
-                          alt={post.title}
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
-                        
-                        <div className="absolute top-6 left-6">
-                          <span className="px-4 py-2 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-sm font-bold">
-                            {post.category}
-                          </span>
-                        </div>
-
-                        <div className="absolute bottom-0 left-0 right-0 p-8">
-                          <h3 className="text-3xl md:text-4xl font-bold mb-4 text-white group-hover:text-yellow-400 transition-colors">
-                            {post.title}
-                          </h3>
-                          <p className="text-gray-300 text-lg mb-6 line-clamp-2">
-                            {post.excerpt}
-                          </p>
-                          <div className="flex items-center gap-6 text-sm text-gray-400">
-                            <span className="flex items-center gap-2">
-                              <Clock className="w-4 h-4" />
-                              {post.readTime}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button
-              onClick={prevSlide}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm border border-yellow-500/20 flex items-center justify-center text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-500/40 transition-all duration-300 z-10"
-              aria-label="Previous slide"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-
-            <button
-              onClick={nextSlide}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm border border-yellow-500/20 flex items-center justify-center text-yellow-400 hover:bg-yellow-500/20 hover:border-yellow-500/40 transition-all duration-300 z-10"
-              aria-label="Next slide"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-
-            <div className="flex items-center justify-center gap-2 mt-6">
-              {posts.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    index === currentSlide
-                      ? 'w-8 bg-gradient-to-r from-yellow-500 to-orange-500'
-                      : 'w-2 bg-gray-600 hover:bg-gray-500'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
+      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="text-center mb-12 md:mb-16 relative">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 bg-gold-500/20 rounded-full blur-3xl" />
+          
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 relative">
+            <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%] drop-shadow-[0_0_30px_rgba(234,179,8,0.3)]">
+              База знаний
+            </span>
+          </h2>
+          
+          <div className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-gold-400 to-transparent mb-4 md:mb-6 rounded-full" />
+          
+          <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto mb-8">
+            Всё о музыкальной индустрии и продвижении
+          </p>
 
           <Link
             to="/blog"
-            className="md:hidden mt-8 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 text-yellow-400 hover:border-yellow-500/40 transition-all duration-300 group w-full"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-gold-500/10 to-orange-500/10 border border-gold-400/30 text-gold-300 hover:border-gold-400/60 transition-all duration-300 group hover:scale-105"
           >
-            <span>Все статьи</span>
+            <span className="font-bold">Все статьи</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
+
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black via-black/50 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black via-black/50 to-transparent z-10 pointer-events-none" />
+
+          <div
+            ref={scrollContainerRef}
+            className={`flex gap-6 overflow-x-auto scrollbar-hide pb-4 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch',
+              scrollSnapType: 'x mandatory'
+            }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseLeave}
+          >
+            {posts.map((post, index) => (
+              <Link
+                key={post.id}
+                to={`/blog/${post.slug}`}
+                className="flex-shrink-0 w-[85vw] sm:w-[70vw] md:w-[500px] group relative"
+                style={{ scrollSnapAlign: 'start' }}
+                draggable={false}
+              >
+                <div className="relative h-[450px] md:h-[500px] rounded-[32px] overflow-hidden transition-all duration-500 group-hover:-translate-y-2">
+                  <div className="absolute inset-0 border-2 border-white/10 rounded-[32px] group-hover:border-gold-400/40 transition-colors duration-500" />
+                  
+                  <img
+                    src={post.image_url}
+                    alt={post.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    draggable={false}
+                  />
+                  
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+                  
+                  <div 
+                    className="absolute -top-40 -right-40 w-80 h-80 rounded-full blur-[100px] opacity-0 group-hover:opacity-60 transition-opacity duration-700"
+                    style={{
+                      background: index % 3 === 0 ? '#a855f7' : index % 3 === 1 ? '#3b82f6' : '#f97316'
+                    }}
+                  />
+
+                  <div className="absolute top-6 left-6 z-10">
+                    <span className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-gold-500 to-orange-500 text-black text-sm font-black shadow-lg shadow-gold-500/30">
+                      {post.category}
+                    </span>
+                  </div>
+
+                  <div className="absolute inset-x-0 bottom-0 p-8 transform transition-transform duration-500 group-hover:translate-y-[-8px]">
+                    <h3 className="text-2xl md:text-3xl font-black mb-3 text-white group-hover:text-gold-300 transition-colors duration-300 line-clamp-2 drop-shadow-lg">
+                      {post.title}
+                    </h3>
+                    
+                    <p className="text-gray-300 text-base md:text-lg mb-4 line-clamp-2 opacity-90">
+                      {post.excerpt}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-gray-400">
+                        <Clock className="w-4 h-4" />
+                        <span>{post.readTime}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-gold-300 font-bold group-hover:gap-4 transition-all duration-300">
+                        <span className="text-sm">Читать</span>
+                        <ArrowRight className="w-5 h-5" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-gold-500/0 via-transparent to-transparent opacity-0 group-hover:from-gold-500/20 group-hover:opacity-100 transition-all duration-500 pointer-events-none" />
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-8 text-sm text-gray-500 font-medium">
+            ← Листайте карточки →
+          </div>
+        </div>
       </div>
+
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 }
