@@ -76,7 +76,7 @@ export default function LandingFeaturesSection({
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-700`} />
               
-              <div className={`absolute -top-20 -right-20 w-48 md:w-64 h-48 md:h-64 bg-gradient-to-br ${feature.color} opacity-20 rounded-full blur-2xl md:blur-3xl group-hover:scale-150 group-hover:opacity-40 transition-all duration-1000`} />
+              <div className={`absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br ${feature.color} opacity-20 rounded-full blur-3xl group-hover:scale-150 group-hover:opacity-40 transition-all duration-1000`} />
               
               <div className="hidden md:block absolute top-8 right-8 w-32 h-32 border-2 border-white/10 rounded-full group-hover:scale-150 group-hover:rotate-180 transition-all duration-1000" />
               <div className="hidden md:block absolute bottom-8 left-8 w-24 h-24 border-2 border-white/5 rounded-full group-hover:scale-150 group-hover:-rotate-180 transition-all duration-1000" />
