@@ -83,7 +83,7 @@ export default function LandingFeaturesSection({
             >
               {/* 3D карточка с градиентом */}
               <div 
-                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden"
+                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden min-h-[420px] flex flex-col"
                 style={{
                   background: `linear-gradient(135deg, ${feature.gradient})`,
                   boxShadow: `${feature.shadow}, inset 0 1px 0 rgba(255,255,255,0.1)`,
@@ -95,15 +95,33 @@ export default function LandingFeaturesSection({
                 
                 {/* Большое свечение справа сверху */}
                 <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+                <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+                
+                {/* Цветные пятна */}
+                <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-yellow-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
+                <div className="absolute bottom-1/4 left-1/4 w-56 h-56 bg-pink-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+                <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-cyan-400/15 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
                 
                 {/* Декоративные круги */}
                 <div className="absolute top-10 right-10 w-40 h-40 border-2 border-white/10 rounded-full group-hover:scale-125 group-hover:rotate-90 transition-all duration-1000" />
                 <div className="absolute bottom-10 left-10 w-32 h-32 border-2 border-white/5 rounded-full group-hover:scale-125 group-hover:-rotate-90 transition-all duration-1000" />
+                <div className="absolute top-1/2 right-1/3 w-24 h-24 border border-white/5 rounded-full group-hover:scale-150 transition-all duration-1000" />
+                
+                {/* Квадраты */}
+                <div className="absolute top-16 left-16 w-16 h-16 border border-white/10 rounded-xl rotate-45 group-hover:rotate-[225deg] transition-all duration-1000" />
+                <div className="absolute bottom-16 right-16 w-20 h-20 border border-white/5 rounded-2xl -rotate-12 group-hover:rotate-[60deg] transition-all duration-1000" />
                 
                 {/* Светящиеся точки */}
                 <div className="absolute top-20 right-20 w-2 h-2 bg-white/40 rounded-full animate-pulse" />
                 <div className="absolute bottom-20 left-20 w-2 h-2 bg-white/40 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
                 <div className="absolute top-32 right-32 w-1.5 h-1.5 bg-white/30 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+                <div className="absolute top-1/3 left-1/4 w-2 h-2 bg-yellow-200/50 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }} />
+                <div className="absolute bottom-1/3 right-1/4 w-1.5 h-1.5 bg-pink-200/40 rounded-full animate-pulse" style={{ animationDelay: '0.7s' }} />
+                <div className="absolute top-1/2 right-1/2 w-1 h-1 bg-cyan-200/40 rounded-full animate-pulse" style={{ animationDelay: '1.2s' }} />
+                
+                {/* Линии */}
+                <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+                <div className="absolute top-1/4 right-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                 
                 {/* Свечение сзади */}
                 <div className="absolute -inset-1 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"
