@@ -18,7 +18,9 @@ export default function LandingFeaturesSection({
       iconBg: "from-purple-500 to-pink-500",
       borderGlow: "rgba(168, 85, 247, 0.6)",
       shadow: "0 30px 60px -15px rgba(168, 85, 247, 0.5)",
-      particles: ["bg-purple-300", "bg-fuchsia-300", "bg-pink-300"]
+      particles: ["bg-purple-300", "bg-fuchsia-300", "bg-pink-300"],
+      colorFrom: "purple-400",
+      colorTo: "pink-400"
     },
     {
       icon: "Shield",
@@ -28,7 +30,9 @@ export default function LandingFeaturesSection({
       iconBg: "from-cyan-500 to-blue-500",
       borderGlow: "rgba(6, 182, 212, 0.6)",
       shadow: "0 30px 60px -15px rgba(6, 182, 212, 0.5)",
-      particles: ["bg-cyan-300", "bg-blue-300", "bg-indigo-300"]
+      particles: ["bg-cyan-300", "bg-blue-300", "bg-indigo-300"],
+      colorFrom: "cyan-400",
+      colorTo: "indigo-400"
     },
     {
       icon: "Percent",
@@ -38,7 +42,9 @@ export default function LandingFeaturesSection({
       iconBg: "from-orange-500 to-red-500",
       borderGlow: "rgba(249, 115, 22, 0.6)",
       shadow: "0 30px 60px -15px rgba(249, 115, 22, 0.5)",
-      particles: ["bg-orange-300", "bg-red-300", "bg-pink-300"]
+      particles: ["bg-orange-300", "bg-red-300", "bg-pink-300"],
+      colorFrom: "orange-400",
+      colorTo: "pink-400"
     },
     {
       icon: "BarChart3",
@@ -48,7 +54,9 @@ export default function LandingFeaturesSection({
       iconBg: "from-emerald-500 to-teal-500",
       borderGlow: "rgba(16, 185, 129, 0.6)",
       shadow: "0 30px 60px -15px rgba(16, 185, 129, 0.5)",
-      particles: ["bg-emerald-300", "bg-green-300", "bg-teal-300"]
+      particles: ["bg-emerald-300", "bg-green-300", "bg-teal-300"],
+      colorFrom: "emerald-400",
+      colorTo: "teal-400"
     },
   ];
 
@@ -94,25 +102,17 @@ export default function LandingFeaturesSection({
                 }}
               >
                 {/* Яркий цветной фон внутри */}
-                <div className="absolute inset-0 opacity-90" style={{
-                  background: `radial-gradient(circle at 30% 30%, ${feature.gradient.replace('from-', '').split(' ')[0].split('-')[0]}-400/40, transparent 70%), radial-gradient(circle at 70% 70%, ${feature.gradient.split('to-')[1].split('-')[0]}-400/30, transparent 70%)`
-                }} />
-                
                 <div className="absolute inset-0" style={{
-                  background: `linear-gradient(135deg, ${feature.gradient.split(' ')[0].replace('from-', '')} 0%, ${feature.gradient.split(' ')[2].replace('via-', '')} 50%, ${feature.gradient.split(' ')[4].replace('to-', '')} 100%)`,
-                  opacity: 0.15
+                  background: `linear-gradient(135deg, ${feature.colorFrom}/40, ${feature.colorTo}/30)`,
+                  opacity: 0.8
                 }} />
                 
                 {/* Эффект стекла сверху */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 {/* Большое свечение справа сверху */}
-                <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-3xl" style={{
-                  background: `radial-gradient(circle, ${feature.gradient.split(' ')[0].replace('from-', '')}/50, transparent)`
-                }} />
-                <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full blur-3xl" style={{
-                  background: `radial-gradient(circle, ${feature.gradient.split(' ')[4].replace('to-', '')}/30, transparent)`
-                }} />
+                <div className={`absolute -top-32 -right-32 w-96 h-96 bg-${feature.colorFrom}/50 rounded-full blur-3xl`} />
+                <div className={`absolute -bottom-32 -left-32 w-96 h-96 bg-${feature.colorTo}/30 rounded-full blur-3xl`} />
                 
                 {/* Цветные пятна */}
                 <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-yellow-300/40 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
