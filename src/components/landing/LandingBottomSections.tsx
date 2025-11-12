@@ -16,16 +16,16 @@ export default function LandingBottomSections({
 
 
   const platforms = [
-    { name: "Spotify", color: "#1DB954", size: 56 },
-    { name: "Apple Music", color: "#FA243C", size: 52 },
-    { name: "Яндекс Музыка", color: "#FFCC00", size: 52 },
-    { name: "YouTube Music", color: "#FF0000", size: 56 },
-    { name: "VK Музыка", color: "#0077FF", size: 52 },
-    { name: "Deezer", color: "#FF0092", size: 50 },
-    { name: "SoundCloud", color: "#FF5500", size: 58 },
-    { name: "Amazon Music", color: "#00A8E1", size: 54 },
-    { name: "Tidal", color: "#000000", size: 48 },
-    { name: "Shazam", color: "#0088FF", size: 50 },
+    { name: "Spotify", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle fill="#1DB954" cx="50" cy="50" r="50"/><path fill="#fff" d="M72 45c-12-7-31-8-42-4-2 0-3-1-3-2s1-2 2-3c13-4 33-3 46 5 1 1 2 3 1 4s-3 1-4 0zm-1 8c-1 1-3 1-4 0-10-6-25-8-37-4-1 1-3 0-3-1-1-2 0-3 1-3 14-5 30-2 42 5 1 0 2 2 1 3zm-5 8c-1 0-2 0-3-1-8-5-19-6-31-3-1 0-2 0-2-1s0-2 1-2c13-4 26-2 35 4 1 0 1 2 0 3z"/></svg>`, size: 64 },
+    { name: "Apple Music", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#FA243C" width="100" height="100" rx="20"/><path fill="#fff" d="M70 25v32c0 6-5 11-11 11s-11-5-11-11 5-11 11-11c2 0 4 0 5 1V25h6zm-30 7v29c0 6-5 11-11 11s-11-5-11-11 5-11 11-11c2 0 4 0 5 1V28l17-6v10l-11 4z"/></svg>`, size: 64 },
+    { name: "Яндекс Музыка", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#FFCC00" width="100" height="100" rx="18"/><path fill="#000" d="M65 20H50c-11 0-15 7-15 15v30c0 8 4 15 15 15h2V65h-2c-5 0-8-3-8-10V35c0-7 3-10 8-10h15V20z"/></svg>`, size: 64 },
+    { name: "YouTube Music", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle fill="#FF0000" cx="50" cy="50" r="50"/><path fill="#fff" d="M65 50L42 65V35z"/></svg>`, size: 64 },
+    { name: "VK Музыка", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#0077FF" width="100" height="100" rx="18"/><path fill="#fff" d="M72 35c1-2 0-4-3-4h-8c-3 0-4 1-5 3 0 0-5 11-12 18-2 2-3 3-5 3-1 0-2-1-2-3V35c0-2-1-4-3-4H22c-2 0-3 1-3 2 0 3 4 3 4 11v16c0 4-1 4-3 4-3 0-11-11-16-24C3 38 2 37 0 37h-8c-3 0-3 1-3 3 0 3 3 14 15 30 8 10 19 16 29 16 6 0 7-2 7-4V71c0-3 1-4 3-4 2 0 4 1 10 7 7 7 8 10 12 10h8c3 0 4-2 4-4s-2-7-8-13c-2-3-6-6-7-8-2-2-1-3 0-4 0 0 11-15 13-20z"/></svg>`, size: 64 },
+    { name: "Deezer", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#FF0092" width="100" height="100" rx="18"/><g fill="#fff"><rect x="15" y="52" width="18" height="8"/><rect x="15" y="64" width="18" height="8"/><rect x="38" y="40" width="18" height="8"/><rect x="38" y="52" width="18" height="8"/><rect x="38" y="64" width="18" height="8"/><rect x="61" y="28" width="18" height="8"/><rect x="61" y="40" width="18" height="8"/><rect x="61" y="52" width="18" height="8"/><rect x="61" y="64" width="18" height="8"/></g></svg>`, size: 64 },
+    { name: "SoundCloud", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#FF5500" width="100" height="100" rx="18"/><path fill="#fff" d="M20 50h2v10h-2V50zm4-4h2v14h-2V46zm4-2h2v16h-2V44zm4 2h2v14h-2V46zm4-8h2v22h-2V38zm4 4h2v18h-2V42zm4-2h2v20h-2V40zm4 0h2v20h-2V40zm6-8c-9 0-16 7-16 16s7 16 16 16h24c6 0 10-5 10-10 0-5-4-9-9-10-1-6-6-12-13-12-3 0-6 1-8 3-2-2-5-3-8-3z"/></svg>`, size: 70 },
+    { name: "Amazon Music", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#00A8E1" width="100" height="100" rx="18"/><path fill="#fff" d="M30 50c0-8 6-14 14-14h12c8 0 14 6 14 14v16H30V50z"/><circle fill="#000" cx="38" cy="35" r="8"/><circle fill="#000" cx="62" cy="35" r="8"/></svg>`, size: 64 },
+    { name: "Tidal", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect fill="#000" width="100" height="100" rx="18"/><path fill="#fff" d="M50 30l-12 12 12 12 12-12-12-12zm0 24l-12 12 12 12 12-12-12-12zm-24-12l-12 12 12 12 12-12-12-12zm48 0l-12 12 12 12 12-12-12-12z"/></svg>`, size: 64 },
+    { name: "Shazam", svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="shazam" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#0088FF"/><stop offset="100%" style="stop-color:#00D4FF"/></linearGradient></defs><rect fill="url(#shazam)" width="100" height="100" rx="24"/><path fill="#fff" d="M60 25c5 0 9 4 9 9v21c0 2-2 4-4 4s-4-2-4-4V34c0-2-1-3-3-3H37c-2 0-4-2-4-4s2-4 4-4h23zm-20 50c-5 0-9-4-9-9V45c0-2 2-4 4-4s4 2 4 4v21c0 2 1 3 3 3h21c2 0 4 2 4 4s-2 4-4 4H40z"/></svg>`, size: 64 },
   ];
 
   const row1 = [platforms[0], platforms[2], platforms[4], platforms[6], platforms[8]];
@@ -82,22 +82,9 @@ export default function LandingBottomSections({
                     style={{ width: `${platform.size}px`, height: `${platform.size}px` }}
                   >
                     <div 
-                      className="w-full h-full rounded-2xl flex items-center justify-center font-bold text-white transition-all duration-500 group-hover:scale-110"
-                      style={{ 
-                        backgroundColor: platform.color,
-                        fontSize: `${platform.size * 0.24}px`,
-                        boxShadow: `0 8px 32px ${platform.color}40, 0 0 0 0 ${platform.color}80`,
-                      }}
-                    >
-                      <span className="drop-shadow-lg" style={{ 
-                        fontSize: platform.name.length > 12 ? `${platform.size * 0.16}px` : `${platform.size * 0.20}px`,
-                        lineHeight: '1.1',
-                        textAlign: 'center',
-                        padding: '8px'
-                      }}>
-                        {platform.name}
-                      </span>
-                    </div>
+                      className="w-full h-full transition-all duration-500 group-hover:scale-125 drop-shadow-2xl group-hover:drop-shadow-[0_0_35px_rgba(255,255,255,0.5)]" 
+                      dangerouslySetInnerHTML={{ __html: platform.svg }}
+                    />
                   </div>
                 ))}
               </div>
@@ -112,22 +99,9 @@ export default function LandingBottomSections({
                     style={{ width: `${platform.size}px`, height: `${platform.size}px` }}
                   >
                     <div 
-                      className="w-full h-full rounded-2xl flex items-center justify-center font-bold text-white transition-all duration-500 group-hover:scale-110"
-                      style={{ 
-                        backgroundColor: platform.color,
-                        fontSize: `${platform.size * 0.24}px`,
-                        boxShadow: `0 8px 32px ${platform.color}40, 0 0 0 0 ${platform.color}80`,
-                      }}
-                    >
-                      <span className="drop-shadow-lg" style={{ 
-                        fontSize: platform.name.length > 12 ? `${platform.size * 0.16}px` : `${platform.size * 0.20}px`,
-                        lineHeight: '1.1',
-                        textAlign: 'center',
-                        padding: '8px'
-                      }}>
-                        {platform.name}
-                      </span>
-                    </div>
+                      className="w-full h-full transition-all duration-500 group-hover:scale-125 drop-shadow-2xl group-hover:drop-shadow-[0_0_35px_rgba(255,255,255,0.5)]" 
+                      dangerouslySetInnerHTML={{ __html: platform.svg }}
+                    />
                   </div>
                 ))}
               </div>
