@@ -17,7 +17,7 @@ export default function LandingFeaturesSection({
       gradient: "from-purple-500 via-fuchsia-500 to-pink-500",
       iconBg: "from-purple-500 to-pink-500",
       borderGlow: "rgba(168, 85, 247, 0.6)",
-      shadow: "0 30px 60px -15px rgba(168, 85, 247, 0.5)",
+      shadow: "0 0 80px rgba(168, 85, 247, 0.6), 0 0 40px rgba(236, 72, 153, 0.4)",
       particles: ["bg-purple-300", "bg-fuchsia-300", "bg-pink-300"],
       colorFrom: "purple-400",
       colorTo: "pink-400"
@@ -29,7 +29,7 @@ export default function LandingFeaturesSection({
       gradient: "from-cyan-500 via-blue-500 to-indigo-500",
       iconBg: "from-cyan-500 to-blue-500",
       borderGlow: "rgba(6, 182, 212, 0.6)",
-      shadow: "0 30px 60px -15px rgba(6, 182, 212, 0.5)",
+      shadow: "0 0 80px rgba(6, 182, 212, 0.6), 0 0 40px rgba(59, 130, 246, 0.4)",
       particles: ["bg-cyan-300", "bg-blue-300", "bg-indigo-300"],
       colorFrom: "cyan-400",
       colorTo: "indigo-400"
@@ -41,7 +41,7 @@ export default function LandingFeaturesSection({
       gradient: "from-orange-500 via-red-500 to-pink-500",
       iconBg: "from-orange-500 to-red-500",
       borderGlow: "rgba(249, 115, 22, 0.6)",
-      shadow: "0 30px 60px -15px rgba(249, 115, 22, 0.5)",
+      shadow: "0 0 80px rgba(249, 115, 22, 0.7), 0 0 40px rgba(239, 68, 68, 0.5)",
       particles: ["bg-orange-300", "bg-red-300", "bg-pink-300"],
       colorFrom: "orange-400",
       colorTo: "pink-400"
@@ -53,7 +53,7 @@ export default function LandingFeaturesSection({
       gradient: "from-emerald-500 via-green-500 to-teal-500",
       iconBg: "from-emerald-500 to-teal-500",
       borderGlow: "rgba(16, 185, 129, 0.6)",
-      shadow: "0 30px 60px -15px rgba(16, 185, 129, 0.5)",
+      shadow: "0 0 80px rgba(16, 185, 129, 0.6), 0 0 40px rgba(20, 184, 166, 0.4),"
       particles: ["bg-emerald-300", "bg-green-300", "bg-teal-300"],
       colorFrom: "emerald-400",
       colorTo: "teal-400"
