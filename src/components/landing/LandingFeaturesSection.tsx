@@ -53,7 +53,7 @@ export default function LandingFeaturesSection({
       gradient: "from-emerald-500 via-green-500 to-teal-500",
       iconBg: "from-emerald-500 to-teal-500",
       borderGlow: "rgba(16, 185, 129, 0.6)",
-      shadow: "0 0 80px rgba(16, 185, 129, 0.6), 0 0 40px rgba(20, 184, 166, 0.4),"
+      shadow: "0 0 80px rgba(16, 185, 129, 0.6), 0 0 40px rgba(20, 184, 166, 0.4)",
       particles: ["bg-emerald-300", "bg-green-300", "bg-teal-300"],
       colorFrom: "emerald-400",
       colorTo: "teal-400"
