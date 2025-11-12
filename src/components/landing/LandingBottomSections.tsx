@@ -102,25 +102,25 @@ export default function LandingBottomSections({
   });
 
   const platforms1 = [
-    { name: "Spotify", logo: "https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png", bg: "bg-[#1DB954]" },
-    { name: "Apple Music", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Apple_Music_logo.svg/512px-Apple_Music_logo.svg.png", bg: "bg-gradient-to-br from-[#FA233B] to-[#FB5C74]" },
-    { name: "Яндекс.Музыка", logo: "https://music.yandex.ru/blocks/meta/i/og-image.png", bg: "bg-gradient-to-br from-yellow-400 to-yellow-600" },
-    { name: "YouTube Music", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Youtube_Music_icon.svg/512px-Youtube_Music_icon.svg.png", bg: "bg-[#FF0000]" },
-    { name: "VK Музыка", logo: "https://sun9-west.userapi.com/sun9-61/s/v1/ig2/yFYB5RQN77mFkQ38-S8lFb_TukF67P3PVDEbr0h4C0dCUIqILfpIuPvdQ93CYfB7YWaYhGjkPuIiZXBGq-gC_xW3.jpg?size=200x200&quality=95&crop=0,0,1080,1080&ava=1", bg: "bg-[#0077FF]" },
-    { name: "Deezer", logo: "https://e-cdns-images.dzcdn.net/images/common/deezer-logo-192x192.png", bg: "bg-gradient-to-br from-[#FF0092] to-[#FE4E4C]" },
-    { name: "Amazon Music", logo: "https://m.media-amazon.com/images/G/01/digital/music/player/web/US_AmazonMusicLogo.png", bg: "bg-gradient-to-br from-[#00A8E1] to-[#1E88E5]" },
-    { name: "Tidal", logo: "https://images.squarespace-cdn.com/content/v1/5b2ad610f2e6b10bb0788609/1529664033919-GOYTVZWP3IAVDBM83C04/tidal-logo.jpg", bg: "bg-black" },
+    { name: "Spotify", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="#1DB954" d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-62.5-37-155.7-51.9-238.6-29.4-4.8 1.3-7.4 2.6-11.9 2.6-10.7 0-19.4-8.7-19.4-19.4s5.2-17.8 15.5-20.7c27.8-7.8 56.2-13.6 97.8-13.6 64.9 0 127.6 16.1 177 45.5 8.1 4.8 11.3 11 11.3 19.7-.1 10.8-8.5 19.5-19.4 19.5zm31-76.2c-5.2 0-8.4-1.3-12.9-3.9-71.2-42.5-198.5-52.7-280.9-29.7-3.6 1-8.1 2.6-12.9 2.6-13.2 0-23.3-10.3-23.3-23.6 0-13.6 8.4-21.3 17.4-23.9 35.2-10.3 74.6-15.2 117.5-15.2 73 0 149.5 15.2 205.4 47.8 7.8 4.5 12.9 10.7 12.9 22.6 0 13.6-11 23.3-23.2 23.3z"/></svg>`, size: 80 },
+    { name: "Apple Music", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path fill="#FA243C" d="M37 4H13C8.582 4 5 7.582 5 12v26c0 4.418 3.582 8 8 8h24c4.418 0 8-3.582 8-8V12c0-4.418-3.582-8-8-8zm-5.701 30.826c-1.801.836-4.801-.115-4.801-2.834V19.25c0-1.535.902-2.033 1.699-2.045 1.402-.021 2.151.67 3.602 1.17l8.8 3.051c1.098.375 1.402.977 1.402 2.096v11.836c0 2.594-2.699 3.52-4.301 2.795-1.398-.635-2.199-2.117-2.199-3.654 0-1.42.898-2.553 2.199-3.195 1-.491 2.1-.459 2.699-.176V21.65l-8.3-2.873v13.459c0 2.627-2.801 3.549-4.401 2.787-1.398-.666-2.199-2.148-2.199-3.654 0-1.42.898-2.553 2.199-3.195 1-.491 2.1-.459 2.699-.176v-9.742c0-1.387.754-2.227 1.902-2.396.656-.098 1.398.031 2.199.354l10.602 3.67c.598.208.699.531.699 1.068v.011z"/></svg>`, size: 70 },
+    { name: "Яндекс.Музыка", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><rect fill="#FFCC00" width="50" height="50" rx="8"/><path fill="#000" d="M31 13h-6c-4 0-7 2.5-7 7v10c0 4.5 3 7 7 7h.5v-6H25c-1.7 0-2.5-1-2.5-2.5v-9c0-1.5.8-2.5 2.5-2.5h6V13z"/></svg>`, size: 70 },
+    { name: "YouTube Music", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#FF0000" d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm115.494 263.295l-163.494 96.496c-7.639 4.512-17.494-.814-17.494-9.449V154.657c0-8.635 9.855-13.961 17.494-9.449l163.494 96.496c7.639 4.512 7.639 14.384 0 18.896z"/></svg>`, size: 75 },
+    { name: "VK Музыка", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect fill="#1976D2" width="48" height="48" rx="8"/><path fill="#fff" d="M34.9 15.2c.2-.6 0-1-.9-1h-3c-.8 0-1.2.4-1.4 1 0 0-1.6 3.8-3.9 6.3-.7.7-1.1.9-1.5.9-.2 0-.5-.2-.5-.9v-6.1c0-.8-.2-1.2-1-1.2h-4.7c-.5 0-.8.3-.8.7 0 .8 1.2.9 1.3 3v4.5c0 1-.2 1.2-.6 1.2-1.1 0-3.8-3.9-5.4-8.3-.3-.9-.6-1.2-1.4-1.2h-3c-.9 0-1.1.4-1.1 1 0 .9 1.1 4.9 5 10.3 2.6 3.6 6.3 5.6 9.6 5.6 2 0 2.2-.5 2.2-1.3v-3c0-.9.2-1.1.9-1.1.5 0 1.4.3 3.5 2.3 2.4 2.4 2.8 3.5 4.2 3.5h3c.9 0 1.3-.5 1.1-1.4-.3-.9-1.3-2.3-2.7-3.9-.7-.9-1.9-1.9-2.2-2.4-.5-.6-.4-.9 0-1.5 0 0 3.8-5.3 4.2-7.1z"/></svg>`, size: 70 },
+    { name: "Deezer", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><rect fill="#FF0092" width="50" height="50" rx="8"/><g fill="#fff"><rect x="8" y="28" width="8" height="4"/><rect x="8" y="34" width="8" height="4"/><rect x="18" y="22" width="8" height="4"/><rect x="18" y="28" width="8" height="4"/><rect x="18" y="34" width="8" height="4"/><rect x="28" y="16" width="8" height="4"/><rect x="28" y="22" width="8" height="4"/><rect x="28" y="28" width="8" height="4"/><rect x="28" y="34" width="8" height="4"/></g></svg>`, size: 70 },
+    { name: "Amazon Music", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><rect fill="#00A8E1" width="50" height="50" rx="8"/><path fill="#fff" d="M35.5 32c-.3 0-.5-.1-.7-.3-2.8-2.5-3.3-3.7-4.8-6.1-.1-.2-.3-.3-.5-.3-3.2 0-5.5-2.5-5.5-5.8 0-3.2 2.5-5.8 5.8-5.8s5.8 2.5 5.8 5.8c0 2.3-1.2 4.3-3 5.3.9 1.5 1.8 2.8 3.5 4.3.3.3.4.6.2 1-.2.6-.5.9-.8.9zm-5.3-16.5c-2.3 0-4.2 1.9-4.2 4.2s1.9 4.2 4.2 4.2 4.2-1.9 4.2-4.2-1.9-4.2-4.2-4.2zm-15.7 17c-1.7 0-3-.8-3-2.5 0-1.8 1.5-2.5 3.5-2.8 1.5-.3 3.5-.5 5-.8v.5c0 2.8-1.2 5.5-5.5 5.5zm6.7-13.8c0-1.8-.3-3.5-1.5-4.8-1-.9-2.5-1.3-3.8-1.3-2.8 0-5 1.2-5 4.5 0 .5.3.8.8.8h1c.5 0 .8-.3.8-.8.2-1 1-1.5 2-1.5.5 0 1.2.2 1.5.7.5.5.5 1.2.5 1.8v1c-1.8.3-4.2.5-6 1-2 .5-4.2 1.7-4.2 4.3 0 2.8 1.8 4.2 4.2 4.2 2 0 3-.5 4.5-2 .5.8.7 1.2 1.2 1.7.3.2.7.2 1 0 .8-.7 2.3-2 3.2-2.7.3-.3.3-.7 0-1-.7-.7-1.2-1.3-1.2-2.5v-3.4z"/></svg>`, size: 75 },
+    { name: "Tidal", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><rect fill="#000" width="50" height="50" rx="8"/><path fill="#fff" d="M25 16l-6 6 6 6 6-6-6-6zm0 12l-6 6 6 6 6-6-6-6zm-12-6l-6 6 6 6 6-6-6-6zm24 0l-6 6 6 6 6-6-6-6z"/></svg>`, size: 65 },
   ];
 
   const platforms2 = [
-    { name: "SoundCloud", logo: "https://developers.soundcloud.com/assets/logo_black-4d0c6b7b4554a650d58c35f2b45cb0c6cbdf91dcfe73b387d8e3bf59bd8da43d.png", bg: "bg-[#FF5500]" },
-    { name: "Pandora", logo: "https://www.pandora.com/static/img/logos/pandora_logo_blue.svg", bg: "bg-gradient-to-br from-blue-500 to-blue-700" },
-    { name: "Shazam", logo: "https://www.shazam.com/static/images/shazam-logo-white.svg", bg: "bg-gradient-to-br from-[#0088FF] to-[#00C8FF]" },
-    { name: "TikTok", logo: "https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/webapp-desktop/45ba9e062f28be5ba18f.png", bg: "bg-black" },
-    { name: "Instagram", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/512px-Instagram_logo_2016.svg.png", bg: "bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400" },
-    { name: "Napster", logo: "https://play-lh.googleusercontent.com/ww_WMmLhcQ8BhgT1EDnH3rLdcz7yYLnJXDPdCq0TKxBwu_WNJxPO8nK0y8z4ZUqWEQ", bg: "bg-black" },
-    { name: "Anghami", logo: "https://play-lh.googleusercontent.com/yrpTz4eCjm4N-_H3dJBbXP3rABD1WmBHTLpNQzD5LV3MqYVrqBB8fFLXzqxVp4vV9A", bg: "bg-gradient-to-br from-purple-500 to-purple-700" },
-    { name: "iHeartRadio", logo: "https://i.iheart.com/v3/url/aHR0cHM6Ly9pLmloZWFydC5jb20vdjMvY2F0YWxvZy9hcnRpc3QvMzMxNDY", bg: "bg-gradient-to-br from-red-500 to-red-700" },
+    { name: "SoundCloud", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><rect fill="#FF5500" width="50" height="50" rx="8"/><path fill="#fff" d="M10 27h1v3h-1v-3zm2-2h1v5h-1v-5zm2-1h1v6h-1v-6zm2 1h1v5h-1v-5zm2-3h1v8h-1v-8zm2 2h1v6h-1v-6zm2-1h1v7h-1v-7zm2 0h1v7h-1v-7zm3-3c-3.3 0-6 2.7-6 6s2.7 6 6 6h9c2.2 0 4-1.8 4-4 0-1.9-1.4-3.5-3.2-3.9-.3-2.3-2.3-4.1-4.8-4.1-1.3 0-2.5.5-3.4 1.4-.8-.9-2-1.4-3.2-1.4z"/></svg>`, size: 80 },
+    { name: "Pandora", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><rect fill="#005483" width="50" height="50" rx="8"/><path fill="#fff" d="M18 12h5c5.5 0 10 4.5 10 10s-4.5 10-10 10h-2v6h-3V12zm3 17h2c4.4 0 8-3.6 8-8s-3.6-8-8-8h-2v16z"/></svg>`, size: 70 },
+    { name: "Shazam", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><linearGradient id="shazam" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#0088FF"/><stop offset="100%" style="stop-color:#00D4FF"/></linearGradient></defs><rect fill="url(#shazam)" width="50" height="50" rx="12"/><path fill="#fff" d="M30 14c1.7 0 3 1.3 3 3v8.5c0 .8-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5V17c0-.6-.4-1-1-1h-8.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5H30zm-10 22c-1.7 0-3-1.3-3-3v-8.5c0-.8.7-1.5 1.5-1.5s1.5.7 1.5 1.5V33c0 .6.4 1 1 1h8.5c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5H20z"/></svg>`, size: 70 },
+    { name: "TikTok", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><rect fill="#000" width="50" height="50" rx="8"/><path fill="#25F4EE" d="M34 18.5c-2.5 0-4.5-2-4.5-4.5h-3.5v16c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4c.4 0 .8.1 1.2.2v-3.6c-.4 0-.8-.1-1.2-.1-4.1 0-7.5 3.4-7.5 7.5S18 38 22 38s7.5-3.4 7.5-7.5V20c1.6 1.1 3.5 1.8 5.5 1.8v-3.5c-1.7.1-3.1-.8-4-2.1-.9-1.3-.9-2.8 0-4.1.9-1.3 2.3-2.1 4-2.1V6.5c-3.3 0-6 2.7-6 6 0 .8.2 1.5.5 2.2.4.8 1 1.5 1.8 2 1.5 1 3.4 1.3 5.2.8z"/><path fill="#FE2C55" d="M34 15v3.5c-2 0-3.9-.7-5.5-1.8v10.8c0 4.1-3.4 7.5-7.5 7.5s-7.5-3.4-7.5-7.5 3.4-7.5 7.5-7.5c.4 0 .8 0 1.2.1v3.6c-.4-.1-.8-.2-1.2-.2-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4V10h3.5c0 2.5 2 4.5 4.5 4.5v3.5c-1.8.5-3.7.2-5.2-.8-.8-.5-1.4-1.2-1.8-2-.3-.7-.5-1.4-.5-2.2 0-3.3 2.7-6 6-6v3.5z"/></svg>`, size: 70 },
+    { name: "Instagram", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#FFDC80"/><stop offset="25%" style="stop-color:#FCAF45"/><stop offset="50%" style="stop-color:#F77737"/><stop offset="75%" style="stop-color:#F56040"/><stop offset="100%" style="stop-color:#FD1D1D"/></linearGradient></defs><rect fill="url(#ig)" width="50" height="50" rx="12"/><path fill="#fff" d="M25 16c-2.4 0-2.7 0-3.7.1-.9 0-1.6.2-2.1.5-.6.2-1 .5-1.5 1s-.8.9-1 1.5c-.3.5-.5 1.2-.5 2.1-.1 1-.1 1.3-.1 3.7s0 2.7.1 3.7c0 .9.2 1.6.5 2.1.2.6.5 1 1 1.5s.9.8 1.5 1c.5.3 1.2.5 2.1.5 1 .1 1.3.1 3.7.1s2.7 0 3.7-.1c.9 0 1.6-.2 2.1-.5.6-.2 1-.5 1.5-1s.8-.9 1-1.5c.3-.5.5-1.2.5-2.1.1-1 .1-1.3.1-3.7s0-2.7-.1-3.7c0-.9-.2-1.6-.5-2.1-.2-.6-.5-1-1-1.5s-.9-.8-1.5-1c-.5-.3-1.2-.5-2.1-.5-1-.1-1.3-.1-3.7-.1zm0 1.6c2.4 0 2.6 0 3.6.1.9 0 1.3.2 1.6.3.4.2.7.3 1 .6.3.3.5.6.6 1 .1.3.3.8.3 1.6.1 1 .1 1.3.1 3.6s0 2.6-.1 3.6c0 .9-.2 1.3-.3 1.6-.2.4-.3.7-.6 1-.3.3-.6.5-1 .6-.3.1-.8.3-1.6.3-1 .1-1.3.1-3.6.1s-2.6 0-3.6-.1c-.9 0-1.3-.2-1.6-.3-.4-.2-.7-.3-1-.6-.3-.3-.5-.6-.6-1-.1-.3-.3-.8-.3-1.6-.1-1-.1-1.3-.1-3.6s0-2.6.1-3.6c0-.9.2-1.3.3-1.6.2-.4.3-.7.6-1 .3-.3.6-.5 1-.6.3-.1.8-.3 1.6-.3 1-.1 1.3-.1 3.6-.1zM25 21c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm0 6.6c-1.4 0-2.6-1.2-2.6-2.6s1.2-2.6 2.6-2.6 2.6 1.2 2.6 2.6-1.2 2.6-2.6 2.6zm5.1-6.8c0 .5-.4.9-.9.9s-.9-.4-.9-.9.4-.9.9-.9.9.4.9.9z"/></svg>`, size: 70 },
+    { name: "Napster", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><rect fill="#000" width="50" height="50" rx="8"/><circle fill="#00D1FF" cx="17" cy="20" r="4"/><circle fill="#FF006E" cx="33" cy="20" r="4"/><path fill="#fff" d="M14 27c0-3 2-5 5-5h12c3 0 5 2 5 5v6H14v-6z"/></svg>`, size: 65 },
+    { name: "Anghami", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><linearGradient id="ang" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#9B1C8E"/><stop offset="100%" style="stop-color:#5E1F8B"/></linearGradient></defs><rect fill="url(#ang)" width="50" height="50" rx="12"/><path fill="#fff" d="M25 12l8 8v13l-8 5-8-5V20l8-8zm0 3l-5 5v10l5 3 5-3V20l-5-5z"/></svg>`, size: 70 },
+    { name: "iHeartRadio", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><linearGradient id="ihr" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#E01E26"/><stop offset="100%" style="stop-color:#C1121C"/></linearGradient></defs><rect fill="url(#ihr)" width="50" height="50" rx="8"/><path fill="#fff" d="M25 35c-5.5 0-10-4.5-10-10s4.5-10 10-10 10 4.5 10 10-4.5 10-10 10zm0-17c-3.9 0-7 3.1-7 7s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zm0 11c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/></svg>`, size: 70 },
   ];
 
   const faqs = [
@@ -177,22 +177,17 @@ export default function LandingBottomSections({
               onTouchMove={handleTouchMove}
               onTouchEnd={() => handleMouseUp(setIsPaused1)}
             >
-              <div className="flex gap-6 py-2" style={{ width: 'max-content' }}>
+              <div className="flex gap-8 py-4" style={{ width: 'max-content' }}>
                 {[...platforms1, ...platforms1, ...platforms1].map((platform, i) => (
                   <div
                     key={i}
                     className="group flex-shrink-0 relative select-none"
+                    style={{ width: `${platform.size}px`, height: `${platform.size}px` }}
                   >
-                    <div className={`absolute -inset-2 ${platform.bg} rounded-2xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300`} />
-                    
-                    <div className={`relative w-24 h-24 ${platform.bg} rounded-2xl p-4 group-hover:scale-110 transition-all duration-300 shadow-2xl overflow-hidden backdrop-blur-sm border border-white/10`}>
-                      <img 
-                        src={platform.logo} 
-                        alt={platform.name}
-                        className="w-full h-full object-contain filter brightness-0 invert"
-                        draggable="false"
-                      />
-                    </div>
+                    <div 
+                      className="w-full h-full group-hover:scale-125 transition-all duration-500 drop-shadow-2xl group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.5)]" 
+                      dangerouslySetInnerHTML={{ __html: platform.svg }}
+                    />
                   </div>
                 ))}
               </div>
@@ -210,22 +205,17 @@ export default function LandingBottomSections({
               onTouchMove={handleTouchMove}
               onTouchEnd={() => handleMouseUp(setIsPaused2)}
             >
-              <div className="flex gap-6 py-2" style={{ width: 'max-content' }}>
+              <div className="flex gap-8 py-4" style={{ width: 'max-content' }}>
                 {[...platforms2, ...platforms2, ...platforms2].map((platform, i) => (
                   <div
                     key={i}
                     className="group flex-shrink-0 relative select-none"
+                    style={{ width: `${platform.size}px`, height: `${platform.size}px` }}
                   >
-                    <div className={`absolute -inset-2 ${platform.bg} rounded-2xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300`} />
-                    
-                    <div className={`relative w-24 h-24 ${platform.bg} rounded-2xl p-4 group-hover:scale-110 transition-all duration-300 shadow-2xl overflow-hidden backdrop-blur-sm border border-white/10`}>
-                      <img 
-                        src={platform.logo} 
-                        alt={platform.name}
-                        className="w-full h-full object-contain filter brightness-0 invert"
-                        draggable="false"
-                      />
-                    </div>
+                    <div 
+                      className="w-full h-full group-hover:scale-125 transition-all duration-500 drop-shadow-2xl group-hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.5)]" 
+                      dangerouslySetInnerHTML={{ __html: platform.svg }}
+                    />
                   </div>
                 ))}
               </div>
