@@ -1,9 +1,9 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -35,6 +35,25 @@ const queryClient = new QueryClient({
   }
 });
 
+function RoutePreloader() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = '/blog';
+      document.head.appendChild(link);
+
+      const blogPreload = () => import('./pages/Blog');
+      const timer = setTimeout(blogPreload, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [location]);
+
+  return null;
+}
+
 const App = () => (
   <ErrorBoundary>
     <HelmetProvider>
@@ -44,6 +63,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <RoutePreloader />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Home />} />

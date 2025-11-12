@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import LandingStyles from "@/components/landing/LandingStyles";
 import LandingBackgroundEffects from "@/components/landing/LandingBackgroundEffects";
 import LandingHeader from "@/components/landing/LandingHeader";
 import LandingHero from "@/components/landing/LandingHero";
-import LandingContent from "@/components/landing/LandingContent";
+
+const LandingContent = lazy(() => import("@/components/landing/LandingContent"));
 
 export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0);
@@ -33,19 +34,8 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Печатающий эффект
   useEffect(() => {
-    let index = 0;
-    const timer = setInterval(() => {
-      if (index <= fullText.length) {
-        setTypedText(fullText.slice(0, index));
-        index++;
-      } else {
-        setIsTypingComplete(true);
-        clearInterval(timer);
-      }
-    }, 100);
-    return () => clearInterval(timer);
+    setIsTypingComplete(true);
   }, []);
 
   // Intersection Observer для анимаций при скролле - оптимизирован для мобильных
@@ -86,7 +76,9 @@ export default function LandingPage() {
         typedText={typedText}
         isTypingComplete={isTypingComplete}
       />
-      <LandingContent />
+      <Suspense fallback={<div className="min-h-screen" />}>
+        <LandingContent />
+      </Suspense>
     </div>
   );
 }

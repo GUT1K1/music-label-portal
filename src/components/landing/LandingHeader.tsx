@@ -31,9 +31,17 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
     }
   };
 
-  const handleNavigation = (path: string) => {
+  const handleNavigation = (path: string, e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     setIsMobileMenuOpen(false);
-    navigate(path);
+    
+    if (path === '/blog') {
+      document.startViewTransition(() => {
+        navigate(path);
+      });
+    } else {
+      navigate(path);
+    }
   };
 
   return (
@@ -56,7 +64,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           
             {/* Desktop menu */}
             <nav className="hidden md:flex items-center gap-8">
-              <a href="/blog" className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
+              <a href="/blog" onClick={(e) => handleNavigation('/blog', e)} className="text-sm font-semibold text-gray-300 hover:text-white transition-all duration-300 relative group px-2 py-1">
                 Блог
                 <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300 shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
               </a>
@@ -106,7 +114,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
         <nav className="flex flex-col items-center justify-center h-full gap-8 px-6">
           <a 
             href="/blog" 
-            onClick={() => handleNavigation('/blog')}
+            onClick={(e) => handleNavigation('/blog', e)}
             className={`text-2xl font-bold text-gray-300 hover:text-white transition-all duration-300 relative group ${
               isMobileMenuOpen ? 'animate-slideInUp' : ''
             }`}

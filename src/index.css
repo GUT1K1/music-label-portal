@@ -114,22 +114,24 @@
   }
 
   html {
-    background: #1e1e1e;
+    background: #000000;
     min-height: 100vh;
     scroll-behavior: smooth;
   }
 
   body {
     @apply text-foreground;
-    background: #1e1e1e;
+    background: #000000;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
+    will-change: scroll-position;
   }
 
   #root {
-    background: #1e1e1e;
+    background: #000000;
     min-height: 100vh;
+    contain: paint;
   }
 
   /* Стилизованный скролл для всего сайта */
@@ -208,7 +210,7 @@
   }
 
   .animate-fade-in-up {
-    animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes slideIn {
@@ -306,6 +308,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    will-change: background-position;
   }
 
   .animate-spin-slow {

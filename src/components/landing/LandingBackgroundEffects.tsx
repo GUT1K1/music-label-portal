@@ -15,14 +15,14 @@ export default function LandingBackgroundEffects() {
   }, []);
 
   useEffect(() => {
-    if (isMobile) return; // Отключаем скролл-эффекты на мобильных
+    if (isMobile) return;
     
     let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-          const progress = window.scrollY / totalHeight;
+          const progress = Math.min(window.scrollY / totalHeight, 1);
           setScrollProgress(progress);
           ticking = false;
         });
@@ -90,7 +90,7 @@ export default function LandingBackgroundEffects() {
               transparent 65%)`,
             filter: isMobile ? 'blur(60px)' : 'blur(140px)',
             transform: isMobile ? 'none' : `translate(${scrollProgress * 80}px, ${scrollProgress * 120}px) scale(${1 + scrollProgress * 0.2})`,
-            transition: isMobile ? 'none' : 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: isMobile ? 'none' : 'transform 0.3s ease-out',
           }}
         />
         
@@ -108,7 +108,7 @@ export default function LandingBackgroundEffects() {
               transparent 65%)`,
             filter: isMobile ? 'blur(60px)' : 'blur(150px)',
             transform: isMobile ? 'none' : `translate(${-scrollProgress * 60}px, ${scrollProgress * 100}px) scale(${1 + scrollProgress * 0.25})`,
-            transition: isMobile ? 'none' : 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: isMobile ? 'none' : 'transform 0.3s ease-out',
           }}
         />
         
@@ -126,7 +126,7 @@ export default function LandingBackgroundEffects() {
               transparent 65%)`,
             filter: isMobile ? 'blur(50px)' : 'blur(130px)',
             transform: isMobile ? 'none' : `translate(${scrollProgress * -50}px, ${-scrollProgress * 90}px) scale(${1 + scrollProgress * 0.2})`,
-            transition: isMobile ? 'none' : 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            transition: isMobile ? 'none' : 'transform 0.3s ease-out',
           }}
         />
       </div>

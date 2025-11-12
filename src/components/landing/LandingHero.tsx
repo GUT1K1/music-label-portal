@@ -20,7 +20,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
     order.forEach((index, i) => {
       const timer = setTimeout(() => {
         setVisibleWords(prev => [...prev, index]);
-      }, i * 350);
+      }, i * 200);
       timers.push(timer);
     });
     
@@ -76,9 +76,9 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           </span>
         </h1>
         
-        <p className="text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
+        <p className="text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
         
-        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}>
+        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>
           <a
             href="/app?demo=true"
             className="group relative px-10 py-5 bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-400 rounded-2xl font-black text-xl text-black hover:shadow-2xl hover:shadow-gold-400/70 transition-all duration-500 active:scale-95 md:hover:scale-110 flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center shadow-[0_0_30px_rgba(234,179,8,0.5)]"
