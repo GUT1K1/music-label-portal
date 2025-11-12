@@ -99,22 +99,22 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           </a>
         </div>
         
-        <div className="mt-20 md:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-8 max-w-5xl mx-auto opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
-          <div className="text-center group cursor-pointer p-6 rounded-2xl hover:bg-gradient-to-br hover:from-gold-500/10 hover:to-orange-500/10 transition-all duration-300">
-            <div className="text-5xl md:text-7xl font-black bg-gradient-to-br from-yellow-200 via-gold-300 to-orange-400 bg-clip-text text-transparent mb-3 md:mb-4 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_25px_rgba(234,179,8,0.6)] group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)]">0₽</div>
-            <div className="text-sm md:text-base text-gray-300 group-hover:text-gold-200 font-semibold transition-colors duration-300">Бесплатный старт</div>
+        <div className="mt-20 md:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
+          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-gold-600/30 via-orange-600/20 to-gold-600/30 backdrop-blur-sm border-2 border-gold-400/40 hover:border-gold-300 hover:bg-gradient-to-br hover:from-gold-500/40 hover:via-orange-500/30 hover:to-gold-500/40 transition-all duration-500 hover:scale-105 shadow-[0_0_30px_rgba(234,179,8,0.3)] hover:shadow-[0_0_50px_rgba(234,179,8,0.6)]">
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_30px_rgba(234,179,8,0.8)] group-hover:drop-shadow-[0_0_50px_rgba(234,179,8,1)]">0₽</div>
+            <div className="text-xs md:text-sm text-gold-200 group-hover:text-gold-100 font-bold transition-colors duration-300">Бесплатный старт</div>
           </div>
-          <div className="text-center group cursor-pointer p-6 rounded-2xl hover:bg-gradient-to-br hover:from-gold-500/10 hover:to-orange-500/10 transition-all duration-300">
-            <div className="text-5xl md:text-7xl font-black bg-gradient-to-br from-yellow-200 via-gold-300 to-orange-400 bg-clip-text text-transparent mb-3 md:mb-4 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_25px_rgba(234,179,8,0.6)] group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)]">7 лет</div>
-            <div className="text-sm md:text-base text-gray-300 group-hover:text-gold-200 font-semibold transition-colors duration-300">Срок лицензии</div>
+          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-600/30 via-gold-600/20 to-orange-600/30 backdrop-blur-sm border-2 border-orange-400/40 hover:border-orange-300 hover:bg-gradient-to-br hover:from-orange-500/40 hover:via-gold-500/30 hover:to-orange-500/40 transition-all duration-500 hover:scale-105 shadow-[0_0_30px_rgba(251,146,60,0.3)] hover:shadow-[0_0_50px_rgba(251,146,60,0.6)]">
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-orange-300 via-gold-400 to-yellow-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_30px_rgba(251,146,60,0.8)] group-hover:drop-shadow-[0_0_50px_rgba(251,146,60,1)]">7 лет</div>
+            <div className="text-xs md:text-sm text-orange-200 group-hover:text-orange-100 font-bold transition-colors duration-300">Срок лицензии</div>
           </div>
-          <div className="text-center group cursor-pointer p-6 rounded-2xl hover:bg-gradient-to-br hover:from-gold-500/10 hover:to-orange-500/10 transition-all duration-300">
-            <div className="text-5xl md:text-7xl font-black bg-gradient-to-br from-yellow-200 via-gold-300 to-orange-400 bg-clip-text text-transparent mb-3 md:mb-4 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_25px_rgba(234,179,8,0.6)] group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)]">100%</div>
-            <div className="text-sm md:text-base text-gray-300 group-hover:text-gold-200 font-semibold transition-colors duration-300">Твоё авторство</div>
+          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-yellow-600/30 via-gold-600/20 to-yellow-600/30 backdrop-blur-sm border-2 border-yellow-400/40 hover:border-yellow-300 hover:bg-gradient-to-br hover:from-yellow-500/40 hover:via-gold-500/30 hover:to-yellow-500/40 transition-all duration-500 hover:scale-105 shadow-[0_0_30px_rgba(250,204,21,0.3)] hover:shadow-[0_0_50px_rgba(250,204,21,0.6)]">
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_30px_rgba(250,204,21,0.8)] group-hover:drop-shadow-[0_0_50px_rgba(250,204,21,1)]">100%</div>
+            <div className="text-xs md:text-sm text-yellow-200 group-hover:text-yellow-100 font-bold transition-colors duration-300">Твоё авторство</div>
           </div>
-          <div className="text-center group cursor-pointer p-6 rounded-2xl hover:bg-gradient-to-br hover:from-gold-500/10 hover:to-orange-500/10 transition-all duration-300">
-            <div className="text-5xl md:text-7xl font-black bg-gradient-to-br from-yellow-200 via-gold-300 to-orange-400 bg-clip-text text-transparent mb-3 md:mb-4 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_25px_rgba(234,179,8,0.6)] group-hover:drop-shadow-[0_0_40px_rgba(234,179,8,1)]">170+</div>
-            <div className="text-sm md:text-base text-gray-300 group-hover:text-gold-200 font-semibold transition-colors duration-300">Платформ</div>
+          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-gold-600/30 via-yellow-600/20 to-orange-600/30 backdrop-blur-sm border-2 border-gold-400/40 hover:border-gold-300 hover:bg-gradient-to-br hover:from-gold-500/40 hover:via-yellow-500/30 hover:to-orange-500/40 transition-all duration-500 hover:scale-105 shadow-[0_0_30px_rgba(234,179,8,0.3)] hover:shadow-[0_0_50px_rgba(234,179,8,0.6)]">
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-gold-300 via-orange-400 to-yellow-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_30px_rgba(234,179,8,0.8)] group-hover:drop-shadow-[0_0_50px_rgba(234,179,8,1)]">170+</div>
+            <div className="text-xs md:text-sm text-gold-200 group-hover:text-gold-100 font-bold transition-colors duration-300 whitespace-nowrap">Платформ</div>
           </div>
         </div>
       </div>
