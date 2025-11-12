@@ -1,6 +1,6 @@
 import Icon from "@/components/ui/icon";
 import BlogCarousel from "./BlogCarousel";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface LandingBottomSectionsProps {
   handleMouseMove: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -12,14 +12,61 @@ export default function LandingBottomSections({
   handleMouseLeave
 }: LandingBottomSectionsProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const scrollRef1 = useRef<HTMLDivElement>(null);
+  const scrollRef2 = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const [currentScroll, setCurrentScroll] = useState<HTMLDivElement | null>(null);
 
-  const platforms = [
+  const handleMouseDown = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement>) => {
+    if (!ref.current) return;
+    setIsDragging(true);
+    setCurrentScroll(ref.current);
+    setStartX(e.pageX - ref.current.offsetLeft);
+    setScrollLeft(ref.current.scrollLeft);
+    ref.current.style.cursor = 'grabbing';
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (currentScroll) {
+      currentScroll.style.cursor = 'grab';
+    }
+  };
+
+  const handleMouseMoveScroll = (e: React.MouseEvent) => {
+    if (!isDragging || !currentScroll) return;
+    e.preventDefault();
+    const x = e.pageX - currentScroll.offsetLeft;
+    const walk = (x - startX) * 2;
+    currentScroll.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleTouchStart = (e: React.TouchEvent, ref: React.RefObject<HTMLDivElement>) => {
+    if (!ref.current) return;
+    setCurrentScroll(ref.current);
+    setStartX(e.touches[0].pageX - ref.current.offsetLeft);
+    setScrollLeft(ref.current.scrollLeft);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!currentScroll) return;
+    const x = e.touches[0].pageX - currentScroll.offsetLeft;
+    const walk = (x - startX) * 2;
+    currentScroll.scrollLeft = scrollLeft - walk;
+  };
+
+  const platforms1 = [
     { name: "Spotify", icon: "Music", color: "from-green-500 to-emerald-500" },
     { name: "Apple Music", icon: "Music2", color: "from-pink-500 to-rose-500" },
     { name: "Яндекс.Музыка", icon: "Music3", color: "from-yellow-500 to-orange-500" },
     { name: "VK Музыка", icon: "Music4", color: "from-blue-500 to-indigo-500" },
     { name: "YouTube Music", icon: "Youtube", color: "from-red-500 to-pink-500" },
     { name: "Deezer", icon: "Disc3", color: "from-orange-500 to-red-500" },
+  ];
+
+  const platforms2 = [
     { name: "SoundCloud", icon: "Cloud", color: "from-orange-400 to-red-400" },
     { name: "Tidal", icon: "Waves", color: "from-cyan-500 to-blue-500" },
     { name: "Amazon Music", icon: "ShoppingCart", color: "from-blue-400 to-cyan-400" },
@@ -69,28 +116,67 @@ export default function LandingBottomSections({
             </p>
           </div>
           
-          <div className="relative">
-            <div className="overflow-hidden mask-gradient py-4">
-              <div className="flex gap-6 animate-scroll-infinite">
-                {[...platforms, ...platforms].map((platform, i) => (
+          <div className="relative space-y-4">
+            <div 
+              ref={scrollRef1}
+              className="overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+              onMouseDown={(e) => handleMouseDown(e, scrollRef1)}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onMouseMove={handleMouseMoveScroll}
+              onTouchStart={(e) => handleTouchStart(e, scrollRef1)}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleMouseUp}
+            >
+              <div className="flex gap-4 pb-2" style={{ width: 'max-content' }}>
+                {[...platforms1, ...platforms1, ...platforms1].map((platform, i) => (
                   <div
                     key={i}
-                    className="group flex-shrink-0 w-[280px] relative"
+                    className="group flex-shrink-0 w-[180px] relative select-none"
                   >
-                    <div className={`absolute -inset-0.5 bg-gradient-to-br ${platform.color} rounded-2xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
+                    <div className={`absolute -inset-0.5 bg-gradient-to-br ${platform.color} rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
                     
-                    <div className="relative p-8 bg-black/70 backdrop-blur-sm border-2 border-white/10 rounded-2xl group-hover:border-white/30 transition-all duration-500 flex flex-col items-center justify-center text-center group-hover:scale-105 group-hover:shadow-2xl overflow-hidden">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-white/5 to-transparent rounded-full" />
-                      
-                      <div className={`w-16 h-16 bg-gradient-to-br ${platform.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-lg`}>
-                        <Icon name={platform.icon as any} size={32} className="text-white" />
+                    <div className="relative p-5 bg-black/70 backdrop-blur-sm border border-white/10 rounded-xl group-hover:border-white/30 transition-all duration-300 flex flex-col items-center justify-center text-center group-hover:scale-105 overflow-hidden">
+                      <div className={`w-12 h-12 bg-gradient-to-br ${platform.color} rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-all duration-300 shadow-lg`}>
+                        <Icon name={platform.icon as any} size={24} className="text-white" />
                       </div>
                       
-                      <div className="text-lg font-bold text-white mb-1">
+                      <div className="text-sm font-bold text-white">
                         {platform.name}
                       </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div 
+              ref={scrollRef2}
+              className="overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+              onMouseDown={(e) => handleMouseDown(e, scrollRef2)}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onMouseMove={handleMouseMoveScroll}
+              onTouchStart={(e) => handleTouchStart(e, scrollRef2)}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleMouseUp}
+            >
+              <div className="flex gap-4 pb-2" style={{ width: 'max-content' }}>
+                {[...platforms2, ...platforms2, ...platforms2].map((platform, i) => (
+                  <div
+                    key={i}
+                    className="group flex-shrink-0 w-[180px] relative select-none"
+                  >
+                    <div className={`absolute -inset-0.5 bg-gradient-to-br ${platform.color} rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
+                    
+                    <div className="relative p-5 bg-black/70 backdrop-blur-sm border border-white/10 rounded-xl group-hover:border-white/30 transition-all duration-300 flex flex-col items-center justify-center text-center group-hover:scale-105 overflow-hidden">
+                      <div className={`w-12 h-12 bg-gradient-to-br ${platform.color} rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-all duration-300 shadow-lg`}>
+                        <Icon name={platform.icon as any} size={24} className="text-white" />
+                      </div>
                       
-                      <div className={`h-1 w-16 bg-gradient-to-r ${platform.color} rounded-full mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                      <div className="text-sm font-bold text-white">
+                        {platform.name}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -98,10 +184,10 @@ export default function LandingBottomSections({
             </div>
           </div>
           
-          <div className="mt-16 text-center">
+          <div className="mt-12 text-center">
             <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-400/20 rounded-full">
               <Icon name="Plus" size={16} className="text-purple-400" />
-              <span className="text-gray-400 text-sm font-semibold">ещё 40 музыкальных сервисов по всему миру</span>
+              <span className="text-gray-400 text-sm font-semibold">+ 158 музыкальных сервисов по всему миру</span>
             </div>
           </div>
         </div>
