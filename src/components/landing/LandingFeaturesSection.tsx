@@ -93,6 +93,18 @@ export default function LandingFeaturesSection({
                 {/* Эффект стекла сверху */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
+                {/* Большое свечение справа сверху */}
+                <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+                
+                {/* Декоративные круги */}
+                <div className="absolute top-10 right-10 w-40 h-40 border-2 border-white/10 rounded-full group-hover:scale-125 group-hover:rotate-90 transition-all duration-1000" />
+                <div className="absolute bottom-10 left-10 w-32 h-32 border-2 border-white/5 rounded-full group-hover:scale-125 group-hover:-rotate-90 transition-all duration-1000" />
+                
+                {/* Светящиеся точки */}
+                <div className="absolute top-20 right-20 w-2 h-2 bg-white/40 rounded-full animate-pulse" />
+                <div className="absolute bottom-20 left-20 w-2 h-2 bg-white/40 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
+                <div className="absolute top-32 right-32 w-1.5 h-1.5 bg-white/30 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+                
                 {/* Свечение сзади */}
                 <div className="absolute -inset-1 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"
                   style={{ background: `linear-gradient(135deg, ${feature.gradient})` }} />
