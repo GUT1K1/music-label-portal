@@ -95,10 +95,11 @@ export default function LandingFeaturesSection({
             >
               {/* 3D карточка с градиентом */}
               <div 
-                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden min-h-[420px] flex flex-col bg-black/20 backdrop-blur-sm"
+                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden min-h-[420px] flex flex-col"
                 style={{
-                  boxShadow: `${feature.shadow}, inset 0 1px 0 rgba(255,255,255,0.2)`,
-                  border: '1px solid rgba(255,255,255,0.2)'
+                  boxShadow: `${feature.shadow}`,
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  background: 'transparent'
                 }}
               >
                 
