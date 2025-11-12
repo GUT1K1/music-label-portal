@@ -92,51 +92,51 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
         </h1>
         
         <p className="text-lg md:text-2xl text-white max-w-4xl mx-auto mb-12 md:mb-16 leading-relaxed opacity-0 animate-fade-in-up px-4 font-medium" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>
-          Бесплатно выпускай треки на <span className="font-black bg-gradient-to-r from-purple-300 via-fuchsia-300 to-pink-300 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]">170+ площадок</span>. 
-          Лицензия на 7 лет, 50% роялти тебе, <span className="font-black bg-gradient-to-r from-cyan-300 via-blue-300 to-cyan-200 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(6,182,212,0.8)]">100% прав</span> твои.
+          Бесплатно выпускай треки на <span className="font-black bg-gradient-to-r from-yellow-300 via-gold-300 to-orange-300 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(234,179,8,0.9)]">170+ площадок</span>. 
+          Лицензия на 7 лет, 50% роялти тебе, <span className="font-black bg-gradient-to-r from-gold-300 via-yellow-300 to-gold-200 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(234,179,8,0.9)]">100% прав</span> твои.
         </p>
         
         <div className="flex flex-col sm:flex-row gap-5 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.2s', animationFillMode: 'forwards' }}>
           <a
             href="/app?demo=true"
-            className="group relative px-10 py-5 bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 rounded-2xl font-black text-xl text-white hover:shadow-2xl transition-all duration-500 active:scale-95 md:hover:scale-110 flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center border-2 border-purple-300/50"
+            className="group relative px-10 py-5 bg-gradient-to-r from-gold-600 via-orange-600 to-gold-600 rounded-2xl font-black text-xl text-black hover:shadow-2xl transition-all duration-500 active:scale-95 md:hover:scale-110 flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center border-2 border-gold-400/70"
             style={{
-              boxShadow: '0 0 60px rgba(168,85,247,0.6), 0 0 100px rgba(236,72,153,0.4)'
+              boxShadow: '0 0 60px rgba(234,179,8,0.7), 0 0 100px rgba(251,146,60,0.5)'
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500 via-pink-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <span className="relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]">🚀 Загрузить трек</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 via-gold-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <span className="relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.3)]">🚀 Загрузить трек</span>
             <Icon name="ArrowRight" className="group-hover:translate-x-2 transition-transform relative z-10" size={24} />
           </a>
           
           <a
             href="#features"
-            className="group relative px-10 py-5 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 rounded-2xl font-bold text-xl text-white transition-all duration-500 overflow-hidden active:scale-95 md:hover:scale-110 w-full sm:w-auto border-2 border-cyan-300/50"
+            className="group relative px-10 py-5 bg-gradient-to-r from-orange-600 via-red-600 to-orange-600 rounded-2xl font-bold text-xl text-white transition-all duration-500 overflow-hidden active:scale-95 md:hover:scale-110 w-full sm:w-auto border-2 border-orange-400/70"
             style={{
-              boxShadow: '0 0 60px rgba(6,182,212,0.5), 0 0 100px rgba(59,130,246,0.3)'
+              boxShadow: '0 0 60px rgba(249,115,22,0.6), 0 0 100px rgba(234,88,12,0.4)'
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-red-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <span className="relative z-10 drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]">Узнать больше</span>
           </a>
         </div>
         
         <div className="mt-20 md:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
-          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-purple-600/40 via-fuchsia-600/40 to-pink-600/40 backdrop-blur-xl border-2 border-purple-400/60 hover:border-fuchsia-300 hover:scale-105 transition-all duration-500" style={{ boxShadow: '0 0 40px rgba(168,85,247,0.5), 0 0 80px rgba(236,72,153,0.3), inset 0 0 60px rgba(168,85,247,0.2)' }}>
-            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-purple-200 via-fuchsia-200 to-pink-200 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_30px_rgba(168,85,247,1)] leading-tight">0₽</div>
-            <div className="text-xs md:text-sm text-purple-100 font-bold leading-snug">Бесплатный старт</div>
+          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-gold-600/50 via-yellow-600/50 to-orange-600/50 backdrop-blur-xl border-2 border-gold-400/70 hover:border-gold-300 hover:scale-105 transition-all duration-500" style={{ boxShadow: '0 0 50px rgba(234,179,8,0.6), 0 0 90px rgba(251,146,60,0.4), inset 0 0 60px rgba(234,179,8,0.2)' }}>
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-yellow-200 via-gold-200 to-orange-200 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_35px_rgba(234,179,8,1)] leading-tight">0₽</div>
+            <div className="text-xs md:text-sm text-gold-100 font-bold leading-snug">Бесплатный старт</div>
           </div>
-          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-cyan-600/40 via-blue-600/40 to-indigo-600/40 backdrop-blur-xl border-2 border-cyan-400/60 hover:border-blue-300 hover:scale-105 transition-all duration-500" style={{ boxShadow: '0 0 40px rgba(6,182,212,0.5), 0 0 80px rgba(59,130,246,0.3), inset 0 0 60px rgba(6,182,212,0.2)' }}>
-            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-cyan-200 via-blue-200 to-indigo-200 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_30px_rgba(6,182,212,1)] leading-tight">7 лет</div>
-            <div className="text-xs md:text-sm text-cyan-100 font-bold leading-snug">Срок лицензии</div>
+          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-600/50 via-gold-600/50 to-yellow-600/50 backdrop-blur-xl border-2 border-orange-400/70 hover:border-orange-300 hover:scale-105 transition-all duration-500" style={{ boxShadow: '0 0 50px rgba(249,115,22,0.6), 0 0 90px rgba(234,179,8,0.4), inset 0 0 60px rgba(249,115,22,0.2)' }}>
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-orange-200 via-gold-200 to-yellow-200 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_35px_rgba(249,115,22,1)] leading-tight">7 лет</div>
+            <div className="text-xs md:text-sm text-orange-100 font-bold leading-snug">Срок лицензии</div>
           </div>
-          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-pink-600/40 via-rose-600/40 to-orange-600/40 backdrop-blur-xl border-2 border-pink-400/60 hover:border-rose-300 hover:scale-105 transition-all duration-500" style={{ boxShadow: '0 0 40px rgba(236,72,153,0.5), 0 0 80px rgba(251,113,133,0.3), inset 0 0 60px rgba(236,72,153,0.2)' }}>
-            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-pink-200 via-rose-200 to-orange-200 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_30px_rgba(236,72,153,1)] leading-tight">100%</div>
-            <div className="text-xs md:text-sm text-pink-100 font-bold leading-snug">Твоё авторство</div>
+          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-yellow-600/50 via-orange-600/50 to-gold-600/50 backdrop-blur-xl border-2 border-yellow-400/70 hover:border-yellow-300 hover:scale-105 transition-all duration-500" style={{ boxShadow: '0 0 50px rgba(250,204,21,0.6), 0 0 90px rgba(251,146,60,0.4), inset 0 0 60px rgba(250,204,21,0.2)' }}>
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-yellow-200 via-orange-200 to-gold-200 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_35px_rgba(250,204,21,1)] leading-tight">100%</div>
+            <div className="text-xs md:text-sm text-yellow-100 font-bold leading-snug">Твоё авторство</div>
           </div>
-          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-orange-600/40 via-amber-600/40 to-yellow-600/40 backdrop-blur-xl border-2 border-orange-400/60 hover:border-amber-300 hover:scale-105 transition-all duration-500" style={{ boxShadow: '0 0 40px rgba(249,115,22,0.5), 0 0 80px rgba(251,191,36,0.3), inset 0 0 60px rgba(249,115,22,0.2)' }}>
-            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-orange-200 via-amber-200 to-yellow-200 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_30px_rgba(249,115,22,1)] leading-tight">170+</div>
-            <div className="text-xs md:text-sm text-orange-100 font-bold leading-snug">Платформ</div>
+          <div className="text-center group cursor-pointer p-4 md:p-6 rounded-3xl bg-gradient-to-br from-gold-600/50 via-orange-600/50 to-yellow-600/50 backdrop-blur-xl border-2 border-gold-400/70 hover:border-gold-300 hover:scale-105 transition-all duration-500" style={{ boxShadow: '0 0 50px rgba(234,179,8,0.6), 0 0 90px rgba(249,115,22,0.4), inset 0 0 60px rgba(234,179,8,0.2)' }}>
+            <div className="text-4xl md:text-6xl font-black bg-gradient-to-br from-gold-200 via-orange-200 to-yellow-200 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-all duration-500 drop-shadow-[0_0_35px_rgba(234,179,8,1)] leading-tight">170+</div>
+            <div className="text-xs md:text-sm text-gold-100 font-bold leading-snug">Платформ</div>
           </div>
         </div>
       </div>
