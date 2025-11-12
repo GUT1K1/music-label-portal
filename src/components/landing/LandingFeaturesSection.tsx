@@ -14,33 +14,37 @@ export default function LandingFeaturesSection({
       icon: "Upload",
       title: "Дистрибуция",
       description: "Загружай треки и альбомы — мы разместим их на 170+ платформах. Spotify, Apple Music, Яндекс.Музыка, VK. Лицензия на 7 лет.",
-      color: "from-purple-400 to-pink-400",
-      shadowColor: "rgba(168, 85, 247, 0.8)",
-      glowColor: "purple-500"
+      gradient: "from-purple-600/90 via-purple-500/90 to-pink-600/90",
+      iconBg: "from-purple-500 to-pink-500",
+      borderGlow: "rgba(168, 85, 247, 0.6)",
+      shadow: "0 30px 60px -15px rgba(168, 85, 247, 0.5)"
     },
     {
       icon: "Shield",
       title: "Твои права",
       description: "100% авторских прав остаются за тобой. Мы берём лицензию на 7 лет только для дистрибуции и сбора роялти. Контент — твой.",
-      color: "from-cyan-400 to-blue-400",
-      shadowColor: "rgba(6, 182, 212, 0.8)",
-      glowColor: "cyan-500"
+      gradient: "from-cyan-600/90 via-cyan-500/90 to-blue-600/90",
+      iconBg: "from-cyan-500 to-blue-500",
+      borderGlow: "rgba(6, 182, 212, 0.6)",
+      shadow: "0 30px 60px -15px rgba(6, 182, 212, 0.5)"
     },
     {
       icon: "Percent",
       title: "Честный сплит",
       description: "50% роялти получаешь ты, 50% — сервис. Без скрытых комиссий. Выплаты ежеквартально при балансе от 1500₽.",
-      color: "from-orange-400 to-red-400",
-      shadowColor: "rgba(249, 115, 22, 0.8)",
-      glowColor: "orange-500"
+      gradient: "from-orange-600/90 via-orange-500/90 to-red-600/90",
+      iconBg: "from-orange-500 to-red-500",
+      borderGlow: "rgba(249, 115, 22, 0.6)",
+      shadow: "0 30px 60px -15px rgba(249, 115, 22, 0.5)"
     },
     {
       icon: "BarChart3",
       title: "Аналитика",
       description: "Следи за успехом релизов в реальном времени. Прослушивания, география, доходы по каждой площадке — всё прозрачно.",
-      color: "from-emerald-400 to-teal-400",
-      shadowColor: "rgba(16, 185, 129, 0.8)",
-      glowColor: "emerald-500"
+      gradient: "from-emerald-600/90 via-emerald-500/90 to-teal-600/90",
+      iconBg: "from-emerald-500 to-teal-500",
+      borderGlow: "rgba(16, 185, 129, 0.6)",
+      shadow: "0 30px 60px -15px rgba(16, 185, 129, 0.5)"
     },
   ];
 
@@ -65,50 +69,67 @@ export default function LandingFeaturesSection({
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-10">
           {features.map((feature, i) => (
             <div
               key={i}
-              className="relative group p-8 md:p-12 bg-black/60 backdrop-blur-sm border-2 border-white/10 rounded-3xl transition-all duration-700 overflow-hidden cursor-pointer md:hover:-translate-y-3 hover:border-white/30"
-              style={{
-                transform: 'perspective(1500px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg))',
-                transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                boxShadow: `0 25px 50px -12px ${feature.shadowColor}, 0 0 0 1px ${feature.shadowColor}`
-              }}
+              className="relative group cursor-pointer"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
+              style={{
+                transform: 'perspective(1500px) rotateX(var(--rotate-x, 0deg)) rotateY(var(--rotate-y, 0deg))',
+                transition: 'transform 0.3s ease-out'
+              }}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-5 group-hover:opacity-20 transition-opacity duration-700`} />
-              
-              <div className={`absolute -top-20 -right-20 w-72 h-72 bg-gradient-to-br ${feature.color} opacity-40 rounded-full blur-3xl group-hover:scale-150 group-hover:opacity-70 transition-all duration-1000`} />
-              
-              <div className="absolute top-8 right-8 w-32 h-32 border-2 border-white/10 rounded-full group-hover:scale-150 group-hover:rotate-180 transition-all duration-1000" />
-              <div className="absolute bottom-8 left-8 w-24 h-24 border-2 border-white/5 rounded-full group-hover:scale-150 group-hover:-rotate-180 transition-all duration-1000" />
-              
-              <div className="relative mb-8">
-                <div className={`w-24 h-24 bg-gradient-to-br ${feature.color} rounded-3xl flex items-center justify-center group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 shadow-2xl`}
-                  style={{
-                    boxShadow: `0 15px 60px -5px ${feature.shadowColor}, 0 0 30px ${feature.shadowColor}`
-                  }}
-                >
-                  <Icon name={feature.icon as any} size={40} className="text-white relative z-10 drop-shadow-lg" />
+              {/* 3D карточка с градиентом */}
+              <div 
+                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, ${feature.gradient})`,
+                  boxShadow: `${feature.shadow}, inset 0 1px 0 rgba(255,255,255,0.1)`,
+                  border: '1px solid rgba(255,255,255,0.1)'
+                }}
+              >
+                {/* Эффект стекла сверху */}
+                <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Свечение сзади */}
+                <div className="absolute -inset-1 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"
+                  style={{ background: `linear-gradient(135deg, ${feature.gradient})` }} />
+                
+                {/* Иконка */}
+                <div className="relative mb-8 w-fit">
+                  <div 
+                    className={`w-20 h-20 bg-gradient-to-br ${feature.iconBg} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-500 relative z-10`}
+                    style={{
+                      boxShadow: `0 10px 40px -10px ${feature.borderGlow}, inset 0 1px 0 rgba(255,255,255,0.2)`
+                    }}
+                  >
+                    <Icon name={feature.icon as any} size={36} className="text-white" />
+                  </div>
+                  {/* Свечение под иконкой */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.iconBg} rounded-2xl blur-xl opacity-60 animate-pulse`} />
                 </div>
-                <div className={`absolute top-0 left-0 w-24 h-24 bg-gradient-to-br ${feature.color} rounded-3xl blur-3xl opacity-80 animate-pulse`} />
-              </div>
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-5">
-                  <h3 className={`text-4xl font-black bg-gradient-to-br ${feature.color} bg-clip-text text-transparent group-hover:scale-105 transition-all duration-300 drop-shadow-lg`}>
+                
+                {/* Контент */}
+                <div className="relative z-10">
+                  <h3 className="text-3xl font-black text-white mb-4 drop-shadow-lg">
                     {feature.title}
                   </h3>
-                  <div className={`h-1 flex-1 bg-gradient-to-r ${feature.color} opacity-30 group-hover:opacity-60 rounded-full transition-opacity duration-300`} />
+                  <p className="text-white/90 leading-relaxed text-lg font-medium">
+                    {feature.description}
+                  </p>
                 </div>
-                <p className="text-gray-300 leading-relaxed text-xl group-hover:text-white transition-colors duration-300 font-medium">
-                  {feature.description}
-                </p>
+                
+                {/* Нижняя подсветка */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/30 group-hover:h-2 transition-all duration-300" />
               </div>
               
-              <div className={`absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r ${feature.color} opacity-50 group-hover:opacity-100 transition-opacity duration-500 shadow-[0_0_20px_currentColor]`} />
+              {/* Тень под карточкой */}
+              <div 
+                className="absolute inset-0 rounded-[32px] -z-20 blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-500"
+                style={{ background: `linear-gradient(135deg, ${feature.gradient})` }} 
+              />
             </div>
           ))}
         </div>
