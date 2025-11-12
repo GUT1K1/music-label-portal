@@ -12,94 +12,8 @@ export default function LandingBottomSections({
   handleMouseLeave
 }: LandingBottomSectionsProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const scrollRef1 = useRef<HTMLDivElement>(null);
-  const scrollRef2 = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [currentScroll, setCurrentScroll] = useState<HTMLDivElement | null>(null);
-  const [isPaused1, setIsPaused1] = useState(false);
-  const [isPaused2, setIsPaused2] = useState(false);
-  const animationRef1 = useRef<number | null>(null);
-  const animationRef2 = useRef<number | null>(null);
 
-  const handleMouseDown = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement>, setPaused: (val: boolean) => void) => {
-    if (!ref.current) return;
-    setIsDragging(true);
-    setCurrentScroll(ref.current);
-    setStartX(e.pageX - ref.current.offsetLeft);
-    setScrollLeft(ref.current.scrollLeft);
-    setPaused(true);
-    ref.current.style.cursor = 'grabbing';
-  };
 
-  const handleMouseUp = (setPaused?: (val: boolean) => void) => {
-    setIsDragging(false);
-    if (currentScroll) {
-      currentScroll.style.cursor = 'grab';
-    }
-    if (setPaused) {
-      setTimeout(() => setPaused(false), 1000);
-    }
-  };
-
-  const handleMouseMoveScroll = (e: React.MouseEvent) => {
-    if (!isDragging || !currentScroll) return;
-    e.preventDefault();
-    const x = e.pageX - currentScroll.offsetLeft;
-    const walk = (x - startX) * 2;
-    currentScroll.scrollLeft = scrollLeft - walk;
-  };
-
-  const handleTouchStart = (e: React.TouchEvent, ref: React.RefObject<HTMLDivElement>, setPaused: (val: boolean) => void) => {
-    if (!ref.current) return;
-    setCurrentScroll(ref.current);
-    setStartX(e.touches[0].pageX - ref.current.offsetLeft);
-    setScrollLeft(ref.current.scrollLeft);
-    setPaused(true);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!currentScroll) return;
-    const x = e.touches[0].pageX - currentScroll.offsetLeft;
-    const walk = (x - startX) * 2;
-    currentScroll.scrollLeft = scrollLeft - walk;
-  };
-
-  // Автопрокрутка
-  useState(() => {
-    const scroll1 = () => {
-      if (!scrollRef1.current || isPaused1 || isDragging) {
-        animationRef1.current = requestAnimationFrame(scroll1);
-        return;
-      }
-      scrollRef1.current.scrollLeft += 1;
-      if (scrollRef1.current.scrollLeft >= scrollRef1.current.scrollWidth / 3) {
-        scrollRef1.current.scrollLeft = 0;
-      }
-      animationRef1.current = requestAnimationFrame(scroll1);
-    };
-
-    const scroll2 = () => {
-      if (!scrollRef2.current || isPaused2 || isDragging) {
-        animationRef2.current = requestAnimationFrame(scroll2);
-        return;
-      }
-      scrollRef2.current.scrollLeft -= 1;
-      if (scrollRef2.current.scrollLeft <= 0) {
-        scrollRef2.current.scrollLeft = scrollRef2.current.scrollWidth / 3;
-      }
-      animationRef2.current = requestAnimationFrame(scroll2);
-    };
-
-    animationRef1.current = requestAnimationFrame(scroll1);
-    animationRef2.current = requestAnimationFrame(scroll2);
-
-    return () => {
-      if (animationRef1.current) cancelAnimationFrame(animationRef1.current);
-      if (animationRef2.current) cancelAnimationFrame(animationRef2.current);
-    };
-  });
 
   const platforms1 = [
     { name: "Spotify", svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="#1DB954" d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-62.5-37-155.7-51.9-238.6-29.4-4.8 1.3-7.4 2.6-11.9 2.6-10.7 0-19.4-8.7-19.4-19.4s5.2-17.8 15.5-20.7c27.8-7.8 56.2-13.6 97.8-13.6 64.9 0 127.6 16.1 177 45.5 8.1 4.8 11.3 11 11.3 19.7-.1 10.8-8.5 19.5-19.4 19.5zm31-76.2c-5.2 0-8.4-1.3-12.9-3.9-71.2-42.5-198.5-52.7-280.9-29.7-3.6 1-8.1 2.6-12.9 2.6-13.2 0-23.3-10.3-23.3-23.6 0-13.6 8.4-21.3 17.4-23.9 35.2-10.3 74.6-15.2 117.5-15.2 73 0 149.5 15.2 205.4 47.8 7.8 4.5 12.9 10.7 12.9 22.6 0 13.6-11 23.3-23.2 23.3z"/></svg>`, size: 80 },
@@ -164,21 +78,10 @@ export default function LandingBottomSections({
             </p>
           </div>
           
-          <div className="relative space-y-6">
-            <div 
-              ref={scrollRef1}
-              className="overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
-              onMouseDown={(e) => handleMouseDown(e, scrollRef1, setIsPaused1)}
-              onMouseUp={() => handleMouseUp(setIsPaused1)}
-              onMouseLeave={() => handleMouseUp(setIsPaused1)}
-              onMouseMove={handleMouseMoveScroll}
-              onMouseEnter={() => setIsPaused1(true)}
-              onTouchStart={(e) => handleTouchStart(e, scrollRef1, setIsPaused1)}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={() => handleMouseUp(setIsPaused1)}
-            >
-              <div className="flex gap-8 py-4" style={{ width: 'max-content' }}>
-                {[...platforms1, ...platforms1, ...platforms1].map((platform, i) => (
+          <div className="relative space-y-8 overflow-hidden">
+            <div className="overflow-hidden">
+              <div className="flex gap-8 py-4 animate-scroll-right">
+                {[...platforms1, ...platforms1, ...platforms1, ...platforms1].map((platform, i) => (
                   <div
                     key={i}
                     className="group flex-shrink-0 relative select-none"
@@ -193,20 +96,9 @@ export default function LandingBottomSections({
               </div>
             </div>
 
-            <div 
-              ref={scrollRef2}
-              className="overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
-              onMouseDown={(e) => handleMouseDown(e, scrollRef2, setIsPaused2)}
-              onMouseUp={() => handleMouseUp(setIsPaused2)}
-              onMouseLeave={() => handleMouseUp(setIsPaused2)}
-              onMouseMove={handleMouseMoveScroll}
-              onMouseEnter={() => setIsPaused2(true)}
-              onTouchStart={(e) => handleTouchStart(e, scrollRef2, setIsPaused2)}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={() => handleMouseUp(setIsPaused2)}
-            >
-              <div className="flex gap-8 py-4" style={{ width: 'max-content' }}>
-                {[...platforms2, ...platforms2, ...platforms2].map((platform, i) => (
+            <div className="overflow-hidden">
+              <div className="flex gap-8 py-4 animate-scroll-left">
+                {[...platforms2, ...platforms2, ...platforms2, ...platforms2].map((platform, i) => (
                   <div
                     key={i}
                     className="group flex-shrink-0 relative select-none"
