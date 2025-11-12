@@ -95,27 +95,19 @@ export default function LandingFeaturesSection({
             >
               {/* 3D карточка с градиентом */}
               <div 
-                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden min-h-[420px] flex flex-col bg-black/40 backdrop-blur-xl"
+                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden min-h-[420px] flex flex-col bg-black/20 backdrop-blur-sm"
                 style={{
-                  boxShadow: `${feature.shadow}, inset 0 1px 0 rgba(255,255,255,0.1)`,
-                  border: '1px solid rgba(255,255,255,0.1)'
+                  boxShadow: `${feature.shadow}, inset 0 1px 0 rgba(255,255,255,0.2)`,
+                  border: '1px solid rgba(255,255,255,0.2)'
                 }}
               >
-                {/* Яркий цветной фон внутри */}
-                <div className="absolute inset-0" style={{
-                  background: `linear-gradient(135deg, ${feature.colorFrom}/40, ${feature.colorTo}/30)`,
-                  opacity: 0.8
-                }} />
-                
-                {/* Эффект стекла сверху */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 {/* ВАРИАНТ 1: Космическая туманность */}
                 {i === 0 && (
                   <>
-                    <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-purple-500/60 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '6s' }} />
-                    <div className="absolute -bottom-40 -left-40 w-[450px] h-[450px] bg-pink-500/50 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '7s', animationDelay: '1s' }} />
-                    <div className="absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-fuchsia-400/40 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+                    <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-purple-500 rounded-full blur-[100px] animate-pulse opacity-80" style={{ animationDuration: '6s' }} />
+                    <div className="absolute -bottom-40 -left-40 w-[450px] h-[450px] bg-pink-500 rounded-full blur-[100px] animate-pulse opacity-70" style={{ animationDuration: '7s', animationDelay: '1s' }} />
+                    <div className="absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-fuchsia-400 rounded-full blur-[80px] animate-pulse opacity-60" style={{ animationDuration: '5s', animationDelay: '2s' }} />
                     
                     {/* Плавающие звезды */}
                     {[...Array(12)].map((_, idx) => (
@@ -149,9 +141,9 @@ export default function LandingFeaturesSection({
                 {/* ВАРИАНТ 2: Океанские волны */}
                 {i === 1 && (
                   <>
-                    <div className="absolute -top-32 -right-32 w-[600px] h-[400px] bg-cyan-500/50 rounded-[50%] blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
-                    <div className="absolute -bottom-32 -left-32 w-[550px] h-[400px] bg-indigo-500/45 rounded-[50%] blur-[100px] animate-pulse" style={{ animationDuration: '9s', animationDelay: '2s' }} />
-                    <div className="absolute top-1/2 right-1/4 w-[350px] h-[350px] bg-blue-400/40 rounded-full blur-[90px] animate-pulse" style={{ animationDuration: '7s', animationDelay: '1s' }} />
+                    <div className="absolute -top-32 -right-32 w-[600px] h-[400px] bg-cyan-500 rounded-[50%] blur-[120px] animate-pulse opacity-75" style={{ animationDuration: '8s' }} />
+                    <div className="absolute -bottom-32 -left-32 w-[550px] h-[400px] bg-indigo-500 rounded-[50%] blur-[100px] animate-pulse opacity-70" style={{ animationDuration: '9s', animationDelay: '2s' }} />
+                    <div className="absolute top-1/2 right-1/4 w-[350px] h-[350px] bg-blue-400 rounded-full blur-[90px] animate-pulse opacity-60" style={{ animationDuration: '7s', animationDelay: '1s' }} />
                     
                     {/* Волновые линии */}
                     <div className="absolute top-1/4 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent animate-pulse" style={{ animationDuration: '4s' }} />
@@ -185,10 +177,10 @@ export default function LandingFeaturesSection({
                 {/* ВАРИАНТ 3: Огненный закат */}
                 {i === 2 && (
                   <>
-                    <div className="absolute -top-48 -right-48 w-[550px] h-[550px] bg-orange-500/70 rounded-full blur-[110px] animate-pulse" style={{ animationDuration: '5s' }} />
-                    <div className="absolute -bottom-48 -left-48 w-[500px] h-[500px] bg-red-500/60 rounded-full blur-[110px] animate-pulse" style={{ animationDuration: '6s', animationDelay: '1.5s' }} />
-                    <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-pink-500/50 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '7s', animationDelay: '3s' }} />
-                    <div className="absolute top-1/4 right-1/3 w-[280px] h-[280px] bg-yellow-400/45 rounded-full blur-[80px] animate-pulse" style={{ animationDuration: '4.5s', animationDelay: '0.5s' }} />
+                    <div className="absolute -top-48 -right-48 w-[550px] h-[550px] bg-orange-500 rounded-full blur-[110px] animate-pulse opacity-85" style={{ animationDuration: '5s' }} />
+                    <div className="absolute -bottom-48 -left-48 w-[500px] h-[500px] bg-red-500 rounded-full blur-[110px] animate-pulse opacity-75" style={{ animationDuration: '6s', animationDelay: '1.5s' }} />
+                    <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-pink-500 rounded-full blur-[100px] animate-pulse opacity-65" style={{ animationDuration: '7s', animationDelay: '3s' }} />
+                    <div className="absolute top-1/4 right-1/3 w-[280px] h-[280px] bg-yellow-400 rounded-full blur-[80px] animate-pulse opacity-60" style={{ animationDuration: '4.5s', animationDelay: '0.5s' }} />
                     
                     {/* Искры и частицы */}
                     {[...Array(20)].map((_, idx) => (
@@ -225,9 +217,9 @@ export default function LandingFeaturesSection({
                 {/* ВАРИАНТ 4: Изумрудный лес */}
                 {i === 3 && (
                   <>
-                    <div className="absolute -top-36 -right-36 w-[520px] h-[520px] bg-emerald-500/55 rounded-full blur-[110px] animate-pulse" style={{ animationDuration: '7s' }} />
-                    <div className="absolute -bottom-36 -left-36 w-[480px] h-[480px] bg-teal-500/50 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
-                    <div className="absolute top-1/3 left-1/2 w-[360px] h-[360px] bg-green-400/45 rounded-full blur-[90px] animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
+                    <div className="absolute -top-36 -right-36 w-[520px] h-[520px] bg-emerald-500 rounded-full blur-[110px] animate-pulse opacity-75" style={{ animationDuration: '7s' }} />
+                    <div className="absolute -bottom-36 -left-36 w-[480px] h-[480px] bg-teal-500 rounded-full blur-[100px] animate-pulse opacity-70" style={{ animationDuration: '8s', animationDelay: '2s' }} />
+                    <div className="absolute top-1/3 left-1/2 w-[360px] h-[360px] bg-green-400 rounded-full blur-[90px] animate-pulse opacity-60" style={{ animationDuration: '6s', animationDelay: '1s' }} />
                     
                     {/* Листья и лепестки */}
                     {[...Array(18)].map((_, idx) => (
