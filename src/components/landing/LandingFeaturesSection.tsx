@@ -87,24 +87,37 @@ export default function LandingFeaturesSection({
             >
               {/* 3D карточка с градиентом */}
               <div 
-                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden min-h-[420px] flex flex-col"
+                className="relative p-10 rounded-[32px] transition-all duration-500 group-hover:-translate-y-4 overflow-hidden min-h-[420px] flex flex-col bg-black/40 backdrop-blur-xl"
                 style={{
-                  background: `linear-gradient(135deg, ${feature.gradient})`,
                   boxShadow: `${feature.shadow}, inset 0 1px 0 rgba(255,255,255,0.1)`,
                   border: '1px solid rgba(255,255,255,0.1)'
                 }}
               >
+                {/* Яркий цветной фон внутри */}
+                <div className="absolute inset-0 opacity-90" style={{
+                  background: `radial-gradient(circle at 30% 30%, ${feature.gradient.replace('from-', '').split(' ')[0].split('-')[0]}-400/40, transparent 70%), radial-gradient(circle at 70% 70%, ${feature.gradient.split('to-')[1].split('-')[0]}-400/30, transparent 70%)`
+                }} />
+                
+                <div className="absolute inset-0" style={{
+                  background: `linear-gradient(135deg, ${feature.gradient.split(' ')[0].replace('from-', '')} 0%, ${feature.gradient.split(' ')[2].replace('via-', '')} 50%, ${feature.gradient.split(' ')[4].replace('to-', '')} 100%)`,
+                  opacity: 0.15
+                }} />
+                
                 {/* Эффект стекла сверху */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
                 {/* Большое свечение справа сверху */}
-                <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-                <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+                <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full blur-3xl" style={{
+                  background: `radial-gradient(circle, ${feature.gradient.split(' ')[0].replace('from-', '')}/50, transparent)`
+                }} />
+                <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full blur-3xl" style={{
+                  background: `radial-gradient(circle, ${feature.gradient.split(' ')[4].replace('to-', '')}/30, transparent)`
+                }} />
                 
                 {/* Цветные пятна */}
-                <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-yellow-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
-                <div className="absolute bottom-1/4 left-1/4 w-56 h-56 bg-pink-400/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
-                <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-cyan-400/25 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+                <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-yellow-300/40 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
+                <div className="absolute bottom-1/4 left-1/4 w-56 h-56 bg-pink-300/35 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+                <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-cyan-300/35 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
                 
                 {/* Парящие частицы */}
                 {[0, 1, 2, 3, 4].map((idx) => (
