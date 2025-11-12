@@ -13,7 +13,7 @@ export default function LandingFeaturesSection({
     {
       icon: "Upload",
       title: "Дистрибуция",
-      description: "Загружай треки и альбомы — мы разместим их на 50+ платформах. Spotify, Apple Music, Яндекс.Музыка, VK. Лицензия на 7 лет.",
+      description: "Загружай треки и альбомы — мы разместим их на 170+ платформах. Spotify, Apple Music, Яндекс.Музыка, VK. Лицензия на 7 лет.",
       color: "from-purple-500 to-pink-500",
       shadowColor: "rgba(168, 85, 247, 0.4)"
     },
