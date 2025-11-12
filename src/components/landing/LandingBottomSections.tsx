@@ -69,8 +69,11 @@ export default function LandingBottomSections({
   // Автопрокрутка
   useState(() => {
     const scroll1 = () => {
-      if (!scrollRef1.current || isPaused1 || isDragging) return;
-      scrollRef1.current.scrollLeft += 0.5;
+      if (!scrollRef1.current || isPaused1 || isDragging) {
+        animationRef1.current = requestAnimationFrame(scroll1);
+        return;
+      }
+      scrollRef1.current.scrollLeft += 1;
       if (scrollRef1.current.scrollLeft >= scrollRef1.current.scrollWidth / 3) {
         scrollRef1.current.scrollLeft = 0;
       }
@@ -78,8 +81,11 @@ export default function LandingBottomSections({
     };
 
     const scroll2 = () => {
-      if (!scrollRef2.current || isPaused2 || isDragging) return;
-      scrollRef2.current.scrollLeft -= 0.5;
+      if (!scrollRef2.current || isPaused2 || isDragging) {
+        animationRef2.current = requestAnimationFrame(scroll2);
+        return;
+      }
+      scrollRef2.current.scrollLeft -= 1;
       if (scrollRef2.current.scrollLeft <= 0) {
         scrollRef2.current.scrollLeft = scrollRef2.current.scrollWidth / 3;
       }
@@ -96,21 +102,25 @@ export default function LandingBottomSections({
   });
 
   const platforms1 = [
-    { name: "Spotify", icon: "Music", color: "from-green-500 to-emerald-500" },
-    { name: "Apple Music", icon: "Music2", color: "from-pink-500 to-rose-500" },
-    { name: "Яндекс.Музыка", icon: "Music3", color: "from-yellow-500 to-orange-500" },
-    { name: "VK Музыка", icon: "Music4", color: "from-blue-500 to-indigo-500" },
-    { name: "YouTube Music", icon: "Youtube", color: "from-red-500 to-pink-500" },
-    { name: "Deezer", icon: "Disc3", color: "from-orange-500 to-red-500" },
+    { name: "Spotify", logo: "https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png", bg: "bg-[#1DB954]" },
+    { name: "Apple Music", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Apple_Music_logo.svg/512px-Apple_Music_logo.svg.png", bg: "bg-gradient-to-br from-[#FA233B] to-[#FB5C74]" },
+    { name: "Яндекс.Музыка", logo: "https://music.yandex.ru/blocks/meta/i/og-image.png", bg: "bg-gradient-to-br from-yellow-400 to-yellow-600" },
+    { name: "YouTube Music", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Youtube_Music_icon.svg/512px-Youtube_Music_icon.svg.png", bg: "bg-[#FF0000]" },
+    { name: "VK Музыка", logo: "https://sun9-west.userapi.com/sun9-61/s/v1/ig2/yFYB5RQN77mFkQ38-S8lFb_TukF67P3PVDEbr0h4C0dCUIqILfpIuPvdQ93CYfB7YWaYhGjkPuIiZXBGq-gC_xW3.jpg?size=200x200&quality=95&crop=0,0,1080,1080&ava=1", bg: "bg-[#0077FF]" },
+    { name: "Deezer", logo: "https://e-cdns-images.dzcdn.net/images/common/deezer-logo-192x192.png", bg: "bg-gradient-to-br from-[#FF0092] to-[#FE4E4C]" },
+    { name: "Amazon Music", logo: "https://m.media-amazon.com/images/G/01/digital/music/player/web/US_AmazonMusicLogo.png", bg: "bg-gradient-to-br from-[#00A8E1] to-[#1E88E5]" },
+    { name: "Tidal", logo: "https://images.squarespace-cdn.com/content/v1/5b2ad610f2e6b10bb0788609/1529664033919-GOYTVZWP3IAVDBM83C04/tidal-logo.jpg", bg: "bg-black" },
   ];
 
   const platforms2 = [
-    { name: "SoundCloud", icon: "Cloud", color: "from-orange-400 to-red-400" },
-    { name: "Tidal", icon: "Waves", color: "from-cyan-500 to-blue-500" },
-    { name: "Amazon Music", icon: "ShoppingCart", color: "from-blue-400 to-cyan-400" },
-    { name: "Shazam", icon: "Radio", color: "from-blue-600 to-purple-600" },
-    { name: "Pandora", icon: "Music", color: "from-blue-500 to-indigo-500" },
-    { name: "TikTok", icon: "Video", color: "from-cyan-400 to-pink-400" },
+    { name: "SoundCloud", logo: "https://developers.soundcloud.com/assets/logo_black-4d0c6b7b4554a650d58c35f2b45cb0c6cbdf91dcfe73b387d8e3bf59bd8da43d.png", bg: "bg-[#FF5500]" },
+    { name: "Pandora", logo: "https://www.pandora.com/static/img/logos/pandora_logo_blue.svg", bg: "bg-gradient-to-br from-blue-500 to-blue-700" },
+    { name: "Shazam", logo: "https://www.shazam.com/static/images/shazam-logo-white.svg", bg: "bg-gradient-to-br from-[#0088FF] to-[#00C8FF]" },
+    { name: "TikTok", logo: "https://sf16-website-login.neutral.ttwstatic.com/obj/tiktok_web_login_static/tiktok/webapp/main/webapp-desktop/45ba9e062f28be5ba18f.png", bg: "bg-black" },
+    { name: "Instagram", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/512px-Instagram_logo_2016.svg.png", bg: "bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400" },
+    { name: "Napster", logo: "https://play-lh.googleusercontent.com/ww_WMmLhcQ8BhgT1EDnH3rLdcz7yYLnJXDPdCq0TKxBwu_WNJxPO8nK0y8z4ZUqWEQ", bg: "bg-black" },
+    { name: "Anghami", logo: "https://play-lh.googleusercontent.com/yrpTz4eCjm4N-_H3dJBbXP3rABD1WmBHTLpNQzD5LV3MqYVrqBB8fFLXzqxVp4vV9A", bg: "bg-gradient-to-br from-purple-500 to-purple-700" },
+    { name: "iHeartRadio", logo: "https://i.iheart.com/v3/url/aHR0cHM6Ly9pLmloZWFydC5jb20vdjMvY2F0YWxvZy9hcnRpc3QvMzMxNDY", bg: "bg-gradient-to-br from-red-500 to-red-700" },
   ];
 
   const faqs = [
@@ -167,16 +177,21 @@ export default function LandingBottomSections({
               onTouchMove={handleTouchMove}
               onTouchEnd={() => handleMouseUp(setIsPaused1)}
             >
-              <div className="flex gap-8 py-2" style={{ width: 'max-content' }}>
+              <div className="flex gap-6 py-2" style={{ width: 'max-content' }}>
                 {[...platforms1, ...platforms1, ...platforms1].map((platform, i) => (
                   <div
                     key={i}
                     className="group flex-shrink-0 relative select-none"
                   >
-                    <div className={`absolute -inset-2 bg-gradient-to-br ${platform.color} rounded-full blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300`} />
+                    <div className={`absolute -inset-2 ${platform.bg} rounded-2xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300`} />
                     
-                    <div className={`relative w-16 h-16 bg-gradient-to-br ${platform.color} rounded-2xl flex items-center justify-center group-hover:scale-125 transition-all duration-300 shadow-lg`}>
-                      <Icon name={platform.icon as any} size={32} className="text-white" />
+                    <div className={`relative w-24 h-24 ${platform.bg} rounded-2xl p-4 group-hover:scale-110 transition-all duration-300 shadow-2xl overflow-hidden backdrop-blur-sm border border-white/10`}>
+                      <img 
+                        src={platform.logo} 
+                        alt={platform.name}
+                        className="w-full h-full object-contain filter brightness-0 invert"
+                        draggable="false"
+                      />
                     </div>
                   </div>
                 ))}
@@ -195,16 +210,21 @@ export default function LandingBottomSections({
               onTouchMove={handleTouchMove}
               onTouchEnd={() => handleMouseUp(setIsPaused2)}
             >
-              <div className="flex gap-8 py-2" style={{ width: 'max-content' }}>
+              <div className="flex gap-6 py-2" style={{ width: 'max-content' }}>
                 {[...platforms2, ...platforms2, ...platforms2].map((platform, i) => (
                   <div
                     key={i}
                     className="group flex-shrink-0 relative select-none"
                   >
-                    <div className={`absolute -inset-2 bg-gradient-to-br ${platform.color} rounded-full blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300`} />
+                    <div className={`absolute -inset-2 ${platform.bg} rounded-2xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300`} />
                     
-                    <div className={`relative w-16 h-16 bg-gradient-to-br ${platform.color} rounded-2xl flex items-center justify-center group-hover:scale-125 transition-all duration-300 shadow-lg`}>
-                      <Icon name={platform.icon as any} size={32} className="text-white" />
+                    <div className={`relative w-24 h-24 ${platform.bg} rounded-2xl p-4 group-hover:scale-110 transition-all duration-300 shadow-2xl overflow-hidden backdrop-blur-sm border border-white/10`}>
+                      <img 
+                        src={platform.logo} 
+                        alt={platform.name}
+                        className="w-full h-full object-contain filter brightness-0 invert"
+                        draggable="false"
+                      />
                     </div>
                   </div>
                 ))}
