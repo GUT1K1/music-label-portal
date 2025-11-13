@@ -334,6 +334,7 @@ export default function ReleaseViewDialog({
           releaseDate={release.release_date}
           tracks={tracks}
           coverUrl={release.cover_url}
+          signatureDataUrl={release.contract_signature}
         />
       )}
     </Dialog>
