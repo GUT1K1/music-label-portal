@@ -99,7 +99,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'theme_name is required'})
                 }
             
-            allowed_themes = ['spring', 'summer', 'autumn', 'winter']
+            allowed_themes = ['spring', 'summer', 'autumn', 'winter', 'sunset', 'ocean', 'forest', 'cosmic']
             if theme_name not in allowed_themes:
                 return {
                     'statusCode': 400,

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import NotificationBell from '@/components/NotificationBell';
 import { API_ENDPOINTS } from '@/config/api';
+import { useTheme } from '@/contexts/ThemeContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +29,7 @@ interface AppHeaderProps {
 export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, onRefreshData, onWithdrawalClick, userRole, userId, userName = 'Пользователь', userAvatar, userBalance, isDemoMode = false }: AppHeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [balance, setBalance] = useState<number | null>(userBalance !== undefined ? userBalance : null);
+  const { currentTheme } = useTheme();
   
 
 
@@ -115,6 +117,11 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
             alt="420 Logo" 
             className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl shadow-2xl shadow-primary/50 group-hover:scale-110 transition-transform duration-300 border-2 border-primary/30"
           />
+          {currentTheme === 'winter' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-bounce" style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8))' }}>
+              🎅
+            </div>
+          )}
           <div className="hidden md:block absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-0 group-hover:opacity-75 transition-opacity duration-300 -z-10" />
         </div>
         <div>

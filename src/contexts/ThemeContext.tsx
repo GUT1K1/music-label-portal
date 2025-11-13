@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type ThemeName = 'spring' | 'summer' | 'autumn' | 'winter';
+export type ThemeName = 'spring' | 'summer' | 'autumn' | 'winter' | 'sunset' | 'ocean' | 'forest' | 'cosmic';
 
 interface ThemeColors {
   primary: string;
@@ -99,6 +99,82 @@ export const themes: Record<ThemeName, Theme> = {
       scrollbarThumb: 'rgba(96, 165, 250, 0.5)',
       scrollbarThumbHover: 'rgba(96, 165, 250, 0.7)',
       backgroundPattern: 'radial-gradient(circle at 70% 20%, rgba(96, 165, 250, 0.08) 0%, transparent 45%), radial-gradient(circle at 30% 80%, rgba(147, 197, 253, 0.06) 0%, transparent 50%)'
+    }
+  },
+  'sunset': {
+    name: 'sunset',
+    displayName: 'Закат',
+    description: 'Магия заходящего солнца',
+    icon: '🌅',
+    colors: {
+      primary: '15 90% 65%',
+      secondary: '340 85% 60%',
+      background: '25 40% 9%',
+      cardBg: '25 35% 12%',
+      foreground: '30 12% 92%',
+      sidebarBg: '25 38% 10%',
+      sidebarAccent: '25 30% 16%',
+      border: '25 25% 24%',
+      scrollbarThumb: 'rgba(251, 113, 133, 0.6)',
+      scrollbarThumbHover: 'rgba(251, 113, 133, 0.8)',
+      backgroundPattern: 'radial-gradient(circle at 50% 100%, rgba(251, 113, 133, 0.12) 0%, transparent 60%), radial-gradient(circle at 80% 10%, rgba(251, 146, 60, 0.08) 0%, transparent 50%)'
+    }
+  },
+  'ocean': {
+    name: 'ocean',
+    displayName: 'Океан',
+    description: 'Глубина морских волн',
+    icon: '🌊',
+    colors: {
+      primary: '195 85% 60%',
+      secondary: '170 70% 55%',
+      background: '195 50% 8%',
+      cardBg: '195 45% 11%',
+      foreground: '195 15% 93%',
+      sidebarBg: '195 48% 9%',
+      sidebarAccent: '195 40% 14%',
+      border: '195 30% 23%',
+      scrollbarThumb: 'rgba(34, 211, 238, 0.5)',
+      scrollbarThumbHover: 'rgba(34, 211, 238, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 20% 30%, rgba(34, 211, 238, 0.09) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.07) 0%, transparent 45%)'
+    }
+  },
+  'forest': {
+    name: 'forest',
+    displayName: 'Лес',
+    description: 'Тишина хвойного леса',
+    icon: '🌲',
+    colors: {
+      primary: '145 65% 55%',
+      secondary: '125 60% 50%',
+      background: '145 45% 9%',
+      cardBg: '145 40% 12%',
+      foreground: '145 12% 92%',
+      sidebarBg: '145 43% 10%',
+      sidebarAccent: '145 35% 15%',
+      border: '145 28% 24%',
+      scrollbarThumb: 'rgba(74, 222, 128, 0.5)',
+      scrollbarThumbHover: 'rgba(74, 222, 128, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 40% 20%, rgba(74, 222, 128, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(34, 197, 94, 0.06) 0%, transparent 45%)'
+    }
+  },
+  'cosmic': {
+    name: 'cosmic',
+    displayName: 'Космос',
+    description: 'Бесконечность звёздного неба',
+    icon: '🌌',
+    colors: {
+      primary: '270 85% 70%',
+      secondary: '290 75% 65%',
+      background: '260 55% 8%',
+      cardBg: '260 50% 11%',
+      foreground: '270 18% 93%',
+      sidebarBg: '260 53% 9%',
+      sidebarAccent: '260 45% 14%',
+      border: '260 35% 23%',
+      scrollbarThumb: 'rgba(167, 139, 250, 0.5)',
+      scrollbarThumbHover: 'rgba(167, 139, 250, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 30% 20%, rgba(167, 139, 250, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(192, 132, 252, 0.08) 0%, transparent 45%), radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 30%)'
     }
   }
 };
