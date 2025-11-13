@@ -2,28 +2,28 @@ import { Card } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 
 interface WizardStepReleaseTypeProps {
-  releaseType: 'single' | 'album' | 'ep' | null;
-  onSelect: (type: 'single' | 'album' | 'ep') => void;
+  releaseType: 'single' | 'maxi-single' | 'ep' | 'album' | null;
+  onSelect: (type: 'single' | 'maxi-single' | 'ep' | 'album') => void;
 }
 
 const RELEASE_TYPES = [
   {
     id: 'single' as const,
     title: 'Сингл',
-    subtitle: '1-3 трека',
-    description: 'Один основной трек или несколько связанных композиций',
+    subtitle: '1-2 трека',
+    description: 'Один основной трек или трек с ремиксом',
     icon: 'Music',
     gradient: 'from-blue-500/20 to-cyan-500/20',
     border: 'border-blue-500/30 hover:border-blue-500'
   },
   {
-    id: 'album' as const,
-    title: 'Альбом',
-    subtitle: '7+ треков',
-    description: 'Полноценный альбом с множеством композиций',
-    icon: 'Disc3',
-    gradient: 'from-purple-500/20 to-pink-500/20',
-    border: 'border-purple-500/30 hover:border-purple-500'
+    id: 'maxi-single' as const,
+    title: 'Макси-сингл',
+    subtitle: '3 трека',
+    description: 'Сингл с дополнительными версиями или би-сайдами',
+    icon: 'Music2',
+    gradient: 'from-green-500/20 to-emerald-500/20',
+    border: 'border-green-500/30 hover:border-green-500'
   },
   {
     id: 'ep' as const,
@@ -33,6 +33,15 @@ const RELEASE_TYPES = [
     icon: 'ListMusic',
     gradient: 'from-orange-500/20 to-red-500/20',
     border: 'border-orange-500/30 hover:border-orange-500'
+  },
+  {
+    id: 'album' as const,
+    title: 'Альбом',
+    subtitle: '7+ треков',
+    description: 'Полноценный альбом с множеством композиций',
+    icon: 'Disc3',
+    gradient: 'from-purple-500/20 to-pink-500/20',
+    border: 'border-purple-500/30 hover:border-purple-500'
   }
 ];
 
@@ -44,7 +53,7 @@ export default function WizardStepReleaseType({ releaseType, onSelect }: WizardS
         <p className="text-sm text-muted-foreground">Выберите тип вашего релиза</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         {RELEASE_TYPES.map((type) => (
           <Card
             key={type.id}

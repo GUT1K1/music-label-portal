@@ -64,7 +64,7 @@ export default function ReleaseWizard({
   onCancel
 }: ReleaseWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [releaseType, setReleaseType] = useState<'single' | 'album' | 'ep' | null>(null);
+  const [releaseType, setReleaseType] = useState<'single' | 'maxi-single' | 'ep' | 'album' | null>(null);
   const [requisites, setRequisites] = useState<ContractRequisites>({
     full_name: '',
     citizenship: '',

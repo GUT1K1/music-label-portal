@@ -14,7 +14,7 @@ interface WizardStepReviewProps {
   };
   coverPreview: string | null;
   tracks: Track[];
-  releaseType: 'single' | 'album' | 'ep' | null;
+  releaseType: 'single' | 'maxi-single' | 'ep' | 'album' | null;
   uploading: boolean;
   uploadProgress: number;
   currentUploadFile: string;
@@ -32,8 +32,9 @@ export default function WizardStepReview({
   const getReleaseTypeLabel = () => {
     switch (releaseType) {
       case 'single': return 'Сингл';
-      case 'album': return 'Альбом';
+      case 'maxi-single': return 'Макси-сингл';
       case 'ep': return 'EP';
+      case 'album': return 'Альбом';
       default: return 'Не указан';
     }
   };
