@@ -1,0 +1,31 @@
+{
+  "tests": [
+    {
+      "name": "Get current theme",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "theme_name": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Set theme as director",
+      "method": "POST",
+      "path": "/",
+      "headers": {
+        "X-User-Id": "1"
+      },
+      "body": {
+        "theme_name": "purple-cosmos"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "theme_name": "purple-cosmos"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

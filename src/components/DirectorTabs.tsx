@@ -19,6 +19,7 @@ import ReleaseModerationPanel from '@/components/ReleaseModerationPanel';
 import NewsView from '@/components/NewsView';
 import FinancialReportsUpload from '@/components/FinancialReportsUpload';
 import BlogManagement from '@/components/BlogManagement';
+import AppearanceSettings from '@/components/DirectorSettings/AppearanceSettings';
 import { Task } from '@/components/useTasks';
 import TasksTab from '@/components/TasksTab';
 import { useNotifications } from '@/contexts/NotificationContext';
@@ -247,6 +248,10 @@ export default function DirectorTabs({
               <Icon name="Users" className="w-4 h-4 text-primary" />
               Команда
             </TabsTrigger>
+            <TabsTrigger value="appearance" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
+              <Icon name="Palette" className="w-4 h-4 text-purple-500" />
+              Внешний вид
+            </TabsTrigger>
             <TabsTrigger value="reminders" className="transition-all duration-200 hover:scale-105 flex items-center gap-2">
               <Icon name="Bell" className="w-4 h-4 text-yellow-500 animate-pulse" />
               Напоминания
@@ -298,6 +303,10 @@ export default function DirectorTabs({
                 <UserActivityMonitor users={allUsers} />
               </TabsContent>
             </Tabs>
+          </TabsContent>
+          
+          <TabsContent value="appearance" className="animate-fadeIn">
+            <AppearanceSettings />
           </TabsContent>
           
           <TabsContent value="reminders" className="animate-fadeIn">
