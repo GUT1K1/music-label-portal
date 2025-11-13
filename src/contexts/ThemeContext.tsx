@@ -178,9 +178,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setTheme = async (themeName: ThemeName) => {
     try {
       const userId = localStorage.getItem('userId');
+      console.log('🎨 Setting theme:', { themeName, userId, apiUrl: THEME_API_URL });
+      
       if (!userId) {
         throw new Error('User not authenticated');
       }
+
+      const requestBody = { theme_name: themeName };
+      console.log('🎨 Request:', { method: 'POST', userId, body: requestBody });
 
       const response = await fetch(THEME_API_URL, {
         method: 'POST',
@@ -188,24 +193,31 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
           'Content-Type': 'application/json',
           'X-User-Id': userId
         },
-        body: JSON.stringify({ theme_name: themeName })
+        body: JSON.stringify(requestBody)
       });
+
+      console.log('🎨 Response status:', response.status, response.statusText);
 
       if (!response.ok) {
         let errorMessage = 'Failed to save theme';
         try {
           const error = await response.json();
+          console.error('🎨 Error response:', error);
           errorMessage = error.error || errorMessage;
-        } catch {
+        } catch (parseError) {
+          console.error('🎨 Failed to parse error:', parseError);
           errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         }
         throw new Error(errorMessage);
       }
 
+      const result = await response.json();
+      console.log('🎨 Success response:', result);
+
       setCurrentTheme(themeName);
       applyTheme(themeName);
     } catch (error) {
-      console.error('Failed to set theme:', error);
+      console.error('🎨 Failed to set theme:', error);
       if (error instanceof Error) {
         throw error;
       }
