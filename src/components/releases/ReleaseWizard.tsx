@@ -82,27 +82,36 @@ export default function ReleaseWizard({
       case 1:
         return releaseType !== null;
       case 2:
-        return newRelease.release_name && 
-               coverPreview && 
+        // Проверка основной информации
+        return newRelease.release_name.trim().length >= 1 && 
+               newRelease.release_name.length <= 100 &&
+               coverPreview !== null && 
                newRelease.release_date && 
+               new Date(newRelease.release_date) >= new Date(new Date().toISOString().split('T')[0]) &&
                newRelease.genre && 
                newRelease.title_language;
       case 3:
-        return requisites.full_name &&
+        // Проверка реквизитов с валидацией
+        const fullNameValid = requisites.full_name.trim().length >= 5 && /^[\u0400-\u04FF\s-]+$/.test(requisites.full_name);
+        const emailValid = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(requisites.email);
+        const innValid = requisites.inn_swift.length >= 8 && /^[0-9A-Z]+$/i.test(requisites.inn_swift);
+        
+        return fullNameValid &&
                requisites.citizenship &&
-               requisites.passport_data &&
-               requisites.inn_swift &&
-               requisites.bank_requisites &&
-               requisites.stage_name &&
-               requisites.email;
+               requisites.passport_data.trim().length >= 5 &&
+               innValid &&
+               requisites.bank_requisites.trim().length >= 10 &&
+               requisites.stage_name.trim().length >= 1 &&
+               emailValid;
       case 4:
+        // Проверка треков
         return tracks.length > 0 && tracks.every(t => 
           t.file && 
-          t.title && 
-          t.composer &&
-          t.author_music &&
-          t.author_lyrics &&
-          t.author_phonogram &&
+          t.title.trim().length >= 1 && 
+          t.composer.trim().length >= 1 &&
+          t.author_music && t.author_music.trim().length >= 1 &&
+          t.author_lyrics && t.author_lyrics.trim().length >= 1 &&
+          t.author_phonogram && t.author_phonogram.trim().length >= 1 &&
           t.language_audio &&
           t.explicit_content !== null &&
           t.lyrics_text &&
@@ -258,14 +267,19 @@ export default function ReleaseWizard({
               <div className="flex-1" />
 
               {currentStep < 5 ? (
-                <Button
-                  onClick={handleNext}
-                  disabled={!canGoNext() || uploading}
-                  className="gap-2"
-                >
-                  Далее
-                  <Icon name="ChevronRight" size={16} />
-                </Button>
+                <div className="flex flex-col items-end gap-1">
+                  <Button
+                    onClick={handleNext}
+                    disabled={!canGoNext() || uploading}
+                    className="gap-2"
+                  >
+                    Далее
+                    <Icon name="ChevronRight" size={16} />
+                  </Button>
+                  {!canGoNext() && (
+                    <p className="text-xs text-amber-500">Заполните все обязательные поля (*)</p>
+                  )}
+                </div>
               ) : currentStep === 5 ? (
                 <Button
                   onClick={handleNext}

@@ -111,7 +111,13 @@ export default function WizardStepBasicInfo({
               value={newRelease.release_name}
               onChange={(e) => setNewRelease({ ...newRelease, release_name: e.target.value })}
               className="h-11"
+              required
+              minLength={1}
+              maxLength={100}
             />
+            {newRelease.release_name.length > 80 && (
+              <p className="text-xs text-amber-500 mt-1">Осталось символов: {100 - newRelease.release_name.length}</p>
+            )}
           </div>
           
           <div className="grid md:grid-cols-2 gap-4">
@@ -122,7 +128,10 @@ export default function WizardStepBasicInfo({
                 value={newRelease.release_date}
                 onChange={(e) => setNewRelease({ ...newRelease, release_date: e.target.value })}
                 className="h-11"
+                required
+                min={new Date().toISOString().split('T')[0]}
               />
+              <p className="text-xs text-muted-foreground mt-1">Выберите дату в будущем</p>
             </div>
 
             <div>
@@ -166,6 +175,25 @@ export default function WizardStepBasicInfo({
           </div>
         </div>
       </div>
+
+      {/* Предупреждение о незаполненных полях */}
+      {(!newRelease.release_name || !coverPreview || !newRelease.release_date || !newRelease.genre || !newRelease.title_language) && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+          <div className="flex gap-3">
+            <Icon name="AlertCircle" size={20} className="text-amber-500 flex-shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-amber-600">Не все поля заполнены</p>
+              <ul className="text-xs text-muted-foreground space-y-0.5">
+                {!newRelease.release_name && <li>• Введите название релиза</li>}
+                {!coverPreview && <li>• Загрузите обложку (минимум 3000×3000px)</li>}
+                {!newRelease.release_date && <li>• Выберите дату релиза</li>}
+                {!newRelease.genre && <li>• Выберите жанр</li>}
+                {!newRelease.title_language && <li>• Выберите язык названия</li>}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Optional dates */}
       <div className="border-t pt-4">

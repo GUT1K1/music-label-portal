@@ -88,6 +88,9 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
               value={track.title}
               onChange={(e) => updateTrack(index, 'title', e.target.value)}
               className="text-sm"
+              required
+              minLength={1}
+              maxLength={100}
             />
           </div>
           <div>
@@ -97,6 +100,9 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
               value={track.composer}
               onChange={(e) => updateTrack(index, 'composer', e.target.value)}
               className="text-sm"
+              required
+              minLength={1}
+              maxLength={100}
             />
           </div>
           <div>
@@ -106,6 +112,8 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
               value={track.author_music || ''}
               onChange={(e) => updateTrack(index, 'author_music', e.target.value)}
               className="text-sm"
+              required
+              minLength={1}
             />
           </div>
           <div>
@@ -115,6 +123,8 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
               value={track.author_lyrics || ''}
               onChange={(e) => updateTrack(index, 'author_lyrics', e.target.value)}
               className="text-sm"
+              required
+              minLength={1}
             />
           </div>
           <div>
@@ -124,6 +134,8 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
               value={track.author_phonogram || ''}
               onChange={(e) => updateTrack(index, 'author_phonogram', e.target.value)}
               className="text-sm"
+              required
+              minLength={1}
             />
           </div>
           <div>

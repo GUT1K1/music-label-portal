@@ -128,9 +128,15 @@ export default function WizardStepRequisites({ requisites, onChange }: WizardSte
             <Input
               placeholder="Иванов Иван Иванович"
               value={requisites.full_name}
-              onChange={(e) => onChange('full_name', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^\u0400-\u04FF\s-]/g, '');
+                onChange('full_name', value);
+              }}
               className="h-11"
+              required
+              minLength={5}
             />
+            <p className="text-xs text-muted-foreground mt-1">Только кириллица, пробелы и дефисы</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
@@ -158,6 +164,9 @@ export default function WizardStepRequisites({ requisites, onChange }: WizardSte
                 value={requisites.stage_name}
                 onChange={(e) => onChange('stage_name', e.target.value)}
                 className="h-11"
+                required
+                minLength={1}
+                maxLength={50}
               />
             </div>
           </div>
@@ -167,11 +176,14 @@ export default function WizardStepRequisites({ requisites, onChange }: WizardSte
               Паспортные данные *
             </label>
             <Input
-              placeholder="GER: L8V2RCZ80"
+              placeholder="1234 567890 или GER: L8V2RCZ80"
               value={requisites.passport_data}
               onChange={(e) => onChange('passport_data', e.target.value)}
               className="h-11"
+              required
+              minLength={5}
             />
+            <p className="text-xs text-muted-foreground mt-1">Серия и номер паспорта</p>
           </div>
 
           <div>
@@ -179,11 +191,17 @@ export default function WizardStepRequisites({ requisites, onChange }: WizardSte
               ИНН/SWIFT код *
             </label>
             <Input
-              placeholder="772987898798"
+              placeholder="772987898798 или SABRRUMM"
               value={requisites.inn_swift}
-              onChange={(e) => onChange('inn_swift', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^0-9A-Z]/gi, '');
+                onChange('inn_swift', value);
+              }}
               className="h-11"
+              required
+              minLength={8}
             />
+            <p className="text-xs text-muted-foreground mt-1">Только цифры и буквы</p>
           </div>
 
           <div>
@@ -207,9 +225,12 @@ export default function WizardStepRequisites({ requisites, onChange }: WizardSte
               type="email"
               placeholder="mr-frank-eduard@web.de"
               value={requisites.email}
-              onChange={(e) => onChange('email', e.target.value)}
+              onChange={(e) => onChange('email', e.target.value.toLowerCase())}
               className="h-11"
+              required
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             />
+            <p className="text-xs text-muted-foreground mt-1">Действующий email адрес</p>
           </div>
         </div>
       </div>
