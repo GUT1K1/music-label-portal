@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
@@ -14,7 +14,7 @@ interface WizardStepTracksProps {
   handleBatchUpload: (files: FileList) => void;
 }
 
-export default function WizardStepTracks({
+const WizardStepTracks = memo(function WizardStepTracks({
   tracks,
   addTrack,
   removeTrack,
@@ -86,7 +86,7 @@ export default function WizardStepTracks({
       <div className="space-y-2">
         {tracks.map((track, index) => (
           <TrackItem
-            key={index}
+            key={`track-${index}-${track.track_number}`}
             track={track}
             index={index}
             totalTracks={tracks.length}
@@ -141,4 +141,6 @@ export default function WizardStepTracks({
       </div>
     </div>
   );
-}
+});
+
+export default WizardStepTracks;

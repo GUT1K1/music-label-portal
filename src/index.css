@@ -149,6 +149,22 @@
     scroll-behavior: smooth;
   }
 
+  input,
+  textarea,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
+
   body {
     @apply text-foreground;
     background: #000000;

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
@@ -20,7 +20,7 @@ interface WizardStepBasicInfoProps {
   handleCoverChange: (file: File | null) => void;
 }
 
-export default function WizardStepBasicInfo({
+const WizardStepBasicInfo = memo(function WizardStepBasicInfo({
   newRelease,
   setNewRelease,
   coverPreview,
@@ -226,4 +226,6 @@ export default function WizardStepBasicInfo({
       </div>
     </div>
   );
-}
+});
+
+export default WizardStepBasicInfo;

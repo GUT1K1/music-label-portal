@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -76,6 +76,12 @@ export default function ReleaseWizard({
   });
   const [contractSignature, setContractSignature] = useState<string | null>(null);
   const [contractPdfUrl, setContractPdfUrl] = useState<string | null>(null);
+
+  const memoizedTracks = useMemo(() => tracks, [tracks]);
+  const memoizedUpdateTrack = useCallback(updateTrack, [updateTrack]);
+  const memoizedRemoveTrack = useCallback(removeTrack, [removeTrack]);
+  const memoizedMoveTrack = useCallback(moveTrack, [moveTrack]);
+  const memoizedHandleBatchUpload = useCallback(handleBatchUpload, [handleBatchUpload]);
 
   const canGoNext = () => {
     switch (currentStep) {
@@ -209,12 +215,12 @@ export default function ReleaseWizard({
 
           {currentStep === 4 && (
             <WizardStepTracks
-              tracks={tracks}
+              tracks={memoizedTracks}
               addTrack={addTrack}
-              removeTrack={removeTrack}
-              updateTrack={updateTrack}
-              moveTrack={moveTrack}
-              handleBatchUpload={handleBatchUpload}
+              removeTrack={memoizedRemoveTrack}
+              updateTrack={memoizedUpdateTrack}
+              moveTrack={memoizedMoveTrack}
+              handleBatchUpload={memoizedHandleBatchUpload}
             />
           )}
 

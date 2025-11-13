@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -36,7 +37,7 @@ const CITIZENSHIPS = [
   'Другое'
 ];
 
-export default function WizardStepRequisites({ requisites, onChange }: WizardStepRequisitesProps) {
+const WizardStepRequisites = memo(function WizardStepRequisites({ requisites, onChange }: WizardStepRequisitesProps) {
   // Автогенерация номера договора (уникальный на основе времени)
   const contractNumber = `420-${Date.now().toString().slice(-6)}`;
   
@@ -249,4 +250,6 @@ export default function WizardStepRequisites({ requisites, onChange }: WizardSte
       </div>
     </div>
   );
-}
+});
+
+export default WizardStepRequisites;

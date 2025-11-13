@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, memo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,7 +20,7 @@ interface TrackItemProps {
   isDragging: boolean;
 }
 
-export default function TrackItem({ track, index, totalTracks, updateTrack, removeTrack, moveTrack, onDragStart, onDragOver, onDrop, isDragging }: TrackItemProps) {
+const TrackItem = memo(function TrackItem({ track, index, totalTracks, updateTrack, removeTrack, moveTrack, onDragStart, onDragOver, onDrop, isDragging }: TrackItemProps) {
   // Memoize callbacks
   const handleDragStart = useCallback(() => onDragStart(index), [onDragStart, index]);
   const handleDragOver = useCallback((e: React.DragEvent) => onDragOver(e, index), [onDragOver, index]);
@@ -28,6 +28,46 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
   const handleRemove = useCallback(() => removeTrack(index), [removeTrack, index]);
   const handleMoveUp = useCallback(() => moveTrack(index, 'up'), [moveTrack, index]);
   const handleMoveDown = useCallback(() => moveTrack(index, 'down'), [moveTrack, index]);
+  
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateTrack(index, 'title', e.target.value);
+  }, [updateTrack, index]);
+  
+  const handleComposerChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateTrack(index, 'composer', e.target.value);
+  }, [updateTrack, index]);
+  
+  const handleAuthorMusicChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateTrack(index, 'author_music', e.target.value);
+  }, [updateTrack, index]);
+  
+  const handleAuthorLyricsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateTrack(index, 'author_lyrics', e.target.value);
+  }, [updateTrack, index]);
+  
+  const handleAuthorPhonogramChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateTrack(index, 'author_phonogram', e.target.value);
+  }, [updateTrack, index]);
+  
+  const handleLanguageChange = useCallback((value: string) => {
+    updateTrack(index, 'language_audio', value);
+  }, [updateTrack, index]);
+  
+  const handleExplicitChange = useCallback((value: string) => {
+    updateTrack(index, 'explicit_content', value === 'true');
+  }, [updateTrack, index]);
+  
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateTrack(index, 'file', e.target.files?.[0]);
+  }, [updateTrack, index]);
+  
+  const handleLyricsChange = useCallback((value: string) => {
+    updateTrack(index, 'lyrics_text', value);
+  }, [updateTrack, index]);
+  
+  const handlePreviewChange = useCallback((value: string) => {
+    updateTrack(index, 'tiktok_preview_start', parseInt(value) || 0);
+  }, [updateTrack, index]);
 
   return (
     <Card 
@@ -35,7 +75,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      className={`border-l-4 border-l-primary/30 md:hover:border-l-primary transition-all cursor-move ${
+      className={`border-l-4 border-l-primary/30 md:hover:border-l-primary will-change-transform ${
         isDragging ? 'opacity-50 scale-95' : ''
       }`}
     >
@@ -86,7 +126,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             <Input
               placeholder="Название трека"
               value={track.title}
-              onChange={(e) => updateTrack(index, 'title', e.target.value)}
+              onChange={handleTitleChange}
               className="text-sm"
               required
               minLength={1}
@@ -98,7 +138,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             <Input
               placeholder="Имя артиста"
               value={track.composer}
-              onChange={(e) => updateTrack(index, 'composer', e.target.value)}
+              onChange={handleComposerChange}
               className="text-sm"
               required
               minLength={1}
@@ -110,7 +150,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             <Input
               placeholder="Автор музыки"
               value={track.author_music || ''}
-              onChange={(e) => updateTrack(index, 'author_music', e.target.value)}
+              onChange={handleAuthorMusicChange}
               className="text-sm"
               required
               minLength={1}
@@ -121,7 +161,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             <Input
               placeholder="Автор текста"
               value={track.author_lyrics || ''}
-              onChange={(e) => updateTrack(index, 'author_lyrics', e.target.value)}
+              onChange={handleAuthorLyricsChange}
               className="text-sm"
               required
               minLength={1}
@@ -132,7 +172,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             <Input
               placeholder="Автор фонограммы"
               value={track.author_phonogram || ''}
-              onChange={(e) => updateTrack(index, 'author_phonogram', e.target.value)}
+              onChange={handleAuthorPhonogramChange}
               className="text-sm"
               required
               minLength={1}
@@ -140,7 +180,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
           </div>
           <div>
             <label className="text-xs sm:text-sm font-medium mb-1.5 block">Язык аудио *</label>
-            <Select value={track.language_audio} onValueChange={(value) => updateTrack(index, 'language_audio', value)}>
+            <Select value={track.language_audio} onValueChange={handleLanguageChange}>
               <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Выберите язык" />
               </SelectTrigger>
@@ -155,8 +195,8 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             <label className="text-xs sm:text-sm font-medium mb-1.5 block">Наличие мата *</label>
             <Select 
               value={track.explicit_content === null ? '' : track.explicit_content ? 'true' : 'false'} 
-              onValueChange={(value) => updateTrack(index, 'explicit_content', value === 'true')}
-            >
+              onValueChange={handleExplicitChange}
+            />
               <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Выберите" />
               </SelectTrigger>
@@ -173,7 +213,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
               <Input
                 type="file"
                 accept=".wav"
-                onChange={(e) => updateTrack(index, 'file', e.target.files?.[0])}
+                onChange={handleFileChange}
                 className="cursor-pointer text-sm"
               />
             </div>
@@ -211,7 +251,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
             <Textarea
               placeholder="Введите текст песни..."
               value={track.lyrics_text || ''}
-              onChange={(e) => updateTrack(index, 'lyrics_text', e.target.value)}
+              onChange={(e) => handleLyricsChange(e.target.value)}
               rows={4}
               className="resize-none text-sm"
             />
@@ -222,7 +262,7 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
               type="number"
               placeholder="0"
               value={track.tiktok_preview_start ?? ''}
-              onChange={(e) => updateTrack(index, 'tiktok_preview_start', parseInt(e.target.value) || 0)}
+              onChange={(e) => handlePreviewChange(e.target.value)}
               className="text-sm"
             />
             <p className="text-xs text-muted-foreground mt-1.5">
@@ -233,4 +273,6 @@ export default function TrackItem({ track, index, totalTracks, updateTrack, remo
       </CardContent>
     </Card>
   );
-}
+});
+
+export default TrackItem;
