@@ -21,6 +21,8 @@ export default function Index() {
   const urlParams = new URLSearchParams(window.location.search);
   const isDemoMode = urlParams.get('demo') === 'true';
   const useSidebar = urlParams.get('sidebar') === 'true';
+  
+  console.log('🎨 Menu variant:', { useSidebar, search: window.location.search });
 
   useEffect(() => {
     const handleVKCallback = async () => {
@@ -31,9 +33,9 @@ export default function Index() {
       }
       
       console.log('🔍 Checking for VK callback params...', window.location.search);
-      const urlParams = new URLSearchParams(window.location.search);
-      const vkCode = urlParams.get('code');
-      const vkState = urlParams.get('state');
+      const vkParams = new URLSearchParams(window.location.search);
+      const vkCode = vkParams.get('code');
+      const vkState = vkParams.get('state');
       
       console.log('🔍 VK params:', { vkCode, vkState });
       
@@ -74,7 +76,7 @@ export default function Index() {
           return;
         }
         
-        const deviceIdFromUrl = urlParams.get('device_id'); // VK возвращает device_id в callback
+        const deviceIdFromUrl = vkParams.get('device_id'); // VK возвращает device_id в callback
         
         try {
           const response = await fetch('https://functions.poehali.dev/cb96d937-901e-4d21-aba2-d06bf4504cd9', {
