@@ -24,6 +24,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Marketing = lazy(() => import("./pages/Marketing"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Blog = lazy(() => import("./pages/Blog"));
+const MenuDemo = lazy(() => import("./pages/MenuDemo"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,6 +85,7 @@ const App = () => (
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<Blog />} />
+                  <Route path="/menu-demo" element={<MenuDemo />} />
                   <Route path="*" element={<NotFoundCustom />} />
                 </Routes>
               </Suspense>
