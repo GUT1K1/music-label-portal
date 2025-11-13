@@ -8,6 +8,7 @@ import { TelegramLink } from '@/components/UserProfile/TelegramLink';
 import CountdownCard from '@/components/NewsView/CountdownCard';
 import BalanceCard from '@/components/NewsView/BalanceCard';
 import NewsTypeFilter from '@/components/NewsView/NewsTypeFilter';
+import Icon from '@/components/ui/icon';
 import { useNewsData } from '@/components/NewsView/useNewsData';
 import { useJobsData } from '@/components/NewsView/useJobsData';
 import { useCountdown } from '@/components/NewsView/useCountdown';
@@ -22,6 +23,7 @@ interface NewsViewProps {
 
 export default function NewsView({ userRole, userId, telegramLinked = false, userBalance = 0, onRefreshData }: NewsViewProps) {
   const [selectedType, setSelectedType] = useState<string>('update');
+  const [layoutMode, setLayoutMode] = useState<'list' | 'grid' | 'masonry'>('list');
   
   const countdown = useCountdown();
   
@@ -70,15 +72,59 @@ export default function NewsView({ userRole, userId, telegramLinked = false, use
       </div>
 
       <div className="space-y-3 md:space-y-4">
-        <NewsTypeFilter
-          selectedType={selectedType}
-          onTypeChange={setSelectedType}
-          canManage={canManage}
-          onCreateNews={() => setIsCreating(true)}
-          onCreateJob={() => setIsCreatingJob(true)}
-        />
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <NewsTypeFilter
+            selectedType={selectedType}
+            onTypeChange={setSelectedType}
+            canManage={canManage}
+            onCreateNews={() => setIsCreating(true)}
+            onCreateJob={() => setIsCreatingJob(true)}
+          />
+          
+          <div className="flex gap-2">
+            <button
+              onClick={() => setLayoutMode('list')}
+              className={`p-2 rounded-lg transition-colors ${
+                layoutMode === 'list' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-white/5 text-white/70 hover:bg-white/10'
+              }`}
+              title="Список"
+            >
+              <Icon name="List" className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setLayoutMode('grid')}
+              className={`p-2 rounded-lg transition-colors ${
+                layoutMode === 'grid' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-white/5 text-white/70 hover:bg-white/10'
+              }`}
+              title="Сетка"
+            >
+              <Icon name="Grid3x3" className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setLayoutMode('masonry')}
+              className={`p-2 rounded-lg transition-colors ${
+                layoutMode === 'masonry' 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-white/5 text-white/70 hover:bg-white/10'
+              }`}
+              title="Мозаика"
+            >
+              <Icon name="LayoutGrid" className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
 
-        <div className="space-y-4">
+        <div className={
+          layoutMode === 'list' 
+            ? 'space-y-4'
+            : layoutMode === 'grid'
+            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
+            : 'columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4'
+        }>
           {selectedType === 'job' ? (
             jobs.length === 0 ? (
               <Card className="p-8 text-center text-white/50 bg-white/5 border-white/10">
@@ -86,13 +132,14 @@ export default function NewsView({ userRole, userId, telegramLinked = false, use
               </Card>
             ) : (
               jobs.map((job) => (
-                <JobCard
-                  key={job.id}
-                  job={job}
-                  userRole={userRole}
-                  onEdit={startJobEdit}
-                  onDelete={handleDeleteJob}
-                />
+                <div key={job.id} className={layoutMode === 'masonry' ? 'break-inside-avoid mb-4' : ''}>
+                  <JobCard
+                    job={job}
+                    userRole={userRole}
+                    onEdit={startJobEdit}
+                    onDelete={handleDeleteJob}
+                  />
+                </div>
               ))
             )
           ) : (
@@ -102,14 +149,15 @@ export default function NewsView({ userRole, userId, telegramLinked = false, use
               </Card>
             ) : (
               filteredNews.map((item) => (
-                <NewsCard
-                  key={item.id}
-                  item={item}
-                  userRole={userRole}
-                  userId={userId}
-                  onEdit={startEdit}
-                  onDelete={handleDeleteNews}
-                />
+                <div key={item.id} className={layoutMode === 'masonry' ? 'break-inside-avoid mb-4' : ''}>
+                  <NewsCard
+                    item={item}
+                    userRole={userRole}
+                    userId={userId}
+                    onEdit={startEdit}
+                    onDelete={handleDeleteNews}
+                  />
+                </div>
               ))
             )
           )}
