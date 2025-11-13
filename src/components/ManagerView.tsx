@@ -11,6 +11,7 @@ import AppHeader from '@/components/AppHeader';
 import UserProfile from '@/components/UserProfile';
 import NewsView from '@/components/NewsView';
 import FinancialReportsUpload from '@/components/FinancialReportsUpload';
+import AppearanceSettings from '@/components/DirectorSettings/AppearanceSettings';
 import { User } from '@/types';
 import { Task } from '@/components/useTasks';
 import { useNotifications } from '@/contexts/NotificationContext';
@@ -120,6 +121,10 @@ export default function ManagerView({
                 <Icon name="Wallet" className="w-4 h-4 text-green-500" />
                 <span>Финансы</span>
               </TabsTrigger>
+              <TabsTrigger value="theme" className="flex items-center gap-2 px-4 py-2.5 whitespace-nowrap">
+                <Icon name="Palette" className="w-4 h-4 text-pink-500" />
+                <span>Тема</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -166,6 +171,10 @@ export default function ManagerView({
 
           <TabsContent value="kpi">
             <ManagerStats userId={user.id} />
+          </TabsContent>
+
+          <TabsContent value="theme">
+            <AppearanceSettings userId={user.id} />
           </TabsContent>
         </Tabs>
 

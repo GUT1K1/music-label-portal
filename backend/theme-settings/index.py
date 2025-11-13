@@ -5,10 +5,10 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Управление темой оформления сайта
+    Business: Управление персональной темой оформления для каждого пользователя
     Args: event - dict с httpMethod, body, headers
           context - объект с request_id
-    Returns: HTTP response с текущей темой или результатом сохранения
+    Returns: HTTP response с темой пользователя или результатом сохранения
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -39,29 +39,35 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         if method == 'GET':
-            cursor.execute('''
-                SELECT theme_name, updated_at, updated_by 
-                FROM site_settings 
-                ORDER BY updated_at DESC 
-                LIMIT 1
-            ''')
-            result = cursor.fetchone()
+            headers = event.get('headers', {})
+            user_id_str = headers.get('X-User-Id') or headers.get('x-user-id')
             
-            if result:
-                theme_data = {
-                    'theme_name': result[0],
-                    'updated_at': result[1].isoformat() if result[1] else None,
-                    'updated_by': result[2]
+            if user_id_str:
+                user_id = int(user_id_str)
+                cursor.execute(
+                    'SELECT theme_preference FROM t_p35759334_music_label_portal.users WHERE id = %s',
+                    (user_id,)
+                )
+                result = cursor.fetchone()
+                
+                if result and result[0]:
+                    theme_name = result[0]
+                else:
+                    theme_name = 'default'
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'theme_name': theme_name})
                 }
             else:
-                theme_data = {'theme_name': 'default', 'updated_at': None, 'updated_by': None}
-            
-            return {
-                'statusCode': 200,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'isBase64Encoded': False,
-                'body': json.dumps(theme_data)
-            }
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'theme_name': 'default'})
+                }
         
         elif method == 'POST':
             headers = event.get('headers', {})
@@ -76,17 +82,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             user_id = int(user_id_str)
-            
-            cursor.execute('SELECT role FROM users WHERE id = %s', (user_id,))
-            user_role = cursor.fetchone()
-            
-            if not user_role or user_role[0] != 'director':
-                return {
-                    'statusCode': 403,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'isBase64Encoded': False,
-                    'body': json.dumps({'error': 'Only directors can change theme'})
-                }
             
             body_data = json.loads(event.get('body', '{}'))
             theme_name = body_data.get('theme_name')
@@ -109,8 +104,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             cursor.execute('''
-                INSERT INTO site_settings (theme_name, updated_at, updated_by)
-                VALUES (%s, CURRENT_TIMESTAMP, %s)
+                UPDATE t_p35759334_music_label_portal.users
+                SET theme_preference = %s
+                WHERE id = %s
             ''', (theme_name, user_id))
             conn.commit()
             

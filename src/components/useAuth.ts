@@ -4,6 +4,25 @@ import { logActivity } from '@/utils/activityLogger';
 import { User, API_URLS } from '@/types';
 import { cookies } from '@/utils/cookies';
 import { normalizeUser } from '@/utils/userHelpers';
+import { applyTheme } from '@/contexts/ThemeContext';
+
+const THEME_API_URL = 'https://functions.poehali.dev/92c94673-4ea2-4dd2-a145-93a60cd5b93d';
+
+async function loadUserTheme(userId: number) {
+  try {
+    const response = await fetch(THEME_API_URL, {
+      headers: { 'X-User-Id': userId.toString() }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      if (data.theme_name) {
+        applyTheme(data.theme_name);
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load user theme:', error);
+  }
+}
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -18,12 +37,15 @@ export const useAuth = () => {
         
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('userId', userData.id.toString());
         cookies.set('user_id', userData.id.toString(), 30);
         cookies.set('user_session', btoa(JSON.stringify({ id: userData.id, role: userData.role })), 30);
         
         const source = vkData ? 'VK' : 'Telegram';
         logActivity(userData.id, 'login', `Пользователь ${userData.full_name || userData.username} вошёл через ${source}`);
         toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name || userData.username}` });
+        
+        await loadUserTheme(userData.id);
         return;
       }
 
@@ -50,10 +72,13 @@ export const useAuth = () => {
         const userData = normalizeUser(data.user);
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('userId', userData.id.toString());
         cookies.set('user_id', userData.id.toString(), 30);
         cookies.set('user_session', btoa(JSON.stringify({ id: userData.id, role: userData.role })), 30);
         logActivity(userData.id, 'login', `Пользователь ${userData.full_name || userData.username} вошёл в систему`);
         toast({ title: '✅ Вход выполнен', description: `Добро пожаловать, ${userData.full_name || userData.username}` });
+        
+        await loadUserTheme(userData.id);
       } else {
         toast({ title: '❌ Ошибка', description: data.error, variant: 'destructive' });
       }
@@ -65,8 +90,10 @@ export const useAuth = () => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('userId');
     cookies.remove('user_id');
     cookies.remove('user_session');
+    applyTheme('default');
     toast({ title: 'Вы вышли из системы' });
   };
 
@@ -153,6 +180,8 @@ export const useAuth = () => {
       const userData = normalizeUser(JSON.parse(savedUser));
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
+      
+      loadUserTheme(userData.id);
       
       setTimeout(() => {
         fetch(`${API_URLS.users}?id=${userData.id}`, {

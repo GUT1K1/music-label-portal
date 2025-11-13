@@ -4,7 +4,7 @@ import { themes } from './theme-definitions';
 import { applyTheme } from './theme-utils';
 
 export type { ThemeName, Theme };
-export { themes };
+export { themes, applyTheme };
 
 const THEME_API_URL = 'https://functions.poehali.dev/92c94673-4ea2-4dd2-a145-93a60cd5b93d';
 
@@ -18,13 +18,22 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [currentTheme, setCurrentTheme] = useState<ThemeName>('summer');
+  const [currentTheme, setCurrentTheme] = useState<ThemeName>('default');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    applyTheme('default');
+    
     async function loadTheme() {
       try {
-        const response = await fetch(THEME_API_URL);
+        const userId = localStorage.getItem('userId');
+        const headers: Record<string, string> = {};
+        
+        if (userId) {
+          headers['X-User-Id'] = userId;
+        }
+        
+        const response = await fetch(THEME_API_URL, { headers });
         if (response.ok) {
           const data = await response.json();
           const themeName = data.theme_name as ThemeName;

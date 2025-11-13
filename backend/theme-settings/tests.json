@@ -11,7 +11,7 @@
       "bodyMatcher": "partial"
     },
     {
-      "name": "Set theme as director",
+      "name": "Set personal theme",
       "method": "POST",
       "path": "/",
       "headers": {
