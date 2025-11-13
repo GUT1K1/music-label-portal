@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type ThemeName = 'spring' | 'summer' | 'autumn' | 'winter' | 'sunset' | 'ocean' | 'forest' | 'cosmic';
+export type ThemeName = 'spring' | 'summer' | 'autumn' | 'winter' | 'sunset' | 'ocean' | 'forest' | 'cosmic' | 'lavender' | 'cherry' | 'mint' | 'amber' | 'neon' | 'midnight' | 'peach' | 'emerald';
 
 interface ThemeColors {
   primary: string;
@@ -175,6 +175,158 @@ export const themes: Record<ThemeName, Theme> = {
       scrollbarThumb: 'rgba(167, 139, 250, 0.5)',
       scrollbarThumbHover: 'rgba(167, 139, 250, 0.7)',
       backgroundPattern: 'radial-gradient(circle at 30% 20%, rgba(167, 139, 250, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(192, 132, 252, 0.08) 0%, transparent 45%), radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 30%)'
+    }
+  },
+  'lavender': {
+    name: 'lavender',
+    displayName: 'Лаванда',
+    description: 'Нежность лавандовых полей',
+    icon: '💜',
+    colors: {
+      primary: '265 75% 70%',
+      secondary: '280 60% 65%',
+      background: '265 35% 10%',
+      cardBg: '265 30% 13%',
+      foreground: '265 15% 92%',
+      sidebarBg: '265 33% 11%',
+      sidebarAccent: '265 28% 16%',
+      border: '265 22% 25%',
+      scrollbarThumb: 'rgba(196, 181, 253, 0.5)',
+      scrollbarThumbHover: 'rgba(196, 181, 253, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 40% 30%, rgba(196, 181, 253, 0.09) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(167, 139, 250, 0.07) 0%, transparent 45%)'
+    }
+  },
+  'cherry': {
+    name: 'cherry',
+    displayName: 'Вишня',
+    description: 'Сочная яркость спелых ягод',
+    icon: '🍒',
+    colors: {
+      primary: '350 85% 65%',
+      secondary: '10 80% 60%',
+      background: '350 40% 9%',
+      cardBg: '350 35% 12%',
+      foreground: '350 12% 92%',
+      sidebarBg: '350 38% 10%',
+      sidebarAccent: '350 32% 15%',
+      border: '350 25% 24%',
+      scrollbarThumb: 'rgba(244, 63, 94, 0.6)',
+      scrollbarThumbHover: 'rgba(244, 63, 94, 0.8)',
+      backgroundPattern: 'radial-gradient(circle at 60% 20%, rgba(244, 63, 94, 0.1) 0%, transparent 50%), radial-gradient(circle at 30% 80%, rgba(251, 113, 133, 0.08) 0%, transparent 45%)'
+    }
+  },
+  'mint': {
+    name: 'mint',
+    displayName: 'Мята',
+    description: 'Свежесть мятного бриза',
+    icon: '🌿',
+    colors: {
+      primary: '160 70% 60%',
+      secondary: '175 65% 55%',
+      background: '160 35% 9%',
+      cardBg: '160 30% 12%',
+      foreground: '160 12% 92%',
+      sidebarBg: '160 33% 10%',
+      sidebarAccent: '160 28% 15%',
+      border: '160 22% 24%',
+      scrollbarThumb: 'rgba(52, 211, 153, 0.5)',
+      scrollbarThumbHover: 'rgba(52, 211, 153, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 30% 40%, rgba(52, 211, 153, 0.09) 0%, transparent 50%), radial-gradient(circle at 80% 60%, rgba(16, 185, 129, 0.07) 0%, transparent 45%)'
+    }
+  },
+  'amber': {
+    name: 'amber',
+    displayName: 'Янтарь',
+    description: 'Тепло янтарного свечения',
+    icon: '🟡',
+    colors: {
+      primary: '40 95% 65%',
+      secondary: '25 90% 60%',
+      background: '35 35% 9%',
+      cardBg: '35 30% 12%',
+      foreground: '35 12% 92%',
+      sidebarBg: '35 33% 10%',
+      sidebarAccent: '35 28% 15%',
+      border: '35 22% 24%',
+      scrollbarThumb: 'rgba(251, 191, 36, 0.6)',
+      scrollbarThumbHover: 'rgba(251, 191, 36, 0.8)',
+      backgroundPattern: 'radial-gradient(circle at 50% 20%, rgba(251, 191, 36, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(245, 158, 11, 0.08) 0%, transparent 45%)'
+    }
+  },
+  'neon': {
+    name: 'neon',
+    displayName: 'Неон',
+    description: 'Энергия неоновых огней',
+    icon: '⚡',
+    colors: {
+      primary: '320 90% 65%',
+      secondary: '185 85% 60%',
+      background: '240 40% 8%',
+      cardBg: '240 35% 11%',
+      foreground: '240 10% 93%',
+      sidebarBg: '240 38% 9%',
+      sidebarAccent: '240 32% 14%',
+      border: '240 25% 23%',
+      scrollbarThumb: 'rgba(236, 72, 153, 0.6)',
+      scrollbarThumbHover: 'rgba(236, 72, 153, 0.8)',
+      backgroundPattern: 'radial-gradient(circle at 30% 30%, rgba(236, 72, 153, 0.12) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(34, 211, 238, 0.1) 0%, transparent 45%)'
+    }
+  },
+  'midnight': {
+    name: 'midnight',
+    displayName: 'Полночь',
+    description: 'Тайны полуночного часа',
+    icon: '🌙',
+    colors: {
+      primary: '230 70% 65%',
+      secondary: '250 60% 60%',
+      background: '235 50% 7%',
+      cardBg: '235 45% 10%',
+      foreground: '235 15% 93%',
+      sidebarBg: '235 48% 8%',
+      sidebarAccent: '235 40% 13%',
+      border: '235 30% 22%',
+      scrollbarThumb: 'rgba(129, 140, 248, 0.5)',
+      scrollbarThumbHover: 'rgba(129, 140, 248, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 80% 10%, rgba(129, 140, 248, 0.08) 0%, transparent 50%), radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.06) 0%, transparent 45%)'
+    }
+  },
+  'peach': {
+    name: 'peach',
+    displayName: 'Персик',
+    description: 'Нежность персикового заката',
+    icon: '🍑',
+    colors: {
+      primary: '20 85% 70%',
+      secondary: '340 75% 65%',
+      background: '15 35% 10%',
+      cardBg: '15 30% 13%',
+      foreground: '15 12% 92%',
+      sidebarBg: '15 33% 11%',
+      sidebarAccent: '15 28% 16%',
+      border: '15 22% 25%',
+      scrollbarThumb: 'rgba(251, 146, 60, 0.6)',
+      scrollbarThumbHover: 'rgba(251, 146, 60, 0.8)',
+      backgroundPattern: 'radial-gradient(circle at 50% 30%, rgba(251, 146, 60, 0.09) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(251, 113, 133, 0.07) 0%, transparent 45%)'
+    }
+  },
+  'emerald': {
+    name: 'emerald',
+    displayName: 'Изумруд',
+    description: 'Богатство изумрудных камней',
+    icon: '💚',
+    colors: {
+      primary: '155 75% 55%',
+      secondary: '170 70% 50%',
+      background: '155 45% 8%',
+      cardBg: '155 40% 11%',
+      foreground: '155 12% 92%',
+      sidebarBg: '155 43% 9%',
+      sidebarAccent: '155 35% 14%',
+      border: '155 28% 23%',
+      scrollbarThumb: 'rgba(16, 185, 129, 0.5)',
+      scrollbarThumbHover: 'rgba(16, 185, 129, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 40% 30%, rgba(16, 185, 129, 0.09) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(5, 150, 105, 0.07) 0%, transparent 45%)'
     }
   }
 };

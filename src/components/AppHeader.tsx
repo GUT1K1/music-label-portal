@@ -117,9 +117,84 @@ export default function AppHeader({ onMessagesClick, onProfileClick, onLogout, o
             alt="420 Logo" 
             className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl shadow-2xl shadow-primary/50 group-hover:scale-110 transition-transform duration-300 border-2 border-primary/30"
           />
+          {currentTheme === 'spring' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 8px rgba(244, 114, 182, 0.8))' }}>
+              🌸
+            </div>
+          )}
+          {currentTheme === 'summer' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-spin" style={{ filter: 'drop-shadow(0 0 8px rgba(251, 191, 36, 0.8))', animationDuration: '3s' }}>
+              ☀️
+            </div>
+          )}
+          {currentTheme === 'autumn' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl" style={{ filter: 'drop-shadow(0 0 8px rgba(251, 146, 60, 0.8))', animation: 'fall 3s ease-in-out infinite' }}>
+              🍂
+            </div>
+          )}
           {currentTheme === 'winter' && (
             <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-bounce" style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8))' }}>
               🎅
+            </div>
+          )}
+          {currentTheme === 'sunset' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 8px rgba(251, 113, 133, 0.8))' }}>
+              🌅
+            </div>
+          )}
+          {currentTheme === 'ocean' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl" style={{ filter: 'drop-shadow(0 0 8px rgba(34, 211, 238, 0.8))', animation: 'wave 2s ease-in-out infinite' }}>
+              🌊
+            </div>
+          )}
+          {currentTheme === 'forest' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl" style={{ filter: 'drop-shadow(0 0 8px rgba(74, 222, 128, 0.8))', animation: 'sway 3s ease-in-out infinite' }}>
+              🌲
+            </div>
+          )}
+          {currentTheme === 'cosmic' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 12px rgba(167, 139, 250, 0.9))', animationDuration: '2s' }}>
+              ✨
+            </div>
+          )}
+          {currentTheme === 'lavender' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 8px rgba(196, 181, 253, 0.8))' }}>
+              💜
+            </div>
+          )}
+          {currentTheme === 'cherry' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-bounce" style={{ filter: 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.8))' }}>
+              🍒
+            </div>
+          )}
+          {currentTheme === 'mint' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.8))' }}>
+              🌿
+            </div>
+          )}
+          {currentTheme === 'amber' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 10px rgba(251, 191, 36, 0.9))', animationDuration: '1.5s' }}>
+              🟡
+            </div>
+          )}
+          {currentTheme === 'neon' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 12px rgba(236, 72, 153, 0.9))', animationDuration: '0.8s' }}>
+              ⚡
+            </div>
+          )}
+          {currentTheme === 'midnight' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 10px rgba(129, 140, 248, 0.9))', animationDuration: '2.5s' }}>
+              🌙
+            </div>
+          )}
+          {currentTheme === 'peach' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-bounce" style={{ filter: 'drop-shadow(0 0 8px rgba(251, 146, 60, 0.8))' }}>
+              🍑
+            </div>
+          )}
+          {currentTheme === 'emerald' && (
+            <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 text-2xl md:text-4xl animate-pulse" style={{ filter: 'drop-shadow(0 0 8px rgba(16, 185, 129, 0.8))' }}>
+              💚
             </div>
           )}
           <div className="hidden md:block absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-0 group-hover:opacity-75 transition-opacity duration-300 -z-10" />
