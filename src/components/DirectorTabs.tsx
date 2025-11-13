@@ -306,7 +306,7 @@ export default function DirectorTabs({
           </TabsContent>
           
           <TabsContent value="appearance" className="animate-fadeIn">
-            <AppearanceSettings />
+            <AppearanceSettings userId={user.id} />
           </TabsContent>
           
           <TabsContent value="reminders" className="animate-fadeIn">

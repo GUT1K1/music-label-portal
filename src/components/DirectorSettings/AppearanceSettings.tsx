@@ -5,7 +5,11 @@ import { useTheme, themes, ThemeName } from '@/contexts/ThemeContext';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 
-export default function AppearanceSettings() {
+interface AppearanceSettingsProps {
+  userId: number;
+}
+
+export default function AppearanceSettings({ userId }: AppearanceSettingsProps) {
   const { currentTheme, setTheme, isLoading } = useTheme();
   const { toast } = useToast();
   const [changing, setChanging] = useState(false);
@@ -15,7 +19,7 @@ export default function AppearanceSettings() {
     
     setChanging(true);
     try {
-      await setTheme(themeName);
+      await setTheme(themeName, userId);
       toast({
         title: 'Тема изменена',
         description: `Применена тема "${themes[themeName].displayName}"`

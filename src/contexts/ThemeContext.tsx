@@ -95,7 +95,7 @@ export const themes: Record<ThemeName, Theme> = {
 
 interface ThemeContextType {
   currentTheme: ThemeName;
-  setTheme: (theme: ThemeName) => Promise<void>;
+  setTheme: (theme: ThemeName, userId?: number) => Promise<void>;
   themes: Record<ThemeName, Theme>;
   isLoading: boolean;
 }
@@ -175,23 +175,23 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     loadTheme();
   }, []);
 
-  const setTheme = async (themeName: ThemeName) => {
+  const setTheme = async (themeName: ThemeName, userId?: number) => {
     try {
-      const userId = localStorage.getItem('userId');
-      console.log('🎨 Setting theme:', { themeName, userId, apiUrl: THEME_API_URL });
+      const userIdToUse = userId || localStorage.getItem('userId');
+      console.log('🎨 Setting theme:', { themeName, userId: userIdToUse, apiUrl: THEME_API_URL });
       
-      if (!userId) {
+      if (!userIdToUse) {
         throw new Error('User not authenticated');
       }
 
       const requestBody = { theme_name: themeName };
-      console.log('🎨 Request:', { method: 'POST', userId, body: requestBody });
+      console.log('🎨 Request:', { method: 'POST', userId: userIdToUse, body: requestBody });
 
       const response = await fetch(THEME_API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-User-Id': userId
+          'X-User-Id': String(userIdToUse)
         },
         body: JSON.stringify(requestBody)
       });
