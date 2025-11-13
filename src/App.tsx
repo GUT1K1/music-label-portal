@@ -16,6 +16,7 @@ const NotFoundCustom = lazy(() => import("./pages/NotFoundCustom"));
 const AdminFix = lazy(() => import("./pages/AdminFix"));
 const AnimationShowcase = lazy(() => import("./components/AnimationShowcase"));
 const MenuShowcase = lazy(() => import("./components/MenuShowcase"));
+const MenuVariationsShowcase = lazy(() => import("./components/MenuVariations/MenuShowcase"));
 const HeaderVariants = lazy(() => import("./components/HeaderVariants"));
 const VKCallback = lazy(() => import("./pages/VKCallback"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -74,6 +75,7 @@ const App = () => (
                   <Route path="/vk-callback.html" element={<VKCallback />} />
                   <Route path="/animations" element={<AnimationShowcase />} />
                   <Route path="/menus" element={<MenuShowcase />} />
+                  <Route path="/menu-variations" element={<MenuVariationsShowcase />} />
                   <Route path="/header-variants" element={<HeaderVariants />} />
                   <Route path="/admin-fix-passwords" element={<AdminFix />} />
                   <Route path="/terms" element={<Terms />} />
