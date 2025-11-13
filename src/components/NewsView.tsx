@@ -64,9 +64,8 @@ export default function NewsView({ userRole, userId, telegramLinked = false, use
 
   return (
     <div className="space-y-4 md:space-y-6 p-3 md:p-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <CountdownCard countdown={countdown} />
-        <BalanceCard balance={userBalance} />
         <TelegramLink userId={userId} telegramLinked={telegramLinked} onUnlink={onRefreshData} />
       </div>
 
