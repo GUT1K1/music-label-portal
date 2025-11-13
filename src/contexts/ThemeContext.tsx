@@ -192,15 +192,24 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to save theme');
+        let errorMessage = 'Failed to save theme';
+        try {
+          const error = await response.json();
+          errorMessage = error.error || errorMessage;
+        } catch {
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       setCurrentTheme(themeName);
       applyTheme(themeName);
     } catch (error) {
       console.error('Failed to set theme:', error);
-      throw error;
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('Unknown error occurred');
     }
   };
 
