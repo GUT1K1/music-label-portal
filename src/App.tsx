@@ -16,7 +16,6 @@ const NotFoundCustom = lazy(() => import("./pages/NotFoundCustom"));
 const AdminFix = lazy(() => import("./pages/AdminFix"));
 const AnimationShowcase = lazy(() => import("./components/AnimationShowcase"));
 const MenuShowcase = lazy(() => import("./components/MenuShowcase"));
-const MenuVariationsShowcase = lazy(() => import("./components/MenuVariations/MenuShowcase"));
 const HeaderVariants = lazy(() => import("./components/HeaderVariants"));
 const VKCallback = lazy(() => import("./pages/VKCallback"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -24,7 +23,6 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Marketing = lazy(() => import("./pages/Marketing"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Blog = lazy(() => import("./pages/Blog"));
-const MenuDemo = lazy(() => import("./pages/MenuDemo"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -76,7 +74,6 @@ const App = () => (
                   <Route path="/vk-callback.html" element={<VKCallback />} />
                   <Route path="/animations" element={<AnimationShowcase />} />
                   <Route path="/menus" element={<MenuShowcase />} />
-                  <Route path="/menu-variations" element={<MenuVariationsShowcase />} />
                   <Route path="/header-variants" element={<HeaderVariants />} />
                   <Route path="/admin-fix-passwords" element={<AdminFix />} />
                   <Route path="/terms" element={<Terms />} />
@@ -85,7 +82,6 @@ const App = () => (
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:slug" element={<Blog />} />
-                  <Route path="/menu-demo" element={<MenuDemo />} />
                   <Route path="*" element={<NotFoundCustom />} />
                 </Routes>
               </Suspense>

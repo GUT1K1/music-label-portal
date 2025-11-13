@@ -6,7 +6,6 @@ import { useTasks } from '@/components/useTasks';
 import Icon from '@/components/ui/icon';
 
 const ArtistView = lazy(() => import('@/components/ArtistView'));
-const ArtistViewSidebar = lazy(() => import('@/components/ArtistViewSidebar'));
 const ManagerView = lazy(() => import('@/components/ManagerView'));
 const DirectorView = lazy(() => import('@/components/DirectorView'));
 
@@ -17,12 +16,8 @@ export default function Index() {
   const [isProcessingAuth, setIsProcessingAuth] = useState(false);
   const authProcessedRef = useRef(false); // Флаг чтобы обработать только 1 раз
   
-  // Проверяем демо-режим и вариант меню
-  const urlParams = new URLSearchParams(window.location.search);
-  const isDemoMode = urlParams.get('demo') === 'true';
-  const useSidebar = urlParams.get('sidebar') === 'true';
-  
-  console.log('🎨 Menu variant:', { useSidebar, search: window.location.search });
+  // Проверяем демо-режим
+  const isDemoMode = new URLSearchParams(window.location.search).get('demo') === 'true';
 
   useEffect(() => {
     const handleVKCallback = async () => {
@@ -201,10 +196,9 @@ export default function Index() {
   }
 
   if (user.role === 'artist') {
-    const ArtistComponent = useSidebar ? ArtistViewSidebar : ArtistView;
     return (
       <Suspense fallback={<LoadingFallback />}>
-        <ArtistComponent
+        <ArtistView
         user={user}
         messagesOpen={messagesOpen}
         onMessagesOpenChange={setMessagesOpen}
