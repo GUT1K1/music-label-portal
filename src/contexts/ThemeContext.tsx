@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type ThemeName = 'golden-night' | 'purple-cosmos' | 'blue-ocean' | 'green-forest';
+export type ThemeName = 'spring' | 'summer' | 'autumn' | 'winter';
 
 interface ThemeColors {
   primary: string;
@@ -13,82 +13,92 @@ interface ThemeColors {
   border: string;
   scrollbarThumb: string;
   scrollbarThumbHover: string;
+  backgroundPattern?: string;
 }
 
 interface Theme {
   name: ThemeName;
   displayName: string;
+  description: string;
   colors: ThemeColors;
   icon: string;
 }
 
 export const themes: Record<ThemeName, Theme> = {
-  'golden-night': {
-    name: 'golden-night',
-    displayName: 'Золотая ночь',
-    icon: '✨',
+  'spring': {
+    name: 'spring',
+    displayName: 'Весна',
+    description: 'Свежесть цветущих садов',
+    icon: '🌸',
     colors: {
-      primary: '45 100% 60%',
-      secondary: '30 100% 50%',
-      background: '0 0% 12%',
-      cardBg: '0 0% 15%',
-      foreground: '0 0% 90%',
-      sidebarBg: '0 0% 13%',
-      sidebarAccent: '0 0% 18%',
-      border: '0 0% 25%',
-      scrollbarThumb: 'rgba(234, 179, 8, 0.5)',
-      scrollbarThumbHover: 'rgba(234, 179, 8, 0.7)'
+      primary: '330 70% 65%',
+      secondary: '150 60% 55%',
+      background: '140 25% 12%',
+      cardBg: '140 20% 16%',
+      foreground: '140 10% 92%',
+      sidebarBg: '140 22% 14%',
+      sidebarAccent: '140 18% 20%',
+      border: '140 15% 28%',
+      scrollbarThumb: 'rgba(244, 114, 182, 0.5)',
+      scrollbarThumbHover: 'rgba(244, 114, 182, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 20% 80%, rgba(244, 114, 182, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(74, 222, 128, 0.06) 0%, transparent 50%)'
     }
   },
-  'purple-cosmos': {
-    name: 'purple-cosmos',
-    displayName: 'Фиолетовый космос',
-    icon: '🌌',
+  'summer': {
+    name: 'summer',
+    displayName: 'Лето',
+    description: 'Тепло солнечных дней',
+    icon: '☀️',
     colors: {
-      primary: '270 95% 75%',
-      secondary: '330 85% 60%',
-      background: '260 50% 8%',
-      cardBg: '260 40% 12%',
-      foreground: '270 20% 90%',
-      sidebarBg: '260 45% 10%',
-      sidebarAccent: '260 35% 15%',
-      border: '260 30% 25%',
-      scrollbarThumb: 'rgba(168, 85, 247, 0.5)',
-      scrollbarThumbHover: 'rgba(168, 85, 247, 0.7)'
+      primary: '45 95% 60%',
+      secondary: '30 90% 55%',
+      background: '35 30% 10%',
+      cardBg: '35 25% 14%',
+      foreground: '35 10% 93%',
+      sidebarBg: '35 28% 12%',
+      sidebarAccent: '35 22% 18%',
+      border: '35 20% 26%',
+      scrollbarThumb: 'rgba(251, 191, 36, 0.6)',
+      scrollbarThumbHover: 'rgba(251, 191, 36, 0.8)',
+      backgroundPattern: 'radial-gradient(circle at 50% 10%, rgba(251, 191, 36, 0.1) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(251, 146, 60, 0.08) 0%, transparent 50%)'
     }
   },
-  'blue-ocean': {
-    name: 'blue-ocean',
-    displayName: 'Синий океан',
-    icon: '🌊',
+  'autumn': {
+    name: 'autumn',
+    displayName: 'Осень',
+    description: 'Золото падающих листьев',
+    icon: '🍂',
     colors: {
-      primary: '210 100% 60%',
-      secondary: '190 95% 45%',
-      background: '210 80% 8%',
-      cardBg: '210 65% 12%',
-      foreground: '210 20% 90%',
-      sidebarBg: '210 70% 10%',
-      sidebarAccent: '210 55% 15%',
-      border: '210 40% 25%',
-      scrollbarThumb: 'rgba(59, 130, 246, 0.5)',
-      scrollbarThumbHover: 'rgba(59, 130, 246, 0.7)'
+      primary: '25 85% 60%',
+      secondary: '10 80% 55%',
+      background: '20 35% 10%',
+      cardBg: '20 30% 13%',
+      foreground: '25 12% 91%',
+      sidebarBg: '20 32% 11%',
+      sidebarAccent: '20 25% 17%',
+      border: '20 22% 25%',
+      scrollbarThumb: 'rgba(251, 146, 60, 0.6)',
+      scrollbarThumbHover: 'rgba(251, 146, 60, 0.8)',
+      backgroundPattern: 'radial-gradient(circle at 30% 30%, rgba(251, 146, 60, 0.09) 0%, transparent 45%), radial-gradient(circle at 70% 70%, rgba(239, 68, 68, 0.07) 0%, transparent 50%)'
     }
   },
-  'green-forest': {
-    name: 'green-forest',
-    displayName: 'Зелёный лес',
-    icon: '🌲',
+  'winter': {
+    name: 'winter',
+    displayName: 'Зима',
+    description: 'Чистота снежных просторов',
+    icon: '❄️',
     colors: {
-      primary: '142 70% 50%',
-      secondary: '160 85% 45%',
-      background: '150 60% 8%',
-      cardBg: '150 50% 12%',
-      foreground: '150 15% 90%',
-      sidebarBg: '150 55% 10%',
-      sidebarAccent: '150 45% 15%',
-      border: '150 35% 25%',
-      scrollbarThumb: 'rgba(34, 197, 94, 0.5)',
-      scrollbarThumbHover: 'rgba(34, 197, 94, 0.7)'
+      primary: '200 90% 65%',
+      secondary: '220 85% 70%',
+      background: '210 40% 9%',
+      cardBg: '210 35% 12%',
+      foreground: '210 15% 94%',
+      sidebarBg: '210 38% 10%',
+      sidebarAccent: '210 30% 15%',
+      border: '210 25% 24%',
+      scrollbarThumb: 'rgba(96, 165, 250, 0.5)',
+      scrollbarThumbHover: 'rgba(96, 165, 250, 0.7)',
+      backgroundPattern: 'radial-gradient(circle at 70% 20%, rgba(96, 165, 250, 0.08) 0%, transparent 45%), radial-gradient(circle at 30% 80%, rgba(147, 197, 253, 0.06) 0%, transparent 50%)'
     }
   }
 };
@@ -135,7 +145,15 @@ function applyTheme(themeName: ThemeName) {
     existingStyle.remove();
   }
   
+  const backgroundPattern = theme.colors.backgroundPattern || 'none';
+  
   style.textContent = `
+    body {
+      background: hsl(${theme.colors.background});
+      ${backgroundPattern !== 'none' ? `background-image: ${backgroundPattern};` : ''}
+      background-attachment: fixed;
+      transition: background 0.6s ease-in-out;
+    }
     * {
       scrollbar-color: ${theme.colors.scrollbarThumb} rgba(0, 0, 0, 0.2) !important;
     }
@@ -150,7 +168,7 @@ function applyTheme(themeName: ThemeName) {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [currentTheme, setCurrentTheme] = useState<ThemeName>('golden-night');
+  const [currentTheme, setCurrentTheme] = useState<ThemeName>('summer');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

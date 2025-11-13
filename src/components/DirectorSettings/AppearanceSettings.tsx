@@ -48,7 +48,7 @@ export default function AppearanceSettings({ userId }: AppearanceSettingsProps) 
       <div>
         <h2 className="text-2xl font-bold mb-2">Внешний вид</h2>
         <p className="text-white/70">
-          Выберите цветовую тему для всего сайта. Изменения применятся мгновенно для всех пользователей.
+          Выберите сезонную тему оформления. Каждая тема создаёт уникальную атмосферу с особыми цветами и фонами.
         </p>
       </div>
 
@@ -69,11 +69,12 @@ export default function AppearanceSettings({ userId }: AppearanceSettingsProps) 
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-4xl">{theme.icon}</span>
+                  <span className="text-5xl">{theme.icon}</span>
                   <div>
-                    <h3 className="text-lg font-semibold">{theme.displayName}</h3>
+                    <h3 className="text-xl font-bold">{theme.displayName}</h3>
+                    <p className="text-xs text-white/60 mt-0.5">{theme.description}</p>
                     {isActive && (
-                      <span className="text-xs text-primary flex items-center gap-1 mt-1">
+                      <span className="text-xs text-primary flex items-center gap-1 mt-1.5 font-semibold">
                         <Icon name="Check" className="w-3 h-3" />
                         Активна
                       </span>

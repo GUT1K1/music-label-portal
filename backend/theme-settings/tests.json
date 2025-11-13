@@ -18,12 +18,12 @@
         "X-User-Id": "1"
       },
       "body": {
-        "theme_name": "purple-cosmos"
+        "theme_name": "winter"
       },
       "expectedStatus": 200,
       "expectedBody": {
         "success": true,
-        "theme_name": "purple-cosmos"
+        "theme_name": "winter"
       },
       "bodyMatcher": "partial"
     }
