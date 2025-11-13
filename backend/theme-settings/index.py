@@ -54,7 +54,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'updated_by': result[2]
                 }
             else:
-                theme_data = {'theme_name': 'summer', 'updated_at': None, 'updated_by': None}
+                theme_data = {'theme_name': 'default', 'updated_at': None, 'updated_by': None}
             
             return {
                 'statusCode': 200,
@@ -99,7 +99,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'theme_name is required'})
                 }
             
-            allowed_themes = ['spring', 'summer', 'autumn', 'winter', 'sunset', 'ocean', 'forest', 'cosmic', 'lavender', 'cherry', 'mint', 'amber', 'neon', 'midnight', 'peach', 'emerald']
+            allowed_themes = ['default', 'spring', 'summer', 'autumn', 'winter', 'sunset', 'ocean', 'forest', 'cosmic', 'lavender', 'cherry', 'mint', 'amber', 'neon', 'midnight', 'peach', 'emerald']
             if theme_name not in allowed_themes:
                 return {
                     'statusCode': 400,

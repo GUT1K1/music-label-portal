@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-export type ThemeName = 'spring' | 'summer' | 'autumn' | 'winter' | 'sunset' | 'ocean' | 'forest' | 'cosmic' | 'lavender' | 'cherry' | 'mint' | 'amber' | 'neon' | 'midnight' | 'peach' | 'emerald';
+export type ThemeName = 'default' | 'spring' | 'summer' | 'autumn' | 'winter' | 'sunset' | 'ocean' | 'forest' | 'cosmic' | 'lavender' | 'cherry' | 'mint' | 'amber' | 'neon' | 'midnight' | 'peach' | 'emerald';
 
 interface ThemeColors {
   primary: string;
@@ -25,6 +25,25 @@ interface Theme {
 }
 
 export const themes: Record<ThemeName, Theme> = {
+  'default': {
+    name: 'default',
+    displayName: 'Стандартный',
+    description: 'Оригинальный дизайн сайта',
+    icon: '🎨',
+    colors: {
+      primary: '45 100% 60%',
+      secondary: '30 100% 50%',
+      background: '0 0% 12%',
+      cardBg: '0 0% 15%',
+      foreground: '0 0% 90%',
+      sidebarBg: '0 0% 13%',
+      sidebarAccent: '0 0% 18%',
+      border: '0 0% 25%',
+      scrollbarThumb: 'rgba(251, 191, 36, 0.5)',
+      scrollbarThumbHover: 'rgba(251, 191, 36, 0.7)',
+      backgroundPattern: 'none'
+    }
+  },
   'spring': {
     name: 'spring',
     displayName: 'Весна',
