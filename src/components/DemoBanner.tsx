@@ -9,7 +9,7 @@ export default function DemoBanner() {
 
   return (
     <div className="fixed bottom-4 sm:bottom-6 left-0 right-0 z-50 animate-slide-up flex justify-center px-3 sm:px-4">
-      <div className="w-full max-w-2xl bg-gradient-to-r from-gray-900/98 via-gray-900/95 to-gray-900/98 backdrop-blur-xl border-2 border-gold-400/30 rounded-xl sm:rounded-2xl shadow-2xl shadow-gold-500/20 p-4 sm:p-6">
+      <div className="w-full max-w-2xl bg-gray-900 sm:bg-gradient-to-r sm:from-gray-900/98 sm:via-gray-900/95 sm:to-gray-900/98 backdrop-blur-xl border-2 border-gold-400/50 rounded-xl sm:rounded-2xl shadow-2xl shadow-gold-500/20 p-4 sm:p-6">
         <button
           onClick={() => setIsVisible(false)}
           className="absolute top-2 right-2 sm:top-3 sm:right-3 text-gray-400 hover:text-white transition-colors"
