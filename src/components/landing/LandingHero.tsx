@@ -20,7 +20,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
     order.forEach((index, i) => {
       const timer = setTimeout(() => {
         setVisibleWords(prev => [...prev, index]);
-      }, i * 200);
+      }, i * 100);
       timers.push(timer);
     });
     
@@ -76,9 +76,9 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           </span>
         </h1>
         
-        <p className="text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
+        <p className="text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 md:mb-16 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
         
-        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}>
+        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
           <a
             href="/app?demo=true"
             className="group relative px-10 py-5 bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-400 rounded-2xl font-black text-xl text-black hover:shadow-2xl hover:shadow-gold-400/70 transition-all duration-500 active:scale-95 md:hover:scale-110 flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center shadow-[0_0_30px_rgba(234,179,8,0.5)]"
@@ -99,7 +99,7 @@ export default function LandingHero({ scrollY, typedText, isTypingComplete }: La
           </a>
         </div>
         
-        <div className="mt-20 md:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-8 max-w-6xl mx-auto opacity-0 animate-fade-in-up px-6" style={{ animationDelay: '1.5s', animationFillMode: 'forwards' }}>
+        <div className="mt-20 md:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-8 max-w-6xl mx-auto opacity-0 animate-fade-in-up px-6" style={{ animationDelay: '0.7s', animationFillMode: 'forwards' }}>
           <div className="text-center group cursor-pointer px-4 py-8 md:px-6 md:py-10 rounded-3xl bg-gradient-to-br from-gold-600/30 via-orange-600/20 to-gold-600/30 backdrop-blur-sm border-2 border-gold-400/40 hover:border-gold-300 hover:bg-gradient-to-br hover:from-gold-500/40 hover:via-orange-500/30 hover:to-gold-500/40 transition-all duration-500 shadow-[0_0_30px_rgba(234,179,8,0.3)] hover:shadow-[0_0_50px_rgba(234,179,8,0.6)] min-h-[180px] flex flex-col items-center justify-center">
             <div className="text-4xl md:text-5xl font-black bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-400 bg-clip-text text-transparent mb-3 drop-shadow-[0_0_30px_rgba(234,179,8,0.8)] leading-tight">0₽</div>
             <div className="text-xs md:text-sm text-gold-200 group-hover:text-gold-100 font-bold transition-colors duration-300 leading-snug">Бесплатный<br/>старт</div>
