@@ -50,6 +50,11 @@ const WizardStepRequisites = memo(function WizardStepRequisites({ requisites, on
     year: 'numeric' 
   });
 
+  // Валидация полей
+  const fullNameValid = requisites.full_name.trim().length >= 5 && /^[\u0400-\u04FF\s-]+$/.test(requisites.full_name);
+  const emailValid = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(requisites.email);
+  const innValid = requisites.inn_swift.length >= 8 && /^[0-9A-Z]+$/i.test(requisites.inn_swift);
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
@@ -133,11 +138,13 @@ const WizardStepRequisites = memo(function WizardStepRequisites({ requisites, on
                 const value = e.target.value.replace(/[^\u0400-\u04FF\s-]/g, '');
                 onChange('full_name', value);
               }}
-              className="h-11"
+              className={`h-11 ${requisites.full_name && !fullNameValid ? 'border-red-500' : ''}`}
               required
               minLength={5}
             />
-            <p className="text-xs text-muted-foreground mt-1">Только кириллица, пробелы и дефисы</p>
+            <p className={`text-xs mt-1 ${requisites.full_name && !fullNameValid ? 'text-red-500' : 'text-muted-foreground'}`}>
+              {requisites.full_name && !fullNameValid ? '⚠️ Минимум 5 символов, только кириллица' : 'Только кириллица, пробелы и дефисы'}
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
@@ -198,11 +205,13 @@ const WizardStepRequisites = memo(function WizardStepRequisites({ requisites, on
                 const value = e.target.value.replace(/[^0-9A-Z]/gi, '');
                 onChange('inn_swift', value);
               }}
-              className="h-11"
+              className={`h-11 ${requisites.inn_swift && !innValid ? 'border-red-500' : ''}`}
               required
               minLength={8}
             />
-            <p className="text-xs text-muted-foreground mt-1">Только цифры и буквы</p>
+            <p className={`text-xs mt-1 ${requisites.inn_swift && !innValid ? 'text-red-500' : 'text-muted-foreground'}`}>
+              {requisites.inn_swift && !innValid ? '⚠️ Минимум 8 символов' : 'Только цифры и буквы'}
+            </p>
           </div>
 
           <div>
@@ -227,11 +236,12 @@ const WizardStepRequisites = memo(function WizardStepRequisites({ requisites, on
               placeholder="mr-frank-eduard@web.de"
               value={requisites.email}
               onChange={(e) => onChange('email', e.target.value.toLowerCase())}
-              className="h-11"
+              className={`h-11 ${requisites.email && !emailValid ? 'border-red-500' : ''}`}
               required
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             />
-            <p className="text-xs text-muted-foreground mt-1">Действующий email адрес</p>
+            <p className={`text-xs mt-1 ${requisites.email && !emailValid ? 'text-red-500' : 'text-muted-foreground'}`}>
+              {requisites.email && !emailValid ? '⚠️ Введите корректный email' : 'Действующий email адрес'}
+            </p>
           </div>
         </div>
       </div>
