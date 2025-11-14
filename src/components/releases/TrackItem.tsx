@@ -196,7 +196,7 @@ const TrackItem = memo(function TrackItem({ track, index, totalTracks, updateTra
             <Select 
               value={track.explicit_content === null ? '' : track.explicit_content ? 'true' : 'false'} 
               onValueChange={handleExplicitChange}
-            />
+            >
               <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Выберите" />
               </SelectTrigger>
