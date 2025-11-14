@@ -34,7 +34,7 @@ export async function uploadFile(file: File, onProgress?: UploadProgressCallback
       
       onProgress?.(50);
       
-      const response = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
+      const response = await fetch('https://functions.poehali.dev/a2cfada3-f5bb-4098-a0cf-d5e6861c009b', {
         method: 'POST',
         body: formData
       });
@@ -82,7 +82,7 @@ export async function uploadFile(file: File, onProgress?: UploadProgressCallback
         reader.readAsDataURL(chunk);
       });
       
-      const response = await fetch('https://functions.poehali.dev/01922e7e-40ee-4482-9a75-1bf53b8812d9', {
+      const response = await fetch('https://functions.poehali.dev/a2cfada3-f5bb-4098-a0cf-d5e6861c009b', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

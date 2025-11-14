@@ -24,6 +24,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     }
     
     method: str = event.get('httpMethod', 'GET')
+    print(f"[UPLOAD] Method: {method}, Headers: {event.get('headers', {})}")
     
     if method == 'OPTIONS':
         return {
