@@ -15,87 +15,89 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
           context - object with request_id
     Returns: HTTP response with S3 URL or presigned URL
     '''
+    
+    cors_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Content-Type': 'application/json'
+    }
+    
     method: str = event.get('httpMethod', 'GET')
     
     if method == 'OPTIONS':
         return {
             'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Max-Age': '86400'
-            },
+            'headers': {**cors_headers, 'Access-Control-Max-Age': '86400'},
             'body': ''
         }
     
-    # GET: Generate presigned POST for direct S3 upload (bypasses Cloud Functions size limits)
-    if method == 'GET':
-        try:
-            params = event.get('queryStringParameters', {}) or {}
-            file_name = params.get('fileName', 'unnamed')
-            content_type = params.get('contentType', 'application/octet-stream')
-            
-            access_key = os.environ.get('YC_S3_ACCESS_KEY_ID')
-            secret_key = os.environ.get('YC_S3_SECRET_ACCESS_KEY')
-            bucket_name = os.environ.get('YC_S3_BUCKET_NAME')
-            
-            s3_client = boto3.client(
-                's3',
-                endpoint_url='https://storage.yandexcloud.net',
-                aws_access_key_id=access_key,
-                aws_secret_access_key=secret_key,
-                region_name='ru-central1'
-            )
-            
-            file_ext = file_name.split('.')[-1] if '.' in file_name else ''
-            unique_filename = f"{uuid.uuid4()}.{file_ext}" if file_ext else str(uuid.uuid4())
-            s3_key = f"uploads/{datetime.now().strftime('%Y/%m/%d')}/{unique_filename}"
-            
-            # Generate presigned POST (browser can upload directly to S3)
-            presigned_post = s3_client.generate_presigned_post(
-                Bucket=bucket_name,
-                Key=s3_key,
-                Fields={'Content-Type': content_type},
-                Conditions=[
-                    {'Content-Type': content_type},
-                    ['content-length-range', 1, 100 * 1024 * 1024]  # 1 byte to 100MB
-                ],
-                ExpiresIn=3600
-            )
-            
-            file_url = f"https://storage.yandexcloud.net/{bucket_name}/{s3_key}"
-            
-            print(f"Presigned POST generated: {s3_key}")
-            
-            return {
-                'statusCode': 200,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({
-                    'presignedPost': presigned_post,
-                    'url': file_url,
-                    's3Key': s3_key,
-                    'fileName': file_name
-                })
-            }
-        except Exception as e:
-            print(f"Presigned POST error: {e}")
-            import traceback
-            traceback.print_exc()
-            return {
-                'statusCode': 500,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': f'Presigned POST failed: {str(e)}'})
-            }
-    
-    if method != 'POST':
-        return {
-            'statusCode': 405,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'body': json.dumps({'error': 'Method not allowed'})
-        }
-    
     try:
+        # GET: Generate presigned POST for direct S3 upload (bypasses Cloud Functions size limits)
+        if method == 'GET':
+            try:
+                params = event.get('queryStringParameters', {}) or {}
+                file_name = params.get('fileName', 'unnamed')
+                content_type = params.get('contentType', 'application/octet-stream')
+                
+                access_key = os.environ.get('YC_S3_ACCESS_KEY_ID')
+                secret_key = os.environ.get('YC_S3_SECRET_ACCESS_KEY')
+                bucket_name = os.environ.get('YC_S3_BUCKET_NAME')
+                
+                s3_client = boto3.client(
+                    's3',
+                    endpoint_url='https://storage.yandexcloud.net',
+                    aws_access_key_id=access_key,
+                    aws_secret_access_key=secret_key,
+                    region_name='ru-central1'
+                )
+                
+                file_ext = file_name.split('.')[-1] if '.' in file_name else ''
+                unique_filename = f"{uuid.uuid4()}.{file_ext}" if file_ext else str(uuid.uuid4())
+                s3_key = f"uploads/{datetime.now().strftime('%Y/%m/%d')}/{unique_filename}"
+                
+                # Generate presigned POST (browser can upload directly to S3)
+                presigned_post = s3_client.generate_presigned_post(
+                    Bucket=bucket_name,
+                    Key=s3_key,
+                    Fields={'Content-Type': content_type},
+                    Conditions=[
+                        {'Content-Type': content_type},
+                        ['content-length-range', 1, 100 * 1024 * 1024]  # 1 byte to 100MB
+                    ],
+                    ExpiresIn=3600
+                )
+                
+                file_url = f"https://storage.yandexcloud.net/{bucket_name}/{s3_key}"
+                
+                print(f"Presigned POST generated: {s3_key}")
+                
+                return {
+                    'statusCode': 200,
+                    'headers': cors_headers,
+                    'body': json.dumps({
+                        'presignedPost': presigned_post,
+                        'url': file_url,
+                        's3Key': s3_key,
+                        'fileName': file_name
+                    })
+                }
+            except Exception as e:
+                print(f"Presigned POST error: {e}")
+                import traceback
+                traceback.print_exc()
+                return {
+                    'statusCode': 500,
+                    'headers': cors_headers,
+                    'body': json.dumps({'error': f'Presigned POST failed: {str(e)}'})
+                }
+        
+        if method != 'POST':
+            return {
+                'statusCode': 405,
+                'headers': cors_headers,
+                'body': json.dumps({'error': 'Method not allowed'})
+            }
         headers = event.get('headers', {})
         content_type = headers.get('content-type') or headers.get('Content-Type', '')
         
@@ -137,14 +139,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if not all([upload_id, s3_key, part_number]):
                     return {
                         'statusCode': 400,
-                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'headers': cors_headers,
                         'body': json.dumps({'error': 'Missing upload-part parameters'})
                     }
                 
                 if 'part' not in form:
                     return {
                         'statusCode': 400,
-                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'headers': cors_headers,
                         'body': json.dumps({'error': 'No part file provided'})
                     }
                 
@@ -176,7 +178,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 return {
                     'statusCode': 200,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({'ETag': etag})
                 }
             
@@ -184,7 +186,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'file' not in form:
                 return {
                     'statusCode': 400,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({'error': 'No file provided'})
                 }
             
@@ -242,7 +244,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 return {
                     'statusCode': 200,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({
                         'uploadId': upload_id,
                         's3Key': s3_key,
@@ -259,7 +261,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if not all([upload_id, s3_key, part_number, part_data_b64]):
                     return {
                         'statusCode': 400,
-                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'headers': cors_headers,
                         'body': json.dumps({'error': 'Missing upload-part parameters'})
                     }
                 
@@ -290,7 +292,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 return {
                     'statusCode': 200,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({'ETag': etag})
                 }
             
@@ -302,7 +304,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if not all([upload_id, s3_key, parts]):
                     return {
                         'statusCode': 400,
-                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'headers': cors_headers,
                         'body': json.dumps({'error': 'Missing complete-multipart parameters'})
                     }
                 
@@ -330,7 +332,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 return {
                     'statusCode': 200,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({'url': file_url, 's3Key': s3_key})
                 }
             
@@ -340,7 +342,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if not file_b64:
                 return {
                     'statusCode': 400,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({'error': 'No file data or action provided'})
                 }
             
@@ -415,7 +417,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 return {
                     'statusCode': 200,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({
                         'url': file_url,
                         's3Key': s3_key,
@@ -427,7 +429,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 # Return partial response
                 return {
                     'statusCode': 200,
-                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'headers': cors_headers,
                     'body': json.dumps({
                         's3Key': s3_key,
                         'chunkIndex': chunk_index,
