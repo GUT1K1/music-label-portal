@@ -36,6 +36,7 @@ export default function ReleaseManager({ userId, userRole = 'artist', isDemoMode
     activeTab,
     setActiveTab,
     editingRelease,
+    setEditingRelease,
     newRelease,
     setNewRelease,
     coverPreview,
@@ -53,6 +54,11 @@ export default function ReleaseManager({ userId, userRole = 'artist', isDemoMode
     handlePitching,
     deleteRelease
   } = useReleaseManager(userId);
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setEditingRelease(null);
+  };
 
   if (loading) {
     return (
@@ -88,7 +94,7 @@ export default function ReleaseManager({ userId, userRole = 'artist', isDemoMode
       currentUploadFile={currentUploadFile}
       onCreateClick={() => setShowForm(true)}
       onTabChange={setActiveTab}
-      onCancelForm={() => setShowForm(false)}
+      onCancelForm={handleCancel}
       onEdit={handleEdit}
       onPitching={handlePitching}
       onDelete={deleteRelease}

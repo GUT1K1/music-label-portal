@@ -249,7 +249,8 @@ export const useReleaseManager = (userId: number) => {
       return;
     }
     
-    const tracksWithoutFiles = tracks.filter(t => !t.file);
+    // При редактировании разрешаем треки без новых файлов, если у них уже есть file_url
+    const tracksWithoutFiles = tracks.filter(t => !t.file && !t.file_url);
     if (tracksWithoutFiles.length > 0) {
       toast({
         title: 'Ошибка',
@@ -267,12 +268,22 @@ export const useReleaseManager = (userId: number) => {
 
     try {
       setCurrentUploadFile('Обложка');
-      let coverData;
-      try {
-        coverData = await uploadFile(coverFile);
-        if (!coverData) throw new Error('Не удалось загрузить обложку');
-      } catch (coverError: any) {
-        throw new Error(`Ошибка загрузки обложки: ${coverError.message || 'неизвестная ошибка'}`);
+      let coverUrl;
+      
+      // При редактировании используем существующую обложку если новая не загружена
+      if (coverFile) {
+        try {
+          const coverData = await uploadFile(coverFile);
+          if (!coverData) throw new Error('Не удалось загрузить обложку');
+          coverUrl = coverData.url;
+        } catch (coverError: any) {
+          throw new Error(`Ошибка загрузки обложки: ${coverError.message || 'неизвестная ошибка'}`);
+        }
+      } else if (editingRelease?.cover_url) {
+        // Используем существующую обложку при редактировании
+        coverUrl = editingRelease.cover_url;
+      } else {
+        throw new Error('Обложка не выбрана');
       }
 
       const uploadedTracks = [];
@@ -280,47 +291,52 @@ export const useReleaseManager = (userId: number) => {
       for (let index = 0; index < tracks.length; index++) {
         const track = tracks[index];
         
-        if (!track.file) {
+        // Если есть новый файл - загружаем его
+        if (track.file) {
+          const fileSizeMB = track.file.size / 1024 / 1024;
+          if (fileSizeMB > 150) {
+            toast({
+              title: `❌ Файл слишком большой`,
+              description: `Трек "${track.title || track.file.name}" (${fileSizeMB.toFixed(2)}МБ) превышает лимит 150МБ`,
+              variant: 'destructive'
+            });
+            throw new Error(`Трек ${track.track_number}: превышен лимит размера`);
+          }
+          
+          setCurrentUploadFile(`Трек ${index + 1}/${tracks.length}: ${track.title || track.file.name}`);
+          
+          try {
+            const trackData = await uploadFile(track.file);
+            
+            if (!trackData) {
+              throw new Error(`Трек ${track.track_number}: не удалось загрузить`);
+            }
+            
+            // Удаляем preview_url (base64) и file перед отправкой
+            const { preview_url, file, ...trackWithoutBinary } = track;
+            
+            uploadedTracks.push({
+              ...trackWithoutBinary,
+              file_url: trackData.url,
+              file_name: trackData.fileName,
+              file_size: trackData.fileSize
+            });
+          } catch (uploadError: any) {
+            const fileSize = (track.file.size / 1024 / 1024).toFixed(2);
+            console.error(`Track upload failed: ${track.title}, size: ${fileSize}MB`, uploadError);
+            throw new Error(`Трек "${track.title || track.file.name}" (${fileSize}МБ): ${uploadError.message || 'не удалось загрузить'}`);
+          }
+        } else if (track.file_url) {
+          // Используем существующий файл при редактировании
+          const { preview_url, file, ...trackWithoutBinary } = track;
+          uploadedTracks.push(trackWithoutBinary);
+        } else {
           toast({
             title: `❌ Трек ${track.track_number}`,
             description: `"${track.title || 'Без названия'}" - файл не выбран`,
             variant: 'destructive'
           });
           throw new Error(`Трек ${track.track_number}: файл отсутствует`);
-        }
-        
-        const fileSizeMB = track.file.size / 1024 / 1024;
-        if (fileSizeMB > 150) {
-          toast({
-            title: `❌ Файл слишком большой`,
-            description: `Трек "${track.title || track.file.name}" (${fileSizeMB.toFixed(2)}МБ) превышает лимит 150МБ`,
-            variant: 'destructive'
-          });
-          throw new Error(`Трек ${track.track_number}: превышен лимит размера`);
-        }
-        
-        setCurrentUploadFile(`Трек ${index + 1}/${tracks.length}: ${track.title || track.file.name}`);
-        
-        try {
-          const trackData = await uploadFile(track.file);
-          
-          if (!trackData) {
-            throw new Error(`Трек ${track.track_number}: не удалось загрузить`);
-          }
-          
-          // Удаляем preview_url (base64) и file перед отправкой — они не нужны на бэкенде
-          const { preview_url, file, ...trackWithoutBinary } = track;
-          
-          uploadedTracks.push({
-            ...trackWithoutBinary,
-            file_url: trackData.url,
-            file_name: trackData.fileName,
-            file_size: trackData.fileSize
-          });
-        } catch (uploadError: any) {
-          const fileSize = (track.file.size / 1024 / 1024).toFixed(2);
-          console.error(`Track upload failed: ${track.title}, size: ${fileSize}MB`, uploadError);
-          throw new Error(`Трек "${track.title || track.file.name}" (${fileSize}МБ): ${uploadError.message || 'не удалось загрузить'}`);
         }
       }
 
@@ -337,7 +353,8 @@ export const useReleaseManager = (userId: number) => {
           },
           body: JSON.stringify({
             ...newRelease,
-            cover_url: coverData.url,
+            ...(editingRelease && { release_id: editingRelease.id }),
+            cover_url: coverUrl,
             tracks: uploadedTracks,
             ...(contractData && {
               contract_signature: contractData.signature,
@@ -575,6 +592,7 @@ export const useReleaseManager = (userId: number) => {
     activeTab,
     setActiveTab,
     editingRelease,
+    setEditingRelease,
     newRelease,
     setNewRelease,
     coverFile,
