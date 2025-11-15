@@ -265,6 +265,7 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
           releaseDate={contractDialogRelease.release_date}
           tracks={contractTracks}
           coverUrl={contractDialogRelease.cover_url}
+          signatureDataUrl={contractDialogRelease.contract_signature}
         />
       )}
     </div>
