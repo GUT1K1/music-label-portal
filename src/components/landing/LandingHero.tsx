@@ -77,12 +77,22 @@ export default function LandingHero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
           <a
             href="/app?demo=true"
-            className="group relative px-8 py-4 md:px-10 md:py-5 bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-400 rounded-2xl font-black text-lg md:text-xl text-black hover:shadow-2xl hover:shadow-gold-400/70 transition-all duration-500 active:scale-95 md:hover:scale-110 flex items-center gap-2 md:gap-3 overflow-hidden w-full sm:w-auto justify-center shadow-[0_0_20px_rgba(234,179,8,0.4)] md:shadow-[0_0_30px_rgba(234,179,8,0.5)]"
+            className="group relative px-8 py-4 md:px-10 md:py-5 bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-400 rounded-2xl font-black text-lg md:text-xl text-black transition-all duration-500 active:scale-95 md:hover:scale-110 flex items-center gap-2 md:gap-3 overflow-hidden w-full sm:w-auto justify-center shadow-[0_0_40px_rgba(234,179,8,0.6),0_0_80px_rgba(234,179,8,0.3),inset_0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(234,179,8,0.9),0_0_120px_rgba(234,179,8,0.5),inset_0_0_30px_rgba(255,255,255,0.5)]"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-300 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-gradient-x" />
-            <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.9),transparent)]" />
-            <span className="relative z-10 drop-shadow-md">Загрузить трек</span>
-            <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform relative z-10" size={20} />
+            {/* Анимированный градиент фона */}
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-300 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            
+            {/* Переливающийся золотой слой */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+            
+            {/* Пульсирующее золотое свечение */}
+            <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_50%_50%,rgba(255,215,0,0.4),transparent_70%)] animate-pulse" />
+            
+            {/* Верхний блик */}
+            <div className="absolute inset-0 opacity-60 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.5)_0%,transparent_50%)]" />
+            
+            <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">Загрузить трек</span>
+            <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]" size={20} />
           </a>
           
           <a
