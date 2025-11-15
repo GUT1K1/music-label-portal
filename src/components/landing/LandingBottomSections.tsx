@@ -52,7 +52,7 @@ export default function LandingBottomSections({
 
   return (
     <>
-      <section id="platforms" className="py-32 pb-8 px-6 lg:px-12 relative scroll-animate overflow-hidden">
+      <section id="platforms" className="pt-32 pb-4 px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
           <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-[100px]" />
@@ -118,7 +118,7 @@ export default function LandingBottomSections({
 
       <BlogCarousel />
 
-      <section id="faq" className="pt-8 pb-32 px-6 lg:px-12 relative scroll-animate overflow-hidden">
+      <section id="faq" className="pt-4 pb-32 px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-gold-500/10 to-orange-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-orange-500/10 to-gold-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
