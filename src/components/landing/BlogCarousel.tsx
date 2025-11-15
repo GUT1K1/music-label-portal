@@ -31,8 +31,6 @@ export default function BlogCarousel() {
             .slice(0, 6);
           setPosts(publishedPosts);
         }
-      } catch (error) {
-        console.error('Failed to load blog posts:', error);
       } finally {
         setLoading(false);
       }

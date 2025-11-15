@@ -1,13 +1,7 @@
 import Icon from "@/components/ui/icon";
 import { useEffect, useState } from "react";
 
-interface LandingHeroProps {
-  scrollY: number;
-  typedText: string;
-  isTypingComplete: boolean;
-}
-
-export default function LandingHero({ scrollY, typedText, isTypingComplete }: LandingHeroProps) {
+export default function LandingHero() {
   const [visibleWords, setVisibleWords] = useState<number[]>([]);
   
   const words1 = ['МУЗЫКА', 'БЕЗ', 'ГРАНИЦ.'];
