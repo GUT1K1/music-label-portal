@@ -111,7 +111,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           <div className="md:hidden fixed inset-0 bg-black/98 z-[100]" />
           
           {/* Контент меню */}
-          <nav className="md:hidden fixed inset-0 z-[101] flex flex-col items-center justify-center gap-8 px-6">
+          <nav className="md:hidden fixed inset-0 z-[101] flex flex-col items-center justify-start pt-24 gap-8 px-6">
             <a 
               href="/blog" 
               onClick={(e) => handleNavigation('/blog', e)}
