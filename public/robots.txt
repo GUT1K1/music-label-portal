@@ -20,10 +20,12 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /app
 Disallow: /admin-fix-passwords
 Disallow: /animations
 Disallow: /menus
 Disallow: /header-variants
+Disallow: /vk-callback
 
 Sitemap: https://420music.ru/sitemap.xml
 
