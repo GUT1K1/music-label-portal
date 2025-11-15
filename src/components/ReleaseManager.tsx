@@ -35,6 +35,7 @@ export default function ReleaseManager({ userId, userRole = 'artist', isDemoMode
     setShowForm,
     activeTab,
     setActiveTab,
+    editingRelease,
     newRelease,
     setNewRelease,
     coverPreview,
@@ -78,6 +79,7 @@ export default function ReleaseManager({ userId, userRole = 'artist', isDemoMode
       releases={releases}
       showForm={showForm}
       activeTab={activeTab}
+      editingRelease={editingRelease}
       newRelease={newRelease}
       coverPreview={coverPreview}
       tracks={tracks}

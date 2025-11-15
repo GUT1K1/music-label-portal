@@ -12,6 +12,7 @@ interface ReleaseManagerViewProps {
   releases: Release[];
   showForm: boolean;
   activeTab: 'all' | 'approved' | 'pending' | 'rejected';
+  editingRelease: Release | null;
   newRelease: any;
   coverPreview: string | null;
   tracks: any[];
@@ -60,6 +61,7 @@ export default function ReleaseManagerView({
   releases,
   showForm,
   activeTab,
+  editingRelease,
   newRelease,
   coverPreview,
   tracks,
@@ -130,6 +132,7 @@ export default function ReleaseManagerView({
 
       {showForm && (
         <ReleaseWizard
+          editingRelease={editingRelease}
           newRelease={newRelease}
           setNewRelease={setNewRelease}
           coverPreview={coverPreview}

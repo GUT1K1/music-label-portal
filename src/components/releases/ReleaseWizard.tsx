@@ -8,9 +8,10 @@ import WizardStepRequisites from './wizard/WizardStepRequisites';
 import WizardStepTracks from './wizard/WizardStepTracks';
 import WizardStepReview from './wizard/WizardStepReview';
 import WizardStepContract from './wizard/WizardStepContract';
-import { Track, ContractRequisites } from './types';
+import { Track, ContractRequisites, Release } from './types';
 
 interface ReleaseWizardProps {
+  editingRelease: Release | null;
   newRelease: {
     release_name: string;
     release_date: string;
@@ -47,6 +48,7 @@ const STEPS = [
 ];
 
 export default function ReleaseWizard({
+  editingRelease,
   newRelease,
   setNewRelease,
   coverPreview,
@@ -150,8 +152,12 @@ export default function ReleaseWizard({
         <CardHeader className="pb-4 !bg-background border-b border-border/30">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <CardTitle className="text-xl">Создать релиз</CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">Шаг {currentStep} из 6</p>
+              <CardTitle className="text-xl">
+                {editingRelease ? 'Редактировать релиз' : 'Создать релиз'}
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {editingRelease ? `Редактирование "${editingRelease.release_name}" • Шаг ${currentStep} из 6` : `Шаг ${currentStep} из 6`}
+              </p>
             </div>
             <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8" disabled={uploading}>
               <Icon name="X" size={18} />
