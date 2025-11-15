@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { MusicPlayerProvider } from "@/contexts/MusicPlayerContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import LoadingFallback from "@/components/LoadingFallback";
 
@@ -62,7 +63,8 @@ const App = () => (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <NotificationProvider>
-            <TooltipProvider>
+            <MusicPlayerProvider>
+              <TooltipProvider>
               <Toaster />
               <Sonner />
               <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -88,9 +90,10 @@ const App = () => (
                 </Routes>
               </Suspense>
             </BrowserRouter>
-          </TooltipProvider>
-        </NotificationProvider>
-      </ThemeProvider>
+              </TooltipProvider>
+            </MusicPlayerProvider>
+          </NotificationProvider>
+        </ThemeProvider>
     </QueryClientProvider>
     </HelmetProvider>
   </ErrorBoundary>

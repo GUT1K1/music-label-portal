@@ -1,30 +1,14 @@
 import { useRef, useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
+import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
 
-interface Track {
-  releaseId: number;
-  trackId: number;
-  trackName: string;
-  artistName: string;
-  coverUrl?: string;
-  audioUrl: string;
-}
-
-interface PlayerVariantDProps {
-  tracks: Track[];
-  currentIndex: number;
-  onIndexChange: (index: number) => void;
-}
-
-export default function PlayerVariantD({ tracks, currentIndex, onIndexChange }: PlayerVariantDProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
+export default function PlayerVariantD() {
+  const { currentTrack, isPlaying, pause, resume } = useMusicPlayer();
   const [volume, setVolume] = useState(0.7);
   const [showVolume, setShowVolume] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
-
-  const currentTrack = tracks[currentIndex];
 
   useEffect(() => {
     if (audioRef.current) {
@@ -32,26 +16,25 @@ export default function PlayerVariantD({ tracks, currentIndex, onIndexChange }: 
     }
   }, [volume]);
 
+  useEffect(() => {
+    if (!audioRef.current || !currentTrack) return;
+    
+    audioRef.current.src = currentTrack.audioUrl;
+    
+    if (isPlaying) {
+      audioRef.current.play().catch(err => console.error('Play error:', err));
+    } else {
+      audioRef.current.pause();
+    }
+  }, [currentTrack, isPlaying]);
+
   const togglePlay = () => {
     if (!audioRef.current) return;
     if (isPlaying) {
-      audioRef.current.pause();
+      pause();
     } else {
-      audioRef.current.play();
+      resume();
     }
-    setIsPlaying(!isPlaying);
-  };
-
-  const playNext = () => {
-    const nextIndex = (currentIndex + 1) % tracks.length;
-    onIndexChange(nextIndex);
-    setTimeout(() => audioRef.current?.play(), 100);
-  };
-
-  const playPrevious = () => {
-    const prevIndex = currentIndex === 0 ? tracks.length - 1 : currentIndex - 1;
-    onIndexChange(prevIndex);
-    setTimeout(() => audioRef.current?.play(), 100);
   };
 
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -74,16 +57,14 @@ export default function PlayerVariantD({ tracks, currentIndex, onIndexChange }: 
     <div className="fixed bottom-4 left-4 right-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.8)] z-[100]">
       <audio
         ref={audioRef}
-        src={currentTrack.audioUrl}
-        onEnded={playNext}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+        onPlay={() => resume()}
+        onPause={() => pause()}
         onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime || 0)}
         onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
       />
       
       <div 
-        className="absolute top-0 left-0 h-0.5 bg-gradient-to-r from-primary via-secondary to-primary transition-all cursor-pointer"
+        className="absolute top-0 left-0 h-0.5 bg-gradient-to-r from-primary via-secondary to-primary transition-all cursor-pointer rounded-t-2xl overflow-hidden"
         style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
         onClick={handleSeek}
       >
@@ -117,24 +98,10 @@ export default function PlayerVariantD({ tracks, currentIndex, onIndexChange }: 
 
         <div className="flex items-center gap-2">
           <button
-            onClick={playPrevious}
-            className="p-2 hover:bg-white/10 rounded-full transition-all backdrop-blur-sm"
-          >
-            <Icon name="SkipBack" size={18} className="text-white/70 hover:text-white" />
-          </button>
-          
-          <button
             onClick={togglePlay}
             className="p-3 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-full transition-all hover:scale-110 shadow-lg shadow-primary/40"
           >
             <Icon name={isPlaying ? 'Pause' : 'Play'} size={20} className="text-white" />
-          </button>
-          
-          <button
-            onClick={playNext}
-            className="p-2 hover:bg-white/10 rounded-full transition-all backdrop-blur-sm"
-          >
-            <Icon name="SkipForward" size={18} className="text-white/70 hover:text-white" />
           </button>
         </div>
 

@@ -5,11 +5,10 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { LazyImage } from '@/components/ui/image-lazy';
 import { Release, Pitching } from './types';
-import { Skeleton } from '@/components/ui/skeleton';
 import ReleaseViewDialog from './ReleaseViewDialog';
 import ContractViewDialog from './ContractViewDialog';
+import { useMusicPlayer } from '@/contexts/MusicPlayerContext';
 
-const ReleasePlayer = lazy(() => import('./ReleasePlayer'));
 const PitchingForm = lazy(() => import('./PitchingForm'));
 
 interface ReleasesListProps {
@@ -25,9 +24,9 @@ interface ReleasesListProps {
 }
 
 const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBadge, onEdit, onPitching, onDelete, onStatusChange, loadTracks, userRole }: ReleasesListProps) {
-  const [expandedRelease, setExpandedRelease] = useState<number | null>(null);
   const [pitchingRelease, setPitchingRelease] = useState<Release | null>(null);
   const [detailsRelease, setDetailsRelease] = useState<Release | null>(null);
+  const { playRelease } = useMusicPlayer();
   const [contractDialogRelease, setContractDialogRelease] = useState<Release | null>(null);
   const [contractTracks, setContractTracks] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
@@ -51,6 +50,28 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
       return;
     }
     setDetailsRelease(release);
+  };
+
+  const handlePlayRelease = async (release: Release) => {
+    if (!loadTracks) return;
+    
+    try {
+      const tracks = await loadTracks(release.id);
+      const playerTracks = tracks.map((track: any) => ({
+        releaseId: release.id,
+        trackId: track.id,
+        trackName: track.track_name || track.title || 'Без названия',
+        artistName: release.artist_name,
+        coverUrl: release.cover_url,
+        audioUrl: track.audio_url || track.file_url
+      })).filter((t: any) => t.audioUrl);
+      
+      if (playerTracks.length > 0) {
+        playRelease(release.id, playerTracks);
+      }
+    } catch (error) {
+      console.error('Failed to play release:', error);
+    }
   };
 
   return (
@@ -151,11 +172,11 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setExpandedRelease(expandedRelease === release.id ? null : release.id)}
+                    onClick={() => handlePlayRelease(release)}
                     className={viewMode === 'grid' ? 'h-7 px-2 text-[10px] gap-1 flex-1' : 'h-7 px-2 text-xs gap-1'}
                   >
-                    <Icon name={expandedRelease === release.id ? 'ChevronUp' : 'Play'} size={12} className="flex-shrink-0" />
-                    <span>{expandedRelease === release.id ? 'Скрыть' : 'Слушать'}</span>
+                    <Icon name="Play" size={12} className="flex-shrink-0" />
+                    <span>Слушать</span>
                   </Button>
                 )}
                 {release.status === 'rejected_fixable' && onStatusChange && (
@@ -226,14 +247,6 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                   </Button>
                 )}
               </div>
-
-              {expandedRelease === release.id && (
-                <div className="mt-2">
-                  <Suspense fallback={<Skeleton className="h-40 w-full" />}>
-                    <ReleasePlayer userId={userId} releaseId={release.id} />
-                  </Suspense>
-                </div>
-              )}
 
               {(release.status === 'rejected' && release.review_comment) && (
                 <div className="mt-3 bg-destructive/10 border border-destructive/20 p-3 rounded">
