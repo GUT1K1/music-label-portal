@@ -108,7 +108,10 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
       {isMobileMenuOpen && (
         <>
           {/* Фоновый overlay */}
-          <div className="md:hidden fixed inset-0 bg-black z-[100]" />
+          <div 
+            className="md:hidden fixed inset-0 bg-black z-[100]"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
           
           {/* Контент меню */}
           <nav className="md:hidden fixed inset-0 z-[101] flex flex-col items-center justify-start pt-24 gap-8 px-6">
