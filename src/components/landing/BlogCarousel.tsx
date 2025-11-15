@@ -69,7 +69,7 @@ export default function BlogCarousel() {
   }
 
   return (
-    <section className="py-0 relative overflow-hidden scroll-animate">
+    <section className="py-16 md:py-24 relative overflow-hidden scroll-animate">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gold-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
         <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-orange-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
