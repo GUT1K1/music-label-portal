@@ -77,22 +77,62 @@ export default function LandingHero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
           <a
             href="/app?demo=true"
-            className="group relative px-8 py-4 md:px-10 md:py-5 bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-400 rounded-2xl font-black text-lg md:text-xl text-black transition-all duration-500 active:scale-95 md:hover:scale-110 flex items-center gap-2 md:gap-3 overflow-hidden w-full sm:w-auto justify-center shadow-[0_0_40px_rgba(234,179,8,0.6),0_0_80px_rgba(234,179,8,0.3),inset_0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_60px_rgba(234,179,8,0.9),0_0_120px_rgba(234,179,8,0.5),inset_0_0_30px_rgba(255,255,255,0.5)]"
+            className="group relative px-10 py-5 md:px-12 md:py-6 rounded-2xl font-black text-lg md:text-2xl text-black transition-all duration-700 active:scale-95 md:hover:scale-[1.08] flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center isolate"
+            style={{
+              background: 'linear-gradient(135deg, #ffd700 0%, #ffed4e 25%, #ffc107 50%, #ff9800 75%, #ff6f00 100%)',
+              backgroundSize: '200% 200%',
+              animation: 'gradient-shift 4s ease infinite',
+              boxShadow: `
+                0 0 60px rgba(255, 215, 0, 0.8),
+                0 0 100px rgba(255, 193, 7, 0.6),
+                0 0 140px rgba(255, 152, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2)
+              `,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = `
+                0 0 80px rgba(255, 215, 0, 1),
+                0 0 140px rgba(255, 193, 7, 0.8),
+                0 0 200px rgba(255, 152, 0, 0.6),
+                inset 0 2px 0 rgba(255, 255, 255, 0.7),
+                inset 0 -2px 0 rgba(0, 0, 0, 0.3)
+              `;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = `
+                0 0 60px rgba(255, 215, 0, 0.8),
+                0 0 100px rgba(255, 193, 7, 0.6),
+                0 0 140px rgba(255, 152, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2)
+              `;
+            }}
           >
-            {/* Анимированный градиент фона */}
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-gold-300 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Постоянные блики золота - движутся непрерывно */}
+            <div className="absolute inset-0 opacity-60">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent animate-shimmer-wave" style={{ animationDuration: '3s' }} />
+            </div>
             
-            {/* Переливающийся золотой слой */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+            {/* Второй слой бликов со смещением */}
+            <div className="absolute inset-0 opacity-40">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200/70 to-transparent animate-shimmer-wave" style={{ animationDuration: '2.5s', animationDelay: '0.5s' }} />
+            </div>
             
-            {/* Пульсирующее золотое свечение */}
-            <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_50%_50%,rgba(255,215,0,0.4),transparent_70%)] animate-pulse" />
+            {/* Пульсирующее ядро */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4),transparent_60%)] animate-pulse" style={{ animationDuration: '3s' }} />
             
-            {/* Верхний блик */}
-            <div className="absolute inset-0 opacity-60 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.5)_0%,transparent_50%)]" />
+            {/* Яркая вспышка при наведении */}
+            <div className="absolute inset-0 bg-gradient-to-br from-yellow-200 via-transparent to-orange-300 opacity-0 group-hover:opacity-70 transition-opacity duration-500" />
             
-            <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">Загрузить трек</span>
-            <Icon name="ArrowRight" className="group-hover:translate-x-1 transition-transform relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]" size={20} />
+            {/* Переливающаяся волна при наведении */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            
+            {/* Искры по краям */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-yellow-300 via-orange-400 to-yellow-300 opacity-0 group-hover:opacity-50 blur-xl transition-opacity duration-500" />
+            
+            <span className="relative z-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] tracking-wide">Попробовать бесплатно</span>
+            <Icon name="Sparkles" className="relative z-10 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] animate-pulse" size={24} />
           </a>
           
           <a
