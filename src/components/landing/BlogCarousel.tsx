@@ -73,8 +73,8 @@ export default function BlogCarousel() {
   return (
     <section className="py-16 md:py-24 relative overflow-hidden scroll-animate animate-in">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gold-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-orange-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
+        <div className="absolute top-1/4 left-1/4 w-[300px] md:w-[400px] h-[300px] md:h-[400px] bg-gold-500/10 rounded-full blur-[60px] md:blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-1/4 right-1/4 w-[250px] md:w-[350px] h-[250px] md:h-[350px] bg-orange-500/10 rounded-full blur-[60px] md:blur-[100px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
       </div>
 
       <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">

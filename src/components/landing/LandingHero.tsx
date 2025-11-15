@@ -8,13 +8,15 @@ export default function LandingHero() {
   const words2 = ['ТВОРИ', 'СВОБОДНО'];
   
   useEffect(() => {
+    const isMobile = window.innerWidth < 768;
     const order = [0, 3, 1, 4, 2];
     const timers: NodeJS.Timeout[] = [];
+    const delay = isMobile ? 50 : 100;
     
     order.forEach((index, i) => {
       const timer = setTimeout(() => {
         setVisibleWords(prev => [...prev, index]);
-      }, i * 100);
+      }, i * delay);
       timers.push(timer);
     });
     
@@ -36,10 +38,10 @@ export default function LandingHero() {
             {words1.map((word, i) => (
               <span 
                 key={`w1-${i}`}
-                className={`inline-block transition-all duration-700 ${
+                className={`inline-block transition-all duration-500 md:duration-700 ${
                   visibleWords.includes(i) 
                     ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-8'
+                    : 'opacity-0 translate-y-4 md:translate-y-8'
                 }`}
               >
                 {word}
@@ -52,10 +54,10 @@ export default function LandingHero() {
               return (
                 <span 
                   key={`w2-${i}`}
-                  className={`inline-block transition-all duration-700 ${
+                  className={`inline-block transition-all duration-500 md:duration-700 ${
                     visibleWords.includes(wordIndex) 
                       ? 'opacity-100 translate-y-0' 
-                      : 'opacity-0 translate-y-8'
+                      : 'opacity-0 translate-y-4 md:translate-y-8'
                   }`}
                 >
                   <span className="relative inline-block">

@@ -15,7 +15,10 @@ export default function LandingBackgroundEffects() {
   }, []);
 
   useEffect(() => {
-    if (isMobile) return;
+    if (isMobile) {
+      setScrollProgress(0);
+      return;
+    }
     
     let ticking = false;
     const handleScroll = () => {

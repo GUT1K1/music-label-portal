@@ -293,17 +293,58 @@ export default function LandingStyles() {
           }
         }
         
+        /* Упрощаем fade-in-up для мобильных */
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(15px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fade-in-up {
+          animation-duration: 0.4s !important;
+        }
+        
+        /* Упрощаем wave-in */
+        @keyframes wave-in {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .scroll-animate.animate-in {
+          animation-duration: 0.5s !important;
+        }
+        
         /* Отключаем тяжелые эффекты */
         .holographic-effect::before,
         .animate-morph-glow,
-        .animate-pulse-glow,
-        .animate-gradient-x {
+        .animate-pulse-glow {
           animation: none !important;
+          display: none !important;
+        }
+        
+        /* Упрощаем gradient-x для мобильных */
+        .animate-gradient-x {
+          animation-duration: 6s !important;
         }
         
         /* Убираем blur эффекты на мобильных */
-        .bg-glow-effect {
-          display: none !important;
+        .bg-glow-effect,
+        [class*="blur-[100px]"],
+        [class*="blur-[120px]"],
+        [class*="blur-3xl"] {
+          opacity: 0.3 !important;
+          filter: blur(40px) !important;
         }
         
         /* Упрощаем шиммер */
@@ -311,9 +352,35 @@ export default function LandingStyles() {
           animation-duration: 5s !important;
         }
         
-        /* Отключаем сложные hover эффекты */
+        /* Упрощаем все переходы */
         * {
           transition-duration: 0.2s !important;
+        }
+        
+        /* Отключаем сложные трансформации на мобильных */
+        [style*="perspective"] {
+          transform: none !important;
+        }
+        
+        /* Упрощаем пульсацию */
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.6;
+          }
+          50% {
+            opacity: 0.8;
+          }
+        }
+        
+        /* Отключаем rotate анимации на фоновых элементах */
+        .animate-spin {
+          animation: none !important;
+        }
+        
+        /* Упрощаем scroll анимации */
+        .animate-scroll-right,
+        .animate-scroll-left {
+          animation-duration: 40s !important;
         }
       }
       
@@ -324,7 +391,22 @@ export default function LandingStyles() {
       .scroll-animate {
         -webkit-transform: translateZ(0);
         -webkit-backface-visibility: hidden;
-        will-change: transform, opacity;
+        -webkit-perspective: 1000;
+        perspective: 1000;
+      }
+      
+      /* Оптимизация will-change для мобильных */
+      @media (max-width: 768px) {
+        .animate-fade-in-up,
+        .animate-shimmer,
+        .scroll-animate {
+          will-change: auto;
+        }
+        
+        .animate-scroll-right,
+        .animate-scroll-left {
+          will-change: transform;
+        }
       }
       
       /* Уважаем настройки пользователя */

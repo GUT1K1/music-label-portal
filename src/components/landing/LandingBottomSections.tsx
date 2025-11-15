@@ -54,9 +54,9 @@ export default function LandingBottomSections({
     <>
       <section id="platforms" className="pt-20 md:pt-32 pb-0 px-4 md:px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-[100px]" />
-          <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px]" />
+          <div className="hidden md:block absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
+          <div className="absolute top-1/4 right-1/4 w-64 md:w-96 h-64 md:h-96 bg-pink-500/10 rounded-full blur-[60px] md:blur-[100px]" />
+          <div className="absolute bottom-1/4 left-1/3 w-56 md:w-80 h-56 md:h-80 bg-blue-500/10 rounded-full blur-[60px] md:blur-[100px]" />
         </div>
         
         <div className="max-w-7xl mx-auto">
@@ -118,19 +118,19 @@ export default function LandingBottomSections({
 
       <section id="faq" className="pt-20 md:pt-32 pb-20 md:pb-32 px-4 md:px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-gold-500/10 to-orange-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-orange-500/10 to-gold-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
+          <div className="absolute top-1/4 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-gradient-to-br from-gold-500/10 to-orange-500/10 rounded-full blur-[60px] md:blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
+          <div className="absolute bottom-1/4 right-1/4 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-gradient-to-tl from-orange-500/10 to-gold-500/10 rounded-full blur-[60px] md:blur-[120px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
         </div>
         
-        <div className="absolute top-20 left-10 w-32 h-32 border-4 border-gold-400/10 rounded-[32px] rotate-12 animate-spin" style={{ animationDuration: '20s' }} />
-        <div className="absolute bottom-20 right-20 w-24 h-24 border-4 border-orange-400/10 rounded-full animate-spin" style={{ animationDuration: '15s' }} />
+        <div className="hidden md:block absolute top-20 left-10 w-32 h-32 border-4 border-gold-400/10 rounded-[32px] rotate-12 animate-spin" style={{ animationDuration: '20s' }} />
+        <div className="hidden md:block absolute bottom-20 right-20 w-24 h-24 border-4 border-orange-400/10 rounded-full animate-spin" style={{ animationDuration: '15s' }} />
         
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8 md:mb-12 relative">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-gold-500/20 rounded-full blur-3xl" />
+            <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-gold-500/20 rounded-full blur-3xl" />
             
             <div className="inline-block px-6 py-2 md:px-8 md:py-3 bg-gradient-to-r from-gold-500/30 to-orange-500/30 border-2 border-gold-400/40 rounded-full mb-6 md:mb-8 shadow-2xl shadow-gold-500/20 relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-gold-400/20 to-orange-400/20 rounded-full blur-xl" />
+              <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-gold-400/20 to-orange-400/20 rounded-full blur-xl" />
               <span className="text-gold-200 font-black text-xs md:text-sm uppercase tracking-wider relative z-10">Ответы на вопросы</span>
             </div>
             
@@ -155,14 +155,14 @@ export default function LandingBottomSections({
                   transition: 'transform 0.3s ease-out'
                 }}
               >
-                <div className={`absolute -inset-1 bg-gradient-to-r from-gold-600/40 via-orange-600/40 to-gold-600/40 rounded-[28px] blur-xl opacity-0 transition-all duration-700 ${openIndex === i ? 'opacity-100 animate-gradient-x' : ''}`} />
+                <div className={`hidden md:block absolute -inset-1 bg-gradient-to-r from-gold-600/40 via-orange-600/40 to-gold-600/40 rounded-[28px] blur-xl opacity-0 transition-all duration-700 ${openIndex === i ? 'opacity-100 animate-gradient-x' : ''}`} />
                 
                 <div className={`relative bg-black/70 backdrop-blur-xl border-2 rounded-3xl transition-all duration-500 overflow-hidden ${openIndex === i ? 'border-gold-500/80 shadow-2xl shadow-gold-500/30 -translate-y-2' : 'border-gold-500/30 group-hover:border-gold-500/50 group-hover:-translate-y-1'}`}>
-                  <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gold-500/20 to-transparent rounded-full blur-3xl opacity-0 transition-opacity duration-700 ${openIndex === i ? 'opacity-100' : ''}`} />
-                  <div className={`absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-orange-500/20 to-transparent rounded-full blur-3xl opacity-opacity-0 transition-opacity duration-700 ${openIndex === i ? 'opacity-100' : ''}`} />
+                  <div className={`hidden md:block absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-gold-500/20 to-transparent rounded-full blur-3xl opacity-0 transition-opacity duration-700 ${openIndex === i ? 'opacity-100' : ''}`} />
+                  <div className={`hidden md:block absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-orange-500/20 to-transparent rounded-full blur-3xl opacity-opacity-0 transition-opacity duration-700 ${openIndex === i ? 'opacity-100' : ''}`} />
                   
-                  <div className={`absolute top-8 right-8 w-32 h-32 border-2 border-gold-400/20 rounded-[24px] rotate-12 transition-all duration-700 ${openIndex === i ? 'scale-150' : 'group-hover:rotate-45'}`} />
-                  <div className={`absolute bottom-8 left-8 w-24 h-24 border-2 border-orange-400/20 rounded-full -rotate-12 transition-all duration-700 ${openIndex === i ? 'scale-150' : 'group-hover:-rotate-45'}`} />
+                  <div className={`hidden md:block absolute top-8 right-8 w-32 h-32 border-2 border-gold-400/20 rounded-[24px] rotate-12 transition-all duration-300 md:duration-700 ${openIndex === i ? 'scale-150' : 'group-hover:rotate-45'}`} />
+                  <div className={`hidden md:block absolute bottom-8 left-8 w-24 h-24 border-2 border-orange-400/20 rounded-full -rotate-12 transition-all duration-300 md:duration-700 ${openIndex === i ? 'scale-150' : 'group-hover:-rotate-45'}`} />
                   
                   <button 
                     onClick={() => setOpenIndex(openIndex === i ? null : i)}
@@ -170,7 +170,7 @@ export default function LandingBottomSections({
                   >
                     <span className="flex items-center gap-3 md:gap-5 flex-1 pr-2 md:pr-4">
                       <div className="relative flex-shrink-0">
-                        <div className={`absolute inset-0 bg-gradient-to-br from-gold-500 to-orange-500 rounded-xl md:rounded-2xl blur-lg opacity-60 transition-all duration-500 ${openIndex === i ? 'scale-125' : ''}`} />
+                        <div className={`hidden md:block absolute inset-0 bg-gradient-to-br from-gold-500 to-orange-500 rounded-xl md:rounded-2xl blur-lg opacity-60 transition-all duration-300 md:duration-500 ${openIndex === i ? 'scale-125' : ''}`} />
                         <div className={`relative w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-gold-500 to-orange-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 transition-all duration-500 ${openIndex === i ? 'scale-125' : 'group-hover:scale-110 group-hover:rotate-12'}`}>
                           <span className="text-black font-black text-lg md:text-2xl">{i + 1}</span>
                         </div>
