@@ -52,7 +52,7 @@ export default function LandingBottomSections({
 
   return (
     <>
-      <section id="platforms" className="pt-32 pb-0 px-6 lg:px-12 relative scroll-animate overflow-hidden">
+      <section id="platforms" className="pt-20 md:pt-32 pb-0 px-4 md:px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-purple-500/5 to-transparent" />
           <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-[100px]" />
@@ -60,21 +60,21 @@ export default function LandingBottomSections({
         </div>
         
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block px-6 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-full mb-6">
-              <span className="text-purple-300 font-bold text-sm uppercase tracking-wider">Везде где ты слушаешь</span>
+          <div className="text-center mb-8 md:mb-12">
+            <div className="inline-block px-4 py-2 md:px-6 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-full mb-4 md:mb-6">
+              <span className="text-purple-300 font-bold text-xs md:text-sm uppercase tracking-wider">Везде где ты слушаешь</span>
             </div>
-            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-6">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 md:mb-6 px-4">
               <span className="bg-gradient-to-r from-purple-200 via-pink-400 to-purple-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">170+ музыкальных платформ</span>
             </h2>
-            <p className="text-gray-400 text-xl max-w-2xl mx-auto">
+            <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto px-4">
               Твоя музыка будет доступна миллионам слушателей по всему миру
             </p>
           </div>
           
-          <div className="relative space-y-4 py-4">
-            <div className="overflow-hidden py-2">
-              <div className="flex gap-12 animate-scroll-right">
+          <div className="relative space-y-3 md:space-y-4 py-2 md:py-4">
+            <div className="overflow-hidden py-1 md:py-2">
+              <div className="flex gap-8 md:gap-12 animate-scroll-right">
                 {[...row1, ...row1, ...row1, ...row1].map((platform, i) => (
                   <div
                     key={i}
@@ -90,8 +90,8 @@ export default function LandingBottomSections({
               </div>
             </div>
 
-            <div className="overflow-hidden py-2">
-              <div className="flex gap-12 animate-scroll-left">
+            <div className="overflow-hidden py-1 md:py-2">
+              <div className="flex gap-8 md:gap-12 animate-scroll-left">
                 {[...row2, ...row2, ...row2, ...row2].map((platform, i) => (
                   <div
                     key={i}
@@ -108,15 +108,15 @@ export default function LandingBottomSections({
             </div>
           </div>
           
-          <div className="mt-6 text-center">
-            <p className="text-gray-400 text-lg font-medium">
+          <div className="mt-4 md:mt-6 text-center">
+            <p className="text-gray-400 text-base md:text-lg font-medium px-4">
               + ещё 160 музыкальных сервисов по всему миру
             </p>
           </div>
         </div>
       </section>
 
-      <section id="faq" className="pt-32 pb-32 px-6 lg:px-12 relative scroll-animate overflow-hidden">
+      <section id="faq" className="pt-20 md:pt-32 pb-20 md:pb-32 px-4 md:px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-gold-500/10 to-orange-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-orange-500/10 to-gold-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
@@ -126,24 +126,24 @@ export default function LandingBottomSections({
         <div className="absolute bottom-20 right-20 w-24 h-24 border-4 border-orange-400/10 rounded-full animate-spin" style={{ animationDuration: '15s' }} />
         
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12 relative">
+          <div className="text-center mb-8 md:mb-12 relative">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-gold-500/20 rounded-full blur-3xl" />
             
-            <div className="inline-block px-8 py-3 bg-gradient-to-r from-gold-500/30 to-orange-500/30 border-2 border-gold-400/40 rounded-full mb-8 shadow-2xl shadow-gold-500/20 relative">
+            <div className="inline-block px-6 py-2 md:px-8 md:py-3 bg-gradient-to-r from-gold-500/30 to-orange-500/30 border-2 border-gold-400/40 rounded-full mb-6 md:mb-8 shadow-2xl shadow-gold-500/20 relative">
               <div className="absolute inset-0 bg-gradient-to-r from-gold-400/20 to-orange-400/20 rounded-full blur-xl" />
-              <span className="text-gold-200 font-black text-sm uppercase tracking-wider relative z-10">Ответы на вопросы</span>
+              <span className="text-gold-200 font-black text-xs md:text-sm uppercase tracking-wider relative z-10">Ответы на вопросы</span>
             </div>
             
-            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black mb-6 relative">
-              <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%] drop-shadow-[0_0_30px_rgba(234,179,8,0.3)]">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 md:mb-6 relative px-4">
+              <span className="bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%] drop-shadow-[0_0_20px_rgba(234,179,8,0.2)] md:drop-shadow-[0_0_30px_rgba(234,179,8,0.3)]">
                 Популярные вопросы
               </span>
             </h2>
             
-            <div className="h-1 w-40 mx-auto bg-gradient-to-r from-transparent via-gold-400 to-transparent rounded-full" />
+            <div className="h-1 w-32 md:w-40 mx-auto bg-gradient-to-r from-transparent via-gold-400 to-transparent rounded-full" />
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {faqs.map((faq, i) => (
               <div
                 key={i}
@@ -166,39 +166,39 @@ export default function LandingBottomSections({
                   
                   <button 
                     onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                    className="w-full p-10 flex items-center justify-between cursor-pointer group/button text-left"
+                    className="w-full p-6 md:p-10 flex items-center justify-between cursor-pointer group/button text-left"
                   >
-                    <span className="flex items-center gap-5 flex-1 pr-4">
+                    <span className="flex items-center gap-3 md:gap-5 flex-1 pr-2 md:pr-4">
                       <div className="relative flex-shrink-0">
-                        <div className={`absolute inset-0 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl blur-lg opacity-60 transition-all duration-500 ${openIndex === i ? 'scale-125' : ''}`} />
-                        <div className={`relative w-16 h-16 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 transition-all duration-500 ${openIndex === i ? 'scale-125' : 'group-hover:scale-110 group-hover:rotate-12'}`}>
-                          <span className="text-black font-black text-2xl">{i + 1}</span>
+                        <div className={`absolute inset-0 bg-gradient-to-br from-gold-500 to-orange-500 rounded-xl md:rounded-2xl blur-lg opacity-60 transition-all duration-500 ${openIndex === i ? 'scale-125' : ''}`} />
+                        <div className={`relative w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-gold-500 to-orange-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 transition-all duration-500 ${openIndex === i ? 'scale-125' : 'group-hover:scale-110 group-hover:rotate-12'}`}>
+                          <span className="text-black font-black text-lg md:text-2xl">{i + 1}</span>
                         </div>
                       </div>
                       
-                      <h3 className={`text-xl md:text-2xl font-bold transition-colors duration-300 ${openIndex === i ? 'text-gold-100' : 'text-white group-hover:text-gold-200'}`}>
+                      <h3 className={`text-base md:text-xl lg:text-2xl font-bold transition-colors duration-300 ${openIndex === i ? 'text-gold-100' : 'text-white group-hover:text-gold-200'}`}>
                         {faq.q}
                       </h3>
                     </span>
                     
                     <div className="relative flex-shrink-0 group-hover/button:scale-110 transition-transform duration-300">
-                      <div className="absolute inset-0 bg-gold-500/40 rounded-2xl blur-2xl opacity-0 group-hover/button:opacity-100 transition-opacity duration-300" />
-                      <div className="relative w-16 h-16 bg-gradient-to-br from-gold-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 border-2 border-gold-300/50">
-                        <Icon name="ChevronDown" size={32} className={`text-black font-bold transition-all duration-500 ${openIndex === i ? 'rotate-180' : ''}`} />
+                      <div className="absolute inset-0 bg-gold-500/40 rounded-xl md:rounded-2xl blur-2xl opacity-0 group-hover/button:opacity-100 transition-opacity duration-300" />
+                      <div className="relative w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-gold-500 to-orange-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-2xl shadow-gold-500/50 border-2 border-gold-300/50">
+                        <Icon name="ChevronDown" size={24} className={`md:w-8 md:h-8 text-black font-bold transition-all duration-500 ${openIndex === i ? 'rotate-180' : ''}`} />
                       </div>
                     </div>
                   </button>
                   
                   {openIndex === i && (
-                    <div className="px-10 pb-10 animate-fade-in-up">
-                      <div className="pl-[76px] relative">
-                        <div className="absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-gold-500/50 via-gold-500/30 to-transparent rounded-full" />
+                    <div className="px-6 pb-6 md:px-10 md:pb-10 animate-fade-in-up">
+                      <div className="md:pl-[76px] relative">
+                        <div className="hidden md:block absolute left-8 top-0 w-0.5 h-full bg-gradient-to-b from-gold-500/50 via-gold-500/30 to-transparent rounded-full" />
                         
-                        <div className="relative bg-gradient-to-br from-gold-500/10 to-orange-500/10 backdrop-blur-sm border-2 border-gold-400/30 rounded-2xl p-8 shadow-xl">
-                          <div className="absolute top-0 left-0 w-16 h-16 bg-gradient-to-br from-gold-400/30 to-transparent rounded-tl-2xl" />
-                          <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-br-2xl" />
+                        <div className="relative bg-gradient-to-br from-gold-500/10 to-orange-500/10 backdrop-blur-sm border-2 border-gold-400/30 rounded-xl md:rounded-2xl p-5 md:p-8 shadow-xl">
+                          <div className="absolute top-0 left-0 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-gold-400/30 to-transparent rounded-tl-xl md:rounded-tl-2xl" />
+                          <div className="absolute bottom-0 right-0 w-16 h-16 md:w-20 md:h-20 bg-gradient-to-tl from-orange-400/30 to-transparent rounded-br-xl md:rounded-br-2xl" />
                           
-                          <p className="text-gray-100 leading-relaxed text-lg md:text-xl relative z-10">
+                          <p className="text-gray-100 leading-relaxed text-sm md:text-lg lg:text-xl relative z-10">
                             {faq.a}
                           </p>
                         </div>
