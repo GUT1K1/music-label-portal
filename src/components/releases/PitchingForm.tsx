@@ -188,7 +188,7 @@ export default function PitchingForm({ release, isOpen, onClose, onSubmit }: Pit
             </div>
 
             <div>
-              <Label htmlFor="photos">5 фото артиста *</Label>
+              <Label htmlFor="photos">Фото артиста (до 5 шт.)</Label>
               <div className="space-y-2">
                 <Input
                   id="photos"
@@ -210,7 +210,7 @@ export default function PitchingForm({ release, isOpen, onClose, onSubmit }: Pit
                     ))}
                   </div>
                 )}
-                <p className="text-xs text-muted-foreground">Загрузите до 5 качественных фотографий артиста</p>
+                <p className="text-xs text-muted-foreground">Загрузите до 5 качественных фотографий артиста (необязательно)</p>
               </div>
             </div>
           </div>
@@ -221,7 +221,7 @@ export default function PitchingForm({ release, isOpen, onClose, onSubmit }: Pit
             </Button>
             <Button 
               type="submit" 
-              disabled={loading || uploadingPhotos || !formData.artist_photos || formData.artist_photos.length === 0}
+              disabled={loading || uploadingPhotos}
               className="gap-2"
             >
               {loading ? (
