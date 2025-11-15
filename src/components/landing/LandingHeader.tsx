@@ -46,11 +46,11 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
 
   return (
     <>
-      <header className={`fixed top-4 md:top-6 left-0 right-0 z-50 transition-all duration-500 px-4 md:px-6`}>
-        <div className={`max-w-7xl mx-auto rounded-xl md:rounded-2xl transition-all duration-500 ${
+      <header className={`fixed top-0 md:top-6 left-0 right-0 z-50 transition-all duration-500 px-0 md:px-6`}>
+        <div className={`max-w-7xl mx-auto rounded-none md:rounded-2xl transition-all duration-500 ${
           isScrolled 
-            ? 'bg-gradient-to-r from-black/90 via-gray-900/90 to-black/90 backdrop-blur-xl border border-gold-400/40 shadow-2xl shadow-gold-500/20' 
-            : 'bg-gradient-to-r from-black/60 via-gray-900/50 to-black/60 backdrop-blur-lg border border-gold-400/20'
+            ? 'bg-gradient-to-r from-black/90 via-gray-900/90 to-black/90 backdrop-blur-xl border-0 md:border border-gold-400/40 shadow-2xl shadow-gold-500/20' 
+            : 'bg-gradient-to-r from-black/60 via-gray-900/50 to-black/60 backdrop-blur-lg border-0 md:border border-gold-400/20'
         }`}>
           <div className="px-4 md:px-8 lg:px-10">
             <div className="flex items-center justify-between h-[60px] md:h-[72px]">
