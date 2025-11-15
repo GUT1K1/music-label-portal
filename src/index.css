@@ -177,7 +177,6 @@
   #root {
     background: #000000;
     min-height: 100vh;
-    contain: paint;
   }
 
   /* Стилизованный скролл для всего сайта */
