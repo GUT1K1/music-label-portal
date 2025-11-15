@@ -76,12 +76,13 @@ export default function LandingHero() {
             href="/app?demo=true"
             className="group relative px-8 py-4 md:px-10 md:py-5 rounded-2xl font-bold text-lg md:text-xl text-black transition-all duration-500 active:scale-95 md:hover:scale-105 flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center"
             style={{
-              background: 'linear-gradient(135deg, #ffd700, #ffed4e, #ffc107, #ff9800, #ff6f00)',
-              backgroundSize: '200% 200%',
-              animation: 'gradient-shift 3s ease infinite'
+              background: 'linear-gradient(90deg, #ffd700, #ffed4e, #ffc107, #ff9800, #ff6f00, #ffd700, #ffed4e)',
+              backgroundSize: '300% 100%',
+              animation: 'gradient-shift 2s linear infinite'
             }}
           >
             <div className="absolute -inset-1 bg-gradient-to-r from-gold-500 via-orange-500 to-yellow-500 rounded-2xl blur-lg opacity-70 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-wave" style={{ animationDuration: '2s' }} />
             <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">Попробовать бесплатно</span>
             <Icon name="Sparkles" className="relative z-10 group-hover:scale-125 transition-transform" size={20} />
           </a>
