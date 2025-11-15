@@ -76,7 +76,7 @@ export default function BlogCarousel() {
       </div>
 
       <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
-        <div className="text-center mb-12 md:mb-16 relative">
+        <div className="text-center mb-8 relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-20 bg-gold-500/20 rounded-full blur-3xl" />
           
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 relative">
@@ -179,7 +179,7 @@ export default function BlogCarousel() {
             ))}
           </div>
 
-          <div className="text-center mt-8 text-sm text-gray-500 font-medium">
+          <div className="text-center mt-4 text-sm text-gray-500 font-medium">
             ← Листайте карточки →
           </div>
         </div>

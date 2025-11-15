@@ -128,7 +128,7 @@ export default function LandingBottomSections({
         <div className="absolute bottom-20 right-20 w-24 h-24 border-4 border-orange-400/10 rounded-full animate-spin" style={{ animationDuration: '15s' }} />
         
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-24 relative">
+          <div className="text-center mb-12 relative">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-gold-500/20 rounded-full blur-3xl" />
             
             <div className="inline-block px-8 py-3 bg-gradient-to-r from-gold-500/30 to-orange-500/30 border-2 border-gold-400/40 rounded-full mb-8 shadow-2xl shadow-gold-500/20 relative">
