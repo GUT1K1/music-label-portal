@@ -303,6 +303,7 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
           signatureDataUrl={contractDialogRelease.contract_signature}
         />
       )}
+    </div>
   );
 });
 
