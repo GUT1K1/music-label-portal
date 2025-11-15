@@ -78,9 +78,10 @@ export default function ArtistView({
 
 
   return (
-    <div className="min-h-screen bg-black bg-grid-pattern pb-20">
-      <div className="w-full animate-fadeIn">
-        <div className="sticky top-0 z-30 mb-2 md:mb-0 container mx-auto px-2 md:px-4">
+    <>
+      <div className="min-h-screen bg-black bg-grid-pattern pb-20">
+        <div className="w-full animate-fadeIn">
+          <div className="sticky top-0 z-30 mb-2 md:mb-0 container mx-auto px-2 md:px-4">
           <AppHeader 
             onMessagesClick={() => {}}
             onProfileClick={() => setShowProfile(true)}
@@ -193,8 +194,9 @@ export default function ArtistView({
       </div>
       
       {isDemoMode && <DemoBanner />}
+      </div>
       
       <MusicPlayerDemo userId={user.id} />
-    </div>
+    </>
   );
 }
