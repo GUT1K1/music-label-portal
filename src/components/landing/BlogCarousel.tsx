@@ -26,14 +26,10 @@ export default function BlogCarousel() {
         const response = await fetch('https://functions.poehali.dev/a5045a0c-e192-4009-875b-ec78a3364f52');
         if (response.ok) {
           const data = await response.json();
-          console.log('Blog posts fetched:', data.posts?.length, 'total posts');
           const publishedPosts = data.posts
             .filter((post: BlogPost) => post.image_url)
             .slice(0, 6);
-          console.log('Filtered posts with images:', publishedPosts.length);
           setPosts(publishedPosts);
-        } else {
-          console.error('Failed to fetch blog posts, status:', response.status);
         }
       } catch (error) {
         console.error('Failed to load blog posts:', error);
@@ -76,10 +72,8 @@ export default function BlogCarousel() {
     return null;
   }
 
-  console.log('Rendering BlogCarousel with', posts.length, 'posts');
-
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden scroll-animate">
+    <section className="py-16 md:py-24 relative overflow-hidden scroll-animate animate-in">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-gold-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '4s' }} />
         <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-orange-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
