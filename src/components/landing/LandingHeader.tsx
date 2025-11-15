@@ -104,7 +104,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
 
       {/* Mobile menu */}
       <div 
-        className={`md:hidden fixed inset-0 bg-black/95 backdrop-blur-xl transition-all duration-500 ${
+        className={`md:hidden fixed inset-0 bg-black/95 backdrop-blur-xl transition-all duration-500 z-[60] ${
           isMobileMenuOpen 
             ? 'opacity-100 pointer-events-auto' 
             : 'opacity-0 pointer-events-none'
