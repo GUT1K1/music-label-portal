@@ -112,11 +112,11 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
             : 'opacity-0 invisible pointer-events-none'
         }`}
       >
-        <nav className="flex flex-col items-center justify-center h-full gap-8 px-6">
+        <nav className="relative z-20 flex flex-col items-center justify-center h-full gap-8 px-6">
           <a 
             href="/blog" 
             onClick={(e) => handleNavigation('/blog', e)}
-            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors relative z-10"
+            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
           >
             Блог
           </a>
@@ -124,7 +124,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           <a 
             href="#why" 
             onClick={(e) => handleAnchorClick(e, '#why')} 
-            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors relative z-10"
+            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
           >
             Преимущества
           </a>
@@ -132,7 +132,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           <a 
             href="#faq" 
             onClick={(e) => handleAnchorClick(e, '#faq')} 
-            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors relative z-10"
+            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
           >
             Вопросы
           </a>
@@ -140,7 +140,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           <a
             href="/app"
             onClick={() => handleNavigation('/app')}
-            className="mt-8 px-12 py-5 bg-gradient-to-r from-yellow-400 via-gold-500 to-orange-500 text-black rounded-xl font-bold text-xl transition-all active:scale-95 relative z-10"
+            className="mt-8 px-12 py-5 bg-gradient-to-r from-yellow-400 via-gold-500 to-orange-500 text-black rounded-xl font-bold text-xl transition-all active:scale-95"
           >
             Начать
           </a>
