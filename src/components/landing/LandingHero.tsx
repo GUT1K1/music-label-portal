@@ -54,18 +54,13 @@ export default function LandingHero() {
               return (
                 <span 
                   key={`w2-${i}`}
-                  className={`inline-block transition-all duration-500 md:duration-700 ${
+                  className={`inline-block text-white transition-all duration-500 md:duration-700 ${
                     visibleWords.includes(wordIndex) 
                       ? 'opacity-100 translate-y-0' 
                       : 'opacity-0 translate-y-4 md:translate-y-8'
                   }`}
                 >
-                  <span className="relative inline-block">
-                    <span className="absolute inset-0 blur-xl md:blur-2xl bg-gradient-to-r from-gold-400/20 md:from-gold-400/30 via-gold-500/30 md:via-gold-500/40 to-orange-500/20 md:to-orange-500/30" />
-                    <span className="relative bg-gradient-to-r from-yellow-200 via-gold-300 to-orange-300 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%] drop-shadow-[0_0_15px_rgba(234,179,8,0.3)] md:drop-shadow-[0_0_20px_rgba(234,179,8,0.4)]">
-                      {word}
-                    </span>
-                  </span>
+                  {word}
                 </span>
               );
             })}
