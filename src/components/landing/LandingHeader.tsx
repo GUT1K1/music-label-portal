@@ -90,7 +90,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
               {/* Mobile menu button */}
               <button 
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-2 text-gray-300 hover:text-gold-300 transition-colors relative z-[70]"
+                className="md:hidden p-2 text-gray-300 hover:text-gold-300 transition-colors relative z-[110]"
                 aria-label="Toggle menu"
               >
                 {isMobileMenuOpen ? (
@@ -106,17 +106,17 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
 
       {/* Mobile menu */}
       <div 
-        className={`md:hidden fixed top-0 left-0 right-0 bottom-0 bg-black/95 backdrop-blur-xl transition-all duration-300 z-[60] pt-20 ${
+        className={`md:hidden fixed inset-0 bg-black/98 transition-all duration-300 z-[100] ${
           isMobileMenuOpen 
             ? 'opacity-100 visible' 
-            : 'opacity-0 invisible'
+            : 'opacity-0 invisible pointer-events-none'
         }`}
       >
-        <nav className="flex flex-col items-center justify-center h-full gap-6 px-6">
+        <nav className="flex flex-col items-center justify-center h-full gap-8 px-6">
           <a 
             href="/blog" 
             onClick={(e) => handleNavigation('/blog', e)}
-            className="text-2xl font-bold text-white hover:text-gold-300 transition-colors duration-300 relative"
+            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors relative z-10"
           >
             Блог
           </a>
@@ -124,7 +124,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           <a 
             href="#why" 
             onClick={(e) => handleAnchorClick(e, '#why')} 
-            className="text-2xl font-bold text-white hover:text-gold-300 transition-colors duration-300 relative"
+            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors relative z-10"
           >
             Преимущества
           </a>
@@ -132,7 +132,7 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           <a 
             href="#faq" 
             onClick={(e) => handleAnchorClick(e, '#faq')} 
-            className="text-2xl font-bold text-white hover:text-gold-300 transition-colors duration-300 relative"
+            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors relative z-10"
           >
             Вопросы
           </a>
@@ -140,10 +140,9 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           <a
             href="/app"
             onClick={() => handleNavigation('/app')}
-            className="mt-8 px-10 py-4 bg-gradient-to-r from-yellow-400 via-gold-500 to-orange-500 text-black rounded-xl font-bold text-lg transition-all duration-300 active:scale-95 relative overflow-hidden"
+            className="mt-8 px-12 py-5 bg-gradient-to-r from-yellow-400 via-gold-500 to-orange-500 text-black rounded-xl font-bold text-xl transition-all active:scale-95 relative z-10"
           >
-            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.8),transparent)]" />
-            <span className="relative z-10 drop-shadow-sm">Начать</span>
+            Начать
           </a>
         </nav>
       </div>
