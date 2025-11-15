@@ -250,7 +250,7 @@ export default function LandingBottomSections({
             <div className="absolute -inset-2 bg-gradient-to-r from-gold-600 via-orange-600 to-gold-600 rounded-2xl blur-2xl opacity-70 animate-pulse" />
             
             <a
-              href="/app"
+              href="/app?demo=true"
               className="relative group inline-flex items-center gap-4 px-12 py-6 bg-gradient-to-r from-gold-500 via-orange-500 to-gold-500 rounded-2xl font-black text-2xl text-black shadow-2xl hover:shadow-gold-500/50 transition-all duration-500 hover:scale-105 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
