@@ -71,7 +71,7 @@ export default function PlayerVariantD({ tracks, currentIndex, onIndexChange }: 
   if (!currentTrack) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.8)] z-50">
+    <div className="fixed bottom-4 left-4 right-4 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.8)] z-[100]">
       <audio
         ref={audioRef}
         src={currentTrack.audioUrl}

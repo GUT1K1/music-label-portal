@@ -191,10 +191,10 @@ export default function ArtistView({
           onSuccess={onRefreshData}
         />
       </div>
-
-      <MusicPlayerDemo userId={user.id} />
       
       {isDemoMode && <DemoBanner />}
+      
+      <MusicPlayerDemo userId={user.id} />
     </div>
   );
 }
