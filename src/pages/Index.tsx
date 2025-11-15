@@ -157,14 +157,15 @@ export default function Index() {
       username: 'demo_user',
       full_name: 'Демо Артист',
       role: 'artist' as const,
-      balance: 15420.50,
+      balance: 0,
       telegram_chat_id: null,
       vk_id: null,
       vk_photo: null,
       avatar: null,
       email: null,
       phone: null,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      theme: 'default' as const
     };
     
     return (
