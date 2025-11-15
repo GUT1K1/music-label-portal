@@ -26,14 +26,14 @@ export default function LandingHero() {
   }, []);
   
   return (
-    <section className="relative z-10 min-h-screen flex items-center justify-center px-4 md:px-6 lg:px-12 pt-20 md:pt-32 overflow-hidden">
+    <section className="relative z-10 min-h-screen flex items-center justify-center px-4 md:px-6 lg:px-12 pt-16 md:pt-32 overflow-hidden">
       <div className="absolute top-20 right-32 w-4 h-4 bg-gold-400 rounded-full animate-pulse hidden md:block shadow-[0_0_20px_rgba(234,179,8,0.8)]" />
       <div className="absolute top-40 left-24 w-3 h-3 bg-orange-400 rounded-full animate-pulse hidden md:block shadow-[0_0_15px_rgba(251,146,60,0.8)]" style={{ animationDelay: '0.5s' }} />
       <div className="absolute bottom-32 right-1/4 w-3 h-3 bg-gold-500 rounded-full animate-pulse hidden md:block shadow-[0_0_15px_rgba(234,179,8,0.8)]" style={{ animationDelay: '1s' }} />
       <div className="absolute bottom-48 left-1/3 w-4 h-4 bg-orange-500 rounded-full animate-pulse hidden md:block shadow-[0_0_20px_rgba(251,146,60,0.8)]" style={{ animationDelay: '1.5s' }} />
       
       <div className="relative z-10 max-w-5xl mx-auto text-center">
-        <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold mb-6 md:mb-10 tracking-tight">
+        <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-bold mb-4 md:mb-10 tracking-tight">
           <span className="block text-white mb-3 md:mb-6 flex flex-wrap justify-center gap-x-2 md:gap-x-4 gap-y-1 md:gap-y-2">
             {words1.map((word, i) => (
               <span 
@@ -69,12 +69,12 @@ export default function LandingHero() {
           </span>
         </h1>
         
-        <p className="text-base md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8 md:mb-16 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
+        <p className="text-sm md:text-2xl text-gray-300 max-w-2xl mx-auto mb-6 md:mb-16 leading-relaxed opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>Бесплатно выпускай треки на 170+ площадок. Лицензия на 7 лет, 50% роялти тебе, 100% авторских прав остаются за тобой.</p>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center opacity-0 animate-fade-in-up px-4" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
           <a
             href="/app?demo=true"
-            className="group relative px-8 py-4 md:px-10 md:py-5 rounded-2xl font-bold text-lg md:text-xl text-black transition-all duration-500 active:scale-95 md:hover:scale-105 flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center"
+            className="group relative px-6 py-3 md:px-10 md:py-5 rounded-xl md:rounded-2xl font-bold text-base md:text-xl text-black transition-all duration-500 active:scale-95 md:hover:scale-105 flex items-center gap-2 overflow-hidden w-full sm:w-auto justify-center"
             style={{
               background: 'linear-gradient(90deg, #ffd700, #ffed4e, #ffc107, #ff9800, #ff6f00, #ffd700, #ffed4e)',
               backgroundSize: '300% 100%',
@@ -89,7 +89,7 @@ export default function LandingHero() {
           
           <a
             href="#features"
-            className="group relative px-8 py-4 md:px-10 md:py-5 border-2 border-gold-400/60 rounded-2xl font-bold text-lg md:text-xl text-white hover:border-gold-300 transition-all duration-500 overflow-hidden active:scale-95 md:hover:scale-105 backdrop-blur-sm w-full sm:w-auto hover:shadow-[0_0_25px_rgba(234,179,8,0.4)]"
+            className="group relative px-6 py-3 md:px-10 md:py-5 border-2 border-gold-400/60 rounded-xl md:rounded-2xl font-bold text-base md:text-xl text-white hover:border-gold-300 transition-all duration-500 overflow-hidden active:scale-95 md:hover:scale-105 backdrop-blur-sm w-full sm:w-auto hover:shadow-[0_0_25px_rgba(234,179,8,0.4)]"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-gold-500/0 via-gold-500/30 to-orange-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-br from-gold-400/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -97,17 +97,17 @@ export default function LandingHero() {
           </a>
         </div>
         
-        <div className="mt-12 md:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-8 max-w-6xl mx-auto opacity-0 animate-fade-in-up px-4 md:px-6" style={{ animationDelay: '0.7s', animationFillMode: 'forwards' }}>
-          <div className="text-center group cursor-pointer px-3 py-6 md:px-6 md:py-10 rounded-2xl md:rounded-3xl bg-gradient-to-br from-gold-600/30 via-orange-600/20 to-gold-600/30 backdrop-blur-sm border-2 border-gold-400/40 hover:border-gold-300 hover:bg-gradient-to-br hover:from-gold-500/40 hover:via-orange-500/30 hover:to-gold-500/40 transition-all duration-500 shadow-[0_0_20px_rgba(234,179,8,0.25)] md:shadow-[0_0_30px_rgba(234,179,8,0.3)] hover:shadow-[0_0_50px_rgba(234,179,8,0.6)] min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
-            <div className="text-3xl md:text-5xl font-black bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-400 bg-clip-text text-transparent mb-2 md:mb-3 drop-shadow-[0_0_20px_rgba(234,179,8,0.6)] md:drop-shadow-[0_0_30px_rgba(234,179,8,0.8)] leading-tight">0₽</div>
+        <div className="mt-8 md:mt-28 grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-8 max-w-6xl mx-auto opacity-0 animate-fade-in-up px-4 md:px-6" style={{ animationDelay: '0.7s', animationFillMode: 'forwards' }}>
+          <div className="text-center group cursor-pointer px-3 py-4 md:px-6 md:py-10 rounded-xl md:rounded-3xl bg-gradient-to-br from-gold-600/30 via-orange-600/20 to-gold-600/30 backdrop-blur-sm border-2 border-gold-400/40 hover:border-gold-300 hover:bg-gradient-to-br hover:from-gold-500/40 hover:via-orange-500/30 hover:to-gold-500/40 transition-all duration-500 shadow-[0_0_20px_rgba(234,179,8,0.25)] md:shadow-[0_0_30px_rgba(234,179,8,0.3)] hover:shadow-[0_0_50px_rgba(234,179,8,0.6)] min-h-[110px] md:min-h-[180px] flex flex-col items-center justify-center">
+            <div className="text-2xl md:text-5xl font-black bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-400 bg-clip-text text-transparent mb-1 md:mb-3 drop-shadow-[0_0_20px_rgba(234,179,8,0.6)] md:drop-shadow-[0_0_30px_rgba(234,179,8,0.8)] leading-tight">0₽</div>
             <div className="text-xs md:text-sm text-gold-200 group-hover:text-gold-100 font-bold transition-colors duration-300 leading-snug">Бесплатный<br/>старт</div>
           </div>
-          <div className="text-center group cursor-pointer px-3 py-6 md:px-6 md:py-10 rounded-2xl md:rounded-3xl bg-gradient-to-br from-orange-600/30 via-gold-600/20 to-orange-600/30 backdrop-blur-sm border-2 border-orange-400/40 hover:border-orange-300 hover:bg-gradient-to-br hover:from-orange-500/40 hover:via-gold-500/30 hover:to-orange-500/40 transition-all duration-500 shadow-[0_0_20px_rgba(251,146,60,0.25)] md:shadow-[0_0_30px_rgba(251,146,60,0.3)] hover:shadow-[0_0_50px_rgba(251,146,60,0.6)] min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
-            <div className="text-3xl md:text-5xl font-black bg-gradient-to-br from-orange-300 via-gold-400 to-yellow-400 bg-clip-text text-transparent mb-2 md:mb-3 drop-shadow-[0_0_20px_rgba(251,146,60,0.6)] md:drop-shadow-[0_0_30px_rgba(251,146,60,0.8)] leading-tight">7 лет</div>
+          <div className="text-center group cursor-pointer px-3 py-4 md:px-6 md:py-10 rounded-xl md:rounded-3xl bg-gradient-to-br from-orange-600/30 via-gold-600/20 to-orange-600/30 backdrop-blur-sm border-2 border-orange-400/40 hover:border-orange-300 hover:bg-gradient-to-br hover:from-orange-500/40 hover:via-gold-500/30 hover:to-orange-500/40 transition-all duration-500 shadow-[0_0_20px_rgba(251,146,60,0.25)] md:shadow-[0_0_30px_rgba(251,146,60,0.3)] hover:shadow-[0_0_50px_rgba(251,146,60,0.6)] min-h-[110px] md:min-h-[180px] flex flex-col items-center justify-center">
+            <div className="text-2xl md:text-5xl font-black bg-gradient-to-br from-orange-300 via-gold-400 to-yellow-400 bg-clip-text text-transparent mb-1 md:mb-3 drop-shadow-[0_0_20px_rgba(251,146,60,0.6)] md:drop-shadow-[0_0_30px_rgba(251,146,60,0.8)] leading-tight">7 лет</div>
             <div className="text-xs md:text-sm text-orange-200 group-hover:text-orange-100 font-bold transition-colors duration-300 leading-snug">Срок<br/>лицензии</div>
           </div>
-          <div className="text-center group cursor-pointer px-3 py-6 md:px-6 md:py-10 rounded-2xl md:rounded-3xl bg-gradient-to-br from-yellow-600/30 via-gold-600/20 to-yellow-600/30 backdrop-blur-sm border-2 border-yellow-400/40 hover:border-yellow-300 hover:bg-gradient-to-br hover:from-yellow-500/40 hover:via-gold-500/30 hover:to-yellow-500/40 transition-all duration-500 shadow-[0_0_20px_rgba(250,204,21,0.25)] md:shadow-[0_0_30px_rgba(250,204,21,0.3)] hover:shadow-[0_0_50px_rgba(250,204,21,0.6)] min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
-            <div className="text-3xl md:text-5xl font-black bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-400 bg-clip-text text-transparent mb-2 md:mb-3 drop-shadow-[0_0_20px_rgba(250,204,21,0.6)] md:drop-shadow-[0_0_30px_rgba(250,204,21,0.8)] leading-tight">100%</div>
+          <div className="text-center group cursor-pointer px-3 py-4 md:px-6 md:py-10 rounded-xl md:rounded-3xl bg-gradient-to-br from-yellow-600/30 via-gold-600/20 to-yellow-600/30 backdrop-blur-sm border-2 border-yellow-400/40 hover:border-yellow-300 hover:bg-gradient-to-br hover:from-yellow-500/40 hover:via-gold-500/30 hover:to-yellow-500/40 transition-all duration-500 shadow-[0_0_20px_rgba(250,204,21,0.25)] md:shadow-[0_0_30px_rgba(250,204,21,0.3)] hover:shadow-[0_0_50px_rgba(250,204,21,0.6)] min-h-[110px] md:min-h-[180px] flex flex-col items-center justify-center">
+            <div className="text-2xl md:text-5xl font-black bg-gradient-to-br from-yellow-300 via-gold-400 to-orange-400 bg-clip-text text-transparent mb-1 md:mb-3 drop-shadow-[0_0_20px_rgba(250,204,21,0.6)] md:drop-shadow-[0_0_30px_rgba(250,204,21,0.8)] leading-tight">100%</div>
             <div className="text-xs md:text-sm text-yellow-200 group-hover:text-yellow-100 font-bold transition-colors duration-300 leading-snug">Твоё<br/>авторство</div>
           </div>
           <div className="text-center group cursor-pointer px-3 py-6 md:px-6 md:py-10 rounded-2xl md:rounded-3xl bg-gradient-to-br from-gold-600/30 via-yellow-600/20 to-orange-600/30 backdrop-blur-sm border-2 border-gold-400/40 hover:border-gold-300 hover:bg-gradient-to-br hover:from-gold-500/40 hover:via-yellow-500/30 hover:to-orange-500/40 transition-all duration-500 shadow-[0_0_20px_rgba(234,179,8,0.25)] md:shadow-[0_0_30px_rgba(234,179,8,0.3)] hover:shadow-[0_0_50px_rgba(234,179,8,0.6)] min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
