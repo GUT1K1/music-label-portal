@@ -104,14 +104,14 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
 
       {/* Mobile menu */}
       <div 
-        className={`md:hidden fixed inset-0 bg-black/95 backdrop-blur-xl transition-all duration-500 z-[60] ${
+        className={`md:hidden fixed left-0 right-0 bottom-0 bg-black/95 backdrop-blur-xl transition-all duration-500 z-[60] ${
           isMobileMenuOpen 
             ? 'opacity-100 pointer-events-auto' 
             : 'opacity-0 pointer-events-none'
         }`}
         style={{ top: '80px' }}
       >
-        <nav className="flex flex-col items-center justify-center h-full gap-8 px-6">
+        <nav className="flex flex-col items-center justify-center h-full gap-8 px-6 py-12">
           <a 
             href="/blog" 
             onClick={(e) => handleNavigation('/blog', e)}
