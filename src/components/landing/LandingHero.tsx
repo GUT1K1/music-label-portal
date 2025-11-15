@@ -54,13 +54,15 @@ export default function LandingHero() {
               return (
                 <span 
                   key={`w2-${i}`}
-                  className={`inline-block text-white transition-all duration-500 md:duration-700 ${
+                  className={`inline-block transition-all duration-500 md:duration-700 ${
                     visibleWords.includes(wordIndex) 
                       ? 'opacity-100 translate-y-0' 
                       : 'opacity-0 translate-y-4 md:translate-y-8'
                   }`}
                 >
-                  {word}
+                  <span className="bg-gradient-to-r from-yellow-200 via-gold-300 to-orange-300 bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]">
+                    {word}
+                  </span>
                 </span>
               );
             })}
