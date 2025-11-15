@@ -116,7 +116,7 @@ export default function LandingBottomSections({
         </div>
       </section>
 
-      <section id="faq" className="pt-0 pb-32 px-6 lg:px-12 relative scroll-animate overflow-hidden">
+      <section id="faq" className="pt-32 pb-32 px-6 lg:px-12 relative scroll-animate overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-gold-500/10 to-orange-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-orange-500/10 to-gold-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s', animationDelay: '2s' }} />
