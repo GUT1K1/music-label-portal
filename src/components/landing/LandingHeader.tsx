@@ -105,47 +105,47 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
       </header>
 
       {/* Mobile menu */}
-      <div 
-        className={`md:hidden fixed inset-0 bg-black/98 transition-all duration-300 z-[100] ${
-          isMobileMenuOpen 
-            ? 'opacity-100 visible' 
-            : 'opacity-0 invisible pointer-events-none'
-        }`}
-      >
-        <nav className="relative z-20 flex flex-col items-center justify-center h-full gap-8 px-6">
-          <a 
-            href="/blog" 
-            onClick={(e) => handleNavigation('/blog', e)}
-            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
-          >
-            Блог
-          </a>
+      {isMobileMenuOpen && (
+        <>
+          {/* Фоновый overlay */}
+          <div className="md:hidden fixed inset-0 bg-black/98 z-[100]" />
           
-          <a 
-            href="#why" 
-            onClick={(e) => handleAnchorClick(e, '#why')} 
-            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
-          >
-            Преимущества
-          </a>
-          
-          <a 
-            href="#faq" 
-            onClick={(e) => handleAnchorClick(e, '#faq')} 
-            className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
-          >
-            Вопросы
-          </a>
-          
-          <a
-            href="/app"
-            onClick={() => handleNavigation('/app')}
-            className="mt-8 px-12 py-5 bg-gradient-to-r from-yellow-400 via-gold-500 to-orange-500 text-black rounded-xl font-bold text-xl transition-all active:scale-95"
-          >
-            Начать
-          </a>
-        </nav>
-      </div>
+          {/* Контент меню */}
+          <nav className="md:hidden fixed inset-0 z-[101] flex flex-col items-center justify-center gap-8 px-6">
+            <a 
+              href="/blog" 
+              onClick={(e) => handleNavigation('/blog', e)}
+              className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
+            >
+              Блог
+            </a>
+            
+            <a 
+              href="#why" 
+              onClick={(e) => handleAnchorClick(e, '#why')} 
+              className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
+            >
+              Преимущества
+            </a>
+            
+            <a 
+              href="#faq" 
+              onClick={(e) => handleAnchorClick(e, '#faq')} 
+              className="text-3xl font-bold text-white hover:text-gold-400 transition-colors"
+            >
+              Вопросы
+            </a>
+            
+            <a
+              href="/app"
+              onClick={() => handleNavigation('/app')}
+              className="mt-8 px-12 py-5 bg-gradient-to-r from-yellow-400 via-gold-500 to-orange-500 text-black rounded-xl font-bold text-xl transition-all active:scale-95"
+            >
+              Начать
+            </a>
+          </nav>
+        </>
+      )}
     </>
   );
 }
