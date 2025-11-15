@@ -104,57 +104,42 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
 
       {/* Mobile menu */}
       <div 
-        className={`md:hidden fixed left-0 right-0 bottom-0 bg-black/95 backdrop-blur-xl transition-all duration-500 z-[60] ${
+        className={`md:hidden fixed inset-0 bg-black/95 backdrop-blur-xl transition-all duration-300 z-[60] ${
           isMobileMenuOpen 
-            ? 'opacity-100 pointer-events-auto' 
-            : 'opacity-0 pointer-events-none'
+            ? 'opacity-100 visible' 
+            : 'opacity-0 invisible'
         }`}
         style={{ top: '80px' }}
       >
-        <nav className="flex flex-col items-center justify-center h-full gap-8 px-6 py-12">
+        <nav className="flex flex-col items-center justify-center h-full gap-6 px-6">
           <a 
             href="/blog" 
             onClick={(e) => handleNavigation('/blog', e)}
-            className={`text-2xl font-bold text-gray-300 hover:text-white transition-all duration-300 relative group ${
-              isMobileMenuOpen ? 'animate-slideInUp' : ''
-            }`}
-            style={{ animationDelay: '100ms' }}
+            className="text-2xl font-bold text-white hover:text-gold-300 transition-colors duration-300 relative"
           >
             Блог
-            <span className="absolute -bottom-2 left-0 w-0 h-[3px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300" />
           </a>
           
           <a 
             href="#why" 
             onClick={(e) => handleAnchorClick(e, '#why')} 
-            className={`text-2xl font-bold text-gray-300 hover:text-white transition-all duration-300 relative group ${
-              isMobileMenuOpen ? 'animate-slideInUp' : ''
-            }`}
-            style={{ animationDelay: '200ms' }}
+            className="text-2xl font-bold text-white hover:text-gold-300 transition-colors duration-300 relative"
           >
             Преимущества
-            <span className="absolute -bottom-2 left-0 w-0 h-[3px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300" />
           </a>
           
           <a 
             href="#faq" 
             onClick={(e) => handleAnchorClick(e, '#faq')} 
-            className={`text-2xl font-bold text-gray-300 hover:text-white transition-all duration-300 relative group ${
-              isMobileMenuOpen ? 'animate-slideInUp' : ''
-            }`}
-            style={{ animationDelay: '300ms' }}
+            className="text-2xl font-bold text-white hover:text-gold-300 transition-colors duration-300 relative"
           >
             Вопросы
-            <span className="absolute -bottom-2 left-0 w-0 h-[3px] bg-gradient-to-r from-yellow-400 via-gold-400 to-orange-500 group-hover:w-full transition-all duration-300" />
           </a>
           
           <a
             href="/app"
             onClick={() => handleNavigation('/app')}
-            className={`mt-8 px-10 py-4 bg-gradient-to-r from-yellow-400 via-gold-500 to-orange-500 text-black rounded-xl font-bold text-lg transition-all duration-300 active:scale-95 relative overflow-hidden ${
-              isMobileMenuOpen ? 'animate-slideInUp' : ''
-            }`}
-            style={{ animationDelay: '400ms' }}
+            className="mt-8 px-10 py-4 bg-gradient-to-r from-yellow-400 via-gold-500 to-orange-500 text-black rounded-xl font-bold text-lg transition-all duration-300 active:scale-95 relative overflow-hidden"
           >
             <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.8),transparent)]" />
             <span className="relative z-10 drop-shadow-sm">Начать</span>
