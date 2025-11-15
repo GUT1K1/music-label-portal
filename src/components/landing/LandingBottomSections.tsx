@@ -60,7 +60,7 @@ export default function LandingBottomSections({
         </div>
         
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12">
             <div className="inline-block px-6 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-full mb-6">
               <span className="text-purple-300 font-bold text-sm uppercase tracking-wider">Везде где ты слушаешь</span>
             </div>
@@ -72,8 +72,8 @@ export default function LandingBottomSections({
             </p>
           </div>
           
-          <div className="relative space-y-8 py-8">
-            <div className="overflow-hidden py-4">
+          <div className="relative space-y-4 py-4">
+            <div className="overflow-hidden py-2">
               <div className="flex gap-12 animate-scroll-right">
                 {[...row1, ...row1, ...row1, ...row1].map((platform, i) => (
                   <div
@@ -90,7 +90,7 @@ export default function LandingBottomSections({
               </div>
             </div>
 
-            <div className="overflow-hidden py-4">
+            <div className="overflow-hidden py-2">
               <div className="flex gap-12 animate-scroll-left">
                 {[...row2, ...row2, ...row2, ...row2].map((platform, i) => (
                   <div
@@ -108,7 +108,7 @@ export default function LandingBottomSections({
             </div>
           </div>
           
-          <div className="mt-16 text-center">
+          <div className="mt-8 text-center">
             <p className="text-gray-400 text-lg font-medium">
               + ещё 160 музыкальных сервисов по всему миру
             </p>
