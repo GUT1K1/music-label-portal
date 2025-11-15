@@ -30,6 +30,15 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
   const [detailsRelease, setDetailsRelease] = useState<Release | null>(null);
   const [contractDialogRelease, setContractDialogRelease] = useState<Release | null>(null);
   const [contractTracks, setContractTracks] = useState<any[]>([]);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    const saved = localStorage.getItem('releases-view-mode');
+    return (saved === 'list' || saved === 'grid') ? saved : 'grid';
+  });
+
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    setViewMode(mode);
+    localStorage.setItem('releases-view-mode', mode);
+  };
   
   const formatDate = useMemo(() => (dateStr?: string) => {
     if (!dateStr) return null;
@@ -45,35 +54,62 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3">
+    <div className="space-y-4">
+      {/* Переключатель вида */}
+      <div className="flex justify-end gap-2">
+        <Button
+          variant={viewMode === 'grid' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => handleViewModeChange('grid')}
+          className="gap-2"
+        >
+          <Icon name="Grid3x3" size={16} />
+          Сетка
+        </Button>
+        <Button
+          variant={viewMode === 'list' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => handleViewModeChange('list')}
+          className="gap-2"
+        >
+          <Icon name="List" size={16} />
+          Список
+        </Button>
+      </div>
+
+      <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3' : 'space-y-3'}>
       {releases.map((release) => (
-        <Card key={release.id} className="overflow-hidden md:hover:shadow-md transition-shadow cursor-pointer" onClick={(e) => handleCardClick(release, e)}>
-          <div className="flex md:flex-col items-start gap-2 md:gap-3 p-2 md:p-3">
-            <div className="relative group flex-shrink-0 w-14 md:w-full">
-              <div className="w-14 md:w-full aspect-square rounded overflow-hidden bg-muted">
+        <Card 
+          key={release.id} 
+          className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" 
+          onClick={(e) => handleCardClick(release, e)}
+        >
+          <div className={viewMode === 'grid' ? 'flex flex-col gap-3 p-3' : 'flex items-start gap-4 p-4'}>
+            <div className={viewMode === 'grid' ? 'relative group flex-shrink-0 w-full' : 'relative group flex-shrink-0 w-20 h-20'}>
+              <div className={viewMode === 'grid' ? 'w-full aspect-square rounded overflow-hidden bg-muted' : 'w-20 h-20 rounded overflow-hidden bg-muted'}>
                 {release.cover_url ? (
                   <LazyImage
                     src={release.cover_url} 
                     alt={release.release_name} 
-                    className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                    <Icon name="Disc" size={20} className="md:w-8 md:h-8" />
+                    <Icon name="Disc" size={viewMode === 'grid' ? 32 : 24} />
                   </div>
                 )}
               </div>
             </div>
 
             <div className="flex-1 min-w-0 w-full">
-              <div className="flex items-start justify-between gap-1.5 mb-1">
+              <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-xs md:text-sm leading-tight line-clamp-2">{release.release_name}</h3>
+                  <h3 className="font-semibold text-sm leading-tight line-clamp-2">{release.release_name}</h3>
                   {release.artist_name && (
-                    <p className="text-muted-foreground text-[10px] md:text-xs truncate mt-0.5">{release.artist_name}</p>
+                    <p className="text-muted-foreground text-xs truncate mt-1">{release.artist_name}</p>
                   )}
                   {release.tracks_count !== undefined && release.tracks_count > 0 && (
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{release.tracks_count} трек.</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{release.tracks_count} трек.</p>
                   )}
                 </div>
                 <div className="flex-shrink-0">
@@ -81,22 +117,22 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-1 text-xs mb-1 md:mb-2">
+              <div className="flex flex-wrap gap-2 text-xs mb-3">
                 {release.release_date && (
-                  <div className="flex items-center gap-0.5 text-muted-foreground">
-                    <Icon name="Calendar" size={10} className="flex-shrink-0" />
-                    <span className="text-[9px] md:text-[10px]">{formatDate(release.release_date)}</span>
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <Icon name="Calendar" size={14} className="flex-shrink-0" />
+                    <span className="text-xs">{formatDate(release.release_date)}</span>
                   </div>
                 )}
                 {release.genre && release.genre !== '0' && (
-                  <Badge variant="outline" className="gap-0.5 h-4 text-[9px] md:text-[10px] px-1">
-                    <Icon name="Disc" size={8} className="flex-shrink-0" />
-                    <span className="truncate max-w-[80px]">{release.genre}</span>
+                  <Badge variant="outline" className="gap-1 h-5 text-xs px-2">
+                    <Icon name="Disc" size={12} className="flex-shrink-0" />
+                    <span className="truncate max-w-[100px]">{release.genre}</span>
                   </Badge>
                 )}
               </div>
 
-              <div className="flex flex-col md:flex-row items-stretch md:items-center gap-1">
+              <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-1.5' : 'flex flex-wrap items-center gap-2'}>
                 {release.contract_pdf_url && (
                   <Button
                     variant="outline"
@@ -108,10 +144,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                         setContractTracks(tracks || []);
                       }
                     }}
-                    className="gap-1 h-7 md:h-7 -ml-1.5 md:ml-0 text-[10px] px-2 justify-start md:justify-center md:flex-1"
+                    className="gap-1.5 h-8 text-xs px-3 justify-center"
                   >
-                    <Icon name="FileText" size={12} className="flex-shrink-0" />
-                    Договор
+                    <Icon name="FileText" size={14} className="flex-shrink-0" />
+                    <span>Договор</span>
                   </Button>
                 )}
                 {release.tracks_count > 0 && (
@@ -119,10 +155,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                     variant="ghost"
                     size="sm"
                     onClick={() => setExpandedRelease(expandedRelease === release.id ? null : release.id)}
-                    className="gap-1 h-7 md:h-7 -ml-1.5 md:ml-0 text-[10px] px-2 justify-start md:justify-center md:flex-1"
+                    className="gap-1.5 h-8 text-xs px-3 justify-center"
                   >
-                    <Icon name={expandedRelease === release.id ? 'ChevronUp' : 'Play'} size={12} className="flex-shrink-0" />
-                    {expandedRelease === release.id ? 'Скрыть' : 'Слушать'}
+                    <Icon name={expandedRelease === release.id ? 'ChevronUp' : 'Play'} size={14} className="flex-shrink-0" />
+                    <span>{expandedRelease === release.id ? 'Скрыть' : 'Слушать'}</span>
                   </Button>
                 )}
                 {release.status === 'rejected_fixable' && onStatusChange && (
@@ -136,11 +172,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                         console.error('Failed to resubmit:', error);
                       }
                     }}
-                    className="gap-1 h-7 px-2 text-[10px] md:flex-1"
+                    className="gap-1.5 h-8 px-3 text-xs"
                   >
-                    <Icon name="RefreshCw" size={12} className="flex-shrink-0" />
-                    <span className="hidden md:inline">Исправить и подать</span>
-                    <span className="md:hidden">Исправить</span>
+                    <Icon name="RefreshCw" size={14} className="flex-shrink-0" />
+                    <span>Исправить</span>
                   </Button>
                 )}
                 {release.status === 'pending' && onEdit && (
@@ -149,10 +184,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                       size="sm"
                       variant="outline"
                       onClick={() => onEdit(release)}
-                      className="gap-1 h-7 px-2 text-[10px] md:flex-1"
+                      className="gap-1.5 h-8 px-3 text-xs"
                     >
-                      <Icon name="Edit" size={12} className="flex-shrink-0" />
-                      <span className="hidden md:inline">Изменить</span>
+                      <Icon name="Edit" size={14} className="flex-shrink-0" />
+                      <span>Изменить</span>
                     </Button>
                     {onDelete && (
                       <Button
@@ -163,10 +198,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                             onDelete(release.id);
                           }
                         }}
-                        className="gap-1 h-7 px-2 text-[10px] text-destructive hover:bg-destructive/10 border-destructive/30"
+                        className="gap-1.5 h-8 px-3 text-xs text-destructive hover:bg-destructive/10 border-destructive/30"
                       >
-                        <Icon name="Trash2" size={12} className="flex-shrink-0" />
-                        <span className="hidden md:inline">Удалить</span>
+                        <Icon name="Trash2" size={14} className="flex-shrink-0" />
+                        <span>Удалить</span>
                       </Button>
                     )}
                   </>
@@ -176,23 +211,21 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                     size="sm"
                     variant="default"
                     onClick={() => setPitchingRelease(release)}
-                    className="gap-1 h-7 px-2 text-[10px] md:flex-1"
+                    className="gap-1.5 h-8 px-3 text-xs"
                   >
-                    <Icon name="Send" size={12} className="flex-shrink-0" />
-                    <span className="hidden md:inline">Питчинг</span>
+                    <Icon name="Send" size={14} className="flex-shrink-0" />
+                    <span>Питчинг</span>
                   </Button>
                 )}
-                {/* Договор для менеджеров */}
                 {(userRole === 'manager' || userRole === 'director') && release.contract_pdf_url && (
                   <Button
                     variant="default"
                     size="sm"
                     onClick={() => setContractDialogRelease(release)}
-                    className="gap-1 h-7 md:h-7 -ml-1.5 md:ml-0 text-[10px] px-2 justify-start md:justify-center md:flex-1"
+                    className="gap-1.5 h-8 px-3 text-xs"
                   >
-                    <Icon name="FileText" size={12} className="flex-shrink-0" />
-                    <span className="hidden md:inline">Договор</span>
-                    <span className="md:hidden">📄</span>
+                    <Icon name="FileText" size={14} className="flex-shrink-0" />
+                    <span>Договор</span>
                   </Button>
                 )}
               </div>
@@ -206,14 +239,14 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
               )}
 
               {(release.status === 'rejected' && release.review_comment) && (
-                <div className="mt-2 bg-destructive/10 border border-destructive/20 p-1.5 md:p-2 rounded">
-                  <div className="flex items-start gap-1.5">
-                    <Icon name="AlertCircle" size={12} className="text-destructive mt-0.5 flex-shrink-0" />
+                <div className="mt-3 bg-destructive/10 border border-destructive/20 p-3 rounded">
+                  <div className="flex items-start gap-2">
+                    <Icon name="AlertCircle" size={16} className="text-destructive mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-medium text-destructive mb-0.5">Причина отклонения:</p>
-                      <p className="text-[10px] text-foreground break-words">{release.review_comment}</p>
+                      <p className="text-xs font-medium text-destructive mb-1">Причина отклонения:</p>
+                      <p className="text-xs text-foreground break-words">{release.review_comment}</p>
                       {release.reviewer_name && (
-                        <p className="text-[10px] text-muted-foreground mt-1">— {release.reviewer_name}</p>
+                        <p className="text-xs text-muted-foreground mt-1.5">— {release.reviewer_name}</p>
                       )}
                     </div>
                   </div>
@@ -223,14 +256,16 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
           </div>
         </Card>
       ))}
+
       {releases.length === 0 && (
-        <div className="col-span-full text-center py-8 md:py-16 px-4">
-          <div className="inline-flex items-center justify-center w-10 h-10 md:w-16 md:h-16 rounded-full bg-muted mb-2 md:mb-4">
-            <Icon name="Music" size={20} className="md:w-8 md:h-8 text-muted-foreground" />
+        <div className="text-center py-16 px-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+            <Icon name="Music" size={32} className="text-muted-foreground" />
           </div>
-          <p className="text-muted-foreground text-xs md:text-lg">Релизов пока нет</p>
+          <p className="text-muted-foreground text-lg">Релизов пока нет</p>
         </div>
       )}
+    </div>
 
       {pitchingRelease && onPitching && (
         <Suspense fallback={<Skeleton className="h-96 w-full" />}>
@@ -268,7 +303,6 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
           signatureDataUrl={contractDialogRelease.contract_signature}
         />
       )}
-    </div>
   );
 });
 
