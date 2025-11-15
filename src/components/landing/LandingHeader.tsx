@@ -115,6 +115,15 @@ export default function LandingHeader({ isScrolled }: LandingHeaderProps) {
           
           {/* Контент меню */}
           <nav className="md:hidden fixed inset-0 z-[101] flex flex-col items-center justify-start pt-24 gap-8 px-6">
+            {/* Кнопка закрытия */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute top-5 right-5 p-3 text-white hover:text-gold-400 transition-colors"
+              aria-label="Закрыть меню"
+            >
+              <Icon name="X" size={32} />
+            </button>
+            
             <a 
               href="/blog" 
               onClick={(e) => handleNavigation('/blog', e)}
