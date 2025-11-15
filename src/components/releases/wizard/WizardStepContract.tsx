@@ -13,6 +13,9 @@ interface WizardStepContractProps {
   coverUrl: string;
   onSignatureComplete: (signatureDataUrl: string, contractPdfUrl: string) => void;
   onBack: () => void;
+  uploading?: boolean;
+  uploadProgress?: number;
+  currentUploadFile?: string;
 }
 
 export default function WizardStepContract({
@@ -21,7 +24,10 @@ export default function WizardStepContract({
   tracks,
   coverUrl,
   onSignatureComplete,
-  onBack
+  onBack,
+  uploading = false,
+  uploadProgress = 0,
+  currentUploadFile = ''
 }: WizardStepContractProps) {
   const [showSignaturePad, setShowSignaturePad] = useState(false);
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
@@ -393,11 +399,50 @@ export default function WizardStepContract({
           </div>
         </Card>
 
+        {/* Индикатор загрузки файлов */}
+        {uploading && (
+          <Card className="p-6 bg-primary/10 border-2 border-primary/30 backdrop-blur-sm">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-primary/30 flex items-center justify-center">
+                  <Icon name="Upload" size={24} className="text-primary animate-pulse" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg">Загрузка файлов</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {currentUploadFile || 'Подготовка...'}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-primary">{Math.round(uploadProgress)}%</p>
+                </div>
+              </div>
+              
+              {/* Прогресс бар */}
+              <div className="relative h-3 bg-card rounded-full overflow-hidden border border-primary/20">
+                <div 
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary/80 to-primary rounded-full transition-all duration-300 ease-out"
+                  style={{ width: `${uploadProgress}%` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer-wave" />
+                </div>
+              </div>
+              
+              {/* Информация о процессе */}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Icon name="Info" size={14} />
+                <span>Не закрывайте эту страницу до завершения загрузки</span>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Кнопки навигации */}
         <div className="flex gap-3 pt-2">
           <Button
             variant="outline"
             onClick={onBack}
+            disabled={uploading}
             className="gap-2 border-border/50"
           >
             <Icon name="ChevronLeft" size={16} />
@@ -408,7 +453,7 @@ export default function WizardStepContract({
 
           <Button
             onClick={handleApproveContract}
-            disabled={!signatureDataUrl || isGeneratingPDF}
+            disabled={!signatureDataUrl || isGeneratingPDF || uploading}
             className="gap-2 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
             size="lg"
           >
@@ -416,6 +461,11 @@ export default function WizardStepContract({
               <>
                 <Icon name="Loader2" size={18} className="animate-spin" />
                 Создание договора...
+              </>
+            ) : uploading ? (
+              <>
+                <Icon name="Upload" size={18} className="animate-pulse" />
+                Загрузка файлов...
               </>
             ) : (
               <>

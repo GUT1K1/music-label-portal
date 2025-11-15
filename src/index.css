@@ -311,6 +311,15 @@
     }
   }
 
+  @keyframes shimmer-wave {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
   @keyframes scroll-right {
     0% {
       transform: translateX(0);
@@ -383,6 +392,10 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     will-change: background-position;
+  }
+
+  .animate-shimmer-wave {
+    animation: shimmer-wave 2s ease-in-out infinite;
   }
 
   .animate-spin-slow {

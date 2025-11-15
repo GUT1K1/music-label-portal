@@ -252,6 +252,9 @@ export default function ReleaseWizard({
                 });
               }}
               onBack={() => setCurrentStep(5)}
+              uploading={uploading}
+              uploadProgress={uploadProgress}
+              currentUploadFile={currentUploadFile}
             />
           )}
 
