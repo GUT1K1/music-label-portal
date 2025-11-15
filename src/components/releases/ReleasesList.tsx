@@ -77,16 +77,16 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
         </Button>
       </div>
 
-      <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3' : 'space-y-3'}>
+      <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2' : 'space-y-2'}>
       {releases.map((release) => (
         <Card 
           key={release.id} 
-          className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" 
+          className="overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer border-muted" 
           onClick={(e) => handleCardClick(release, e)}
         >
-          <div className={viewMode === 'grid' ? 'flex flex-col gap-3 p-3' : 'flex items-start gap-4 p-4'}>
-            <div className={viewMode === 'grid' ? 'relative group flex-shrink-0 w-full' : 'relative group flex-shrink-0 w-20 h-20'}>
-              <div className={viewMode === 'grid' ? 'w-full aspect-square rounded overflow-hidden bg-muted' : 'w-20 h-20 rounded overflow-hidden bg-muted'}>
+          <div className={viewMode === 'grid' ? 'flex flex-col p-2' : 'flex items-start gap-3 p-3'}>
+            <div className={viewMode === 'grid' ? 'relative group flex-shrink-0 w-full mb-2' : 'relative group flex-shrink-0 w-16 h-16'}>
+              <div className={viewMode === 'grid' ? 'w-full aspect-square rounded-md overflow-hidden bg-muted' : 'w-16 h-16 rounded-md overflow-hidden bg-muted'}>
                 {release.cover_url ? (
                   <LazyImage
                     src={release.cover_url} 
@@ -95,44 +95,41 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                    <Icon name="Disc" size={viewMode === 'grid' ? 32 : 24} />
+                    <Icon name="Disc" size={viewMode === 'grid' ? 28 : 20} />
                   </div>
                 )}
               </div>
             </div>
 
             <div className="flex-1 min-w-0 w-full">
-              <div className="flex items-start justify-between gap-2 mb-2">
+              <div className={viewMode === 'grid' ? 'mb-2' : 'flex items-start justify-between gap-2 mb-2'}>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm leading-tight line-clamp-2">{release.release_name}</h3>
+                  <h3 className="font-medium text-sm leading-tight line-clamp-2 mb-1">{release.release_name}</h3>
                   {release.artist_name && (
-                    <p className="text-muted-foreground text-xs truncate mt-1">{release.artist_name}</p>
-                  )}
-                  {release.tracks_count !== undefined && release.tracks_count > 0 && (
-                    <p className="text-xs text-muted-foreground mt-0.5">{release.tracks_count} трек.</p>
+                    <p className="text-muted-foreground text-xs truncate">{release.artist_name}</p>
                   )}
                 </div>
-                <div className="flex-shrink-0">
-                  {getStatusBadge(release.status)}
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-2 text-xs mb-3">
-                {release.release_date && (
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Icon name="Calendar" size={14} className="flex-shrink-0" />
-                    <span className="text-xs">{formatDate(release.release_date)}</span>
+                {viewMode === 'list' && (
+                  <div className="flex-shrink-0">
+                    {getStatusBadge(release.status)}
                   </div>
                 )}
-                {release.genre && release.genre !== '0' && (
-                  <Badge variant="outline" className="gap-1 h-5 text-xs px-2">
-                    <Icon name="Disc" size={12} className="flex-shrink-0" />
-                    <span className="truncate max-w-[100px]">{release.genre}</span>
-                  </Badge>
-                )}
               </div>
 
-              <div className={viewMode === 'grid' ? 'grid grid-cols-2 gap-1.5' : 'flex flex-wrap items-center gap-2'}>
+              {viewMode === 'grid' && (
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1 text-muted-foreground text-[10px]">
+                    {release.tracks_count !== undefined && release.tracks_count > 0 && (
+                      <span>{release.tracks_count} трек.</span>
+                    )}
+                  </div>
+                  <div className="scale-75 origin-right">
+                    {getStatusBadge(release.status)}
+                  </div>
+                </div>
+              )}
+
+              <div className={viewMode === 'grid' ? 'flex gap-1' : 'flex flex-wrap items-center gap-1.5'}>
                 {release.contract_pdf_url && (
                   <Button
                     variant="outline"
@@ -144,10 +141,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                         setContractTracks(tracks || []);
                       }
                     }}
-                    className="gap-1.5 h-8 text-xs px-3 justify-center"
+                    className={viewMode === 'grid' ? 'h-7 px-2 text-[10px] gap-1' : 'h-7 px-2 text-xs gap-1'}
                   >
-                    <Icon name="FileText" size={14} className="flex-shrink-0" />
-                    <span>Договор</span>
+                    <Icon name="FileText" size={12} className="flex-shrink-0" />
+                    {viewMode === 'list' && <span>Договор</span>}
                   </Button>
                 )}
                 {release.tracks_count > 0 && (
@@ -155,9 +152,9 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                     variant="ghost"
                     size="sm"
                     onClick={() => setExpandedRelease(expandedRelease === release.id ? null : release.id)}
-                    className="gap-1.5 h-8 text-xs px-3 justify-center"
+                    className={viewMode === 'grid' ? 'h-7 px-2 text-[10px] gap-1 flex-1' : 'h-7 px-2 text-xs gap-1'}
                   >
-                    <Icon name={expandedRelease === release.id ? 'ChevronUp' : 'Play'} size={14} className="flex-shrink-0" />
+                    <Icon name={expandedRelease === release.id ? 'ChevronUp' : 'Play'} size={12} className="flex-shrink-0" />
                     <span>{expandedRelease === release.id ? 'Скрыть' : 'Слушать'}</span>
                   </Button>
                 )}
@@ -172,9 +169,9 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                         console.error('Failed to resubmit:', error);
                       }
                     }}
-                    className="gap-1.5 h-8 px-3 text-xs"
+                    className={viewMode === 'grid' ? 'h-7 px-2 text-[10px] gap-1' : 'h-7 px-2 text-xs gap-1'}
                   >
-                    <Icon name="RefreshCw" size={14} className="flex-shrink-0" />
+                    <Icon name="RefreshCw" size={12} className="flex-shrink-0" />
                     <span>Исправить</span>
                   </Button>
                 )}
@@ -184,10 +181,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                       size="sm"
                       variant="outline"
                       onClick={() => onEdit(release)}
-                      className="gap-1.5 h-8 px-3 text-xs"
+                      className={viewMode === 'grid' ? 'h-7 px-2 text-[10px] gap-1' : 'h-7 px-2 text-xs gap-1'}
                     >
-                      <Icon name="Edit" size={14} className="flex-shrink-0" />
-                      <span>Изменить</span>
+                      <Icon name="Edit" size={12} className="flex-shrink-0" />
+                      {viewMode === 'list' && <span>Изменить</span>}
                     </Button>
                     {onDelete && (
                       <Button
@@ -198,10 +195,10 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                             onDelete(release.id);
                           }
                         }}
-                        className="gap-1.5 h-8 px-3 text-xs text-destructive hover:bg-destructive/10 border-destructive/30"
+                        className={viewMode === 'grid' ? 'h-7 px-2 text-[10px] gap-1 text-destructive hover:bg-destructive/10' : 'h-7 px-2 text-xs gap-1 text-destructive hover:bg-destructive/10'}
                       >
-                        <Icon name="Trash2" size={14} className="flex-shrink-0" />
-                        <span>Удалить</span>
+                        <Icon name="Trash2" size={12} className="flex-shrink-0" />
+                        {viewMode === 'list' && <span>Удалить</span>}
                       </Button>
                     )}
                   </>
@@ -211,9 +208,9 @@ const ReleasesList = memo(function ReleasesList({ userId, releases, getStatusBad
                     size="sm"
                     variant="default"
                     onClick={() => setPitchingRelease(release)}
-                    className="gap-1.5 h-8 px-3 text-xs"
+                    className={viewMode === 'grid' ? 'h-7 px-2 text-[10px] gap-1' : 'h-7 px-2 text-xs gap-1'}
                   >
-                    <Icon name="Send" size={14} className="flex-shrink-0" />
+                    <Icon name="Send" size={12} className="flex-shrink-0" />
                     <span>Питчинг</span>
                   </Button>
                 )}
