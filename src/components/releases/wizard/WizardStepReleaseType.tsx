@@ -10,8 +10,8 @@ const RELEASE_TYPES = [
   {
     id: 'single' as const,
     title: 'Сингл',
-    subtitle: '1-2 трека',
-    description: 'Один основной трек или трек с ремиксом',
+    subtitle: '1 трек',
+    description: 'Один основной трек',
     icon: 'Music',
     gradient: 'from-blue-500/20 to-cyan-500/20',
     border: 'border-blue-500/30 hover:border-blue-500'
