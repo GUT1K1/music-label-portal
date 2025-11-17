@@ -1,11 +1,13 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import ReleaseWizard from './ReleaseWizard';
 import ReleasesList from './ReleasesList';
 import ReleaseStatusTabs from './ReleaseStatusTabs';
+import DraftsList from './DraftsList';
 import { Release, Pitching } from './types';
+import { loadDraft } from '@/utils/releaseDraft';
 
 interface ReleaseManagerViewProps {
   userId: number;
@@ -86,6 +88,8 @@ export default function ReleaseManagerView({
   handleBatchUpload,
   handleSubmit
 }: ReleaseManagerViewProps) {
+  const [selectedDraftId, setSelectedDraftId] = useState<string | null>(null);
+
   // Memoize filtered releases to avoid re-filtering on every render
   const filteredReleases = useMemo(() => {
     let filtered = releases;
@@ -107,7 +111,18 @@ export default function ReleaseManagerView({
 
   const handleCancelForm = useCallback(() => {
     onCancelForm();
+    setSelectedDraftId(null);
   }, [onCancelForm]);
+
+  const handleLoadDraft = useCallback((draftId: string) => {
+    const draft = loadDraft(draftId);
+    if (!draft) return;
+
+    // Заполняем форму данными из черновика
+    setNewRelease(draft.newRelease);
+    setSelectedDraftId(draftId);
+    onCreateClick();
+  }, [setNewRelease, onCreateClick]);
 
   return (
     <div className="space-y-2 md:space-y-4 container mx-auto px-2 md:px-4 min-h-screen">
@@ -147,12 +162,20 @@ export default function ReleaseManagerView({
           uploading={uploading}
           uploadProgress={uploadProgress}
           currentUploadFile={currentUploadFile}
-          onCancel={onCancelForm}
+          onCancel={handleCancelForm}
+          userId={userId}
+          draftId={selectedDraftId}
         />
       )}
 
       {!showForm && (
-        <ReleasesList
+        <>
+          <DraftsList 
+            userId={userId}
+            onLoadDraft={handleLoadDraft}
+          />
+          
+          <ReleasesList
           userId={userId}
           releases={filteredReleases} 
           getStatusBadge={getStatusBadge}
@@ -163,6 +186,7 @@ export default function ReleaseManagerView({
           loadTracks={loadTracks}
           userRole={userRole}
         />
+        </>
       )}
     </div>
   );

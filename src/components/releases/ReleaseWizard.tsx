@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -9,11 +9,13 @@ import WizardStepTracks from './wizard/WizardStepTracks';
 import WizardStepReview from './wizard/WizardStepReview';
 import WizardStepContract from './wizard/WizardStepContract';
 import { Track, ContractRequisites, Release } from './types';
+import { saveDraft, deleteDraft, createDraftId, loadDraft, ReleaseDraft, AUTO_SAVE_INTERVAL_MS } from '@/utils/releaseDraft';
 
 interface ReleaseWizardProps {
   editingRelease: Release | null;
   newRelease: {
     release_name: string;
+    artist_name: string;
     release_date: string;
     preorder_date: string;
     sales_start_date: string;
@@ -36,6 +38,9 @@ interface ReleaseWizardProps {
   uploadProgress: number;
   currentUploadFile: string;
   onCancel: () => void;
+  userId: number;
+  draftId?: string | null;
+  onDraftSaved?: (draftId: string) => void;
 }
 
 const STEPS = [
@@ -63,7 +68,10 @@ export default function ReleaseWizard({
   uploading,
   uploadProgress,
   currentUploadFile,
-  onCancel
+  onCancel,
+  userId,
+  draftId: initialDraftId,
+  onDraftSaved
 }: ReleaseWizardProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [releaseType, setReleaseType] = useState<'single' | 'maxi-single' | 'ep' | 'album' | null>(null);
@@ -78,12 +86,29 @@ export default function ReleaseWizard({
   });
   const [contractSignature, setContractSignature] = useState<string | null>(null);
   const [contractPdfUrl, setContractPdfUrl] = useState<string | null>(null);
+  const [draftId, setDraftId] = useState<string>(initialDraftId || createDraftId());
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const memoizedTracks = useMemo(() => tracks, [tracks]);
   const memoizedUpdateTrack = useCallback(updateTrack, [updateTrack]);
   const memoizedRemoveTrack = useCallback(removeTrack, [removeTrack]);
   const memoizedMoveTrack = useCallback(moveTrack, [moveTrack]);
   const memoizedHandleBatchUpload = useCallback(handleBatchUpload, [handleBatchUpload]);
+
+  // Загрузка черновика при монтировании
+  useEffect(() => {
+    if (initialDraftId) {
+      const draft = loadDraft(initialDraftId);
+      if (draft) {
+        setReleaseType(draft.releaseType);
+        setCurrentStep(draft.currentStep);
+        if (draft.requisites) {
+          setRequisites(draft.requisites);
+        }
+      }
+    }
+  }, [initialDraftId]);
 
   const canGoNext = () => {
     switch (currentStep) {
@@ -154,7 +179,85 @@ export default function ReleaseWizard({
 
   const handleFinish = () => {
     handleSubmit();
+    // Удаляем черновик после успешной отправки
+    deleteDraft(draftId);
   };
+
+  // Функция сохранения черновика
+  const saveCurrentDraft = useCallback(() => {
+    // Не сохраняем черновик если редактируем существующий релиз
+    if (editingRelease) return;
+    
+    // Не сохраняем пустые черновики (шаг 1 и ничего не выбрано)
+    if (currentStep === 1 && !releaseType) return;
+
+    const draft: ReleaseDraft = {
+      id: draftId,
+      userId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      releaseType,
+      currentStep,
+      newRelease,
+      coverPreview,
+      tracks: tracks.map(t => ({
+        track_number: t.track_number,
+        title: t.title,
+        file_url: t.file_url,
+        file_name: t.file_name,
+        file_size: t.file_size,
+        composer: t.composer,
+        author_music: t.author_music,
+        author_lyrics: t.author_lyrics,
+        author_phonogram: t.author_phonogram,
+        language_audio: t.language_audio,
+        explicit_content: t.explicit_content,
+        lyrics_text: t.lyrics_text,
+        tiktok_preview_start: t.tiktok_preview_start
+      })),
+      requisites
+    };
+
+    saveDraft(draft);
+    setLastSaved(new Date());
+    onDraftSaved?.(draftId);
+  }, [draftId, userId, releaseType, currentStep, newRelease, coverPreview, tracks, requisites, editingRelease, onDraftSaved]);
+
+  // Автосохранение каждые 30 секунд
+  useEffect(() => {
+    if (autoSaveTimerRef.current) {
+      clearInterval(autoSaveTimerRef.current);
+    }
+
+    autoSaveTimerRef.current = setInterval(() => {
+      saveCurrentDraft();
+    }, AUTO_SAVE_INTERVAL_MS);
+
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearInterval(autoSaveTimerRef.current);
+      }
+    };
+  }, [saveCurrentDraft]);
+
+  // Сохранение при изменении данных (с debounce)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      saveCurrentDraft();
+    }, 2000); // Сохраняем через 2 секунды после последнего изменения
+
+    return () => clearTimeout(timer);
+  }, [newRelease, releaseType, currentStep, tracks, requisites, coverPreview, saveCurrentDraft]);
+
+  // Сохранение при закрытии страницы
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      saveCurrentDraft();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [saveCurrentDraft]);
 
   return (
     <div className="w-full max-w-4xl mx-auto px-2 md:px-0">
@@ -168,6 +271,12 @@ export default function ReleaseWizard({
               <p className="text-xs text-muted-foreground mt-0.5">
                 {editingRelease ? `Редактирование "${editingRelease.release_name}" • Шаг ${currentStep} из 6` : `Шаг ${currentStep} из 6`}
               </p>
+              {!editingRelease && lastSaved && (
+                <div className="flex items-center gap-1.5 mt-1 text-xs text-green-600">
+                  <Icon name="Check" size={12} />
+                  <span>Сохранено {new Date(lastSaved).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+              )}
             </div>
             <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8" disabled={uploading}>
               <Icon name="X" size={18} />
