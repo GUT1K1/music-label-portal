@@ -217,16 +217,21 @@ const TrackItem = memo(function TrackItem({ track, index, totalTracks, updateTra
                 className="cursor-pointer text-sm"
               />
             </div>
-            {track.file && (
+            {(track.file || track.file_url) && (
               <div className="mt-2 sm:mt-3 p-2 sm:p-3 bg-muted/50 rounded-lg border">
                 <div className="flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <Icon name="Music" size={16} className="sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium truncate">{track.file.name}</p>
+                    <p className="text-xs sm:text-sm font-medium truncate">
+                      {track.file ? track.file.name : (track.file_name || 'Загруженный файл')}
+                    </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {(track.file.size / 1024 / 1024).toFixed(2)} МБ
+                      {track.file 
+                        ? `${(track.file.size / 1024 / 1024).toFixed(2)} МБ`
+                        : (track.file_size ? `${(track.file_size / 1024 / 1024).toFixed(2)} МБ` : 'Уже загружен')
+                      }
                     </p>
                   </div>
                   <Icon name="CheckCircle" size={18} className="sm:w-5 sm:h-5 text-green-600 flex-shrink-0" />

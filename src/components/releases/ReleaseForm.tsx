@@ -10,6 +10,7 @@ import TrackItem from './TrackItem';
 interface ReleaseFormProps {
   newRelease: {
     release_name: string;
+    artist_name: string;
     release_date: string;
     preorder_date: string;
     sales_start_date: string;
@@ -167,6 +168,15 @@ export default function ReleaseForm({
                   placeholder="Введите название альбома"
                   value={newRelease.release_name}
                   onChange={(e) => setNewRelease({ ...newRelease, release_name: e.target.value })}
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Имя артиста *</label>
+                <Input
+                  placeholder="Введите имя артиста"
+                  value={newRelease.artist_name}
+                  onChange={(e) => setNewRelease({ ...newRelease, artist_name: e.target.value })}
                 />
               </div>
               

@@ -21,6 +21,7 @@ export const useReleaseManager = (userId: number) => {
 
   const [newRelease, setNewRelease] = useState({
     release_name: '',
+    artist_name: '',
     release_date: '',
     preorder_date: '',
     sales_start_date: '',
@@ -524,11 +525,12 @@ export const useReleaseManager = (userId: number) => {
     setEditingRelease(release);
     setNewRelease({
       release_name: release.release_name,
+      artist_name: release.artist_name || '',
       release_date: release.release_date || '',
       preorder_date: release.preorder_date || '',
       sales_start_date: release.sales_start_date || '',
       genre: release.genre || '',
-      copyright: release.copyright || '',
+      copyright: release.copyright || '420smm',
       price_category: release.price_category || '0.99',
       title_language: release.title_language || 'Русский'
     });
