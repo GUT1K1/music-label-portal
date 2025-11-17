@@ -112,8 +112,18 @@ export default function ReleaseWizard({
                requisites.stage_name.trim().length >= 1 &&
                emailValid;
       case 4:
-        // Проверка треков
-        return tracks.length > 0 && tracks.every(t => 
+        // Проверка треков с учетом типа релиза
+        const trackLimits = {
+          'single': { min: 1, max: 1 },
+          'maxi-single': { min: 3, max: 3 },
+          'ep': { min: 4, max: 6 },
+          'album': { min: 7, max: 999 }
+        };
+        
+        const limits = releaseType ? trackLimits[releaseType] : { min: 1, max: 999 };
+        const validCount = tracks.length >= limits.min && tracks.length <= limits.max;
+        
+        return validCount && tracks.length > 0 && tracks.every(t => 
           t.file && 
           t.title.trim().length >= 1 && 
           t.composer.trim().length >= 1 &&
@@ -227,6 +237,7 @@ export default function ReleaseWizard({
               updateTrack={memoizedUpdateTrack}
               moveTrack={memoizedMoveTrack}
               handleBatchUpload={memoizedHandleBatchUpload}
+              releaseType={releaseType}
             />
           )}
 

@@ -12,6 +12,7 @@ interface WizardStepTracksProps {
   updateTrack: (index: number, field: keyof Track, value: any) => void;
   moveTrack: (index: number, direction: 'up' | 'down') => void;
   handleBatchUpload: (files: FileList) => void;
+  releaseType: 'single' | 'maxi-single' | 'ep' | 'album' | null;
 }
 
 const WizardStepTracks = memo(function WizardStepTracks({
@@ -20,7 +21,8 @@ const WizardStepTracks = memo(function WizardStepTracks({
   removeTrack,
   updateTrack,
   moveTrack,
-  handleBatchUpload
+  handleBatchUpload,
+  releaseType
 }: WizardStepTracksProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
@@ -50,17 +52,36 @@ const WizardStepTracks = memo(function WizardStepTracks({
     setDraggedIndex(null);
   }, [draggedIndex, moveTrack]);
 
+  const trackLimits = {
+    'single': { min: 1, max: 1, label: '1 трек' },
+    'maxi-single': { min: 3, max: 3, label: '3 трека' },
+    'ep': { min: 4, max: 6, label: '4-6 треков' },
+    'album': { min: 7, max: 999, label: '7+ треков' }
+  };
+
+  const limits = releaseType ? trackLimits[releaseType] : null;
+  const canAddMore = !limits || tracks.length < limits.max;
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold">Добавьте треки</h2>
         <p className="text-sm text-muted-foreground">Загрузите аудиофайлы и заполните информацию</p>
+        {limits && (
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-medium">
+            <Icon name="Info" size={14} />
+            {limits.label}
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Icon name="Music" size={18} className="text-muted-foreground" />
-          <span className="text-sm font-medium">Треки: {tracks.length}</span>
+          <span className="text-sm font-medium">
+            Треки: {tracks.length}
+            {limits && ` / ${limits.max === 999 ? '∞' : limits.max}`}
+          </span>
         </div>
         <div className="flex gap-2">
           <div className="relative">
@@ -70,13 +91,14 @@ const WizardStepTracks = memo(function WizardStepTracks({
               accept=".mp3,.wav,.flac,.m4a"
               onChange={(e) => e.target.files && handleBatchUpload(e.target.files)}
               className="absolute inset-0 opacity-0 cursor-pointer"
+              disabled={!canAddMore}
             />
-            <Button size="sm" variant="outline" className="gap-2">
+            <Button size="sm" variant="outline" className="gap-2" disabled={!canAddMore}>
               <Icon name="Upload" size={16} />
               Загрузить файлы
             </Button>
           </div>
-          <Button onClick={addTrack} size="sm" className="gap-2">
+          <Button onClick={addTrack} size="sm" className="gap-2" disabled={!canAddMore}>
             <Icon name="Plus" size={16} />
             Добавить
           </Button>
